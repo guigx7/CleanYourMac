@@ -7,9 +7,10 @@ final class FixtureTree {
     private let fm = FileManager.default
 
     init() {
-        root = fm.temporaryDirectory.appendingPathComponent("cym-\(UUID().uuidString)", isDirectory: true)
-            .resolvingSymlinksInPath()
-        try! fm.createDirectory(at: root, withIntermediateDirectories: true)
+        let raw = fm.temporaryDirectory.appendingPathComponent("cym-\(UUID().uuidString)", isDirectory: true)
+        try! fm.createDirectory(at: raw, withIntermediateDirectories: true)
+        // Caminho real (/private/var/...), para comparações estáveis.
+        root = URL(fileURLWithPath: PathPolicy.realPath(raw.path), isDirectory: true)
     }
 
     deinit {
