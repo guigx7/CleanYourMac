@@ -48,7 +48,7 @@ private func parentItem(_ name: String, _ children: [JunkItem], group: GroupID =
     let report = ScanReport(groups: [.userCache: GroupResult(group: .userCache, items: [a, b])])
     let s = SelectionModel()
     s.load(report)
-    s.select(.recommended, in: .userCache)
+    s.select(.smart, in: .userCache)
     #expect(s.selectedItems.map(\.id) == [a.id])
     s.select(.all, in: .userCache)
     #expect(Set(s.selectedItems.map(\.id)) == [a.id, b.id])
@@ -89,11 +89,83 @@ private func parentItem(_ name: String, _ children: [JunkItem], group: GroupID =
     #expect(s.state(of: .userCache) == .on)
 }
 
-@MainActor @Test func initialSelectionUsesRecommended() {
+@MainActor @Test func initialSelectionIsEmpty() {
     let a = leafItem("a", 10, recommended: true), b = leafItem("b", 20)
     let report = ScanReport(groups: [.userCache: GroupResult(group: .userCache, items: [a, b])])
     let s = SelectionModel()
     s.load(report)
-    s.applyInitialSelection()
-    #expect(s.selectedItems.map(\.id) == [a.id])
+    #expect(s.selectedItems.isEmpty)
+    #expect(s.presetState(in: .userCache) == .none)
+    #expect(!s.hasChanges)
+}
+
+@MainActor @Test func presetStateFollowsSelection() {
+    let items = (0..<5).map { leafItem("i\($0)", 10, recommended: $0 < 2) }
+    let report = ScanReport(groups: [.userCache: GroupResult(group: .userCache, items: items)])
+    let s = SelectionModel()
+    s.load(report)
+    s.select(.smart, in: .userCache)
+    #expect(s.selectedCount == 2)
+    #expect(s.presetState(in: .userCache) == .smart)
+    s.toggle(items[0])
+    #expect(s.presetState(in: .userCache) == .manual)
+    s.select(.all, in: .userCache)
+    #expect(s.presetState(in: .userCache) == .all)
+    s.select(.none, in: .userCache)
+    #expect(s.presetState(in: .userCache) == .none)
+    #expect(s.hasChanges == false)
+}
+
+@MainActor @Test func smartSelectDisabledWithoutRecommended() {
+    let report = ScanReport(groups: [.userCache: GroupResult(group: .userCache, items: [leafItem("a", 1)])])
+    let s = SelectionModel()
+    s.load(report)
+    #expect(!s.canSmartSelect(.userCache))
+}
+
+@MainActor @Test func latestBackupNeedsConfirmation() {
+    let url = URL(fileURLWithPath: "/tmp/sel/backup")
+    let latest = JunkItem(group: .iosBackups, name: "b", url: url, size: 5, badge: .latest, removal: .delete(url))
+    let report = ScanReport(groups: [.iosBackups: GroupResult(group: .iosBackups, items: [latest])])
+    let s = SelectionModel()
+    s.load(report)
+    s.toggle(latest)
+    #expect(s.pendingAlert == .iosLatestBackup)
+    #expect(s.selectedItems.isEmpty)
+    s.cancelPending()
+    #expect(s.pendingAlert == nil && s.selectedItems.isEmpty)
+    s.toggle(latest)
+    s.confirmPending()
+    #expect(s.selectedItems.map(\.id) == [latest.id])
+}
+
+@MainActor @Test func selectAllLocalModelsOneAlert() {
+    let a = leafItem("m1", 10, group: .localModels), b = leafItem("m2", 20, group: .localModels)
+    let report = ScanReport(groups: [.localModels: GroupResult(group: .localModels, items: [a, b])])
+    let s = SelectionModel()
+    s.load(report)
+    s.select(.all, in: .localModels)
+    #expect(s.pendingAlert == .localModels)
+    s.confirmPending()
+    #expect(s.selectedCount == 2)
+    #expect(s.pendingAlert == nil)
+}
+
+@MainActor @Test func deselectNeverNeedsConfirmation() {
+    let a = leafItem("m1", 10, group: .localModels)
+    let report = ScanReport(groups: [.localModels: GroupResult(group: .localModels, items: [a])])
+    let s = SelectionModel()
+    s.load(report)
+    s.toggle(a); s.confirmPending()
+    s.toggle(a)
+    #expect(s.pendingAlert == nil && s.selectedItems.isEmpty)
+}
+
+@MainActor @Test func duplicateURLCountedOnceInBytes() {
+    let url = URL(fileURLWithPath: "/tmp/sel/same")
+    let a = JunkItem(id: "x:1", group: .userCache, name: "a", url: url, size: 10, removal: .delete(url))
+    let b = JunkItem(id: "x:2", group: .userLogs, name: "b", url: url, size: 10, removal: .delete(url))
+    let s = SelectionModel()
+    s.toggle(a); s.toggle(b)
+    #expect(s.selectedBytes == 10)
 }

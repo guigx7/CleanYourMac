@@ -18,6 +18,23 @@
         }
       }
     },
+    "category.aiClutter.description": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Caches, logs and downloaded models from AI tools."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Caches, registros e modelos baixados por ferramentas de IA."
+          }
+        }
+      }
+    },
     "category.mailAttachments": {
       "extractionState": "manual",
       "localizations": {
@@ -31,6 +48,23 @@
           "stringUnit": {
             "state": "translated",
             "value": "Anexos do Mail"
+          }
+        }
+      }
+    },
+    "category.mailAttachments.description": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Local copies of attachments that stay available in your mail account."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cópias locais de anexos que continuam disponíveis na sua conta de e-mail."
           }
         }
       }
@@ -52,6 +86,23 @@
         }
       }
     },
+    "category.systemJunk.description": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Temporary files the system and apps create and leave behind."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Arquivos temporários que o sistema e os apps criam e deixam para trás."
+          }
+        }
+      }
+    },
     "category.trashBins": {
       "extractionState": "manual",
       "localizations": {
@@ -65,6 +116,23 @@
           "stringUnit": {
             "state": "translated",
             "value": "Lixos"
+          }
+        }
+      }
+    },
+    "category.trashBins.description": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Items already in the trash, still taking up space."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Itens que já estão no lixo e continuam ocupando espaço."
           }
         }
       }
@@ -188,6 +256,23 @@
         }
       }
     },
+    "group.aiAgentsJunk.description": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Caches, logs and temporary files left by AI tools."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Caches, registros e arquivos temporários deixados por ferramentas de IA."
+          }
+        }
+      }
+    },
     "group.brokenLoginItems": {
       "extractionState": "manual",
       "localizations": {
@@ -201,6 +286,23 @@
           "stringUnit": {
             "state": "translated",
             "value": "Itens de início defeituosos"
+          }
+        }
+      }
+    },
+    "group.brokenLoginItems.description": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Startup entries that point to apps or tools that no longer exist."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Itens de início que apontam para apps ou ferramentas que não existem mais."
           }
         }
       }
@@ -222,6 +324,23 @@
         }
       }
     },
+    "group.brokenPreferences.description": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Settings files that can't be read anymore."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Arquivos de ajustes que não podem mais ser lidos."
+          }
+        }
+      }
+    },
     "group.deletedUsers": {
       "extractionState": "manual",
       "localizations": {
@@ -235,6 +354,23 @@
           "stringUnit": {
             "state": "translated",
             "value": "Usuários apagados"
+          }
+        }
+      }
+    },
+    "group.deletedUsers.description": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Data left by user accounts removed from this Mac."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dados deixados por contas de usuário removidas deste Mac."
           }
         }
       }
@@ -256,6 +392,23 @@
         }
       }
     },
+    "group.documentVersions.description": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Older saved versions of documents you edited."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Versões antigas salvas de documentos que você editou."
+          }
+        }
+      }
+    },
     "group.iosBackups": {
       "extractionState": "manual",
       "localizations": {
@@ -269,6 +422,23 @@
           "stringUnit": {
             "state": "translated",
             "value": "Backups de dispositivos iOS"
+          }
+        }
+      }
+    },
+    "group.iosBackups.description": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Backups of iPhone and iPad devices stored on this Mac."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Backups de iPhone e iPad guardados neste Mac."
           }
         }
       }
@@ -290,6 +460,23 @@
         }
       }
     },
+    "group.languageFiles.description": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "App translations for languages you don't use."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Traduções de apps para idiomas que você não usa."
+          }
+        }
+      }
+    },
     "group.localModels": {
       "extractionState": "manual",
       "localizations": {
@@ -303,6 +490,23 @@
           "stringUnit": {
             "state": "translated",
             "value": "Modelos locais"
+          }
+        }
+      }
+    },
+    "group.localModels.description": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "AI models downloaded to run on this Mac."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Modelos de IA baixados para rodar neste Mac."
           }
         }
       }
@@ -324,6 +528,23 @@
         }
       }
     },
+    "group.mailAttachments.description": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Attachments Mail downloaded to this Mac."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Anexos que o Mail baixou para este Mac."
+          }
+        }
+      }
+    },
     "group.mailTrash": {
       "extractionState": "manual",
       "localizations": {
@@ -337,6 +558,23 @@
           "stringUnit": {
             "state": "translated",
             "value": "Lixo do Mail"
+          }
+        }
+      }
+    },
+    "group.mailTrash.description": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Deleted messages kept locally by Mail."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mensagens apagadas que o Mail guarda localmente."
           }
         }
       }
@@ -358,6 +596,23 @@
         }
       }
     },
+    "group.systemCache.description": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cache files created by macOS services."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Arquivos de cache criados pelos serviços do macOS."
+          }
+        }
+      }
+    },
     "group.systemLogs": {
       "extractionState": "manual",
       "localizations": {
@@ -371,6 +626,23 @@
           "stringUnit": {
             "state": "translated",
             "value": "Arquivos de registro do sistema"
+          }
+        }
+      }
+    },
+    "group.systemLogs.description": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Activity records written by macOS."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Registros de atividade gravados pelo macOS."
           }
         }
       }
@@ -392,6 +664,23 @@
         }
       }
     },
+    "group.trash.description": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Files in your trash and in the trash of connected drives."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Arquivos no seu lixo e no lixo de discos conectados."
+          }
+        }
+      }
+    },
     "group.universalBinaries": {
       "extractionState": "manual",
       "localizations": {
@@ -405,6 +694,23 @@
           "stringUnit": {
             "state": "translated",
             "value": "Binários universais"
+          }
+        }
+      }
+    },
+    "group.universalBinaries.description": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Code for a processor type this Mac doesn't use."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Código para um tipo de processador que este Mac não usa."
           }
         }
       }
@@ -426,6 +732,23 @@
         }
       }
     },
+    "group.userCache.description": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Data apps store to open faster. Apps rebuild it when needed."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dados que os apps guardam para abrir mais rápido. Eles são recriados quando necessário."
+          }
+        }
+      }
+    },
     "group.userLogs": {
       "extractionState": "manual",
       "localizations": {
@@ -443,6 +766,23 @@
         }
       }
     },
+    "group.userLogs.description": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Activity records written by your apps."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Registros de atividade gravados pelos seus apps."
+          }
+        }
+      }
+    },
     "group.xcodeJunk": {
       "extractionState": "manual",
       "localizations": {
@@ -456,6 +796,40 @@
           "stringUnit": {
             "state": "translated",
             "value": "Detritos do Xcode"
+          }
+        }
+      }
+    },
+    "group.xcodeJunk.description": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Build data, archives and simulator files created by Xcode."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dados de build, arquivos e simuladores criados pelo Xcode."
+          }
+        }
+      }
+    },
+    "ios.latest": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Latest"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mais recente"
           }
         }
       }
@@ -541,6 +915,261 @@
           "stringUnit": {
             "state": "translated",
             "value": "Lupa de Espaço"
+          }
+        }
+      }
+    },
+    "review.action.clean": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Clean"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Limpar"
+          }
+        }
+      }
+    },
+    "review.back": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Back"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Voltar"
+          }
+        }
+      }
+    },
+    "review.empty": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nothing to clean here."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nada para limpar aqui."
+          }
+        }
+      }
+    },
+    "review.recommended": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Recommended"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Recomendado"
+          }
+        }
+      }
+    },
+    "review.search": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Search found items"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Buscar nos itens encontrados"
+          }
+        }
+      }
+    },
+    "review.select": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Select"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Selecionar"
+          }
+        }
+      }
+    },
+    "review.select.all": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "All"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Todos"
+          }
+        }
+      }
+    },
+    "review.select.none": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "None"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nenhum"
+          }
+        }
+      }
+    },
+    "review.select.recommended": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Recommended"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Recomendados"
+          }
+        }
+      }
+    },
+    "review.selection.count": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld items selected"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld itens selecionados"
+          }
+        }
+      }
+    },
+    "review.showContents": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Show contents"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mostrar conteúdo"
+          }
+        }
+      }
+    },
+    "review.sort": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sort by"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ordenar por"
+          }
+        }
+      }
+    },
+    "review.sort.name": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Name"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nome"
+          }
+        }
+      }
+    },
+    "review.sort.size": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Size"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tamanho"
+          }
+        }
+      }
+    },
+    "review.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cleanup manager"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gerenciador de limpeza"
           }
         }
       }

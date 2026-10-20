@@ -16,6 +16,7 @@ final class CleanupFlowModel {
     private(set) var bytesFound: Int64 = 0
     private(set) var report: ScanReport?
     private(set) var reviewCategory: CategoryID?
+    let selection = SelectionModel()
 
     // Limpeza
     private(set) var cleaningItem: JunkItem?
@@ -126,6 +127,7 @@ final class CleanupFlowModel {
             updateBytesFound()
         case .finished(let report):
             self.report = report
+            selection.load(report)
             bytesFound = max(bytesFound, report.totalSize)
             currentPath = ""
             currentGroup = nil

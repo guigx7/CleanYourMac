@@ -35,3 +35,43 @@ cleanup.action.scan	Scan	Analisar
 cleanup.scan.title	Scanning your Mac…	Analisando o Mac…
 cleanup.scan.found	found so far	encontrados até agora
 cleanup.action.stop	Stop	Parar
+# Gerenciador
+review.title	Cleanup manager	Gerenciador de limpeza
+review.back	Back	Voltar
+review.search	Search found items	Buscar nos itens encontrados
+review.sort	Sort by	Ordenar por
+review.sort.size	Size	Tamanho
+review.sort.name	Name	Nome
+review.select	Select	Selecionar
+review.select.none	None	Nenhum
+review.select.recommended	Recommended	Recomendados
+review.select.all	All	Todos
+review.recommended	Recommended	Recomendado
+review.empty	Nothing to clean here.	Nada para limpar aqui.
+review.selection.count	%lld items selected	%lld itens selecionados
+review.action.clean	Clean	Limpar
+review.showContents	Show contents	Mostrar conteúdo
+# Descrições das categorias
+category.systemJunk.description	Temporary files the system and apps create and leave behind.	Arquivos temporários que o sistema e os apps criam e deixam para trás.
+category.aiClutter.description	Caches, logs and downloaded models from AI tools.	Caches, registros e modelos baixados por ferramentas de IA.
+category.mailAttachments.description	Local copies of attachments that stay available in your mail account.	Cópias locais de anexos que continuam disponíveis na sua conta de e-mail.
+category.trashBins.description	Items already in the trash, still taking up space.	Itens que já estão no lixo e continuam ocupando espaço.
+# Descrições dos grupos
+group.userCache.description	Data apps store to open faster. Apps rebuild it when needed.	Dados que os apps guardam para abrir mais rápido. Eles são recriados quando necessário.
+group.systemCache.description	Cache files created by macOS services.	Arquivos de cache criados pelos serviços do macOS.
+group.userLogs.description	Activity records written by your apps.	Registros de atividade gravados pelos seus apps.
+group.systemLogs.description	Activity records written by macOS.	Registros de atividade gravados pelo macOS.
+group.universalBinaries.description	Code for a processor type this Mac doesn't use.	Código para um tipo de processador que este Mac não usa.
+group.languageFiles.description	App translations for languages you don't use.	Traduções de apps para idiomas que você não usa.
+group.brokenLoginItems.description	Startup entries that point to apps or tools that no longer exist.	Itens de início que apontam para apps ou ferramentas que não existem mais.
+group.brokenPreferences.description	Settings files that can't be read anymore.	Arquivos de ajustes que não podem mais ser lidos.
+group.documentVersions.description	Older saved versions of documents you edited.	Versões antigas salvas de documentos que você editou.
+group.deletedUsers.description	Data left by user accounts removed from this Mac.	Dados deixados por contas de usuário removidas deste Mac.
+group.iosBackups.description	Backups of iPhone and iPad devices stored on this Mac.	Backups de iPhone e iPad guardados neste Mac.
+group.xcodeJunk.description	Build data, archives and simulator files created by Xcode.	Dados de build, arquivos e simuladores criados pelo Xcode.
+group.aiAgentsJunk.description	Caches, logs and temporary files left by AI tools.	Caches, registros e arquivos temporários deixados por ferramentas de IA.
+group.localModels.description	AI models downloaded to run on this Mac.	Modelos de IA baixados para rodar neste Mac.
+group.mailAttachments.description	Attachments Mail downloaded to this Mac.	Anexos que o Mail baixou para este Mac.
+group.trash.description	Files in your trash and in the trash of connected drives.	Arquivos no seu lixo e no lixo de discos conectados.
+group.mailTrash.description	Deleted messages kept locally by Mail.	Mensagens apagadas que o Mail guarda localmente.
+ios.latest	Latest	Mais recente
