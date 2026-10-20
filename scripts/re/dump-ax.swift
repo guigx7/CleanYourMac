@@ -5,7 +5,7 @@ import AppKit
 import ApplicationServices
 
 let label = CommandLine.arguments.dropFirst().first ?? "screen"
-let bundleIDs = ["com.macpaw.CleanMyMac-setapp", "com.macpaw.CleanMyMac5"]
+let bundleIDs = ProcessInfo.processInfo.environment["CYM_AX_BUNDLE"].map { [$0] } ?? ["com.macpaw.CleanMyMac-setapp", "com.macpaw.CleanMyMac5"]
 
 guard AXIsProcessTrusted() else {
     FileHandle.standardError.write("Sem permissão de Acessibilidade para este terminal.\n".data(using: .utf8)!)
@@ -59,8 +59,8 @@ if let i = CommandLine.arguments.firstIndex(of: "--press"), i + 1 < CommandLine.
     var matches: [AXUIElement] = []
     func find(_ el: AXUIElement, depth: Int) {
         guard depth < 60 else { return }
-        let t = (attr(el, kAXTitleAttribute) as? String) ?? (attr(el, kAXValueAttribute) as? String) ?? ""
-        if t == target { matches.append(el) }
+        let names = [kAXTitleAttribute, kAXValueAttribute, kAXDescriptionAttribute].compactMap { attr(el, $0) as? String }
+        if names.contains(target) { matches.append(el) }
         for child in (attr(el, kAXChildrenAttribute) as? [AXUIElement]) ?? [] { find(child, depth: depth + 1) }
     }
     find(root, depth: 0)

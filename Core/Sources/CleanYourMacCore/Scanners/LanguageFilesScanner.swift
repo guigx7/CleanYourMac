@@ -16,7 +16,12 @@ public struct LanguageFilesScanner: ScopedScanner {
 
     /// Idioma principal (o primeiro da lista) de cada fonte de entrada de teclado habilitada.
     /// Um teclado latino lista dezenas de idiomas; a baseline só fecha considerando o primeiro.
+    /// A HIToolbox exige a thread principal (fora dela, com o app ativo, o processo é abortado).
     public static let enabledKeyboardLanguages: @Sendable () -> [String] = {
+        Thread.isMainThread ? readKeyboardLanguages() : DispatchQueue.main.sync { readKeyboardLanguages() }
+    }
+
+    private static func readKeyboardLanguages() -> [String] {
         let filter = [kTISPropertyInputSourceCategory as String: kTISCategoryKeyboardInputSource as String] as CFDictionary
         guard let list = TISCreateInputSourceList(filter, false)?.takeRetainedValue() as? [TISInputSource] else { return [] }
         return list.flatMap { source -> [String] in
