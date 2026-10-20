@@ -19,8 +19,8 @@ final class HelperManager {
         state = switch service.status {
         case .enabled: .active
         case .requiresApproval: .needsApproval
-        case .notRegistered: .notInstalled
-        case .notFound: .unavailable
+        // Um daemon nunca registrado também aparece como .notFound.
+        case .notRegistered, .notFound: .notInstalled
         @unknown default: .unavailable
         }
     }
@@ -31,10 +31,11 @@ final class HelperManager {
             try service.register()
             lastError = nil
         } catch {
+            // Sem aprovação, o registro devolve "Operation not permitted" e o status vira requiresApproval.
             lastError = error.localizedDescription
         }
         refresh()
-        if state == .needsApproval { SMAppService.openSystemSettingsLoginItems() }
+        if state != .active { SMAppService.openSystemSettingsLoginItems() }
     }
 
     func uninstall() {
