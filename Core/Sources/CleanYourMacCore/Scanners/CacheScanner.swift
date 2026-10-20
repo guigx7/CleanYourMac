@@ -106,8 +106,10 @@ extension CacheScanner {
 extension CacheScanner.Source {
     typealias Candidate = CacheScanner.Candidate
 
+    /// Filhos diretos, listados a partir do caminho real da pasta (a raiz pode ser um symlink).
     static func listChildren(_ dir: URL) -> [URL] {
-        ((try? FileManager.default.contentsOfDirectory(at: dir, includingPropertiesForKeys: nil)) ?? [])
+        let real = URL(fileURLWithPath: PathPolicy.realPath(dir.path), isDirectory: true)
+        return ((try? FileManager.default.contentsOfDirectory(at: real, includingPropertiesForKeys: nil)) ?? [])
             .sorted { $0.path < $1.path }
     }
 

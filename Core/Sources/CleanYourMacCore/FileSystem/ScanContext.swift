@@ -24,7 +24,8 @@ public struct ScanContext: Sendable {
         var buffer = [CChar](repeating: 0, count: Int(PATH_MAX))
         let n = confstr(_CS_DARWIN_USER_CACHE_DIR, &buffer, buffer.count)
         guard n > 0 else { return FileManager.default.temporaryDirectory }
-        return URL(fileURLWithPath: String(cString: buffer), isDirectory: true)
+        let bytes = buffer.prefix(while: { $0 != 0 }).map { UInt8(bitPattern: $0) }
+        return URL(fileURLWithPath: String(decoding: bytes, as: UTF8.self), isDirectory: true)
     }
 
     /// Contexto do usuário atual no disco real.

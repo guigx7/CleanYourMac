@@ -221,3 +221,15 @@ private let mb = 1_000_000
     #expect(GroupID.systemCache.requiresAdminToScan)
     #expect(!GroupID.userCache.requiresAdmin)
 }
+
+@Test func userCache_darwinExclusionThroughSymlinkedPath() async throws {
+    // /var -> /private/var: a pasta do Darwin vem do confstr sem /private, a listagem vem com.
+    let t = FixtureTree()
+    t.file("var/folders/zz/C/clang/x", bytes: 10)
+    t.file("var/folders/zz/C/com.keep/x", bytes: 10)
+    let link = t.symlink("dlink", to: t.url("var/folders/zz/C"))
+    var ctx = t.context()
+    ctx.darwinUserCacheDir = link
+    let names = try await scan(userCache(t), ctx).map(\.name)
+    #expect(names == ["com.keep"])
+}

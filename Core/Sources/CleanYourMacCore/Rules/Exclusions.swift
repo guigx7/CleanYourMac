@@ -18,9 +18,14 @@ public struct Exclusions: Sendable {
     }
 
     /// O caminho casa com a lista global ou com a do grupo.
+    /// Compara caminhos reais (o pai é resolvido; ex.: /var → /private/var). Globs só no último componente.
     public func excludes(_ url: URL, group: GroupID, context: ScanContext) -> Bool {
-        let path = url.path
+        let path = Self.real(url)
         let lists = (patterns["global"] ?? []) + (patterns[group.rawValue] ?? [])
-        return lists.contains { fnmatch(context.resolve($0).path, path, 0) == 0 }
+        return lists.contains { fnmatch(Self.real(context.resolve($0)), path, 0) == 0 }
+    }
+
+    private static func real(_ url: URL) -> String {
+        (PathPolicy.realPath(url.deletingLastPathComponent().path) as NSString).appendingPathComponent(url.lastPathComponent)
     }
 }
