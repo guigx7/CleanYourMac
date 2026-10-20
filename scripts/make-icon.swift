@@ -1,37 +1,44 @@
-// Gera o AppIcon (gradiente verde + lente de vidro + brilho), sem arte de terceiros.
+// Gera o AppIcon a partir de App/Resources/Source/AppIcon-source.png:
+// recorta a área desenhada (fundo branco), aplica a máscara arredondada do macOS
+// e centraliza numa tela transparente (824/1024, como o template da Apple).
 // Uso: swift scripts/make-icon.swift
 import AppKit
 
-let out = URL(fileURLWithPath: #filePath).deletingLastPathComponent().deletingLastPathComponent()
-    .appendingPathComponent("App/Resources/Assets.xcassets/AppIcon.appiconset")
+let root = URL(fileURLWithPath: #filePath).deletingLastPathComponent().deletingLastPathComponent()
+let out = root.appendingPathComponent("App/Resources/Assets.xcassets/AppIcon.appiconset")
+let source = NSImage(contentsOf: root.appendingPathComponent("App/Resources/Source/AppIcon-source.png"))!
+let rep = NSBitmapImageRep(data: source.tiffRepresentation!)!
+
+// Caixa do conteúdo: pixels que não são quase brancos.
+var minX = rep.pixelsWide, minY = rep.pixelsHigh, maxX = 0, maxY = 0
+for y in stride(from: 0, to: rep.pixelsHigh, by: 2) {
+    for x in stride(from: 0, to: rep.pixelsWide, by: 2) {
+        guard let c = rep.colorAt(x: x, y: y)?.usingColorSpace(.deviceRGB) else { continue }
+        if c.redComponent < 0.96 || c.greenComponent < 0.96 || c.blueComponent < 0.96 {
+            minX = min(minX, x); maxX = max(maxX, x); minY = min(minY, y); maxY = max(maxY, y)
+        }
+    }
+}
+// Margem pequena para não pegar a sombra clara ao redor.
+let inset = Int(Double(maxX - minX) * 0.012)
+// Quadrado centrado na caixa (evita achatar o desenho).
+let side = min(maxX - minX, maxY - minY) - 2 * inset
+let centerX = (minX + maxX) / 2, centerY = rep.pixelsHigh - (minY + maxY) / 2
+let crop = NSRect(x: centerX - side / 2, y: centerY - side / 2, width: side, height: side)
 
 func render(_ px: Int) -> Data {
     let s = CGFloat(px)
-    let rep = NSBitmapImageRep(bitmapDataPlanes: nil, pixelsWide: px, pixelsHigh: px, bitsPerSample: 8, samplesPerPixel: 4,
-                               hasAlpha: true, isPlanar: false, colorSpaceName: .deviceRGB, bytesPerRow: 0, bitsPerPixel: 0)!
+    let canvas = NSBitmapImageRep(bitmapDataPlanes: nil, pixelsWide: px, pixelsHigh: px, bitsPerSample: 8, samplesPerPixel: 4,
+                                  hasAlpha: true, isPlanar: false, colorSpaceName: .deviceRGB, bytesPerRow: 0, bitsPerPixel: 0)!
     NSGraphicsContext.saveGraphicsState()
-    NSGraphicsContext.current = NSGraphicsContext(bitmapImageRep: rep)
-    let inset = s * 0.1
-    let rect = NSRect(x: inset, y: inset, width: s - 2 * inset, height: s - 2 * inset)
-    let shape = NSBezierPath(roundedRect: rect, xRadius: rect.width * 0.225, yRadius: rect.width * 0.225)
-    NSGradient(colors: [NSColor(srgbRed: 0.055, green: 0.227, blue: 0.122, alpha: 1),
-                        NSColor(srgbRed: 0.184, green: 0.42, blue: 0.165, alpha: 1),
-                        NSColor(srgbRed: 0.561, green: 0.702, blue: 0.224, alpha: 1)])!.draw(in: shape, angle: 45)
-    let lens = NSRect(x: s * 0.26, y: s * 0.26, width: s * 0.48, height: s * 0.48)
-    NSColor.white.withAlphaComponent(0.16).setFill()
-    NSBezierPath(ovalIn: lens).fill()
-    NSColor.white.withAlphaComponent(0.55).setStroke()
-    let ring = NSBezierPath(ovalIn: lens); ring.lineWidth = s * 0.012; ring.stroke()
-    if let symbol = NSImage(systemSymbolName: "sparkles", accessibilityDescription: nil)?
-        .withSymbolConfiguration(.init(pointSize: s * 0.22, weight: .medium)) {
-        let tinted = NSImage(size: symbol.size, flipped: false) { r in
-            symbol.draw(in: r); NSColor.white.set(); r.fill(using: .sourceAtop); return true
-        }
-        let size = tinted.size
-        tinted.draw(in: NSRect(x: (s - size.width) / 2, y: (s - size.height) / 2, width: size.width, height: size.height))
-    }
+    NSGraphicsContext.current = NSGraphicsContext(bitmapImageRep: canvas)
+    NSGraphicsContext.current?.imageInterpolation = .high
+    let side = s * 824 / 1024
+    let rect = NSRect(x: (s - side) / 2, y: (s - side) / 2, width: side, height: side)
+    NSBezierPath(roundedRect: rect, xRadius: side * 0.2237, yRadius: side * 0.2237).addClip()
+    source.draw(in: rect, from: crop, operation: .copy, fraction: 1)
     NSGraphicsContext.restoreGraphicsState()
-    return rep.representation(using: .png, properties: [:])!
+    return canvas.representation(using: .png, properties: [:])!
 }
 
 var images: [[String: String]] = []
@@ -42,8 +49,6 @@ for points in [16, 32, 128, 256, 512] {
         images.append(["idiom": "mac", "size": "\(points)x\(points)", "scale": "\(scale)x", "filename": name])
     }
 }
-let contents: [String: Any] = ["images": images, "info": ["version": 1, "author": "xcode"]]
-try! JSONSerialization.data(withJSONObject: contents, options: [.prettyPrinted, .sortedKeys])
-    .write(to: out.appendingPathComponent("Contents.json"))
-try! #"{"info":{"version":1,"author":"xcode"}}"#.write(to: out.deletingLastPathComponent().appendingPathComponent("Contents.json"), atomically: true, encoding: .utf8)
-print("ok")
+try! JSONSerialization.data(withJSONObject: ["images": images, "info": ["version": 1, "author": "xcode"]],
+                            options: [.prettyPrinted, .sortedKeys]).write(to: out.appendingPathComponent("Contents.json"))
+print("crop:", crop)

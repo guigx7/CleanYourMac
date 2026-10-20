@@ -121,7 +121,7 @@ struct ResultsView: View {
         let sideWidth = size.width - (main == nil ? 0 : mainWidth + spacing)
         return HStack(alignment: .top, spacing: spacing) {
             if let main {
-                TileView(tile: main, model: model, prominent: true)
+                TileView(tile: main, model: model, prominent: true, width: mainWidth)
                     .frame(width: mainWidth, height: totalHeight)
                     .modifier(Cascade(index: 0, appeared: appeared))
             }
@@ -130,7 +130,8 @@ struct ResultsView: View {
                     ForEach(Array(rows.enumerated()), id: \.offset) { r, row in
                         HStack(spacing: spacing) {
                             ForEach(Array(row.enumerated()), id: \.element.id) { c, tile in
-                                TileView(tile: tile, model: model, prominent: false)
+                                TileView(tile: tile, model: model, prominent: false,
+                                         width: (sideWidth - spacing * CGFloat(row.count - 1)) / CGFloat(row.count))
                                     .frame(width: (sideWidth - spacing * CGFloat(row.count - 1)) / CGFloat(row.count), height: rowHeight)
                                     .modifier(Cascade(index: 1 + r * 2 + c, appeared: appeared))
                             }
@@ -172,6 +173,8 @@ private struct TileView: View {
     var tile: ResultTile
     var model: CleanupFlowModel
     var prominent: Bool
+    /// Largura do cartão: os ícones grandes se ajustam a ela (sem estourar o cartão).
+    var width: CGFloat
     @Environment(\.locale) private var locale
     @Environment(\.requestClean) private var requestClean
 
@@ -183,10 +186,10 @@ private struct TileView: View {
                 HStack(alignment: .top, spacing: 16) {
                     VStack(alignment: .leading, spacing: 8) {
                         Text(title)
-                            .font(.system(size: prominent ? 24 : 20, weight: .medium))
-                            .lineSpacing(3)
-                            .lineLimit(3)
-                            .minimumScaleFactor(0.85)
+                            .font(.system(size: prominent ? 24 : 19, weight: .medium))
+                            .lineSpacing(2)
+                            .lineLimit(4)
+                            .minimumScaleFactor(0.8)
                         Text(NSLocalizedString("tile.\(tile.kind.key).description", comment: ""))
                             .font(.system(size: prominent ? 16 : 15))
                             .foregroundStyle(Theme.secondaryText)
@@ -242,7 +245,7 @@ private struct TileView: View {
                 }
             }
         } else if let group = tile.iconGroups.first {
-            CategoryBadge(symbol: group.symbol, size: 48)
+            CategoryBadge(symbol: group.symbol, size: 40)
         }
     }
 
@@ -250,9 +253,13 @@ private struct TileView: View {
     @ViewBuilder private var prominentIcons: some View {
         let groups = tile.iconGroups
         let ordered = groups.count == 3 ? [groups[1], groups[0], groups[2]] : groups
-        HStack(alignment: .center, spacing: 28) {
+        // Cabe na largura útil do cartão (padding de 28 dos dois lados): grande = 37%, pequenos = 23%.
+        let usable = max(120, width - 56)
+        let big = min(120, usable * 0.37), small = min(76, usable * 0.23)
+        let gap = max(8, (usable - big - 2 * small) / 4)
+        HStack(alignment: .center, spacing: gap) {
             ForEach(Array(ordered.enumerated()), id: \.element) { i, g in
-                CategoryBadge(symbol: g.symbol, size: ordered.count == 3 && i == 1 ? 120 : 76)
+                CategoryBadge(symbol: g.symbol, size: ordered.count == 3 && i == 1 ? big : (ordered.count == 3 ? small : big * 0.8))
             }
         }
     }
