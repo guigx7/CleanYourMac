@@ -27,14 +27,29 @@ public struct FileSizer: Sendable {
     }
 }
 
-/// Formatação de tamanhos exibida na interface.
+/// Formatação de tamanhos exibida na interface (docs/re/specs/common.md §2):
+/// base decimal, menor unidade KB, 1 casa decimal abaixo de 100 e nenhuma a partir de 100.
 public enum SizeFormatter {
+    private static let units: [(String, Double)] = [("KB", 1e3), ("MB", 1e6), ("GB", 1e9), ("TB", 1e12)]
+
     public static func string(_ bytes: Int64, locale: Locale) -> String {
-        if bytes == 0 {
-            return "0 KB"
+        var index = units.lastIndex { Double(max(bytes, 0)) >= $0.1 } ?? 0
+        var value = round(Double(max(bytes, 0)) / units[index].1)
+        if value >= 1000, index < units.count - 1 {
+            index += 1
+            value = round(Double(bytes) / units[index].1)
         }
-        // A interface usa "KB" maiúsculo, como o Finder exibe em pt-BR e en.
-        return bytes.formatted(.byteCount(style: .file).locale(locale))
-            .replacingOccurrences(of: "kB", with: "KB")
+        let number = NumberFormatter()
+        number.locale = locale
+        number.numberStyle = .decimal
+        number.usesGroupingSeparator = false
+        number.minimumFractionDigits = 0
+        number.maximumFractionDigits = value < 100 ? 1 : 0
+        return "\(number.string(from: NSNumber(value: value)) ?? "0") \(units[index].0)"
+    }
+
+    /// Arredonda meio-para-par: 1 casa abaixo de 100, inteiro a partir de 100.
+    private static func round(_ value: Double) -> Double {
+        value < 99.95 ? (value * 10).rounded(.toNearestOrEven) / 10 : value.rounded(.toNearestOrEven)
     }
 }
