@@ -6,8 +6,13 @@ public enum CleanEvent: Sendable {
     case completed(CleanReport)
 }
 
+/// Algo que limpa itens e transmite o andamento.
+public protocol Cleaning: Sendable {
+    func clean(_ items: [JunkItem]) -> AsyncStream<CleanEvent>
+}
+
 /// Remove os itens selecionados, validando cada caminho pela política do seu grupo.
-public final class CleanEngine: Sendable {
+public final class CleanEngine: Cleaning {
     private let policies: [GroupID: PathPolicy]
     private let privileged: any PrivilegedRunner
     private let dryRun: Bool
@@ -54,6 +59,8 @@ public final class CleanEngine: Sendable {
         }
 
         for item in leaves {
+            // Parar: os itens restantes não são tocados.
+            if Task.isCancelled { break }
             emit(.started(item))
             guard let removal = item.removal else { continue }
             do {
@@ -86,7 +93,7 @@ public final class CleanEngine: Sendable {
             }
         }
 
-        let batch = deferred.filter { !$0.1.isEmpty }
+        let batch = Task.isCancelled ? [] : deferred.filter { !$0.1.isEmpty }
         for (item, cmds) in deferred where cmds.isEmpty {
             finish(item, .failure(CleanFailure(reason: "unsupported removal")))
         }

@@ -22,16 +22,28 @@ final class CleanupFlowModel {
     private(set) var cleaningItem: JunkItem?
     private(set) var freedBytes: Int64 = 0
     private(set) var bytesToClean: Int64 = 0
-    private(set) var failures: [JunkItem: String] = [:]
+    /// id do item → motivo
+    private(set) var failures: [String: String] = [:]
+    /// Itens não processados porque o usuário parou a limpeza.
+    private(set) var stoppedItems: [JunkItem] = []
+    private(set) var cleanedLeaves: [JunkItem] = []
+    /// Bytes removidos por cartão, para o estado "concluído" dos Resultados.
+    private(set) var completedTiles: [ResultTile.Kind: Int64] = [:]
+    /// A análise foi interrompida e o resultado está incompleto.
+    private(set) var isPartial = false
+
+    enum FreedKind: Hashable { case junk, mail, trash }
 
     private let scanEngine: ScanEngine
-    private let cleanEngine: CleanEngine
+    private let cleanEngine: any Cleaning
+    private var pendingLeaves: [JunkItem] = []
+    private var finishedGroups: [GroupID: GroupResult] = [:]
     private let context: ScanContext
     private let groups: Set<GroupID>
     private var task: Task<Void, Never>?
     private var bytesByGroup: [GroupID: Int64] = [:]
 
-    init(scanEngine: ScanEngine, cleanEngine: CleanEngine, context: ScanContext, groups: Set<GroupID>) {
+    init(scanEngine: ScanEngine, cleanEngine: any Cleaning, context: ScanContext, groups: Set<GroupID>) {
         self.scanEngine = scanEngine
         self.cleanEngine = cleanEngine
         self.context = context
@@ -45,6 +57,7 @@ final class CleanupFlowModel {
     func startScan() {
         task?.cancel()
         resetScan()
+        completedTiles = [:]
         phase = .scanning
         let stream = scanEngine.scan(groups, context: context)
         task = Task { [weak self] in
@@ -59,16 +72,33 @@ final class CleanupFlowModel {
         }
     }
 
+    /// Parar a análise: mostra o que já foi achado (results-screen §5); sem nada, volta à Intro.
     func stopScan() {
         task?.cancel()
         task = nil
-        resetScan()
-        phase = .intro
+        let partial = ScanReport(groups: finishedGroups)
+        guard phase == .scanning, !partial.isEmpty else {
+            resetScan()
+            phase = .intro
+            return
+        }
+        report = partial
+        isPartial = true
+        selection.load(partial)
+        currentPath = ""
+        currentGroup = nil
+        phase = .results
     }
 
+    /// Recomeçar: descarta resultados e seleção e volta à Intro.
     func restart() {
-        stopScan()
+        task?.cancel()
+        task = nil
+        resetScan()
         resetCleaning()
+        completedTiles = [:]
+        selection.clear()
+        phase = .intro
     }
 
     func openReview(category: CategoryID? = nil) {
@@ -77,13 +107,81 @@ final class CleanupFlowModel {
         phase = .review
     }
 
+    /// Voltar do Gerenciador descarta a seleção (a view confirma antes, se houver mudanças).
     func closeReview() {
+        selection.clear()
         phase = report?.isEmpty == false ? .results : .nothingFound
     }
 
-    func cleanRecommended(in category: CategoryID) {
-        let items = report?.recommendedItems().filter { $0.group.category == category } ?? []
-        clean(items: items)
+    /// OK na tela de conclusão: volta aos Resultados sem os itens removidos.
+    func acknowledgeDone() {
+        guard let report else { phase = .intro; return }
+        let removed = Set(cleanedLeaves.map(\.id))
+        var groups: [GroupID: GroupResult] = [:]
+        for (g, result) in report.groups {
+            groups[g] = GroupResult(group: g, items: result.items.compactMap { Self.removing(removed, from: $0) })
+        }
+        for kind in ResultTile.Kind.allCases {
+            let bytes = cleanedLeaves.filter { kind.groups.contains($0.group) }.reduce(0) { $0 + $1.totalSize }
+            if bytes > 0 { completedTiles[kind, default: 0] += bytes }
+        }
+        self.report = ScanReport(groups: groups)
+        selection.load(self.report!)
+        resetCleaning()
+        phase = .results
+    }
+
+    /// "Revisar itens restantes": volta ao Gerenciador com as falhas marcadas.
+    func reviewRemaining() {
+        let leaves = pendingLeaves.filter { failures[$0.id] != nil } + stoppedItems
+        acknowledgeDone()
+        reviewCategory = leaves.first?.group.category ?? reviewCategory
+        selection.replaceSelection(with: leaves)
+        phase = .review
+    }
+
+    /// Parar a limpeza: os itens ainda não processados ficam como "parados".
+    func stopCleaning() {
+        guard phase == .cleaning else { return }
+        task?.cancel()
+        task = nil
+        let processed = Set(cleanedLeaves.map(\.id)).union(failures.keys)
+        stoppedItems = pendingLeaves.filter { !processed.contains($0.id) && $0.id != cleaningItem?.id }
+        if let current = cleaningItem, !processed.contains(current.id) { stoppedItems.append(current) }
+        cleaningItem = nil
+        phase = .done(CleanReport(freedBytes: freedBytes, removed: cleanedLeaves.map(\.id), failed: failures,
+                                  dryRun: false))
+    }
+
+    var freedByKind: [FreedKind: Int64] {
+        var out: [FreedKind: Int64] = [:]
+        for leaf in cleanedLeaves {
+            let kind: FreedKind = switch leaf.group.category {
+            case .mailAttachments: .mail
+            case .trashBins: .trash
+            default: .junk
+            }
+            out[kind, default: 0] += leaf.totalSize
+        }
+        return out
+    }
+
+    var hasFailures: Bool { !failures.isEmpty || !stoppedItems.isEmpty }
+
+    private static func removing(_ ids: Set<String>, from item: JunkItem) -> JunkItem? {
+        if ids.contains(item.id) { return nil }
+        guard !item.children.isEmpty else { return item }
+        let children = item.children.compactMap { removing(ids, from: $0) }
+        if children.isEmpty { return nil }
+        return JunkItem(id: item.id, group: item.group, name: item.name, detail: item.detail, url: item.url,
+                        size: item.size, isRecommended: item.isRecommended, badge: item.badge, icon: item.icon,
+                        removal: item.removal, children: children)
+    }
+
+    /// Limpar de um cartão: só os itens recomendados dos grupos do cartão.
+    func clean(tile kind: ResultTile.Kind) {
+        let groups = Set(kind.groups)
+        clean(items: report?.recommendedItems().filter { groups.contains($0.group) } ?? [])
     }
 
     func clean(items: [JunkItem]) {
@@ -92,6 +190,7 @@ final class CleanupFlowModel {
         task?.cancel()
         resetCleaning()
         bytesToClean = leaves.reduce(0) { $0 + $1.totalSize }
+        pendingLeaves = leaves
         phase = .cleaning
         let stream = cleanEngine.clean(leaves)
         task = Task { [weak self] in
@@ -101,10 +200,10 @@ final class CleanupFlowModel {
                 case .started(let item):
                     self.cleaningItem = item
                 case .finished(let item, .success(let bytes)):
-                    _ = item
                     self.freedBytes += bytes
+                    self.cleanedLeaves.append(item)
                 case .finished(let item, .failure(let failure)):
-                    self.failures[item] = failure.reason
+                    self.failures[item.id] = failure.reason
                 case .completed(let report):
                     self.cleaningItem = nil
                     self.phase = .done(report)
@@ -123,10 +222,12 @@ final class CleanupFlowModel {
             bytesByGroup[p.group] = max(bytesByGroup[p.group] ?? 0, p.bytesFound)
             updateBytesFound()
         case .groupFinished(let result):
+            finishedGroups[result.group] = result
             bytesByGroup[result.group] = result.totalSize
             updateBytesFound()
         case .finished(let report):
             self.report = report
+            isPartial = false
             selection.load(report)
             bytesFound = max(bytesFound, report.totalSize)
             currentPath = ""
@@ -141,6 +242,8 @@ final class CleanupFlowModel {
 
     private func resetScan() {
         report = nil
+        finishedGroups = [:]
+        isPartial = false
         bytesFound = 0
         bytesByGroup = [:]
         currentPath = ""
@@ -153,5 +256,8 @@ final class CleanupFlowModel {
         freedBytes = 0
         bytesToClean = 0
         failures = [:]
+        stoppedItems = []
+        cleanedLeaves = []
+        pendingLeaves = []
     }
 }

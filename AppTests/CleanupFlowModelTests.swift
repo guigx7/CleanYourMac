@@ -31,16 +31,47 @@ func stubItem(_ group: GroupID, _ name: String, _ size: Int64, recommended: Bool
 }
 
 @MainActor
-func makeModel(_ scanners: [any GroupScanner]) -> CleanupFlowModel {
+func makeModel(_ scanners: [any GroupScanner], failing: Set<String> = []) -> CleanupFlowModel {
     let ctx = ScanContext(root: URL(fileURLWithPath: "/tmp/cym-stub"), home: URL(fileURLWithPath: "/tmp/cym-stub/home"),
                           userName: "t", preferredLanguages: ["en"], now: .now)
     let logs = FileManager.default.temporaryDirectory.appendingPathComponent("cym-logs-\(UUID())")
     var policies: [GroupID: PathPolicy] = [:]
     for g in GroupID.allCases { policies[g] = PathPolicy(allowedRoots: [URL(fileURLWithPath: "/tmp/cym-stub")]) }
+    // Itens em `failing` ficam sem política e falham na validação.
+    let cleaner = FailingFilterEngine(failing: failing, policies: policies, logs: logs)
     return CleanupFlowModel(scanEngine: ScanEngine(scanners: scanners),
-                            cleanEngine: CleanEngine(policies: policies, privileged: NoAdmin(), dryRun: true,
-                                                     log: CleanupLog(directory: logs)),
+                            cleanEngine: cleaner,
                             context: ctx, groups: Set(scanners.map(\.group)))
+}
+
+/// Limpeza simulada: os ids em `failing` falham.
+struct FailingFilterEngine: Cleaning {
+    let failing: Set<String>
+    let policies: [GroupID: PathPolicy]
+    let logs: URL
+
+    func clean(_ items: [JunkItem]) -> AsyncStream<CleanEvent> {
+        let ok = CleanEngine(policies: policies, privileged: NoAdmin(), dryRun: true, log: CleanupLog(directory: logs))
+        let failing = failing
+        return AsyncStream { cont in
+            Task {
+                var removed: [String] = [], failed: [String: String] = [:], freed: Int64 = 0
+                for await e in ok.clean(items.filter { !failing.contains($0.id) }) {
+                    switch e {
+                    case .started, .finished: cont.yield(e)
+                    case .completed(let r): removed = r.removed; freed = r.freedBytes; failed = r.failed
+                    }
+                }
+                for item in items where failing.contains(item.id) {
+                    cont.yield(.started(item))
+                    cont.yield(.finished(item, .failure(CleanFailure(reason: "boom"))))
+                    failed[item.id] = "boom"
+                }
+                cont.yield(.completed(CleanReport(freedBytes: freed, removed: removed, failed: failed, dryRun: true)))
+                cont.finish()
+            }
+        }
+    }
 }
 
 @MainActor
@@ -66,7 +97,7 @@ func waitFor(_ condition: @escaping () -> Bool, timeout: Duration = .seconds(5))
     #expect(m.phase == .nothingFound)
 }
 
-@MainActor @Test func stopScanReturnsToIntro() async {
+@MainActor @Test func stopScanWithNothingFoundReturnsToIntro() async {
     let m = makeModel([StubScanner(group: .userCache, items: [stubItem(.userCache, "a", 1)], delay: .seconds(10))])
     m.startScan()
     try? await Task.sleep(for: .milliseconds(100))
@@ -75,6 +106,17 @@ func waitFor(_ condition: @escaping () -> Bool, timeout: Duration = .seconds(5))
     try? await Task.sleep(for: .milliseconds(300))
     #expect(m.phase == .intro)
     #expect(m.report == nil)
+}
+
+@MainActor @Test func stopScanShowsPartialResults() async {
+    let m = makeModel([StubScanner(group: .trash, items: [stubItem(.trash, "t", 5)]),
+                       StubScanner(group: .userCache, items: [stubItem(.userCache, "a", 1)], delay: .seconds(10))])
+    m.startScan()
+    await waitFor { m.bytesFound == 5 }
+    m.stopScan()
+    #expect(m.phase == .results)
+    #expect(m.report?.totalSize == 5)
+    #expect(m.isPartial)
 }
 
 @MainActor @Test func bytesFoundIncreasesMonotonically() async {
@@ -109,7 +151,7 @@ func waitFor(_ condition: @escaping () -> Bool, timeout: Duration = .seconds(5))
     let m = makeModel([StubScanner(group: .userCache, items: [a, b]), StubScanner(group: .localModels, items: [c])])
     m.startScan()
     await waitFor { m.phase == .results }
-    m.cleanRecommended(in: .systemJunk)
+    m.clean(tile: .systemJunk)
     await waitFor { if case .done = m.phase { true } else { false } }
     guard case .done(let report) = m.phase else { Issue.record("não terminou"); return }
     #expect(report.removed == [a.id])
@@ -134,4 +176,53 @@ func waitFor(_ condition: @escaping () -> Bool, timeout: Duration = .seconds(5))
     #expect(m.reviewCategory == .systemJunk)
     m.closeReview()
     #expect(m.phase == .results)
+}
+
+@MainActor @Test func acknowledgeDoneShowsCompletedTiles() async {
+    let a = stubItem(.userCache, "a", 100), u = stubItem(.universalBinaries, "u", 30)
+    let m = makeModel([StubScanner(group: .userCache, items: [a]), StubScanner(group: .universalBinaries, items: [u])])
+    m.startScan()
+    await waitFor { m.phase == .results }
+    m.clean(tile: .systemJunk)
+    await waitFor { if case .done = m.phase { true } else { false } }
+    m.acknowledgeDone()
+    #expect(m.phase == .results)
+    #expect(m.completedTiles[.systemJunk] == 100)
+    #expect(m.report?.groups[.userCache]?.items.isEmpty == true)
+    #expect(m.report?.totalSize == 30)
+}
+
+@MainActor @Test func closeReviewDiscardsSelection() async {
+    let a = stubItem(.userCache, "a", 100)
+    let m = makeModel([StubScanner(group: .userCache, items: [a])])
+    m.startScan()
+    await waitFor { m.phase == .results }
+    m.openReview()
+    m.selection.toggle(a)
+    m.closeReview()
+    #expect(m.selection.selectedItems.isEmpty)
+}
+
+@MainActor @Test func reviewRemainingSelectsFailures() async {
+    let a = stubItem(.userCache, "a", 100)
+    let m = makeModel([StubScanner(group: .userCache, items: [a])], failing: [a.id])
+    m.startScan()
+    await waitFor { m.phase == .results }
+    m.clean(items: [a])
+    await waitFor { if case .done = m.phase { true } else { false } }
+    #expect(m.failures[a.id] != nil)
+    m.reviewRemaining()
+    #expect(m.phase == .review)
+    #expect(m.selection.selectedItems.map(\.id) == [a.id])
+}
+
+@MainActor @Test func doneTotalsByKind() async {
+    let a = stubItem(.userCache, "a", 100), t = stubItem(.trash, "t", 7), mail = stubItem(.mailAttachments, "m", 3)
+    let m = makeModel([StubScanner(group: .userCache, items: [a]), StubScanner(group: .trash, items: [t]),
+                       StubScanner(group: .mailAttachments, items: [mail])])
+    m.startScan()
+    await waitFor { m.phase == .results }
+    m.clean(items: [a, t, mail])
+    await waitFor { if case .done = m.phase { true } else { false } }
+    #expect(m.freedByKind == [.junk: 100, .mail: 3, .trash: 7])
 }
