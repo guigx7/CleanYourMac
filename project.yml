@@ -1,0 +1,61 @@
+name: CleanYourMac
+options:
+  bundleIdPrefix: io.github.guigx7
+  deploymentTarget:
+    macOS: "14.0"
+  developmentLanguage: en
+  createIntermediateGroups: true
+knownRegions: [en, pt-BR]
+packages:
+  Core:
+    path: Core
+settings:
+  base:
+    SWIFT_VERSION: "6.0"
+    MARKETING_VERSION: "0.1.0"
+    CURRENT_PROJECT_VERSION: "1"
+targets:
+  CleanYourMac:
+    type: application
+    platform: macOS
+    sources: [App]
+    dependencies:
+      - package: Core
+        product: CleanYourMacCore
+    info:
+      path: App/Info.plist
+      properties:
+        CFBundleDisplayName: CleanYourMac
+        LSApplicationCategoryType: public.app-category.utilities
+        NSHumanReadableCopyright: "MIT License"
+    entitlements:
+      path: App/CleanYourMac.entitlements
+      properties: {}
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: io.github.guigx7.CleanYourMac
+        ENABLE_HARDENED_RUNTIME: YES
+        CODE_SIGN_STYLE: Automatic
+        CODE_SIGN_IDENTITY: "-"
+        GENERATE_INFOPLIST_FILE: NO
+  CleanYourMacTests:
+    type: bundle.unit-test
+    platform: macOS
+    sources: [AppTests]
+    dependencies:
+      - target: CleanYourMac
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: io.github.guigx7.CleanYourMacTests
+        TEST_HOST: "$(BUILT_PRODUCTS_DIR)/CleanYourMac.app/Contents/MacOS/CleanYourMac"
+        BUNDLE_LOADER: "$(TEST_HOST)"
+        GENERATE_INFOPLIST_FILE: YES
+        CODE_SIGN_IDENTITY: "-"
+schemes:
+  CleanYourMac:
+    build:
+      targets:
+        CleanYourMac: all
+        CleanYourMacTests: [test]
+    test:
+      targets: [CleanYourMacTests]

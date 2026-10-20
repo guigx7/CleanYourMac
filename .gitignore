@@ -5,3 +5,5 @@ DerivedData/
 *.xcuserstate
 # notas brutas de RE nunca entram no repo
 re-notes/
+*.xcodeproj/
+.superpowers/
