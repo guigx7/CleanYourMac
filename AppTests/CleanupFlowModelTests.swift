@@ -244,3 +244,21 @@ func waitFor(_ condition: @escaping () -> Bool, timeout: Duration = .seconds(5))
     #expect(kept?.titleKey == "aiKind.caches")
     #expect(kept?.displaysChildren == false)
 }
+
+// "Revisar" de um cartão abre o Gerenciador no grupo do cartão (results-screen §1.2).
+@MainActor @Test func reviewFromTileOpensItsGroup() async {
+    let m = makeModel([StubScanner(group: .userCache, items: [stubItem(.userCache, "u", 1000)]),
+                       StubScanner(group: .universalBinaries, items: [stubItem(.universalBinaries, "b", 10)]),
+                       StubScanner(group: .xcodeJunk, items: [stubItem(.xcodeJunk, "x", 20)])])
+    m.startScan()
+    await waitFor { m.phase == .results }
+    m.openReview(tile: .universalBinaries)
+    #expect(m.reviewCategory == .systemJunk)
+    #expect(m.reviewGroup == .universalBinaries)
+    m.closeReview()
+    m.openReview(tile: .xcodeJunk)
+    #expect(m.reviewGroup == .xcodeJunk)
+    m.closeReview()
+    m.openReview()
+    #expect(m.reviewGroup == nil)
+}

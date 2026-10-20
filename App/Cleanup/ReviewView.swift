@@ -44,7 +44,8 @@ struct ReviewView: View {
         .modifier(CleanConfirmation(model: model, pending: $pendingClean))
         .onAppear {
             category = model.reviewCategory ?? .systemJunk
-            group = ReviewLogic.groups(in: category, report: report).first
+            let groups = ReviewLogic.groups(in: category, report: report)
+            group = model.reviewGroup.flatMap { groups.contains($0) ? $0 : nil } ?? groups.first
         }
         .task(id: search) {
             try? await Task.sleep(for: .milliseconds(250))

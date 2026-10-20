@@ -16,6 +16,8 @@ final class CleanupFlowModel {
     private(set) var bytesFound: Int64 = 0
     private(set) var report: ScanReport?
     private(set) var reviewCategory: CategoryID?
+    /// Grupo que o Gerenciador abre selecionado (o do cartão clicado); nil = o primeiro da categoria.
+    private(set) var reviewGroup: GroupID?
     let selection = SelectionModel()
 
     // Limpeza
@@ -146,6 +148,16 @@ final class CleanupFlowModel {
     func openReview(category: CategoryID? = nil) {
         guard report != nil else { return }
         reviewCategory = category ?? CategoryID.allCases.first { (report?.totalSize(of: $0) ?? 0) > 0 }
+        reviewGroup = nil
+        phase = .review
+    }
+
+    /// "Revisar" de um cartão: abre na categoria e no primeiro grupo do cartão que tem resultado.
+    func openReview(tile kind: ResultTile.Kind) {
+        guard let report else { return }
+        let group = kind.groups.first { (report.groups[$0]?.totalSize ?? 0) > 0 } ?? kind.groups[0]
+        reviewCategory = group.category
+        reviewGroup = group
         phase = .review
     }
 

@@ -209,7 +209,7 @@ private struct TileView: View {
                 HStack(spacing: 10) {
                     Spacer()
                     Button("results.action.review") {
-                        model.openReview(category: tile.category)
+                        model.openReview(tile: tile.kind)
                     }
                     .buttonStyle(GlassButtonStyle(size: .large))
                     if tile.canClean {
