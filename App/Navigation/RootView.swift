@@ -19,13 +19,15 @@ struct RootView: View {
 
     private var main: some View {
         HStack(spacing: 0) {
-            SidebarView(selection: $module)
-            VStack(spacing: 0) {
-                FullDiskAccessBanner()
-                content
-            }
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            SidebarView(selection: $module, compact: cleanup.phase != .intro)
+                .animation(.smooth(duration: 0.35), value: cleanup.phase == .intro)
+            content
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .overlay(alignment: .topTrailing) {
+                    FullDiskAccessBanner().padding(.top, 12).padding(.trailing, 20)
+                }
         }
+        .ignoresSafeArea(.container, edges: .top)
         .background(Theme.gradient(for: module).ignoresSafeArea())
         .foregroundStyle(.white)
     }

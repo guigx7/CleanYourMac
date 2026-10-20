@@ -196,3 +196,4 @@ permissions.apps.message	Removing extra code and languages changes other apps. m
 results.measureAdmin	Measure system caches	Medir caches do sistema
 results.measureAdmin.hint	Requires your administrator password.	Precisa da sua senha de administrador.
 reason.appManagement	macOS blocked changes to this app. Allow App Management in Settings.	O macOS bloqueou alterações neste app. Permita o Gerenciamento de Apps nos Ajustes.
+permissions.fda.short	Allow Full Disk Access	Permitir Acesso Total ao Disco

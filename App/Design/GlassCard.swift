@@ -2,40 +2,45 @@ import SwiftUI
 
 /// Painel de vidro usado nos cartões de resultado.
 struct GlassCard<Content: View>: View {
-    var cornerRadius: CGFloat = 22
+    var cornerRadius: CGFloat = 26
     @ViewBuilder var content: Content
 
     var body: some View {
+        let shape = RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
         content
-            .padding(24)
+            .padding(28)
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
             .background {
-                RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
-                    .fill(Theme.glassFill)
-                    .background(.ultraThinMaterial.opacity(0.35), in: RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
+                // Vidro discreto: mais claro no topo, quase transparente embaixo.
+                shape.fill(LinearGradient(colors: [Color.white.opacity(0.13), Color.white.opacity(0.05)],
+                                          startPoint: .top, endPoint: .bottom))
             }
             .overlay {
-                RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
-                    .strokeBorder(Theme.glassStroke, lineWidth: 1)
+                shape.strokeBorder(LinearGradient(colors: [Color.white.opacity(0.22), Color.white.opacity(0.06)],
+                                                  startPoint: .top, endPoint: .bottom), lineWidth: 1)
             }
+            .shadow(color: .black.opacity(0.12), radius: 18, y: 8)
     }
 }
 
 /// Botão secundário translúcido ("Revisar").
 struct GlassButtonStyle: ButtonStyle {
+    enum Size { case regular, large }
     var prominent = false
+    var size: Size = .regular
 
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
-            .font(.system(size: 13, weight: .semibold))
-            .padding(.horizontal, 16)
-            .padding(.vertical, 8)
+            .font(.system(size: size == .large ? 15 : 13, weight: .semibold))
+            .padding(.horizontal, size == .large ? 20 : 16)
+            .padding(.vertical, size == .large ? 10 : 8)
             .foregroundStyle(prominent ? Color.black.opacity(0.85) : .white)
             .background(
-                Capsule().fill(prominent ? Color.white.opacity(configuration.isPressed ? 0.75 : 0.92)
-                                         : Color.white.opacity(configuration.isPressed ? 0.22 : 0.14))
+                RoundedRectangle(cornerRadius: 10, style: .continuous)
+                    .fill(prominent ? Color.white.opacity(configuration.isPressed ? 0.75 : 0.94)
+                                    : Color.white.opacity(configuration.isPressed ? 0.22 : 0.12))
             )
-            .overlay(Capsule().strokeBorder(Color.white.opacity(prominent ? 0 : 0.2)))
-            .contentShape(Capsule())
+            .overlay(RoundedRectangle(cornerRadius: 10, style: .continuous).strokeBorder(Color.white.opacity(prominent ? 0 : 0.18)))
+            .contentShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
     }
 }

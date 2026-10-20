@@ -2,6 +2,8 @@ import SwiftUI
 
 struct SidebarView: View {
     @Binding var selection: AppModule
+    /// Só ícones (como nas telas de resultado do CleanMyMac).
+    var compact = false
 
     var body: some View {
         VStack(alignment: .leading, spacing: 6) {
@@ -11,8 +13,8 @@ struct SidebarView: View {
             Spacer()
         }
         .padding(.top, 52)
-        .padding(.horizontal, 12)
-        .frame(width: 240)
+        .padding(.horizontal, compact ? 10 : 12)
+        .frame(width: compact ? 76 : 240)
         .background(Color.black.opacity(0.12))
     }
 
@@ -27,21 +29,24 @@ struct SidebarView: View {
                 Image(systemName: module.symbol)
                     .font(.system(size: 15, weight: .semibold))
                     .frame(width: 22)
-                VStack(alignment: .leading, spacing: 1) {
-                    Text(module.title)
-                        .font(.system(size: 14, weight: .medium))
-                        .lineLimit(1)
-                    if !module.isAvailable {
-                        Text("module.soon")
-                            .font(.system(size: 11))
-                            .opacity(0.8)
+                if !compact {
+                    VStack(alignment: .leading, spacing: 1) {
+                        Text(module.title)
+                            .font(.system(size: 14, weight: .medium))
+                            .lineLimit(1)
+                        if !module.isAvailable {
+                            Text("module.soon")
+                                .font(.system(size: 11))
+                                .opacity(0.8)
+                        }
                     }
+                    Spacer(minLength: 0)
                 }
-                Spacer(minLength: 0)
             }
+            .frame(maxWidth: compact ? nil : .infinity, alignment: .leading)
             .foregroundStyle(.white.opacity(module.isAvailable ? 1 : 0.5))
-            .padding(.horizontal, 12)
-            .padding(.vertical, 11)
+            .padding(.horizontal, compact ? 15 : 12)
+            .padding(.vertical, compact ? 14 : 11)
             .background {
                 if selected {
                     RoundedRectangle(cornerRadius: 12, style: .continuous)
@@ -54,5 +59,6 @@ struct SidebarView: View {
         .buttonStyle(.plain)
         .disabled(!module.isAvailable)
         .accessibilityLabel(Text(module.title))
+        .help(Text(module.title))
     }
 }

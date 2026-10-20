@@ -2,30 +2,24 @@ import SwiftUI
 import AppKit
 import CleanYourMacCore
 
-/// Guia para conceder Acesso Total ao Disco; verifica de novo quando o app volta ao primeiro plano.
+/// Aviso compacto de Acesso Total ao Disco; some quando a permissão é concedida.
 struct FullDiskAccessBanner: View {
     @State private var granted = PermissionsService.hasFullDiskAccess()
 
     var body: some View {
         Group {
             if !granted {
-                HStack(spacing: 14) {
-                    Image(systemName: "lock.shield").font(.system(size: 26))
-                    VStack(alignment: .leading, spacing: 3) {
-                        Text("permissions.fda.title").font(.system(size: 14, weight: .semibold))
-                        Text("permissions.fda.message").font(.system(size: 12)).foregroundStyle(Theme.secondaryText)
-                            .fixedSize(horizontal: false, vertical: true)
-                    }
-                    Spacer()
-                    Button("permissions.openSettings") { PermissionsService.openSettings(.fullDiskAccess) }
-                        .buttonStyle(GlassButtonStyle(prominent: true))
+                Button { PermissionsService.openSettings(.fullDiskAccess) } label: {
+                    Label("permissions.fda.short", systemImage: "lock.shield")
+                        .font(.system(size: 12, weight: .semibold))
+                        .padding(.horizontal, 12)
+                        .padding(.vertical, 6)
+                        .background(Capsule().fill(Color.black.opacity(0.25)))
+                        .overlay(Capsule().strokeBorder(Theme.glassStroke))
                 }
-                .padding(16)
-                .background(RoundedRectangle(cornerRadius: 16, style: .continuous).fill(Color.black.opacity(0.25)))
-                .overlay(RoundedRectangle(cornerRadius: 16, style: .continuous).strokeBorder(Theme.glassStroke))
-                .padding(.horizontal, 28)
-                .padding(.top, 16)
-                .transition(.move(edge: .top).combined(with: .opacity))
+                .buttonStyle(.plain)
+                .help(Text("permissions.fda.message"))
+                .transition(.opacity)
             }
         }
         .onReceive(NotificationCenter.default.publisher(for: NSApplication.didBecomeActiveNotification)) { _ in

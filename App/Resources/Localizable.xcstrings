@@ -1599,6 +1599,23 @@
         }
       }
     },
+    "permissions.fda.short": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Allow Full Disk Access"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Permitir Acesso Total ao Disco"
+          }
+        }
+      }
+    },
     "permissions.fda.title": {
       "extractionState": "manual",
       "localizations": {

@@ -47,10 +47,14 @@ struct CategoryBadge: View {
 
     var body: some View {
         Image(systemName: symbol)
-            .font(.system(size: size * 0.45, weight: .semibold))
+            .font(.system(size: size * 0.44, weight: .semibold))
             .foregroundStyle(.white)
+            .shadow(color: .black.opacity(0.25), radius: size * 0.03, y: size * 0.02)
             .frame(width: size, height: size)
-            .background(Circle().fill(Theme.accent(for: .cleanup).opacity(0.55)))
-            .overlay(Circle().strokeBorder(.white.opacity(0.3)))
+            .background(Circle().fill(LinearGradient(colors: [Color(hex: 0xA6D96A), Color(hex: 0x3E8E3A)],
+                                                     startPoint: .top, endPoint: .bottom)))
+            .overlay(Circle().strokeBorder(LinearGradient(colors: [.white.opacity(0.55), .white.opacity(0.05)],
+                                                          startPoint: .top, endPoint: .bottom), lineWidth: max(1, size * 0.02)))
+            .shadow(color: .black.opacity(0.2), radius: size * 0.08, y: size * 0.05)
     }
 }
