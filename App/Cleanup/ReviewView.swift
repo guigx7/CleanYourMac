@@ -1,17 +1,19 @@
 import SwiftUI
 import AppKit
+import QuickLook
 import CleanYourMacCore
 
-/// Gerenciador de Limpeza: categorias | grupos | itens, com seleção e rodapé.
+/// Gerenciador de Limpeza: categorias | grupos | itens, com seleção e rodapé (results-screen §2).
 struct ReviewView: View {
     var model: CleanupFlowModel
     @State private var category: CategoryID = .systemJunk
     @State private var group: GroupID?
     @State private var search = ""
-    @State private var sort: Sort = .size
+    @State private var debouncedSearch = ""
+    @State private var sort = ReviewLogic.SortState()
     @State private var expanded: Set<String> = []
-
-    enum Sort: CaseIterable { case size, name }
+    @State private var confirmBack = false
+    @State private var quickLookURL: URL?
 
     private var selection: SelectionModel { model.selection }
     private var report: ScanReport? { model.report }
@@ -21,11 +23,15 @@ struct ReviewView: View {
             topBar
             Divider()
             HStack(spacing: 0) {
-                categoryColumn.frame(width: 220)
+                categoryColumn.frame(width: 210)
                 Divider()
-                groupColumn.frame(width: 300)
-                Divider()
-                itemColumn.frame(maxWidth: .infinity)
+                if ReviewLogic.isEmpty(category, report: report) {
+                    categoryEmptyState
+                } else {
+                    groupColumn.frame(width: 300)
+                    Divider()
+                    itemColumn.frame(maxWidth: .infinity)
+                }
             }
             Divider()
             footer
@@ -33,17 +39,37 @@ struct ReviewView: View {
         .background(Color(nsColor: .windowBackgroundColor))
         .foregroundStyle(.primary)
         .tint(Theme.reviewTint)
+        .quickLookPreview($quickLookURL)
         .onAppear {
             category = model.reviewCategory ?? .systemJunk
-            group = groups(in: category).first
+            group = ReviewLogic.groups(in: category, report: report).first
+        }
+        .task(id: search) {
+            try? await Task.sleep(for: .milliseconds(250))
+            debouncedSearch = search
+        }
+        .alert("review.back.confirm.title", isPresented: $confirmBack) {
+            Button("common.cancel", role: .cancel) {}
+            Button("review.back") { model.closeReview() }
+        } message: {
+            Text("review.back.confirm.message")
+        }
+        .alert(alertTitle, isPresented: Binding(get: { selection.pendingAlert != nil },
+                                                 set: { if !$0 { selection.cancelPending() } })) {
+            Button("common.cancel", role: .cancel) { selection.cancelPending() }
+            Button(alertConfirm, role: .destructive) { selection.confirmPending() }
+        } message: {
+            Text(alertMessage)
         }
     }
 
     // MARK: Barra superior
 
     private var topBar: some View {
-        HStack {
-            Button(action: model.closeReview) {
+        HStack(spacing: 12) {
+            Button {
+                if selection.hasChanges { confirmBack = true } else { model.closeReview() }
+            } label: {
                 Label("review.back", systemImage: "chevron.left")
             }
             .buttonStyle(.borderless)
@@ -53,65 +79,67 @@ struct ReviewView: View {
             Spacer()
             TextField("review.search", text: $search)
                 .textFieldStyle(.roundedBorder)
-                .frame(width: 200)
-            Picker("review.sort", selection: $sort) {
-                Text("review.sort.size").tag(Sort.size)
-                Text("review.sort.name").tag(Sort.name)
+                .frame(width: 210)
+            Menu {
+                ForEach(ReviewLogic.SortKey.allCases, id: \.self) { key in
+                    Button { sort.choose(key) } label: {
+                        if sort.key == key {
+                            Label(sortTitle(key), systemImage: sort.ascending ? "chevron.up" : "chevron.down")
+                        } else {
+                            Text(sortTitle(key))
+                        }
+                    }
+                }
+            } label: {
+                Text("review.sort") + Text(verbatim: ": ") + Text(sortTitle(sort.key)).foregroundColor(Theme.reviewTint)
             }
-            .frame(width: 180)
+            .menuStyle(.borderlessButton)
+            .fixedSize()
         }
         .padding(.horizontal, 16)
         .padding(.vertical, 10)
-        .padding(.leading, 64) // espaço dos botões da janela
+        .padding(.leading, 64) // botões da janela
+    }
+
+    private func sortTitle(_ key: ReviewLogic.SortKey) -> LocalizedStringKey {
+        key == .size ? "review.sort.size" : "review.sort.name"
     }
 
     // MARK: Colunas
 
     private var categoryColumn: some View {
         List(CategoryID.allCases, id: \.self, selection: Binding(get: { category }, set: { c in
-            if let c { category = c; group = groups(in: c).first; expanded = [] }
+            guard let c else { return }
+            category = c
+            group = ReviewLogic.groups(in: c, report: report).first
+            expanded = []
         })) { c in
-            HStack {
-                Text(c.title)
-                Spacer()
-                Text(SizeFormatter.string(report?.totalSize(of: c) ?? 0, locale: .current))
-                    .foregroundStyle(.secondary).monospacedDigit()
-            }
-            .padding(.vertical, 4)
+            Text(c.title).padding(.vertical, 5)
         }
         .listStyle(.sidebar)
     }
 
     private var groupColumn: some View {
         VStack(alignment: .leading, spacing: 0) {
-            VStack(alignment: .leading, spacing: 6) {
-                Text(category.title).font(.title2.weight(.semibold))
-                Text(LocalizedStringKey(stringLiteral: "category.\(category.rawValue).description"))
-                    .font(.callout).foregroundStyle(.secondary)
-                    .fixedSize(horizontal: false, vertical: true)
-            }
-            .padding(16)
-            if groups(in: category).isEmpty {
-                emptyState
-            } else {
-                List(groups(in: category), id: \.self, selection: Binding(get: { group }, set: { g in
-                    group = g
-                    expanded = []
-                })) { g in
-                    HStack(spacing: 12) {
-                        TriStateCheckbox(state: selection.state(of: g)) { selection.toggle(group: g) }
-                        Image(systemName: g.symbol)
-                            .font(.system(size: 18))
-                            .foregroundStyle(Theme.reviewTint)
-                            .frame(width: 28)
-                        VStack(alignment: .leading, spacing: 2) {
-                            Text(g.title).lineLimit(1)
-                            Text(SizeFormatter.string(report?.groups[g]?.totalSize ?? 0, locale: .current))
-                                .font(.caption).foregroundStyle(.secondary).monospacedDigit()
-                        }
+            header(title: category.title, description: "category.\(category.rawValue).description")
+            List(ReviewLogic.groups(in: category, report: report), id: \.self, selection: Binding(get: { group }, set: { g in
+                group = g
+                expanded = []
+            })) { g in
+                HStack(spacing: 12) {
+                    Image(systemName: g.symbol)
+                        .font(.system(size: 18))
+                        .foregroundStyle(Theme.reviewTint)
+                        .frame(width: 28)
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text(g.title).lineLimit(1)
+                        let selected = selection.selectedBytes(in: g)
+                        Text(SizeFormatter.string(selected > 0 ? selected : (report?.groups[g]?.totalSize ?? 0), locale: .current))
+                            .font(.caption).foregroundStyle(.secondary).monospacedDigit()
+                            .help(Text(selected > 0 ? "review.size.selected" : "review.size.total"))
                     }
-                    .padding(.vertical, 6)
                 }
+                .padding(.vertical, 6)
             }
         }
     }
@@ -119,40 +147,60 @@ struct ReviewView: View {
     private var itemColumn: some View {
         VStack(alignment: .leading, spacing: 0) {
             if let group {
-                VStack(alignment: .leading, spacing: 8) {
-                    Text(group.title).font(.title2.weight(.semibold))
-                    Text(LocalizedStringKey(stringLiteral: "group.\(group.rawValue).description"))
-                        .font(.callout).foregroundStyle(.secondary)
-                        .fixedSize(horizontal: false, vertical: true)
-                    Menu {
-                        Button("review.select.none") { selection.select(.none, in: group) }
-                        Button("review.select.recommended") { selection.select(.smart, in: group) }
-                        Button("review.select.all") { selection.select(.all, in: group) }
-                    } label: {
-                        Text("review.select")
-                    }
-                    .menuStyle(.borderlessButton)
-                    .fixedSize()
+                header(title: group.title, description: "group.\(group.rawValue).description") {
+                    selectMenu(group)
                 }
-                .padding(16)
                 let items = visibleItems(group)
                 if items.isEmpty {
-                    emptyState
+                    emptyState(debouncedSearch.isEmpty ? Text("review.empty")
+                               : Text(String(format: NSLocalizedString("review.search.none", comment: ""), debouncedSearch)))
                 } else {
                     List {
-                        ForEach(items) { item in
-                            itemRows(item, depth: 0)
-                        }
+                        ForEach(items) { item in itemRows(item, depth: 0) }
                     }
                     .listStyle(.inset)
                 }
             } else {
-                emptyState
+                emptyState(Text("review.empty"))
             }
         }
     }
 
-    @ViewBuilder
+    private func selectMenu(_ group: GroupID) -> some View {
+        Menu {
+            Button("review.select.smart") { selection.select(.smart, in: group) }
+                .disabled(!selection.canSmartSelect(group))
+            Button("review.select.all") { selection.select(.all, in: group) }
+            Button("review.select.none") { selection.select(.none, in: group) }
+        } label: {
+            Text("review.select") + Text(verbatim: ": ") + Text(presetTitle(selection.presetState(in: group)))
+                .foregroundColor(Theme.reviewTint)
+        }
+        .menuStyle(.borderlessButton)
+        .fixedSize()
+    }
+
+    private func presetTitle(_ state: SelectionModel.PresetState) -> LocalizedStringKey {
+        switch state {
+        case .none: "review.state.none"
+        case .all: "review.state.all"
+        case .smart: "review.state.smart"
+        case .manual: "review.state.manual"
+        }
+    }
+
+    private func header<Accessory: View>(title: LocalizedStringKey, description: String,
+                                         @ViewBuilder accessory: () -> Accessory = { EmptyView() }) -> some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Text(title).font(.title2.weight(.semibold))
+            Text(LocalizedStringKey(stringLiteral: description))
+                .font(.callout).foregroundStyle(.secondary)
+                .fixedSize(horizontal: false, vertical: true)
+            accessory()
+        }
+        .padding(16)
+    }
+
     private func itemRows(_ item: JunkItem, depth: Int) -> AnyView {
         AnyView(Group {
             ItemRow(item: item, depth: depth, state: selection.state(of: item),
@@ -163,16 +211,36 @@ struct ReviewView: View {
                             if expanded.contains(item.id) { expanded.remove(item.id) } else { expanded.insert(item.id) }
                         }
                     })
+            .contextMenu {
+                if let url = item.url {
+                    Button("review.context.reveal") { NSWorkspace.shared.activateFileViewerSelecting([url]) }
+                    Button("review.context.quicklook") { quickLookURL = url }
+                }
+                Button(selection.state(of: item) == .on ? "review.context.deselect" : "review.context.select") {
+                    selection.toggle(item)
+                }
+            }
             if expanded.contains(item.id) {
-                ForEach(sorted(item.children)) { child in itemRows(child, depth: depth + 1) }
+                ForEach(ReviewLogic.sorted(item.children, by: sort.key, ascending: sort.ascending)) { child in
+                    itemRows(child, depth: depth + 1)
+                }
             }
         })
     }
 
-    private var emptyState: some View {
+    private func emptyState(_ text: Text) -> some View {
         VStack(spacing: 8) {
             Image(systemName: "checkmark.circle").font(.system(size: 34)).foregroundStyle(Theme.reviewTint)
-            Text("review.empty").foregroundStyle(.secondary)
+            text.foregroundStyle(.secondary).multilineTextAlignment(.center)
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+    }
+
+    private var categoryEmptyState: some View {
+        VStack(spacing: 10) {
+            Image(systemName: "checkmark.seal").font(.system(size: 44)).foregroundStyle(Theme.reviewTint)
+            Text(category.title).font(.title2.weight(.semibold))
+            Text("review.category.empty").foregroundStyle(.secondary)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
@@ -182,7 +250,8 @@ struct ReviewView: View {
     private var footer: some View {
         HStack(spacing: 14) {
             Spacer()
-            Text("review.selection.count \(selection.selectedCount)")
+            Text(String(format: NSLocalizedString(selection.selectedCount == 1 ? "review.selection.one" : "review.selection.other",
+                                                  comment: ""), selection.selectedCount))
             Divider().frame(height: 16)
             AnimatedBytes(bytes: selection.selectedBytes).foregroundStyle(.secondary)
             Spacer()
@@ -200,27 +269,23 @@ struct ReviewView: View {
         .background(.bar)
     }
 
+    // MARK: Alertas de seleção
+
+    private var alertTitle: LocalizedStringKey {
+        selection.pendingAlert == .iosLatestBackup ? "alert.iosLatest.title" : "alert.localModels.title"
+    }
+    private var alertMessage: LocalizedStringKey {
+        selection.pendingAlert == .iosLatestBackup ? "alert.iosLatest.message" : "alert.localModels.message"
+    }
+    private var alertConfirm: LocalizedStringKey {
+        selection.pendingAlert == .iosLatestBackup ? "alert.iosLatest.confirm" : "alert.localModels.confirm"
+    }
+
     // MARK: Dados
 
-    private func groups(in category: CategoryID) -> [GroupID] {
-        GroupID.allCases.filter { $0.category == category && (report?.groups[$0]?.totalSize ?? 0) > 0 }
-    }
-
     private func visibleItems(_ group: GroupID) -> [JunkItem] {
-        let items = report?.groups[group]?.items ?? []
-        let filtered = search.isEmpty ? items : items.filter { matches($0) }
-        return sorted(filtered)
-    }
-
-    private func matches(_ item: JunkItem) -> Bool {
-        item.name.localizedCaseInsensitiveContains(search) || item.children.contains(where: matches)
-    }
-
-    private func sorted(_ items: [JunkItem]) -> [JunkItem] {
-        switch sort {
-        case .size: items.sorted { $0.totalSize > $1.totalSize }
-        case .name: items.sorted { $0.name.localizedStandardCompare($1.name) == .orderedAscending }
-        }
+        let items = ReviewLogic.filter(report?.groups[group]?.items ?? [], query: debouncedSearch)
+        return ReviewLogic.sorted(items, by: sort.key, ascending: sort.ascending)
     }
 }
 
@@ -253,6 +318,7 @@ private struct ItemRow: View {
                 Image(systemName: "sparkle")
                     .foregroundStyle(Theme.reviewTint)
                     .help(Text("review.recommended"))
+                    .accessibilityLabel(Text("review.recommended"))
             }
             Text(SizeFormatter.string(item.totalSize, locale: .current))
                 .foregroundStyle(.secondary).monospacedDigit()
@@ -274,7 +340,7 @@ private struct ItemRow: View {
     }
 }
 
-/// Checkbox nativo com estado misto.
+/// Checkbox com estado misto.
 struct TriStateCheckbox: View {
     var state: SelectionModel.State
     var action: () -> Void
@@ -282,8 +348,8 @@ struct TriStateCheckbox: View {
     var body: some View {
         Button(action: action) {
             Image(systemName: symbol)
-            .font(.system(size: 16))
-            .foregroundStyle(state == .off ? Color.secondary : Theme.reviewTint)
+                .font(.system(size: 16))
+                .foregroundStyle(state == .off ? Color.secondary : Theme.reviewTint)
         }
         .buttonStyle(.plain)
         .accessibilityValue(Text(verbatim: "\(state)"))

@@ -43,12 +43,13 @@ review.sort	Sort by	Ordenar por
 review.sort.size	Size	Tamanho
 review.sort.name	Name	Nome
 review.select	Select	Selecionar
-review.select.none	None	Nenhum
-review.select.recommended	Recommended	Recomendados
-review.select.all	All	Todos
+review.select.none	Deselect all	Desmarcar tudo
+review.select.smart	Smart selection	Seleção inteligente
+review.select.all	Select all	Selecionar tudo
 review.recommended	Recommended	Recomendado
 review.empty	Nothing to clean here.	Nada para limpar aqui.
-review.selection.count	%lld items selected	%lld itens selecionados
+review.selection.one	%ld item selected	%ld item selecionado
+review.selection.other	%ld items selected	%ld itens selecionados
 review.action.clean	Clean	Limpar
 review.showContents	Show contents	Mostrar conteúdo
 # Descrições das categorias
@@ -114,3 +115,23 @@ tile.deletedUsers.description	Data kept from accounts removed from this Mac.	Dad
 tile.documentVersions.found	%@ of document versions found	%@ de versões de documentos encontrados
 tile.documentVersions.removed	%@ of document versions removed	%@ de versões de documentos removidos
 tile.documentVersions.description	Older saved versions of documents you edited.	Versões antigas salvas de documentos que você editou.
+review.state.none	None	Nenhum
+review.state.all	All	Tudo
+review.state.smart	Smart	Inteligente
+review.state.manual	Manual	Manual
+review.size.total	Total size of the group	Tamanho total do grupo
+review.size.selected	Selected size	Tamanho selecionado
+review.search.none	Nothing found for “%@”.	Nada encontrado para “%@”.
+review.category.empty	Nothing to clean here. Everything is in order.	Nada para limpar aqui. Está tudo em ordem.
+review.context.reveal	Show in Finder	Mostrar no Finder
+review.context.quicklook	Quick Look	Visualização rápida
+review.context.select	Select	Marcar
+review.context.deselect	Deselect	Desmarcar
+review.back.confirm.title	Go back and lose your selection?	Voltar e perder a seleção?
+review.back.confirm.message	The items you selected will be unselected.	Os itens que você marcou serão desmarcados.
+alert.iosLatest.title	Remove the latest backup?	Remover o backup mais recente?
+alert.iosLatest.message	Without the latest backup you won't be able to restore that device to its current state.	Sem o backup mais recente, não será possível restaurar o aparelho ao estado atual.
+alert.iosLatest.confirm	Remove anyway	Remover mesmo assim
+alert.localModels.title	These models may still be in use	Estes modelos ainda podem estar em uso
+alert.localModels.message	Projects that use them may fail until you download the models again.	Projetos que usam esses modelos podem falhar até você baixá-los de novo.
+alert.localModels.confirm	Continue	Continuar
