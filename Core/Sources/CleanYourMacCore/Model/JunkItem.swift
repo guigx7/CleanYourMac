@@ -25,10 +25,13 @@ public struct JunkItem: Identifiable, Hashable, Sendable {
     /// `nil` quando o item só agrupa filhos.
     public let removal: RemovalAction?
     public let children: [JunkItem]
+    /// A interface mostra os filhos ao expandir. Alguns grupos guardam filhos só para a remoção.
+    public let displaysChildren: Bool
 
     public init(id: String? = nil, group: GroupID, name: String, detail: String? = nil, url: URL?,
                 size: Int64, isRecommended: Bool = false, badge: ItemBadge? = nil,
-                icon: IconSource? = nil, removal: RemovalAction? = nil, children: [JunkItem] = []) {
+                icon: IconSource? = nil, removal: RemovalAction? = nil, children: [JunkItem] = [],
+                displaysChildren: Bool = true) {
         self.id = id ?? "\(group.rawValue):\(url?.path ?? name)"
         self.group = group
         self.name = name
@@ -40,6 +43,7 @@ public struct JunkItem: Identifiable, Hashable, Sendable {
         self.icon = icon ?? url.map(IconSource.file) ?? .symbol("doc")
         self.removal = removal
         self.children = children
+        self.displaysChildren = displaysChildren
     }
 
     /// Tamanho do item somado ao de todos os descendentes.

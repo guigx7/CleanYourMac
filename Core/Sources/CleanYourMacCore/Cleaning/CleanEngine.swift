@@ -13,7 +13,7 @@ public protocol Cleaning: Sendable {
 
 /// Remove os itens selecionados, validando cada caminho pela política do seu grupo.
 public final class CleanEngine: Cleaning {
-    private let policies: [GroupID: PathPolicy]
+    private let policyProvider: @Sendable () -> [GroupID: PathPolicy]
     private let privileged: any PrivilegedRunner
     private let dryRun: Bool
     private let log: CleanupLog
@@ -21,7 +21,17 @@ public final class CleanEngine: Cleaning {
 
     public init(policies: [GroupID: PathPolicy], privileged: any PrivilegedRunner, dryRun: Bool, log: CleanupLog,
                 requiresAdmin: @escaping @Sendable (GroupID) -> Bool = { $0.requiresAdmin }) {
-        self.policies = policies
+        self.policyProvider = { policies }
+        self.privileged = privileged
+        self.dryRun = dryRun
+        self.log = log
+        self.requiresAdmin = requiresAdmin
+    }
+
+    /// Políticas calculadas na hora da limpeza (raízes podem surgir depois do início do app).
+    public init(policyProvider: @escaping @Sendable () -> [GroupID: PathPolicy], privileged: any PrivilegedRunner,
+                dryRun: Bool, log: CleanupLog, requiresAdmin: @escaping @Sendable (GroupID) -> Bool = { $0.requiresAdmin }) {
+        self.policyProvider = policyProvider
         self.privileged = privileged
         self.dryRun = dryRun
         self.log = log
@@ -40,6 +50,7 @@ public final class CleanEngine: Cleaning {
     }
 
     private func perform(_ items: [JunkItem], emit: (CleanEvent) -> Void) async -> CleanReport {
+        let policies = policyProvider()
         var seen = Set<String>()
         let leaves = items.flatMap(\.leaves).filter { $0.removal != nil && seen.insert($0.id).inserted }
         var freed: Int64 = 0
@@ -64,7 +75,7 @@ public final class CleanEngine: Cleaning {
             emit(.started(item))
             guard let removal = item.removal else { continue }
             do {
-                try validate(removal, group: item.group)
+                try validate(removal, group: item.group, policies: policies)
             } catch {
                 finish(item, .failure(error))
                 continue
@@ -127,7 +138,7 @@ public final class CleanEngine: Cleaning {
         return report
     }
 
-    private func validate(_ removal: RemovalAction, group: GroupID) throws(CleanFailure) {
+    private func validate(_ removal: RemovalAction, group: GroupID, policies: [GroupID: PathPolicy]) throws(CleanFailure) {
         guard let policy = policies[group] else { throw CleanFailure(reason: "no policy for \(group.rawValue)") }
         func check(_ url: URL, allowRoot: Bool = false) throws(CleanFailure) {
             do {

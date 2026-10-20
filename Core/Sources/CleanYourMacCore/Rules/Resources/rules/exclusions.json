@@ -1,0 +1,44 @@
+{
+  "_comment": "Equivalente nosso à lista de ignorados da KB do CleanMyMac (que não lemos). Fonte: docs/re/specs/common.md §3.2, user-cache.md, system-cache.md. Globs fnmatch sobre o caminho completo; ~ = home, $DARWIN = cache do Darwin.",
+  "global": [
+    "~/Library/Caches/claude-cli-nodejs",
+    "~/Library/Caches/Codex",
+    "~/Library/Caches/com.anthropic.claudefordesktop*",
+    "~/Library/Caches/com.openai.codex*",
+    "~/Library/Caches/com.openai.sky.*",
+    "$DARWIN/com.anthropic.claudefordesktop*",
+    "$DARWIN/com.openai.codex*",
+    "~/Library/Logs/Claude",
+    "~/Library/Logs/com.openai.codex"
+  ],
+  "userCache": [
+    "~/Library/Caches/ms-playwright",
+    "~/Library/Caches/GeoServices",
+    "~/Library/Caches/GameKit",
+    "~/Library/Caches/CloudKit",
+    "~/Library/Caches/FamilyCircle",
+    "~/Library/Caches/com.apple.HomeKit",
+    "~/Library/Caches/com.apple.homed",
+    "~/Library/Caches/com.apple.containermanagerd",
+    "~/Library/Caches/com.apple.dt.xcodebuild",
+    "~/Library/Caches/org.swift.swiftpm",
+    "$DARWIN/clang",
+    "$DARWIN/com.apple.FontRegistry",
+    "$DARWIN/com.apple.dock",
+    "$DARWIN/com.apple.dock.iconcache",
+    "$DARWIN/com.apple.systempreferences",
+    "$DARWIN/com.apple.Wallpaper-Settings.extension",
+    "$DARWIN/com.apple.ContactsUI.MonogramPosterExtension",
+    "$DARWIN/com.apple.Family",
+    "$DARWIN/com.apple.WorkflowKit.BackgroundShortcutRunner*",
+    "$DARWIN/com.apple.siriactionsd*",
+    "$DARWIN/com.apple.WebKit.*.Sandbox"
+  ],
+  "systemCache": [
+    "/Library/Caches/ColorSync",
+    "/Library/Caches/Desktop Pictures",
+    "/Library/Caches/com.apple.amsengagementd.classicdatavault",
+    "/Library/Caches/com.apple.aned",
+    "/Library/Caches/com.apple.aneuserd"
+  ]
+}

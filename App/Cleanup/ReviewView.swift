@@ -206,7 +206,7 @@ struct ReviewView: View {
             ItemRow(item: item, depth: depth, state: selection.state(of: item),
                     isExpanded: expanded.contains(item.id),
                     onToggle: { selection.toggle(item) },
-                    onExpand: item.children.isEmpty ? nil : {
+                    onExpand: item.children.isEmpty || !item.displaysChildren ? nil : {
                         withAnimation(.snappy(duration: 0.2)) {
                             if expanded.contains(item.id) { expanded.remove(item.id) } else { expanded.insert(item.id) }
                         }

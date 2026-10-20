@@ -52,7 +52,9 @@ enum CleanupEnvironment {
         #if DEBUG
         if env["CYM_DEMO"] == "1" { scanners = DemoData.scanners }
         #endif
-        let clean = CleanEngine(policies: Registry.policies(for: scanners, context: context),
+        let policyScanners = scanners
+        let policyContext = context
+        let clean = CleanEngine(policyProvider: { Registry.policies(for: policyScanners, context: policyContext) },
                                 privileged: AppleScriptPrivilegedRunner(), dryRun: dryRun, log: .standard)
         return CleanupFlowModel(scanEngine: ScanEngine(scanners: scanners), cleanEngine: clean,
                                 context: context, groups: Set(scanners.map(\.group)))

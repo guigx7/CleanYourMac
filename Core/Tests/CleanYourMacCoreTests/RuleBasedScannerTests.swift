@@ -2,7 +2,7 @@ import Testing
 import Foundation
 @testable import CleanYourMacCore
 
-private struct FakeApps: AppLookup {
+private struct NamedFakeApps: AppLookup {
     var apps: [String: (String, URL)] = [:]
     func application(bundleID: String) -> (name: String, url: URL)? { apps[bundleID].map { ($0.0, $0.1) } }
 }
@@ -111,7 +111,7 @@ private func scan(_ s: RuleBasedScanner, _ ctx: ScanContext) async throws -> [Ju
     t.file("Users/tester/Library/Caches/com.foo.bar/x", bytes: 10)
     let appURL = URL(fileURLWithPath: "/Applications/Foo.app")
     let s = RuleBasedScanner(rules: rules([PathRule(roots: ["~/Library/Caches"], itemLevel: .children)]),
-                             apps: FakeApps(apps: ["com.foo.bar": ("Foo", appURL)]))
+                             apps: NamedFakeApps(apps: ["com.foo.bar": ("Foo", appURL)]))
     let item = try #require(try await scan(s, ctx).first)
     #expect(item.name == "Foo")
     #expect(item.icon == .app(appURL))

@@ -5,7 +5,12 @@ public enum Registry {
     /// Um scanner por grupo: os especializados (adicionados pelas tasks de cada grupo)
     /// e, para os demais, as regras empacotadas em `rules/<grupo>.json`.
     public static func productionScanners(apps: any AppLookup = WorkspaceAppLookup()) -> [any GroupScanner] {
-        let specialized: [any GroupScanner] = []
+        let specialized: [any GroupScanner] = [
+            CacheScanner.userCache(apps: apps),
+            CacheScanner.systemCache(apps: apps),
+            LogsScanner.userLogs(apps: apps),
+            LogsScanner.systemLogs(apps: apps),
+        ]
         let covered = Set(specialized.map(\.group))
         let ruleBased = GroupID.allCases
             .filter { !covered.contains($0) && RuleBasedScanner.hasBundledRules($0) }

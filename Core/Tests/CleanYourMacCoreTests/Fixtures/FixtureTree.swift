@@ -63,8 +63,23 @@ final class FixtureTree {
 
     func context(user: String = "tester", languages: [String] = ["pt-BR", "en"]) -> ScanContext {
         dir("Users/\(user)")
+        dir("var/folders/zz/C")
         return ScanContext(root: root, home: url("Users/\(user)"), userName: user,
-                           preferredLanguages: languages, now: Date())
+                           preferredLanguages: languages, now: Date(),
+                           darwinUserCacheDir: url("var/folders/zz/C"))
+    }
+
+    /// Pasta de app falsa com Info.plist (bundle id) e, opcionalmente, o framework do Electron.
+    @discardableResult
+    func app(_ relPath: String, bundleID: String, electron: Bool = false) -> URL {
+        let u = dir(relPath)
+        dir("\(relPath)/Contents/MacOS")
+        let plist: [String: Any] = ["CFBundleIdentifier": bundleID, "CFBundleExecutable": "app",
+                                    "CFBundleName": (u.lastPathComponent as NSString).deletingPathExtension]
+        try! PropertyListSerialization.data(fromPropertyList: plist, format: .xml, options: 0)
+            .write(to: u.appendingPathComponent("Contents/Info.plist"))
+        if electron { dir("\(relPath)/Contents/Frameworks/Electron Framework.framework") }
+        return u
     }
 
     /// Tamanho alocado de um arquivo, como o FileSizer deve medir.
