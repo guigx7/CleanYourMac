@@ -218,7 +218,8 @@ final class CleanupFlowModel {
         if children.isEmpty { return nil }
         return JunkItem(id: item.id, group: item.group, name: item.name, detail: item.detail, url: item.url,
                         size: item.size, isRecommended: item.isRecommended, badge: item.badge, icon: item.icon,
-                        removal: item.removal, children: children)
+                        removal: item.removal, children: children, displaysChildren: item.displaysChildren,
+                        titleKey: item.titleKey)
     }
 
     /// Limpar de um cartão: só os itens recomendados dos grupos do cartão.

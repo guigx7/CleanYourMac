@@ -72,37 +72,35 @@ public struct AppleScriptPrivilegedRunner: PrivilegedRunner {
         return out
     }
 
+    /// Fonte AppleScript com o script inteiro embutido (nada é lido de arquivo gravável pelo usuário).
+    public static func appleScriptSource(for script: String) -> String {
+        "do shell script " + appleScriptString(script) + " with administrator privileges"
+    }
+
     /// Roda um script sh como root (uma senha) e devolve a saída.
     private func execute(_ script: String) async throws(PrivilegedError) -> String {
-        let dir: URL
-        do {
-            dir = FileManager.default.temporaryDirectory.appendingPathComponent("cym-priv-\(UUID().uuidString)")
-            try FileManager.default.createDirectory(at: dir, withIntermediateDirectories: false,
-                                                    attributes: [.posixPermissions: 0o700])
-        } catch { throw .failed("\(error)") }
-        defer { try? FileManager.default.removeItem(at: dir) }
-        let file = dir.appendingPathComponent("batch.sh")
-        do {
-            try script.write(to: file, atomically: true, encoding: .utf8)
-        } catch { throw .failed("\(error)") }
-
-        let source = "do shell script \"/bin/sh \" & quoted form of \(Self.appleScriptString(file.path)) with administrator privileges"
-        let output: String = await withCheckedContinuation { cont in
+        let source = Self.appleScriptSource(for: script)
+        let result: (Int32, String, String) = await withCheckedContinuation { cont in
             DispatchQueue.global().async {
-                var error: NSDictionary?
-                let result = NSAppleScript(source: source)?.executeAndReturnError(&error)
-                if let error {
-                    let code = (error[NSAppleScript.errorNumber] as? Int) ?? 0
-                    cont.resume(returning: code == -128 ? "\u{0}cancel" : "\u{0}fail:\(error)")
-                } else {
-                    cont.resume(returning: result?.stringValue ?? "")
-                }
+                let p = Process()
+                p.executableURL = URL(fileURLWithPath: "/usr/bin/osascript")
+                p.arguments = ["-e", source]
+                let out = Pipe(), err = Pipe()
+                p.standardOutput = out
+                p.standardError = err
+                guard (try? p.run()) != nil else { cont.resume(returning: (-1, "", "osascript failed to start")); return }
+                let o = out.fileHandleForReading.readDataToEndOfFile()
+                let e = err.fileHandleForReading.readDataToEndOfFile()
+                p.waitUntilExit()
+                cont.resume(returning: (p.terminationStatus, String(decoding: o, as: UTF8.self), String(decoding: e, as: UTF8.self)))
             }
         }
-        if output == "\u{0}cancel" { throw .userCancelled }
-        if output.hasPrefix("\u{0}fail:") { throw .failed(String(output.dropFirst(6))) }
+        if result.0 != 0 {
+            if result.2.contains("-128") { throw .userCancelled }
+            throw .failed(result.2)
+        }
         // `do shell script` troca \n por \r na saída.
-        return output.replacingOccurrences(of: "\r", with: "\n")
+        return result.1.replacingOccurrences(of: "\r", with: "\n")
     }
 
     /// Script sh com cada caminho entre aspas simples; cada comando imprime `CYM:<i>:ok|fail`.

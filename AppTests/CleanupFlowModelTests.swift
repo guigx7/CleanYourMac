@@ -226,3 +226,19 @@ func waitFor(_ condition: @escaping () -> Bool, timeout: Duration = .seconds(5))
     await waitFor { if case .done = m.phase { true } else { false } }
     #expect(m.freedByKind == [.junk: 100, .mail: 3, .trash: 7])
 }
+
+// M5: depois de uma limpeza, os itens mantêm títulos localizados e filhos ocultos.
+@MainActor @Test func acknowledgeKeepsItemPresentation() async {
+    let a = stubItem(.aiAgentsJunk, "a", 10), b = stubItem(.aiAgentsJunk, "b", 10)
+    let kind = JunkItem(id: "k", group: .aiAgentsJunk, name: "Caches", url: nil, size: 0, children: [a, b],
+                        displaysChildren: false, titleKey: "aiKind.caches")
+    let m = makeModel([StubScanner(group: .aiAgentsJunk, items: [kind])])
+    m.startScan()
+    await waitFor { m.phase == .results }
+    m.clean(items: [a])
+    await waitFor { if case .done = m.phase { true } else { false } }
+    m.acknowledgeDone()
+    let kept = m.report?.groups[.aiAgentsJunk]?.items.first
+    #expect(kept?.titleKey == "aiKind.caches")
+    #expect(kept?.displaysChildren == false)
+}

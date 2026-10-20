@@ -233,7 +233,11 @@ extension CacheScanner.Source {
         guard let data = try? Data(contentsOf: manifest),
               let dict = try? PropertyListSerialization.propertyList(from: data, format: nil) as? [String: Any],
               let paths = dict["purgeables"] as? [String] else { return [] }
-        return paths.map { URL(fileURLWithPath: $0) }.filter(exists)
+        // O manifesto é gravável pelo usuário: só aceitamos caminhos dentro das pastas de cache.
+        let allowed = [ctx.resolve("$DARWIN/com.apple.appstore"), ctx.resolve("~/Library/Caches")].map { PathPolicy.realPath($0.path) + "/" }
+        return paths.map { URL(fileURLWithPath: $0) }.filter { u in
+            exists(u) && allowed.contains { PathPolicy.realPath(u.path).hasPrefix($0) }
+        }
     }
 
     static var appStore: Self {

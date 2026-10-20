@@ -30,6 +30,9 @@ public struct PathPolicy: Sendable {
         let parent = Self.realPath(lexical.deletingLastPathComponent().path)
         let resolved = URL(fileURLWithPath: parent).appendingPathComponent(lexical.lastPathComponent)
         let parts = Self.components(resolved.path)
+        if Self.vital.contains(where: { $0 == parts || Self.isStrictPrefix(parts, of: $0) }) {
+            throw .outsideAllowedRoots(resolved.path)
+        }
 
         if realItems.contains(where: { $0 == parts || Self.isStrictPrefix($0, of: parts) }) { return resolved }
         if realRoots.contains(parts) { throw .isAllowedRootItself(resolved.path) }
@@ -42,6 +45,16 @@ public struct PathPolicy: Sendable {
         }
         throw .outsideAllowedRoots(lexical.path)
     }
+
+    /// Locais que nunca podem ser removidos inteiros (nem um ancestral deles).
+    private static let vital: [[String]] = {
+        let home = FileManager.default.homeDirectoryForCurrentUser.path
+        let homeDirs = ["", "Documents", "Desktop", "Downloads", "Library", "Pictures", "Movies", "Music",
+                        "Library/Application Support", "Library/Caches", "Library/Preferences", "Library/Containers", "Library/Mail"]
+        let system = ["/", "/Applications", "/Library", "/System", "/Users", "/private", "/usr", "/bin", "/sbin", "/etc", "/var",
+                      "/Volumes", "/Library/Caches", "/Library/Logs", "/Users/Deleted Users"]
+        return (homeDirs.map { $0.isEmpty ? home : home + "/" + $0 } + system).map { components(realPath($0)) }
+    }()
 
     /// Resolve "." e ".." só textualmente (sem tocar o disco nem remover "/private").
     static func lexicalPath(_ path: String) -> String {

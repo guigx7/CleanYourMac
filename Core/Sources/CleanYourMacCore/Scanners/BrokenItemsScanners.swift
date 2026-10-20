@@ -38,7 +38,7 @@ public struct BrokenLoginItemsScanner: ScopedScanner {
             let name = entry.name ?? entry.url.map { FileManager.default.displayName(atPath: $0.path) }
                 ?? entry.url?.deletingPathExtension().lastPathComponent ?? "?"
             out.append(JunkItem(id: "brokenLoginItems:session:\(entry.url?.path ?? name)", group: group, name: name,
-                                url: entry.url, size: 0, isRecommended: true, icon: .symbol("app.dashed"),
+                                url: entry.url, size: 0, isRecommended: entry.url != nil, icon: .symbol("app.dashed"),
                                 removal: .removeSessionLoginItem(name: entry.name, url: entry.url)))
         }
         let helpers = Set(inventory.apps(context).flatMap(Self.privilegedExecutables))
@@ -79,8 +79,13 @@ public struct BrokenLoginItemsScanner: ScopedScanner {
         if let wd = dict["WorkingDirectory"] as? String, !path.hasPrefix("/") {
             path = (wd as NSString).appendingPathComponent(path)
         }
+        // Nome sem caminho (ex.: "sh", "python3"): o launchd procura no PATH; na dúvida, não está quebrado.
+        if !path.contains("/") && !path.hasPrefix("~") { return false }
         if path.hasPrefix("~/") || path == "~" { path = context.resolve(path).path }
         path = (path as NSString).standardizingPath
+        // Executável num volume desmontado: o volume pode voltar; não está quebrado.
+        let comps = (path as NSString).pathComponents
+        if comps.count > 2, comps[1] == "Volumes", !FileManager.default.fileExists(atPath: "/Volumes/" + comps[2]) { return false }
         // Área sem permissão de leitura acima do executável: sem admin, conservador (não quebrado).
         var ancestor = (path as NSString).deletingLastPathComponent
         while !ancestor.isEmpty, ancestor != "/" {

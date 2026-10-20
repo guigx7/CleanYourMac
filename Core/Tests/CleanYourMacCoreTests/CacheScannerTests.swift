@@ -169,7 +169,7 @@ private let mb = 1_000_000
 
 @Test func userCache_appStorePurgeables() async throws {
     let t = FixtureTree(); let ctx = t.context()
-    let p = t.file("Users/tester/Downloads/old.pkg", bytes: 10)
+    let p = t.file("Users/tester/Library/Caches/com.apple.appstore.downloads/old.pkg", bytes: 10)
     let manifest = t.url("var/folders/zz/C/com.apple.appstore/manifest.plist")
     t.dir("var/folders/zz/C/com.apple.appstore")
     try PropertyListSerialization.data(fromPropertyList: ["purgeables": [p.path]], format: .xml, options: 0).write(to: manifest)

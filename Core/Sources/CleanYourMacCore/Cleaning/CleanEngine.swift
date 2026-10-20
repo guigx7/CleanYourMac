@@ -110,6 +110,17 @@ public final class CleanEngine: Cleaning {
             emit(.finished(item, result))
         }
 
+        /// Falta de permissão: vai para o lote root, exceto alterações em apps, que perderiam
+        /// a verificação de assinatura com restauração (essas falham e são reportadas).
+        func deferPrivileged(_ item: JunkItem, _ removal: RemovalAction) {
+            switch removal {
+            case .thinBinary, .removeLocalizations:
+                finish(item, .failure(CleanFailure(reason: "permission: app not writable (Operation not permitted, .app)")))
+            default:
+                deferred.append((item, commands(for: removal)))
+            }
+        }
+
         for item in leaves {
             // Parar: os itens restantes não são tocados.
             if Task.isCancelled { break }
@@ -169,12 +180,12 @@ public final class CleanEngine: Cleaning {
                 }
                 finish(item, .success(item.totalSize))
             } catch let error as CocoaError where error.code == .fileWriteNoPermission || error.code == .fileReadNoPermission {
-                deferred.append((item, commands(for: removal)))
+                deferPrivileged(item, removal)
             } catch let error as CleanFailure {
                 finish(item, .failure(error))
             } catch {
                 if Self.isPermissionError(error) {
-                    deferred.append((item, commands(for: removal)))
+                    deferPrivileged(item, removal)
                 } else {
                     finish(item, .failure(CleanFailure(reason: error.localizedDescription)))
                 }
@@ -306,6 +317,8 @@ public final class CleanEngine: Cleaning {
         case .moveToTrash(let u):
             try fm.trashItem(at: u, resultingItemURL: nil)
         case .deleteContents(let u):
+            // Nunca esvaziar através de um symlink (o destino estaria fora da raiz).
+            if RuleBasedScanner.isSymlink(u) { throw CleanFailure(reason: "path not allowed: symlink \(u.path)") }
             for child in try fm.contentsOfDirectory(at: u, includingPropertiesForKeys: nil) {
                 try remove(child)
             }

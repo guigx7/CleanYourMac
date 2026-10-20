@@ -123,7 +123,10 @@ private let agents = "Users/tester/Library/LaunchAgents"
                    LoginItemEntry(name: "Unresolved", url: nil)]
     let items = try await scan(launchd(entries), ctx)
     #expect(Set(items.map(\.name)) == ["Amphetamine", "Unresolved"])
-    #expect(items.allSatisfy { $0.size == 0 && $0.isRecommended })
+    #expect(items.allSatisfy { $0.size == 0 })
+    // Sem URL (pode ser um volume desmontado): aparece, mas não vem recomendado.
+    #expect(items.first { $0.name == "Amphetamine" }?.isRecommended == true)
+    #expect(items.first { $0.name == "Unresolved" }?.isRecommended == false)
 }
 
 private func engine(_ t: FixtureTree, _ s: any ScopedScanner, _ ctx: ScanContext, commands: FakeCommands,
