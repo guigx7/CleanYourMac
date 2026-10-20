@@ -22,6 +22,7 @@ public enum Registry {
             DocumentVersionsScanner(apps: apps),
             XcodeJunkScanner(),
             UniversalBinariesScanner(),
+            LanguageFilesScanner(),
         ]
         let covered = Set(specialized.map(\.group))
         let ruleBased = GroupID.allCases

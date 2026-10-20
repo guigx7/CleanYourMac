@@ -149,6 +149,8 @@ public final class CleanEngine: Cleaning {
                     }
                 case .thinBinary(let exe, let arch, let bundle):
                     try thin(exe, keep: arch, bundle: bundle)
+                case .removeLocalizations(let bundle, let lprojs):
+                    try removeLocalizations(lprojs, bundle: bundle)
                 case .deleteSimulator(let udid, let simctl):
                     guard commands.run(simctl, ["delete", udid]).status == 0 else { throw CleanFailure(reason: "simctl delete failed") }
                 case .deleteRuntime(let id, let simctl):
@@ -242,8 +244,16 @@ public final class CleanEngine: Cleaning {
             try check(bundle)
             try check(exe)
         case .removeLocalizations(let bundle, let lprojs):
-            try check(bundle)
-            for l in lprojs { try check(l) }
+            try check(bundle, allowRoot: true)
+            for l in lprojs {
+                try check(l)
+                // Só pastas .lproj dentro de uma pasta Resources do bundle (language-files.md §Remoção).
+                let inResources = l.deletingLastPathComponent().lastPathComponent.lowercased() == "resources" || bundle.pathExtension == "wdgt"
+                guard l.pathExtension.lowercased() == "lproj", inResources,
+                      PathPolicy.realPath(l.path).hasPrefix(PathPolicy.realPath(bundle.path) + "/") else {
+                    throw CleanFailure(reason: "path not allowed: \(l.path)")
+                }
+            }
         case .removeFileVersion, .deleteSimulator, .deleteRuntime:
             break // pela API/ferramenta do sistema, não apaga caminhos diretamente
         case .deleteFiles(let urls):
@@ -338,6 +348,26 @@ public final class CleanEngine: Cleaning {
         }
         if signedBefore, commands.run("/usr/bin/codesign", ["--verify", "--deep", "--strict", bundle.path]).status != 0 {
             _ = rename(backup.path, exe.path)
+            throw CleanFailure(reason: "signature would break; restored")
+        }
+    }
+
+    /// Apaga as `.lproj`; se a assinatura do app era válida e deixa de ser, restaura as pastas.
+    private func removeLocalizations(_ lprojs: [URL], bundle: URL) throws {
+        let fm = FileManager.default
+        let signedBefore = commands.run("/usr/bin/codesign", ["--verify", "--deep", "--strict", bundle.path]).status == 0
+        let backup = fm.temporaryDirectory.appendingPathComponent("cym-lproj-\(UUID().uuidString)")
+        try fm.createDirectory(at: backup, withIntermediateDirectories: true)
+        defer { try? fm.removeItem(at: backup) }
+        var saved: [(URL, URL)] = []
+        for (i, l) in lprojs.enumerated() where fm.fileExists(atPath: l.path) {
+            let copy = backup.appendingPathComponent("\(i)-\(l.lastPathComponent)")
+            try fm.copyItem(at: l, to: copy)
+            saved.append((l, copy))
+            try fm.removeItem(at: l)
+        }
+        if signedBefore, commands.run("/usr/bin/codesign", ["--verify", "--deep", "--strict", bundle.path]).status != 0 {
+            for (original, copy) in saved { try? fm.moveItem(at: copy, to: original) }
             throw CleanFailure(reason: "signature would break; restored")
         }
     }
