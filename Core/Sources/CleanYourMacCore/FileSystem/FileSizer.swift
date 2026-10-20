@@ -2,15 +2,22 @@ import Foundation
 
 /// Mede bytes alocados em disco, sem seguir symlinks e contando cada inode uma vez.
 public struct FileSizer: Sendable {
-    public init() {}
+    public enum Mode: Sendable { case allocated, logical }
+    public let mode: Mode
 
-    private static let keys: [URLResourceKey] = [.totalFileAllocatedSizeKey, .isSymbolicLinkKey,
+    public init(mode: Mode = .allocated) { self.mode = mode }
+
+    private static let keys: [URLResourceKey] = [.totalFileAllocatedSizeKey, .fileSizeKey, .isSymbolicLinkKey,
                                                  .isDirectoryKey, .fileResourceIdentifierKey]
+
+    private func size(_ v: URLResourceValues) -> Int64 {
+        Int64((mode == .allocated ? v.totalFileAllocatedSize : v.fileSize) ?? 0)
+    }
 
     public func allocatedSize(of url: URL) -> Int64 {
         guard let values = try? url.resourceValues(forKeys: Set(Self.keys)) else { return 0 }
         if values.isSymbolicLink == true || values.isDirectory != true {
-            return Int64(values.totalFileAllocatedSize ?? 0)
+            return size(values)
         }
         var seen = Set<AnyHashable>()
         var total: Int64 = 0
@@ -21,7 +28,7 @@ public struct FileSizer: Sendable {
             if let id = v.fileResourceIdentifier as? AnyHashable {
                 guard seen.insert(id).inserted else { continue }
             }
-            total += Int64(v.totalFileAllocatedSize ?? 0)
+            total += size(v)
         }
         return total
     }

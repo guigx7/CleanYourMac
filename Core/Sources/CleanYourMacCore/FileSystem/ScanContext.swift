@@ -9,6 +9,8 @@ public struct ScanContext: Sendable {
     public var now: Date
     /// `confstr(_CS_DARWIN_USER_CACHE_DIR)` (ex.: /var/folders/xx/…/C). Nos testes, dentro do fixture.
     public var darwinUserCacheDir: URL
+    /// uid do usuário analisado (pastas em /private/tmp precisam ser dele).
+    public var uid: uid_t = getuid()
 
     public init(root: URL, home: URL, userName: String, preferredLanguages: [String], now: Date,
                 darwinUserCacheDir: URL? = nil) {

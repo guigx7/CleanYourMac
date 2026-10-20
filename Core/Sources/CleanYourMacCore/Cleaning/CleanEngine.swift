@@ -6,6 +6,26 @@ public enum CleanEvent: Sendable {
     case completed(CleanReport)
 }
 
+/// Responde se um processo do usuário está rodando (proteção de pastas temporárias em uso).
+public protocol ProcessChecker: Sendable {
+    func isRunning(_ name: String, uid: uid_t) -> Bool
+}
+
+public struct SystemProcessChecker: ProcessChecker {
+    public init() {}
+
+    public func isRunning(_ name: String, uid: uid_t) -> Bool {
+        let p = Process()
+        p.executableURL = URL(fileURLWithPath: "/usr/bin/pgrep")
+        p.arguments = ["-x", "-U", String(uid), name]
+        p.standardOutput = FileHandle.nullDevice
+        p.standardError = FileHandle.nullDevice
+        guard (try? p.run()) != nil else { return false }
+        p.waitUntilExit()
+        return p.terminationStatus == 0
+    }
+}
+
 /// Algo que limpa itens e transmite o andamento.
 public protocol Cleaning: Sendable {
     func clean(_ items: [JunkItem]) -> AsyncStream<CleanEvent>
@@ -18,24 +38,29 @@ public final class CleanEngine: Cleaning {
     private let dryRun: Bool
     private let log: CleanupLog
     private let requiresAdmin: @Sendable (GroupID) -> Bool
+    private let processes: any ProcessChecker
 
     public init(policies: [GroupID: PathPolicy], privileged: any PrivilegedRunner, dryRun: Bool, log: CleanupLog,
-                requiresAdmin: @escaping @Sendable (GroupID) -> Bool = { $0.requiresAdmin }) {
+                requiresAdmin: @escaping @Sendable (GroupID) -> Bool = { $0.requiresAdmin },
+                processes: any ProcessChecker = SystemProcessChecker()) {
         self.policyProvider = { policies }
         self.privileged = privileged
         self.dryRun = dryRun
         self.log = log
         self.requiresAdmin = requiresAdmin
+        self.processes = processes
     }
 
     /// Políticas calculadas na hora da limpeza (raízes podem surgir depois do início do app).
     public init(policyProvider: @escaping @Sendable () -> [GroupID: PathPolicy], privileged: any PrivilegedRunner,
-                dryRun: Bool, log: CleanupLog, requiresAdmin: @escaping @Sendable (GroupID) -> Bool = { $0.requiresAdmin }) {
+                dryRun: Bool, log: CleanupLog, requiresAdmin: @escaping @Sendable (GroupID) -> Bool = { $0.requiresAdmin },
+                processes: any ProcessChecker = SystemProcessChecker()) {
         self.policyProvider = policyProvider
         self.privileged = privileged
         self.dryRun = dryRun
         self.log = log
         self.requiresAdmin = requiresAdmin
+        self.processes = processes
     }
 
     public func clean(_ items: [JunkItem]) -> AsyncStream<CleanEvent> {
@@ -78,6 +103,14 @@ public final class CleanEngine: Cleaning {
                 try validate(removal, group: item.group, policies: policies)
             } catch {
                 finish(item, .failure(error))
+                continue
+            }
+            if case .deleteUnlessRunning(_, let process) = removal, processes.isRunning(process, uid: getuid()) {
+                finish(item, .failure(CleanFailure(reason: "in use")))
+                continue
+            }
+            if case .deleteStaleVersion(let url, let link) = removal, Self.resolves(link, to: url) {
+                finish(item, .failure(CleanFailure(reason: "now active")))
                 continue
             }
             if dryRun {
@@ -149,7 +182,8 @@ public final class CleanEngine: Cleaning {
             }
         }
         switch removal {
-        case .delete(let u), .moveToTrash(let u), .removeLoginItem(let u):
+        case .delete(let u), .moveToTrash(let u), .removeLoginItem(let u), .deleteStaleVersion(let u, _),
+             .deleteUnlessRunning(let u, _):
             try check(u)
         case .deleteContents(let u):
             try check(u, allowRoot: true)
@@ -161,22 +195,27 @@ public final class CleanEngine: Cleaning {
             for l in lprojs { try check(l) }
         case .deleteDocumentVersions(let volume, _):
             try check(volume, allowRoot: true)
+        case .deleteFiles(let urls):
+            for u in urls { try check(u) }
+        case .removeOllamaModel(let manifest, _):
+            try check(manifest)
         }
     }
 
     private func commands(for removal: RemovalAction) -> [PrivilegedCommand] {
         switch removal {
-        case .delete(let u), .removeLoginItem(let u): [.remove(u)]
+        case .delete(let u), .removeLoginItem(let u), .deleteStaleVersion(let u, _), .deleteUnlessRunning(let u, _): [.remove(u)]
         case .deleteContents(let u): [.removeContents(u)]
         case .removeLocalizations(_, let lprojs): lprojs.map { .remove($0) }
-        case .moveToTrash, .thinBinary, .deleteDocumentVersions: []
+        case .deleteFiles(let urls): urls.map { .remove($0) }
+        case .moveToTrash, .thinBinary, .deleteDocumentVersions, .removeOllamaModel: []
         }
     }
 
     static func removeUnprivileged(_ removal: RemovalAction) throws {
         let fm = FileManager.default
         switch removal {
-        case .delete(let u), .removeLoginItem(let u):
+        case .delete(let u), .removeLoginItem(let u), .deleteStaleVersion(let u, _), .deleteUnlessRunning(let u, _):
             try fm.removeItem(at: u)
         case .moveToTrash(let u):
             try fm.trashItem(at: u, resultingItemURL: nil)
@@ -186,9 +225,18 @@ public final class CleanEngine: Cleaning {
             }
         case .removeLocalizations(_, let lprojs):
             for l in lprojs { try fm.removeItem(at: l) }
+        case .deleteFiles(let urls):
+            for u in urls { try fm.removeItem(at: u) }
+        case .removeOllamaModel(let manifest, let store):
+            try OllamaStore(root: store).remove(manifest: manifest)
         case .thinBinary, .deleteDocumentVersions:
             throw CleanFailure(reason: "unsupported removal")
         }
+    }
+
+    /// O link aponta (depois de resolvido) para `target`?
+    static func resolves(_ link: URL, to target: URL) -> Bool {
+        PathPolicy.realPath(link.path) == PathPolicy.realPath(target.path)
     }
 
     static func isPermissionError(_ error: Error) -> Bool {

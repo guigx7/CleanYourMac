@@ -135,3 +135,7 @@ alert.iosLatest.confirm	Remove anyway	Remover mesmo assim
 alert.localModels.title	These models may still be in use	Estes modelos ainda podem estar em uso
 alert.localModels.message	Projects that use them may fail until you download the models again.	Projetos que usam esses modelos podem falhar até você baixá-los de novo.
 alert.localModels.confirm	Continue	Continuar
+aiKind.caches	Caches	Caches
+aiKind.logs	Logs	Registros
+aiKind.temporary	Temporary files	Arquivos temporários
+aiKind.staleVersions	Stale versions	Versões defasadas

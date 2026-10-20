@@ -10,6 +10,8 @@ public enum Registry {
             CacheScanner.systemCache(apps: apps),
             LogsScanner.userLogs(apps: apps),
             LogsScanner.systemLogs(apps: apps),
+            AIToolsScanner(apps: apps),
+            LocalModelsScanner(apps: apps),
         ]
         let covered = Set(specialized.map(\.group))
         let ruleBased = GroupID.allCases

@@ -303,7 +303,10 @@ private struct ItemRow: View {
             TriStateCheckbox(state: state, action: onToggle)
             ItemIcon(source: item.icon).frame(width: 30, height: 30)
             VStack(alignment: .leading, spacing: 1) {
-                Text(item.name).lineLimit(1).truncationMode(.middle)
+                Group {
+                    if let key = item.titleKey { Text(LocalizedStringKey(stringLiteral: key)) } else { Text(item.name) }
+                }
+                .lineLimit(1).truncationMode(.middle)
                 if let detail = item.detail {
                     Text(detail).font(.caption).foregroundStyle(.secondary)
                 }

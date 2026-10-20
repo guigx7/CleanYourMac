@@ -55,7 +55,8 @@ public struct CacheScanner: ScopedScanner {
                 try Task.checkCancellation()
                 guard c.url.lastPathComponent != ".DS_Store",
                       !RuleBasedScanner.isSymlink(c.url),
-                      !exclusions.excludes(c.url, group: group, context: context) else { continue }
+                      !exclusions.excludes(c.url, group: group, context: context),
+                      group != .userCache || !AICatalog.claims(c.url, context: context) else { continue }
                 report(ScanProgress(group: group, currentPath: c.url.path, bytesFound: found))
                 let size = sizer.allocatedSize(of: c.url)
                 if size == 0, c.requireNonEmpty || !includeEmpty { continue }

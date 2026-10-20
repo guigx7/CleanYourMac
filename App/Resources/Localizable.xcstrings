@@ -1,6 +1,74 @@
 {
   "sourceLanguage": "en",
   "strings": {
+    "aiKind.caches": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Caches"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Caches"
+          }
+        }
+      }
+    },
+    "aiKind.logs": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Logs"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Registros"
+          }
+        }
+      }
+    },
+    "aiKind.staleVersions": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stale versions"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Versões defasadas"
+          }
+        }
+      }
+    },
+    "aiKind.temporary": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Temporary files"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Arquivos temporários"
+          }
+        }
+      }
+    },
     "alert.iosLatest.confirm": {
       "extractionState": "manual",
       "localizations": {

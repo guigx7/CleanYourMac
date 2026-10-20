@@ -53,7 +53,8 @@ public struct LogsScanner: ScopedScanner {
         for source in sources {
             for c in source.candidates(context) {
                 try Task.checkCancellation()
-                guard !RuleBasedScanner.isSymlink(c.url), !exclusions.excludes(c.url, group: group, context: context) else { continue }
+                guard !RuleBasedScanner.isSymlink(c.url), !exclusions.excludes(c.url, group: group, context: context),
+                      group != .userLogs || !AICatalog.claims(c.url, context: context) else { continue }
                 report(ScanProgress(group: group, currentPath: c.url.path, bytesFound: found))
                 guard let item = makeItem(c) else { continue }
                 found += item.totalSize
