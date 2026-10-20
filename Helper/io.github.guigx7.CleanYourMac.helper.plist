@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>Label</key>
+	<string>io.github.guigx7.CleanYourMac.helper</string>
+	<key>BundleProgram</key>
+	<string>Contents/MacOS/CleanYourMacHelper</string>
+	<key>MachServices</key>
+	<dict>
+		<key>io.github.guigx7.CleanYourMac.helper</key>
+		<true/>
+	</dict>
+	<key>AssociatedBundleIdentifiers</key>
+	<array>
+		<string>io.github.guigx7.CleanYourMac</string>
+	</array>
+</dict>
+</plist>

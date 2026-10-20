@@ -31,7 +31,8 @@ func stubItem(_ group: GroupID, _ name: String, _ size: Int64, recommended: Bool
 }
 
 @MainActor
-func makeModel(_ scanners: [any GroupScanner], failing: Set<String> = [], privileged: any PrivilegedRunner = NoAdmin()) -> CleanupFlowModel {
+func makeModel(_ scanners: [any GroupScanner], failing: Set<String> = [], privileged: any PrivilegedRunner = NoAdmin(),
+               helperActive: Bool = false) -> CleanupFlowModel {
     let ctx = ScanContext(root: URL(fileURLWithPath: "/tmp/cym-stub"), home: URL(fileURLWithPath: "/tmp/cym-stub/home"),
                           userName: "t", preferredLanguages: ["en"], now: .now)
     let logs = FileManager.default.temporaryDirectory.appendingPathComponent("cym-logs-\(UUID())")
@@ -41,7 +42,8 @@ func makeModel(_ scanners: [any GroupScanner], failing: Set<String> = [], privil
     let cleaner = FailingFilterEngine(failing: failing, policies: policies, logs: logs)
     return CleanupFlowModel(scanEngine: ScanEngine(scanners: scanners),
                             cleanEngine: cleaner,
-                            context: ctx, groups: Set(scanners.map(\.group)), privileged: privileged)
+                            context: ctx, groups: Set(scanners.map(\.group)), privileged: privileged,
+                            helperActive: { helperActive })
 }
 
 /// Limpeza simulada: os ids em `failing` falham.

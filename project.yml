@@ -14,14 +14,29 @@ settings:
     SWIFT_VERSION: "6.0"
     MARKETING_VERSION: "0.1.0"
     CURRENT_PROJECT_VERSION: "1"
+    # SMAppService exige app e helper assinados pelo mesmo time (Apple Development serve localmente).
+    DEVELOPMENT_TEAM: Z452FGT943
+    CODE_SIGN_STYLE: Manual
+    CODE_SIGN_IDENTITY: 3ABE4276EE0CEFB9691BA7B5D2875589334081C0
+    PROVISIONING_PROFILE_SPECIFIER: ""
 targets:
   CleanYourMac:
     type: application
     platform: macOS
-    sources: [App]
+    sources:
+      - App
+      - path: Helper/io.github.guigx7.CleanYourMac.helper.plist
+        buildPhase:
+          copyFiles:
+            destination: wrapper
+            subpath: Contents/Library/LaunchDaemons
     dependencies:
       - package: Core
         product: CleanYourMacCore
+      - target: CleanYourMacHelper
+        embed: true
+        copy:
+          destination: executables
     info:
       path: App/Info.plist
       properties:
@@ -36,9 +51,22 @@ targets:
         PRODUCT_BUNDLE_IDENTIFIER: io.github.guigx7.CleanYourMac
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
         ENABLE_HARDENED_RUNTIME: YES
-        CODE_SIGN_STYLE: Automatic
-        CODE_SIGN_IDENTITY: "-"
         GENERATE_INFOPLIST_FILE: NO
+  CleanYourMacHelper:
+    type: tool
+    platform: macOS
+    sources:
+      - path: Helper
+        excludes: ["*.plist"]
+    dependencies:
+      - package: Core
+        product: CleanYourMacCore
+    settings:
+      base:
+        PRODUCT_NAME: CleanYourMacHelper
+        PRODUCT_BUNDLE_IDENTIFIER: io.github.guigx7.CleanYourMac.helper
+        ENABLE_HARDENED_RUNTIME: YES
+        SKIP_INSTALL: YES
   CleanYourMacTests:
     type: bundle.unit-test
     platform: macOS
@@ -51,7 +79,6 @@ targets:
         TEST_HOST: "$(BUILT_PRODUCTS_DIR)/CleanYourMac.app/Contents/MacOS/CleanYourMac"
         BUNDLE_LOADER: "$(TEST_HOST)"
         GENERATE_INFOPLIST_FILE: YES
-        CODE_SIGN_IDENTITY: "-"
 schemes:
   CleanYourMac:
     build:

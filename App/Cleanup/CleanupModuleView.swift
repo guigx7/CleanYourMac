@@ -57,9 +57,10 @@ enum CleanupEnvironment {
         let policyScanners = scanners
         let policyContext = context
         let clean = CleanEngine(policyProvider: { Registry.policies(for: policyScanners, context: policyContext) },
-                                privileged: AppleScriptPrivilegedRunner(), dryRun: dryRun, log: .standard)
+                                privileged: AppPrivilegedRunner(), dryRun: dryRun, log: .standard)
         return CleanupFlowModel(scanEngine: ScanEngine(scanners: scanners), cleanEngine: clean,
-                                context: context, groups: Set(scanners.map(\.group)))
+                                context: context, groups: Set(scanners.map(\.group)),
+                                privileged: AppPrivilegedRunner(), helperActive: { HelperManager.shared.state == .active })
     }
 }
 

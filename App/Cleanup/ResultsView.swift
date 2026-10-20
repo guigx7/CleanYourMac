@@ -1,4 +1,5 @@
 import SwiftUI
+import AppKit
 import CleanYourMacCore
 
 struct ResultsView: View {
@@ -26,6 +27,14 @@ struct ResultsView: View {
             }
         }
         .onAppear { withAnimation(.smooth(duration: 0.5)) { appeared = true } }
+        .onReceive(NotificationCenter.default.publisher(for: NSApplication.didBecomeActiveNotification)) { _ in
+            let was = HelperManager.shared.state
+            HelperManager.shared.refresh()
+            // Aprovado agora nos Ajustes: já mede o Cache do Sistema.
+            if was != .active, HelperManager.shared.state == .active, model.canMeasureAdminGroups {
+                Task { await model.measureAdminGroups() }
+            }
+        }
         .modifier(CleanConfirmation(model: model, pending: $pendingClean))
         .environment(\.requestClean) { pendingClean = $0 }
         .alert("results.restart.confirm.title", isPresented: $confirmRestart) {
@@ -72,7 +81,17 @@ struct ResultsView: View {
             HStack(spacing: 10) {
                 Button("results.reviewAll") { model.openReview() }
                     .buttonStyle(GlassButtonStyle(size: .large))
-                if model.canMeasureAdminGroups {
+                if HelperManager.shared.state != .active, HelperManager.shared.state != .unavailable {
+                    Button {
+                        HelperManager.shared.install()
+                    } label: {
+                        Label(HelperManager.shared.state == .needsApproval ? "helper.approve" : "helper.install",
+                              systemImage: "shield.lefthalf.filled")
+                    }
+                    .buttonStyle(GlassButtonStyle(size: .large))
+                    .help(Text("helper.install.hint"))
+                }
+                if model.canMeasureAdminGroups && HelperManager.shared.state != .active {
                     Button {
                         Task { await model.measureAdminGroups() }
                     } label: {

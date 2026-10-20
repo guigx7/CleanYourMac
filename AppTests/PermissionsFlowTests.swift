@@ -31,3 +31,20 @@ struct CancellingRunner: PrivilegedRunner {
     #expect(m.report?.totalSize == 10)
     #expect(m.phase == .results)
 }
+
+struct SizingRunner: PrivilegedRunner {
+    func run(_ commands: [PrivilegedCommand]) async throws(PrivilegedError) -> [Result<Void, CleanFailure>] { commands.map { _ in .success(()) } }
+    func measure(_ urls: [URL]) async throws(PrivilegedError) -> [Int64?] { urls.map { _ in 1_800_000_000 } }
+}
+
+@MainActor @Test func helperMeasuresSystemCacheAutomatically() async {
+    let candidate = URL(fileURLWithPath: "/tmp/cym-stub/Library/Caches/sys-\(UUID().uuidString)")
+    try? FileManager.default.createDirectory(at: candidate, withIntermediateDirectories: true)
+    defer { try? FileManager.default.removeItem(at: candidate) }
+    let m = makeModel([StubScanner(group: .userCache, items: [stubItem(.userCache, "u", 10)]), StubScanner(group: .systemCache)],
+                      privileged: SizingRunner(), helperActive: true)
+    m.startScan()
+    await waitFor { m.adminMeasure == .done }
+    #expect(m.report?.groups[.systemCache]?.totalSize == 1_800_000_000)
+    #expect(m.cleanRequirements([stubItem(.systemCache, "s", 1)]).isEmpty)
+}

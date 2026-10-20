@@ -1293,6 +1293,57 @@
         }
       }
     },
+    "helper.approve": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Approve helper in Settings"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aprovar ajudante nos Ajustes"
+          }
+        }
+      }
+    },
+    "helper.install": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Install helper"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Instalar ajudante"
+          }
+        }
+      }
+    },
+    "helper.install.hint": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A small background service measures and cleans system files without asking for your password every time."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Um pequeno serviço em segundo plano mede e limpa arquivos do sistema sem pedir sua senha toda vez."
+          }
+        }
+      }
+    },
     "ios.broken": {
       "extractionState": "manual",
       "localizations": {

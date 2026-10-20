@@ -46,22 +46,26 @@ final class CleanupFlowModel {
     private let context: ScanContext
     private let groups: Set<GroupID>
     private let privileged: any PrivilegedRunner
+    /// O helper privilegiado está instalado e ativo (sem senha; mede o Cache do Sistema sempre).
+    private let helperActive: @MainActor () -> Bool
     private var task: Task<Void, Never>?
     private var bytesByGroup: [GroupID: Int64] = [:]
 
     init(scanEngine: ScanEngine, cleanEngine: any Cleaning, context: ScanContext, groups: Set<GroupID>,
-         privileged: any PrivilegedRunner = AppleScriptPrivilegedRunner()) {
+         privileged: any PrivilegedRunner = AppleScriptPrivilegedRunner(),
+         helperActive: @escaping @MainActor () -> Bool = { false }) {
         self.scanEngine = scanEngine
         self.cleanEngine = cleanEngine
         self.context = context
         self.groups = groups
         self.privileged = privileged
+        self.helperActive = helperActive
     }
 
     func cleanRequirements(_ items: [JunkItem]) -> Set<CleanRequirement> {
         let leaves = items.flatMap(\.leaves)
         var out: Set<CleanRequirement> = []
-        if leaves.contains(where: { $0.group.requiresAdmin }) { out.insert(.admin) }
+        if !helperActive(), leaves.contains(where: { $0.group.requiresAdmin }) { out.insert(.admin) }
         if leaves.contains(where: { [.universalBinaries, .languageFiles].contains($0.group) }) { out.insert(.appManagement) }
         return out
     }
@@ -277,6 +281,10 @@ final class CleanupFlowModel {
             currentPath = ""
             currentGroup = nil
             phase = report.isEmpty ? .nothingFound : .results
+            // Com o helper ativo, mede o que exige root logo depois da análise, como o CleanMyMac.
+            if helperActive(), groups.contains(where: \.requiresAdminToScan) {
+                Task { await measureAdminGroups() }
+            }
         }
     }
 

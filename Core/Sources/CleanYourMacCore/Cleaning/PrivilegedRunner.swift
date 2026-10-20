@@ -12,7 +12,7 @@ public enum PrivilegedError: Error, Sendable {
 }
 
 /// Operações que podem rodar como root, num único lote por limpeza.
-public enum PrivilegedCommand: Hashable, Sendable {
+public enum PrivilegedCommand: Hashable, Sendable, Codable {
     case remove(URL)
     case removeContents(URL)
     case lipoThin(URL, keepArch: String)

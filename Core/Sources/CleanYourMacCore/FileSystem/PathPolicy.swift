@@ -46,6 +46,12 @@ public struct PathPolicy: Sendable {
         throw .outsideAllowedRoots(lexical.path)
     }
 
+    /// O caminho (real) é um local vital ou ancestral de um.
+    static func isVital(_ path: String) -> Bool {
+        let parts = components(realPath(path))
+        return vital.contains(where: { $0 == parts || isStrictPrefix(parts, of: $0) })
+    }
+
     /// Locais que nunca podem ser removidos inteiros (nem um ancestral deles).
     private static let vital: [[String]] = {
         let home = FileManager.default.homeDirectoryForCurrentUser.path
