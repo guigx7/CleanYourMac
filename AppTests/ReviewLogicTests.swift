@@ -61,3 +61,11 @@ private func rep(_ sizes: [GroupID: [Int64]]) -> ScanReport {
     let parent = JunkItem(group: .aiAgentsJunk, name: "Claude", url: nil, size: 0, children: [child])
     #expect(ReviewLogic.filter([parent], query: "cach").map(\.name) == ["Claude"])
 }
+
+// Sem Acesso Total ao Disco, Mail e Lixos ficam ilegíveis: vazio não significa "tudo em ordem".
+@Test func emptyStateAsksForDiskAccessWhenHidden() {
+    #expect(ReviewLogic.emptyNeedsDiskAccess(.trashBins, hasFullDiskAccess: false))
+    #expect(ReviewLogic.emptyNeedsDiskAccess(.mailAttachments, hasFullDiskAccess: false))
+    #expect(!ReviewLogic.emptyNeedsDiskAccess(.trashBins, hasFullDiskAccess: true))
+    #expect(!ReviewLogic.emptyNeedsDiskAccess(.systemJunk, hasFullDiskAccess: false))
+}

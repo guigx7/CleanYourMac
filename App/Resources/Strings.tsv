@@ -200,3 +200,4 @@ permissions.fda.short	Allow Full Disk Access	Permitir Acesso Total ao Disco
 helper.install	Install helper	Instalar ajudante
 helper.approve	Approve helper in Settings	Aprovar ajudante nos Ajustes
 helper.install.hint	A small background service measures and cleans system files without asking for your password every time.	Um pequeno serviço em segundo plano mede e limpa arquivos do sistema sem pedir sua senha toda vez.
+review.category.needsDiskAccess	macOS hides this area until CleanYourMac has Full Disk Access.	O macOS esconde esta área até o CleanYourMac ter Acesso Total ao Disco.

@@ -239,13 +239,25 @@ struct ReviewView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 
-    private var categoryEmptyState: some View {
-        VStack(spacing: 10) {
-            Image(systemName: "checkmark.seal").font(.system(size: 44)).foregroundStyle(Theme.reviewTint)
-            Text(category.title).font(.title2.weight(.semibold))
-            Text("review.category.empty").foregroundStyle(.secondary)
+    @ViewBuilder private var categoryEmptyState: some View {
+        if ReviewLogic.emptyNeedsDiskAccess(category, hasFullDiskAccess: PermissionsService.hasFullDiskAccess()) {
+            VStack(spacing: 10) {
+                Image(systemName: "lock.shield").font(.system(size: 44)).foregroundStyle(.orange)
+                Text(category.title).font(.title2.weight(.semibold))
+                Text("review.category.needsDiskAccess").foregroundStyle(.secondary)
+                    .multilineTextAlignment(.center).frame(maxWidth: 360)
+                Button("permissions.openSettings") { PermissionsService.openSettings(.fullDiskAccess) }
+                    .buttonStyle(.borderedProminent)
+            }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+        } else {
+            VStack(spacing: 10) {
+                Image(systemName: "checkmark.seal").font(.system(size: 44)).foregroundStyle(Theme.reviewTint)
+                Text(category.title).font(.title2.weight(.semibold))
+                Text("review.category.empty").foregroundStyle(.secondary)
+            }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 
     // MARK: Rodapé

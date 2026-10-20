@@ -45,6 +45,11 @@ enum ReviewLogic {
         return present.map(\.group)
     }
 
+    /// Mail e Lixos ficam ilegíveis sem Acesso Total ao Disco (TCC): o vazio deve pedir a permissão.
+    static func emptyNeedsDiskAccess(_ category: CategoryID, hasFullDiskAccess: Bool) -> Bool {
+        !hasFullDiskAccess && [.mailAttachments, .trashBins].contains(category)
+    }
+
     /// Categoria sem nenhum item em nenhum grupo.
     static func isEmpty(_ category: CategoryID, report: ScanReport?) -> Bool {
         guard let report else { return true }

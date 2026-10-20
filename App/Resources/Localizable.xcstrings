@@ -2092,6 +2092,23 @@
         }
       }
     },
+    "review.category.needsDiskAccess": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "macOS hides this area until CleanYourMac has Full Disk Access."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "O macOS esconde esta área até o CleanYourMac ter Acesso Total ao Disco."
+          }
+        }
+      }
+    },
     "review.context.deselect": {
       "extractionState": "manual",
       "localizations": {
