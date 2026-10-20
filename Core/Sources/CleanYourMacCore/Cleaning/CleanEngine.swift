@@ -116,7 +116,7 @@ public final class CleanEngine: Sendable {
         }
 
         let report = CleanReport(freedBytes: freed, removed: removed, failed: failed, dryRun: dryRun)
-        try? log.write(report)
+        _ = try? log.write(report)
         return report
     }
 

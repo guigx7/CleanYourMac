@@ -4,3 +4,34 @@ module.performance	Performance	Desempenho
 module.applications	Applications	Aplicativos
 module.spaceLens	Space Lens	Lupa de Espaço
 module.soon	Soon	Em breve
+# Categorias
+category.systemJunk	System junk	Detritos do sistema
+category.aiClutter	AI clutter	Acúmulos de IA
+category.mailAttachments	Mail attachments	Anexos do Mail
+category.trashBins	Trash bins	Lixos
+# Grupos
+group.userCache	User cache files	Arquivos de cache do usuário
+group.systemCache	System cache files	Arquivos de cache do sistema
+group.userLogs	User log files	Arquivos de registro do usuário
+group.systemLogs	System log files	Arquivos de registro do sistema
+group.universalBinaries	Universal binaries	Binários universais
+group.languageFiles	Language files	Arquivos de idioma
+group.brokenLoginItems	Broken login items	Itens de início defeituosos
+group.brokenPreferences	Broken preferences	Preferências defeituosas
+group.documentVersions	Document versions	Versões de documentos
+group.deletedUsers	Deleted users	Usuários apagados
+group.iosBackups	iOS device backups	Backups de dispositivos iOS
+group.xcodeJunk	Xcode junk	Detritos do Xcode
+group.aiAgentsJunk	AI tool leftovers	Sobras de ferramentas de IA
+group.localModels	Local models	Modelos locais
+group.mailAttachments	Mail downloads	Downloads do Mail
+group.trash	Trash	Lixo
+group.mailTrash	Mail trash	Lixo do Mail
+# Intro
+cleanup.intro.title	Cleanup	Limpeza
+cleanup.intro.subtitle	Find the files your Mac keeps but no longer needs, review them, and free up space.	Encontre os arquivos que o Mac guarda sem precisar, revise e libere espaço.
+cleanup.action.scan	Scan	Analisar
+# Análise
+cleanup.scan.title	Scanning your Mac…	Analisando o Mac…
+cleanup.scan.found	found so far	encontrados até agora
+cleanup.action.stop	Stop	Parar

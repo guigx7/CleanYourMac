@@ -2,6 +2,7 @@ import SwiftUI
 
 struct RootView: View {
     @State private var module: AppModule = .cleanup
+    @State private var cleanup = CleanupEnvironment.makeModel()
 
     var body: some View {
         HStack(spacing: 0) {
@@ -17,7 +18,7 @@ struct RootView: View {
     @ViewBuilder private var content: some View {
         switch module {
         case .cleanup:
-            ModuleArtwork(module: .cleanup, isAnimating: false)
+            CleanupModuleView(model: cleanup)
         default:
             EmptyView()
         }
