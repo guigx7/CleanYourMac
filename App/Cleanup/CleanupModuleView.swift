@@ -12,11 +12,18 @@ struct CleanupModuleView: View {
                 IntroView(onScan: model.startScan).transition(.stage)
             case .scanning:
                 ScanningView(model: model).transition(.stage)
+            case .results, .review:
+                ResultsView(model: model).transition(.stage)
+            case .nothingFound:
+                NothingFoundView(model: model).transition(.stage)
             default:
                 IntroView(onScan: model.startScan).transition(.stage)
             }
         }
         .animation(.smooth(duration: 0.45), value: model.phase)
+        #if DEBUG
+        .task { await DebugAutomation.run(model) }
+        #endif
     }
 }
 
@@ -41,10 +48,27 @@ enum CleanupEnvironment {
         #else
         let dryRun = false
         #endif
-        let scanners = Registry.productionScanners()
+        var scanners = Registry.productionScanners()
+        #if DEBUG
+        if env["CYM_DEMO"] == "1" { scanners = DemoData.scanners }
+        #endif
         let clean = CleanEngine(policies: Registry.policies(for: scanners, context: context),
                                 privileged: AppleScriptPrivilegedRunner(), dryRun: dryRun, log: .standard)
         return CleanupFlowModel(scanEngine: ScanEngine(scanners: scanners), cleanEngine: clean,
                                 context: context, groups: Set(scanners.map(\.group)))
     }
 }
+
+#if DEBUG
+/// `CYM_AUTO=scan|results|review` leva o fluxo até a tela pedida (para capturas).
+@MainActor
+enum DebugAutomation {
+    static func run(_ model: CleanupFlowModel) async {
+        guard let target = ProcessInfo.processInfo.environment["CYM_AUTO"] else { return }
+        model.startScan()
+        guard target != "scan" else { return }
+        while model.phase == .scanning { try? await Task.sleep(for: .milliseconds(50)) }
+        if target == "review" { model.openReview() }
+    }
+}
+#endif

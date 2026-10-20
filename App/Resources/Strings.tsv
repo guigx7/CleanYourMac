@@ -75,3 +75,42 @@ group.mailAttachments.description	Attachments Mail downloaded to this Mac.	Anexo
 group.trash.description	Files in your trash and in the trash of connected drives.	Arquivos no seu lixo e no lixo de discos conectados.
 group.mailTrash.description	Deleted messages kept locally by Mail.	Mensagens apagadas que o Mail guarda localmente.
 ios.latest	Latest	Mais recente
+# Resultados
+results.header	Found %@ of junk on your Mac.	Encontramos %@ de detritos no Mac.
+results.reviewAll	Review all junk	Revisar todos os detritos
+results.restart	Start over	Recomeçar
+results.restart.confirm.title	Discard these results and start over?	Descartar estes resultados e recomeçar?
+results.restart.confirm.message	Nothing will be cleaned. You'll need to scan again.	Nada será limpo. Será preciso analisar de novo.
+results.partial	The scan was stopped, so these results are incomplete.	A análise foi interrompida, então estes resultados estão incompletos.
+results.action.review	Review	Revisar
+results.action.clean	Clean	Limpar
+common.cancel	Cancel	Cancelar
+results.clean.title	Your Mac is clean	O Mac está limpo
+results.clean.message	The scan found nothing to clean.	A análise não encontrou nada para limpar.
+tile.systemJunk.found	%@ of system junk found	%@ de detritos do sistema encontrados
+tile.systemJunk.removed	%@ of system junk removed	%@ de detritos do sistema removidos
+tile.systemJunk.description	Caches, logs and other files the system and apps no longer need.	Caches, registros e outros arquivos que o sistema e os apps não precisam mais.
+tile.aiClutter.found	%@ of AI clutter found	%@ de acúmulos de IA encontrados
+tile.aiClutter.removed	%@ of AI clutter removed	%@ de acúmulos de IA removidos
+tile.aiClutter.description	Leftovers and downloaded models from the AI tools on this Mac.	Sobras e modelos baixados das ferramentas de IA deste Mac.
+tile.mailAttachments.found	%@ of Mail attachments found	%@ de anexos do Mail encontrados
+tile.mailAttachments.removed	%@ of Mail attachments removed	%@ de anexos do Mail removidos
+tile.mailAttachments.description	Local copies you can download again from your mail account.	Cópias locais que você pode baixar de novo da sua conta de e-mail.
+tile.trashBins.found	%@ in the trash	%@ nos lixos
+tile.trashBins.removed	%@ removed from the trash	%@ removidos dos lixos
+tile.trashBins.description	Deleted items that still take up space.	Itens apagados que ainda ocupam espaço.
+tile.universalBinaries.found	%@ of extra app code found	%@ de código extra de apps encontrados
+tile.universalBinaries.removed	%@ of extra app code removed	%@ de código extra de apps removidos
+tile.universalBinaries.description	Code for a processor this Mac doesn't use.	Código para um processador que este Mac não usa.
+tile.xcodeJunk.found	%@ of Xcode junk found	%@ de detritos do Xcode encontrados
+tile.xcodeJunk.removed	%@ of Xcode junk removed	%@ de detritos do Xcode removidos
+tile.xcodeJunk.description	Build data and archives Xcode can recreate.	Dados de build e arquivos que o Xcode pode recriar.
+tile.iosBackups.found	%@ of iOS backups found	%@ de backups do iOS encontrados
+tile.iosBackups.removed	%@ of iOS backups removed	%@ de backups do iOS removidos
+tile.iosBackups.description	Old device backups you may no longer need.	Backups antigos de aparelhos que talvez você não precise mais.
+tile.deletedUsers.found	%@ from deleted users found	%@ de usuários apagados encontrados
+tile.deletedUsers.removed	%@ from deleted users removed	%@ de usuários apagados removidos
+tile.deletedUsers.description	Data kept from accounts removed from this Mac.	Dados guardados de contas removidas deste Mac.
+tile.documentVersions.found	%@ of document versions found	%@ de versões de documentos encontrados
+tile.documentVersions.removed	%@ of document versions removed	%@ de versões de documentos removidos
+tile.documentVersions.description	Older saved versions of documents you edited.	Versões antigas salvas de documentos que você editou.

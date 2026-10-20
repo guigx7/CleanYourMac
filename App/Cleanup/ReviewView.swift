@@ -301,13 +301,14 @@ struct TriStateCheckbox: View {
 /// Ícone do Finder para arquivos/apps, ou um símbolo.
 struct ItemIcon: View {
     var source: IconSource
+    var tint: Color = Theme.reviewTint
 
     var body: some View {
         switch source {
         case .file(let url), .app(let url):
             Image(nsImage: NSWorkspace.shared.icon(forFile: url.path)).resizable().interpolation(.high)
         case .symbol(let name):
-            Image(systemName: name).resizable().scaledToFit().padding(4).foregroundStyle(Theme.reviewTint)
+            Image(systemName: name).resizable().scaledToFit().padding(4).foregroundStyle(tint)
         }
     }
 }
