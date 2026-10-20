@@ -150,7 +150,7 @@ xcode.tvosDeviceSupport	tvOS device support	Suporte a dispositivos tvOS
 xcode.watchosDeviceSupport	watchOS device support	Suporte a dispositivos watchOS
 xcode.macosDeviceSupport	macOS device support	Suporte a dispositivos macOS
 xcode.deviceLogs	iOS device logs	Registros de dispositivos iOS
-xcode.simulatorCaches	Simulator caches	Caches do simulador
+xcode.simulatorCaches	Xcode caches	Caches do Xcode
 xcode.moduleCaches	Module caches	Caches de módulos
 xcode.documentation	Documentation cache	Cache de documentação
 xcode.runtimes	Simulator runtimes	Runtimes do simulador

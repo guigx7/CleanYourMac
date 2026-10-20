@@ -150,3 +150,9 @@ private let systemLogs = LogsScanner.systemLogs(apps: FakeApps())
     #expect(!GroupID.systemLogs.requiresAdminToScan)
     #expect(!GroupID.userLogs.requiresAdmin)
 }
+
+@Test func userLogs_coreSimulatorExcluded() async throws {
+    let t = FixtureTree(); let ctx = t.context()
+    t.file("Users/tester/Library/Logs/CoreSimulator/CoreSimulator.log", bytes: 50_000)
+    #expect(try await scan(userLogs, ctx).isEmpty)
+}

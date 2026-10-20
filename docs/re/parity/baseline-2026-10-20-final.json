@@ -1,0 +1,1821 @@
+{
+  "cmmVersion": "5.7.2",
+  "capturedAt": "2026-10-20T19:18:38+00:00",
+  "groups": {
+    "userCache": {
+      "totalBytes": 4100000000,
+      "items": [
+        {
+          "name": "Google",
+          "bytes": 1600000000,
+          "recommended": false
+        },
+        {
+          "name": "Homebrew",
+          "bytes": 1300000000,
+          "recommended": false
+        },
+        {
+          "name": "pnpm",
+          "bytes": 455000000,
+          "recommended": false
+        },
+        {
+          "name": "clang",
+          "bytes": 381000000,
+          "recommended": false
+        },
+        {
+          "name": "node-gyp",
+          "bytes": 67600000,
+          "recommended": false
+        },
+        {
+          "name": "com.apple.helpd",
+          "bytes": 37600000,
+          "recommended": false
+        },
+        {
+          "name": "WallpaperAgent.app",
+          "bytes": 32900000,
+          "recommended": false
+        },
+        {
+          "name": "WhatsApp.app",
+          "bytes": 27600000,
+          "recommended": false
+        },
+        {
+          "name": "Google Chrome Helper (Aperitif).app",
+          "bytes": 23400000,
+          "recommended": false
+        },
+        {
+          "name": "ffmpeg-static-nodejs",
+          "bytes": 19300000,
+          "recommended": false
+        },
+        {
+          "name": "com.apple.Safari.SafeBrowsing",
+          "bytes": 19000000,
+          "recommended": false
+        },
+        {
+          "name": "com.apple.parsecd",
+          "bytes": 17200000,
+          "recommended": false
+        },
+        {
+          "name": "Vorssaint.app",
+          "bytes": 14400000,
+          "recommended": false
+        },
+        {
+          "name": "com.apple.iconservicesagent",
+          "bytes": 7000000,
+          "recommended": false
+        },
+        {
+          "name": "NotificationCenter.app",
+          "bytes": 5300000,
+          "recommended": false
+        },
+        {
+          "name": "com.onevcat.Kingfisher.ImageCache.default",
+          "bytes": 4400000,
+          "recommended": false
+        },
+        {
+          "name": "com.apple.photolibraryd",
+          "bytes": 3900000,
+          "recommended": false
+        },
+        {
+          "name": "Setapp.app",
+          "bytes": 3600000,
+          "recommended": false
+        },
+        {
+          "name": "Phone.app",
+          "bytes": 3300000,
+          "recommended": false
+        },
+        {
+          "name": "com.apple.geod",
+          "bytes": 2600000,
+          "recommended": false
+        },
+        {
+          "name": "Spotlight.app",
+          "bytes": 2500000,
+          "recommended": false
+        },
+        {
+          "name": "com.apple.AppleMediaServices",
+          "bytes": 2400000,
+          "recommended": false
+        },
+        {
+          "name": "PassKit",
+          "bytes": 2400000,
+          "recommended": false
+        },
+        {
+          "name": "Perssua Helper (GPU).app",
+          "bytes": 2300000,
+          "recommended": false
+        },
+        {
+          "name": "com.apple.replayd",
+          "bytes": 1900000,
+          "recommended": false
+        },
+        {
+          "name": "com.apple.iconservices",
+          "bytes": 1900000,
+          "recommended": false
+        },
+        {
+          "name": "com.apple.CloudTelemetry",
+          "bytes": 1300000,
+          "recommended": false
+        },
+        {
+          "name": "GlucoTracker.app",
+          "bytes": 1100000,
+          "recommended": false
+        },
+        {
+          "name": "com.apple.amsengagementd",
+          "bytes": 987000,
+          "recommended": false
+        },
+        {
+          "name": "CleanMyMac.app",
+          "bytes": 958000,
+          "recommended": false
+        },
+        {
+          "name": "com.apple.iTunes",
+          "bytes": 881000,
+          "recommended": false
+        },
+        {
+          "name": "logioptionsplus.app",
+          "bytes": 803000,
+          "recommended": false
+        },
+        {
+          "name": "CleanYourMac.app",
+          "bytes": 700000,
+          "recommended": false
+        },
+        {
+          "name": "com.apple.sirittsd",
+          "bytes": 684000,
+          "recommended": false
+        },
+        {
+          "name": "com.apple.ctcategories.service",
+          "bytes": 680000,
+          "recommended": false
+        },
+        {
+          "name": "com.apple.stocks.widget",
+          "bytes": 623000,
+          "recommended": false
+        },
+        {
+          "name": "com.apple.findmy.FindMyWidgetPeople",
+          "bytes": 602000,
+          "recommended": false
+        },
+        {
+          "name": "com.apple.AMPLibraryAgent",
+          "bytes": 602000,
+          "recommended": false
+        },
+        {
+          "name": "com.apple.systempreferences.AppleIDSettings",
+          "bytes": 553000,
+          "recommended": false
+        },
+        {
+          "name": "org.swift.swiftpm",
+          "bytes": 524000,
+          "recommended": false
+        },
+        {
+          "name": "PasswordManagerBrowserExtensionHelper.app",
+          "bytes": 483000,
+          "recommended": false
+        },
+        {
+          "name": "com.apple.passd",
+          "bytes": 451000,
+          "recommended": false
+        },
+        {
+          "name": "com.apple.DeveloperTools",
+          "bytes": 442000,
+          "recommended": false
+        },
+        {
+          "name": "com.apple.Family-Settings.extension",
+          "bytes": 426000,
+          "recommended": false
+        },
+        {
+          "name": "com.apple.Battery-Settings.extension",
+          "bytes": 401000,
+          "recommended": false
+        },
+        {
+          "name": "com.apple.storekitagent",
+          "bytes": 393000,
+          "recommended": false
+        },
+        {
+          "name": "com.apple.wallpaper.extension.legacy",
+          "bytes": 385000,
+          "recommended": false
+        },
+        {
+          "name": "com.apple.iCloudNotificationAgent",
+          "bytes": 377000,
+          "recommended": false
+        },
+        {
+          "name": "com.apple.akd",
+          "bytes": 373000,
+          "recommended": false
+        },
+        {
+          "name": "com.apple.dt.xcodebuild",
+          "bytes": 348000,
+          "recommended": false
+        },
+        {
+          "name": "com.apple.settings.Storage",
+          "bytes": 336000,
+          "recommended": false
+        },
+        {
+          "name": "com.apple.amsaccountsd",
+          "bytes": 328000,
+          "recommended": false
+        },
+        {
+          "name": "com.apple.FeatureAccessAgent",
+          "bytes": 291000,
+          "recommended": false
+        },
+        {
+          "name": "com.apple.tipsd",
+          "bytes": 283000,
+          "recommended": false
+        },
+        {
+          "name": "com.apple.ContactsUI.MonogramPosterExtension",
+          "bytes": 279000,
+          "recommended": false
+        },
+        {
+          "name": "Perssua.app",
+          "bytes": 270000,
+          "recommended": false
+        },
+        {
+          "name": "com.apple.translationd",
+          "bytes": 258000,
+          "recommended": false
+        },
+        {
+          "name": "com.apple.managedappdistributionagent",
+          "bytes": 242000,
+          "recommended": false
+        },
+        {
+          "name": "familycircled",
+          "bytes": 238000,
+          "recommended": false
+        },
+        {
+          "name": "com.apple.itunescloudd",
+          "bytes": 217000,
+          "recommended": false
+        },
+        {
+          "name": "CleanMyMac_5_Setapp_HealthMonitor.app",
+          "bytes": 217000,
+          "recommended": false
+        },
+        {
+          "name": "Finder.app",
+          "bytes": 205000,
+          "recommended": false
+        },
+        {
+          "name": "com.apple.duetexpertd",
+          "bytes": 197000,
+          "recommended": false
+        },
+        {
+          "name": "com.apple.remindd",
+          "bytes": 172000,
+          "recommended": false
+        },
+        {
+          "name": "com.apple.geoanalyticsd",
+          "bytes": 172000,
+          "recommended": false
+        },
+        {
+          "name": "com.apple.dataaccess.dataaccessd",
+          "bytes": 172000,
+          "recommended": false
+        },
+        {
+          "name": "com.apple.askpermissiond",
+          "bytes": 156000,
+          "recommended": false
+        },
+        {
+          "name": "com.apple.icloudwebd",
+          "bytes": 147000,
+          "recommended": false
+        },
+        {
+          "name": "com.apple.appleaccountd",
+          "bytes": 147000,
+          "recommended": false
+        },
+        {
+          "name": "screencaptureui.app",
+          "bytes": 139000,
+          "recommended": false
+        },
+        {
+          "name": "logioptionsplus_agent.app",
+          "bytes": 139000,
+          "recommended": false
+        },
+        {
+          "name": "Karabiner-Updater.app",
+          "bytes": 139000,
+          "recommended": false
+        },
+        {
+          "name": "Hidden Bar.app",
+          "bytes": 139000,
+          "recommended": false
+        },
+        {
+          "name": "ControlCenter.app",
+          "bytes": 139000,
+          "recommended": false
+        },
+        {
+          "name": "com.apple.SecurityAgent",
+          "bytes": 139000,
+          "recommended": false
+        },
+        {
+          "name": "com.apple.Keyboard-Settings.extension",
+          "bytes": 139000,
+          "recommended": false
+        },
+        {
+          "name": "com.apple.dock.helper",
+          "bytes": 139000,
+          "recommended": false
+        },
+        {
+          "name": "com.apple.Accessibility-Settings.extension",
+          "bytes": 139000,
+          "recommended": false
+        },
+        {
+          "name": "Zed.app",
+          "bytes": 135000,
+          "recommended": false
+        },
+        {
+          "name": "GoogleUpdater.app",
+          "bytes": 127000,
+          "recommended": false
+        },
+        {
+          "name": "com.apple.AuthenticationServicesCore.AuthenticationServicesAgent",
+          "bytes": 127000,
+          "recommended": false
+        },
+        {
+          "name": "com.apple.settings.PrivacySecurity.extension",
+          "bytes": 123000,
+          "recommended": false
+        },
+        {
+          "name": "com.apple.Notifications-Settings.extension",
+          "bytes": 123000,
+          "recommended": false
+        },
+        {
+          "name": "com.apple.proactive.eventtracker",
+          "bytes": 106000,
+          "recommended": false
+        },
+        {
+          "name": "com.apple.mediastream.mstreamd",
+          "bytes": 81900,
+          "recommended": false
+        },
+        {
+          "name": "com.apple.donotdisturbd",
+          "bytes": 81900,
+          "recommended": false
+        },
+        {
+          "name": "Warp.app",
+          "bytes": 69600,
+          "recommended": false
+        },
+        {
+          "name": "Dock.app",
+          "bytes": 69600,
+          "recommended": false
+        },
+        {
+          "name": "Activity Monitor.app",
+          "bytes": 69600,
+          "recommended": false
+        },
+        {
+          "name": "com.apple.mediaanalysisd",
+          "bytes": 65500,
+          "recommended": false
+        },
+        {
+          "name": "com.apple.MTLAssetUpgraderD",
+          "bytes": 61400,
+          "recommended": false
+        },
+        {
+          "name": "com.apple.feedbacklogger",
+          "bytes": 57300,
+          "recommended": false
+        },
+        {
+          "name": "SentryCrash",
+          "bytes": 32800,
+          "recommended": false
+        },
+        {
+          "name": "com.apple.colorsync.profiles.501",
+          "bytes": 32800,
+          "recommended": false
+        },
+        {
+          "name": "com.apple.nsservicescache.plist",
+          "bytes": 28700,
+          "recommended": false
+        },
+        {
+          "name": "io.sentry",
+          "bytes": 24600,
+          "recommended": false
+        },
+        {
+          "name": "com.apple.WebKit.GPU",
+          "bytes": 20500,
+          "recommended": false
+        },
+        {
+          "name": "com.apple.scriptmanager2.le.cache",
+          "bytes": 20500,
+          "recommended": false
+        },
+        {
+          "name": "com.apple.cache_delete",
+          "bytes": 20500,
+          "recommended": false
+        },
+        {
+          "name": "SetappLauncher.app",
+          "bytes": 4100,
+          "recommended": false
+        },
+        {
+          "name": "Setapp.app",
+          "bytes": 4100,
+          "recommended": false
+        },
+        {
+          "name": "net.whatsapp.WhatsApp.ServiceExtension",
+          "bytes": 4100,
+          "recommended": false
+        },
+        {
+          "name": "INSTALLATION",
+          "bytes": 4100,
+          "recommended": false
+        },
+        {
+          "name": "com.apple.systemsettings.menucache",
+          "bytes": 4100,
+          "recommended": false
+        },
+        {
+          "name": "com.apple.preferencepanes.usercache",
+          "bytes": 4100,
+          "recommended": false
+        },
+        {
+          "name": "com.apple.findmy.findmylocateagent",
+          "bytes": 4100,
+          "recommended": false
+        },
+        {
+          "name": "com.apple.commerce",
+          "bytes": 4100,
+          "recommended": false
+        },
+        {
+          "name": "com.apple.chrono",
+          "bytes": 4100,
+          "recommended": false
+        },
+        {
+          "name": "com.apple.AssetCacheLocatorService",
+          "bytes": 4100,
+          "recommended": false
+        },
+        {
+          "name": "Zed",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "WindowManager.app",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "UTM.app",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "UserNotificationCenter.app",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "TextInputSwitcher.app",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "TextInputMenuAgent.app",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "talagent",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "studentd",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "StatusKitAgent",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "sociallayerd.app",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "SetappUpdater.app",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "SandboxHelper",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "Safari.app",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "QuickLookUIHelper.app",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "privatecloudcomputed.app",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "PasswordsMenuBarExtra.app",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "mobiletimerd",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "metrickitd",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "Maps.app",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "logioptionsplus Helper (GPU).app",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "loginwindow.app",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "Karabiner-NotificationWindow.app",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "Karabiner-Menu.app",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "itunescloudd",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "iPhone Mirroring.app",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "imagent.app",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "identityservicesd.app",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "iCloud Drive.app",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "icdd",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "homed",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "heard",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "Google Chrome.app",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "GlobalWorks.app",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "duetexpertd",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "diagnosticextensionsd",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "dev.biomejs.biome",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "CrashHandlerService",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "CoreServicesUIAgent.app",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "CoreLocationAgent.app",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "contentlinkingd",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "com.macpaw.CleanMyMac-setapp.FinderSyncExtension",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "com.apple.WorkflowKit.ShortcutsViewService",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "com.apple.weatherd",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "com.apple.usernotificationsd",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "com.apple.TrustedPeersHelper",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "com.apple.trustd",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "com.apple.triald",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "com.apple.trial.TrialArchivingService",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "com.apple.tiswitcher.cache",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "com.apple.ThreadCommissionerService",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "com.apple.textunderstandingd",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "com.apple.TextInputUI.xpc.CursorUIViewService",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "com.apple.testmanagerd",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "com.apple.TelephonyUtilities",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "com.apple.tccd",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "com.apple.systempreferences.GeneralSettings",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "com.apple.syncdefaultsd",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "com.apple.storekit",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "com.apple.StorageManagement.Service",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "com.apple.stickersd",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "com.apple.speech.localspeechrecognition",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "com.apple.siriinferenced",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "com.apple.siri.SuggestionsBookkeepingService",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "com.apple.siri.embeddedspeech",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "com.apple.SetStoreUpdateService",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "com.apple.sessionkit",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "com.apple.securityuploadd",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "com.apple.secureelementservice",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "com.apple.ScopedBookmarkAgent",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "com.apple.SafariPlatformSupport.Helper",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "com.apple.Safari.CacheDeleteExtension",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "com.apple.replicatord",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "com.apple.RemoteManagementAgent",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "com.apple.remotemanagement.SecuritySubscriber",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "com.apple.remotemanagement.ScreenSharingSubscriber",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "com.apple.remotemanagement.PasscodeSettingsSubscriber",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "com.apple.remotemanagement.ManagementTestSubscriber",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "com.apple.remotemanagement.ManagedSettingsSubscriber",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "com.apple.remotemanagement.ManagedAppsSubscriber",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "com.apple.remotemanagement.LegacyProfilesSubscriber",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "com.apple.remotemanagement.InteractiveLegacyProfilesSubscriber",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "com.apple.remotemanagement.AccountSubscriber",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "com.apple.quicklook.QuickLookUIService",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "com.apple.ProtectedCloudKeySyncing",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "com.apple.progressd",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "com.apple.PressAndHold",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "com.apple.pluginkit",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "com.apple.PhotosUIPrivate.PhotosPosterProvider",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "com.apple.Photos.PhotosReliveWidget",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "com.apple.parsec-fbf",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "com.apple.nsurlsessiond",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "com.apple.naturallanguaged",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "com.apple.milod",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "com.apple.metalfe",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "com.apple.Maps.mapssyncd",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "com.apple.lockdownmoded",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "com.apple.LocalAuthenticationRemoteService",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "com.apple.knowledgeconstructiond",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "com.apple.keychainsharingmessagingd",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "com.apple.jetpackassetd",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "com.apple.intelligentroutingd",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "com.apple.intelligencetasksd",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "com.apple.intelligenceplatformd",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "com.apple.intelligenceplatform.IntelligencePlatformComputeService",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "com.apple.intelligenceflow.intelligenceflowd",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "com.apple.intelligenceflow.intelligencecontextd",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "com.apple.inputanalyticsd",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "com.apple.icloud.searchpartyuseragent",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "com.apple.homeeventsd",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "com.apple.homeenergyd",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "com.apple.GenerativeFunctions.generativeexperiencesd",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "com.apple.GamePolicyAgent",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "com.apple.GameController.gamecontrolleragentd",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "com.apple.fskit.fskit_agent",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "com.apple.frauddefensed",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "com.apple.FollowUpSettings.FollowUpSettingsExtension",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "com.apple.financed",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "com.apple.fileproviderd",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "com.apple.familycircled",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "com.apple.facetimemessagestored",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "com.apple.facetime.NotificationViewBridgeService",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "com.apple.FaceTime.FTConversationService",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "com.apple.FaceTime.FaceTimeNotificationExtension",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "com.apple.email.maild",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "com.apple.DTServiceHub",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "com.apple.dmd",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "com.apple.devicecheckd",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "com.apple.desktopservices.ArchiveService",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "com.apple.dataaccess",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "com.apple.corespeechd",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "com.apple.coremedia.videoencoder",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "com.apple.coremedia.videodecoder",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "com.apple.CoreGraphics.CGPDFService",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "com.apple.communicationtrustd",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "com.apple.CloudDocsDaemon.container-metadata-extractor",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "com.apple.cloudd",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "com.apple.ciphermld",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "com.apple.callintelligenced",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "com.apple.calaccessd",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "com.apple.businessservicesd",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "com.apple.bluetoothuserd",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "com.apple.biomesyncd",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "com.apple.BiomeAgent",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "com.apple.backgroundassets.managed.helper.service",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "com.apple.avconferenced",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "com.apple.AuthenticationServices.ASConfigurationSubscriber",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "com.apple.appstoreagent",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "com.apple.appleaccounttransparencyd",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "com.apple.ap.promotedcontentd",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "com.apple.ap.adprivacyd",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "com.apple.analyticsagent",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "com.apple.amsondevicestoraged",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "com.apple.amp.mediasharingd",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "com.apple.accessibility.mediaaccessibilityd",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "CleanMyMac_5_Setapp_Menu.app",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "betaenrollmentagent",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "AudioConverterService",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "AudioComponentRegistrar",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "assessmentagent",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "Archive Utility.app",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "AppSSOAgent.app",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "AirPlayUIAgent.app",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "AccessibilityVisualsAgent.app",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "AccessibilityUIServer.app",
+          "bytes": 0,
+          "recommended": false
+        }
+      ]
+    },
+    "systemCache": {
+      "totalBytes": 1200000000,
+      "items": [
+        {
+          "name": "com.apple.coresymbolicationd",
+          "bytes": 1100000000,
+          "recommended": false
+        },
+        {
+          "name": "com.apple.iconservices.store",
+          "bytes": 181000000,
+          "recommended": false
+        }
+      ]
+    },
+    "universalBinaries": {
+      "totalBytes": 32000000,
+      "items": [
+        {
+          "name": "Spotifast.app",
+          "bytes": 31700000,
+          "recommended": false
+        },
+        {
+          "name": "Hidden Bar.app",
+          "bytes": 246000,
+          "recommended": false
+        }
+      ]
+    },
+    "userLogs": {
+      "totalBytes": 16100000,
+      "items": [
+        {
+          "name": "warp.log.old",
+          "bytes": 11400000,
+          "recommended": false
+        },
+        {
+          "name": "Setapp",
+          "bytes": 3600000,
+          "recommended": false
+        },
+        {
+          "name": "Zed",
+          "bytes": 963000,
+          "recommended": false
+        },
+        {
+          "name": "warp",
+          "bytes": 49200,
+          "recommended": false
+        },
+        {
+          "name": "DiagnosticReports",
+          "bytes": 45100,
+          "recommended": false
+        },
+        {
+          "name": "Perssua",
+          "bytes": 36900,
+          "recommended": false
+        },
+        {
+          "name": "com.apple.LaunchServices",
+          "bytes": 20500,
+          "recommended": false
+        },
+        {
+          "name": "CrashReporter",
+          "bytes": 12300,
+          "recommended": false
+        }
+      ]
+    },
+    "systemLogs": {
+      "totalBytes": 11400000,
+      "items": [
+        {
+          "name": "DiagnosticReports",
+          "bytes": 8400000,
+          "recommended": false
+        },
+        {
+          "name": "wifi",
+          "bytes": 2400000,
+          "recommended": false
+        },
+        {
+          "name": "DiagnosticMessages",
+          "bytes": 410000,
+          "recommended": false
+        },
+        {
+          "name": "asl",
+          "bytes": 90100,
+          "recommended": false
+        },
+        {
+          "name": "install",
+          "bytes": 73700,
+          "recommended": false
+        },
+        {
+          "name": "system",
+          "bytes": 12300,
+          "recommended": false
+        },
+        {
+          "name": "fsck_apfs",
+          "bytes": 12300,
+          "recommended": false
+        }
+      ]
+    },
+    "languageFiles": {
+      "totalBytes": 213000,
+      "items": [
+        {
+          "name": "francês",
+          "bytes": 32800,
+          "recommended": false
+        },
+        {
+          "name": "japonês",
+          "bytes": 28700,
+          "recommended": false
+        },
+        {
+          "name": "chinês tradicional",
+          "bytes": 24600,
+          "recommended": false
+        },
+        {
+          "name": "chinês simplificado",
+          "bytes": 24600,
+          "recommended": false
+        },
+        {
+          "name": "alemão",
+          "bytes": 20500,
+          "recommended": false
+        },
+        {
+          "name": "árabe",
+          "bytes": 12300,
+          "recommended": false
+        },
+        {
+          "name": "vietnamita",
+          "bytes": 12300,
+          "recommended": false
+        },
+        {
+          "name": "croata",
+          "bytes": 12300,
+          "recommended": false
+        },
+        {
+          "name": "italiano",
+          "bytes": 8200,
+          "recommended": false
+        },
+        {
+          "name": "indonésio",
+          "bytes": 8200,
+          "recommended": false
+        },
+        {
+          "name": "hindi",
+          "bytes": 8200,
+          "recommended": false
+        },
+        {
+          "name": "espanhol (América Latina)",
+          "bytes": 8200,
+          "recommended": false
+        },
+        {
+          "name": "espanhol",
+          "bytes": 8200,
+          "recommended": false
+        },
+        {
+          "name": "coreano",
+          "bytes": 4100,
+          "recommended": false
+        },
+        {
+          "name": "urdu",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "ucraniano",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "télugo",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "tâmil",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "turco",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "tcheco",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "tailandês",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "sérvio",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "sueco",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "suaíli",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "russo",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "romeno",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "polonês",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "persa",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "marati",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "malaio",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "malaiala",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "lituano",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "letão",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "húngaro",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "holandês",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "hebraico",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "guzerate",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "grego",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "finlandês",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "filipino",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "estoniano",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "esloveno",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "eslovaco",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "dinamarquês",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "catalão",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "canarim",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "búlgaro",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "bokmål norueguês",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "bengali",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "amárico",
+          "bytes": 0,
+          "recommended": false
+        },
+        {
+          "name": "africâner",
+          "bytes": 0,
+          "recommended": false
+        }
+      ]
+    },
+    "brokenLoginItems": {
+      "totalBytes": 0,
+      "items": [
+        {
+          "name": "Amphetamine",
+          "bytes": 0,
+          "recommended": false
+        }
+      ]
+    },
+    "documentVersions": {
+      "totalBytes": 0,
+      "items": []
+    },
+    "deletedUsers": {
+      "totalBytes": 0,
+      "items": []
+    },
+    "brokenPreferences": {
+      "totalBytes": 0,
+      "items": []
+    },
+    "iosBackups": {
+      "totalBytes": 0,
+      "items": []
+    },
+    "xcodeJunk": {
+      "totalBytes": 338000000,
+      "items": [
+        {
+          "name": "Derived Data",
+          "bytes": 338000000,
+          "recommended": false
+        },
+        {
+          "name": "Caches do Xcode",
+          "bytes": 0,
+          "recommended": false
+        }
+      ]
+    },
+    "aiAgentsJunk": {
+      "totalBytes": 876000000,
+      "items": [
+        {
+          "name": "Claude Code",
+          "bytes": 588000000,
+          "recommended": false
+        },
+        {
+          "name": "Claude",
+          "bytes": 246000000,
+          "recommended": false
+        },
+        {
+          "name": "Codex",
+          "bytes": 37700000,
+          "recommended": false
+        },
+        {
+          "name": "OpenCode",
+          "bytes": 4500000,
+          "recommended": false
+        }
+      ]
+    },
+    "localModels": {
+      "totalBytes": 0,
+      "items": []
+    }
+  }
+}

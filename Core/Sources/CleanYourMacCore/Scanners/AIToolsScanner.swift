@@ -141,7 +141,8 @@ public enum AICatalog {
 public struct AIToolsScanner: ScopedScanner {
     public let group = GroupID.aiAgentsJunk
     private let apps: any AppLookup
-    private let sizer = FileSizer(mode: .logical)
+    /// Alocado: a baseline nova bateu com o tamanho em disco (não o lógico que a spec supunha).
+    private let sizer = FileSizer()
 
     public init(apps: any AppLookup = WorkspaceAppLookup()) {
         self.apps = apps

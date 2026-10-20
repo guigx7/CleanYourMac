@@ -3135,13 +3135,13 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Simulator caches"
+            "value": "Xcode caches"
           }
         },
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "Caches do simulador"
+            "value": "Caches do Xcode"
           }
         }
       }

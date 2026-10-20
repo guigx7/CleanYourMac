@@ -312,7 +312,7 @@ public struct XcodeJunkScanner: ScopedScanner {
         let logs = x(context, "iOS Device Logs")
         out.append(subgroup("deviceLogs", "iOS Device Logs", exists(logs) ? [leaf("iOS Device Logs", logs, recommended: true)] : []))
         let simCaches = context.resolve("~/Library/Developer/CoreSimulator/Caches")
-        out.append(subgroup("simulatorCaches", "Simulator Caches", exists(simCaches) ? [leaf("Caches", simCaches, recommended: false)] : []))
+        out.append(subgroup("simulatorCaches", "Xcode Caches", exists(simCaches) ? [leaf("Caches", simCaches, recommended: false)] : []))
         out.append(subgroup("moduleCaches", "Module Caches", moduleCaches(context).map { leaf($0.0, $0.1, recommended: false) }))
         out.append(subgroup("documentation", "Documentation Cache",
                             visibleChildren(x(context, "DocumentationCache")).map { leaf("iOS \($0.lastPathComponent)", $0, recommended: false) }))

@@ -54,16 +54,17 @@ if let i = CommandLine.arguments.firstIndex(of: "--press"), i + 1 < CommandLine.
         FileHandle.standardError.write("Recusado: '\(target)' parece uma ação de limpeza.\n".data(using: .utf8)!)
         exit(2)
     }
-    func find(_ el: AXUIElement, depth: Int) -> AXUIElement? {
-        guard depth < 60 else { return nil }
+    // --last: usa a última ocorrência (ex.: o botão de um diálogo, depois do da barra).
+    let useLast = CommandLine.arguments.contains("--last")
+    var matches: [AXUIElement] = []
+    func find(_ el: AXUIElement, depth: Int) {
+        guard depth < 60 else { return }
         let t = (attr(el, kAXTitleAttribute) as? String) ?? (attr(el, kAXValueAttribute) as? String) ?? ""
-        if t == target { return el }
-        for child in (attr(el, kAXChildrenAttribute) as? [AXUIElement]) ?? [] {
-            if let hit = find(child, depth: depth + 1) { return hit }
-        }
-        return nil
+        if t == target { matches.append(el) }
+        for child in (attr(el, kAXChildrenAttribute) as? [AXUIElement]) ?? [] { find(child, depth: depth + 1) }
     }
-    guard let hit = find(root, depth: 0) else {
+    find(root, depth: 0)
+    guard let hit = useLast ? matches.last : matches.first else {
         FileHandle.standardError.write("Elemento '\(target)' não encontrado.\n".data(using: .utf8)!)
         exit(3)
     }
@@ -84,7 +85,13 @@ if let i = CommandLine.arguments.firstIndex(of: "--press"), i + 1 < CommandLine.
         // Confere o que está de fato sob o ponto antes de clicar.
         var under: AXUIElement?
         AXUIElementCopyElementAtPosition(root, Float(center.x), Float(center.y), &under)
-        let underText = under.map { text($0).lowercased() } ?? ""
+        // Sobe do elemento sob o ponto até o primeiro botão: é ele que receberia o clique.
+        var probe = under
+        while let p = probe, (attr(p, kAXRoleAttribute) as? String) != kAXButtonRole, let parent = attr(p, kAXParentAttribute) {
+            probe = (parent as! AXUIElement)
+        }
+        let isButton = probe.map { (attr($0, kAXRoleAttribute) as? String) == kAXButtonRole } ?? false
+        let underText = isButton ? (probe.map { text($0).lowercased() } ?? "") : ""
         guard !forbidden.contains(where: { underText.contains($0) }) else {
             FileHandle.standardError.write("Recusado: sob o ponto está '\(underText)'.\n".data(using: .utf8)!)
             exit(2)

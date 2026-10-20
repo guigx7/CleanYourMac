@@ -70,10 +70,12 @@ private let mb = 1_000_000
     #expect(try await scan(userCache(t), ctx).map(\.name) == ["com.foo.bar"])
 }
 
-@Test func userCache_excludesClang() async throws {
+@Test func userCache_clangIncludedAgentsExcluded() async throws {
+    // Baseline de 16:13: o CleanMyMac mostra `clang`, mas ignora agentes como o ThumbnailsAgent.
     let t = FixtureTree(); let ctx = t.context()
     t.file("var/folders/zz/C/clang/ModuleCache/x", bytes: 10)
-    #expect(try await scan(userCache(t), ctx).isEmpty)
+    t.file("var/folders/zz/C/com.apple.quicklook.ThumbnailsAgent/x", bytes: 10)
+    #expect(try await scan(userCache(t), ctx).map(\.name) == ["clang"])
 }
 
 @Test func userCache_containerGroupedByContainer() async throws {
@@ -225,7 +227,7 @@ private let mb = 1_000_000
 @Test func userCache_darwinExclusionThroughSymlinkedPath() async throws {
     // /var -> /private/var: a pasta do Darwin vem do confstr sem /private, a listagem vem com.
     let t = FixtureTree()
-    t.file("var/folders/zz/C/clang/x", bytes: 10)
+    t.file("var/folders/zz/C/com.apple.quicklook.ThumbnailsAgent/x", bytes: 10)
     t.file("var/folders/zz/C/com.keep/x", bytes: 10)
     let link = t.symlink("dlink", to: t.url("var/folders/zz/C"))
     var ctx = t.context()

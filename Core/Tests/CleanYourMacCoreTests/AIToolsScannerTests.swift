@@ -192,3 +192,12 @@ private func versions(_ t: FixtureTree, active: String?) {
     #expect(!FileManager.default.fileExists(atPath: cache.path))
     #expect(report?.failed.values.contains("in use") == true)
 }
+
+@Test func ai_sizeIsAllocated() async throws {
+    // A baseline nova mostrou o tamanho alocado (caches Chromium com muitos arquivos pequenos).
+    let t = FixtureTree(); let ctx = t.context()
+    var expected: Int64 = 0
+    for i in 0..<5 { expected += FixtureTree.allocated(t.file("Users/tester/.claude/cache/f\(i)", bytes: 100)) }
+    let cc = tool(try await scan(ai(), ctx), "Claude Code")
+    #expect(cc?.totalSize == expected)
+}

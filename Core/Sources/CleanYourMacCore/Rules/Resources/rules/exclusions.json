@@ -1,5 +1,5 @@
 {
-  "_comment": "Equivalente nosso à lista de ignorados da KB do CleanMyMac (que não lemos). Fonte: docs/re/specs/common.md §3.2, user-cache.md, system-cache.md. Globs fnmatch sobre o caminho completo; ~ = home, $DARWIN = cache do Darwin.",
+  "_comment": "Equivalente nosso à lista de ignorados da KB do CleanMyMac (que não lemos). Fonte: docs/re/specs/common.md §3.2, user-cache.md, system-cache.md. Globs fnmatch sobre o caminho completo; ~ = home, $DARWIN = cache do Darwin. Revisada com a baseline de 2026-10-20 16:13 (docs/re/parity/report-2026-10-20.md).",
   "global": [
     "~/Library/Caches/claude-cli-nodejs",
     "~/Library/Caches/Codex",
@@ -20,19 +20,17 @@
     "~/Library/Caches/com.apple.HomeKit",
     "~/Library/Caches/com.apple.homed",
     "~/Library/Caches/com.apple.containermanagerd",
-    "~/Library/Caches/com.apple.dt.xcodebuild",
-    "~/Library/Caches/org.swift.swiftpm",
-    "$DARWIN/clang",
     "$DARWIN/com.apple.FontRegistry",
-    "$DARWIN/com.apple.dock",
     "$DARWIN/com.apple.dock.iconcache",
     "$DARWIN/com.apple.systempreferences",
     "$DARWIN/com.apple.Wallpaper-Settings.extension",
-    "$DARWIN/com.apple.ContactsUI.MonogramPosterExtension",
     "$DARWIN/com.apple.Family",
     "$DARWIN/com.apple.WorkflowKit.BackgroundShortcutRunner*",
     "$DARWIN/com.apple.siriactionsd*",
-    "$DARWIN/com.apple.WebKit.*.Sandbox"
+    "$DARWIN/com.apple.WebKit.*.Sandbox",
+    "$DARWIN/com.apple.imdpersistence.IMDPersistenceAgent",
+    "$DARWIN/com.apple.imtransferservices.IMTransferAgent",
+    "$DARWIN/com.apple.quicklook.ThumbnailsAgent"
   ],
   "systemCache": [
     "/Library/Caches/ColorSync",
@@ -40,5 +38,8 @@
     "/Library/Caches/com.apple.amsengagementd.classicdatavault",
     "/Library/Caches/com.apple.aned",
     "/Library/Caches/com.apple.aneuserd"
+  ],
+  "userLogs": [
+    "~/Library/Logs/CoreSimulator"
   ]
 }
