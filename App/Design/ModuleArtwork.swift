@@ -143,6 +143,13 @@ final class ArtworkNSView: NSView {
         pass.toValue = disc * 1.7
         pass.duration = 2.6 / speed
         pass.timingFunction = CAMediaTimingFunction(name: .easeInEaseOut)
+        // Na pausa entre passagens a faixa fica parada fora do disco (no fim da passagem),
+        // e a posição de repouso também é fora dele — nunca volta ao centro.
+        pass.fillMode = .both
+        CATransaction.begin()
+        CATransaction.setDisableActions(true)
+        band.position.x = -disc * 0.7
+        CATransaction.commit()
         let sweep = CAAnimationGroup()
         sweep.animations = [pass]
         sweep.duration = pass.duration + (active ? 0.4 : 1.6)
