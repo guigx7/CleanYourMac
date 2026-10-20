@@ -9,7 +9,7 @@ let package = Package(
         .executable(name: "cym", targets: ["cym"]),
     ],
     targets: [
-        .target(name: "CleanYourMacCore"),
+        .target(name: "CleanYourMacCore", resources: [.copy("Rules/Resources/rules")]),
         .executableTarget(name: "cym", dependencies: ["CleanYourMacCore"]),
         .testTarget(name: "CleanYourMacCoreTests", dependencies: ["CleanYourMacCore"]),
     ]
