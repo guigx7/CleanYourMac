@@ -39,28 +39,38 @@ public final class CleanEngine: Cleaning {
     private let log: CleanupLog
     private let requiresAdmin: @Sendable (GroupID) -> Bool
     private let processes: any ProcessChecker
+    private let commands: any CommandRunner
+    private let loginItems: any LoginItemsSource
 
     public init(policies: [GroupID: PathPolicy], privileged: any PrivilegedRunner, dryRun: Bool, log: CleanupLog,
                 requiresAdmin: @escaping @Sendable (GroupID) -> Bool = { $0.requiresAdmin },
-                processes: any ProcessChecker = SystemProcessChecker()) {
+                processes: any ProcessChecker = SystemProcessChecker(),
+                commands: any CommandRunner = SystemCommandRunner(),
+                loginItems: any LoginItemsSource = SystemLoginItems()) {
         self.policyProvider = { policies }
         self.privileged = privileged
         self.dryRun = dryRun
         self.log = log
         self.requiresAdmin = requiresAdmin
         self.processes = processes
+        self.commands = commands
+        self.loginItems = loginItems
     }
 
     /// Políticas calculadas na hora da limpeza (raízes podem surgir depois do início do app).
     public init(policyProvider: @escaping @Sendable () -> [GroupID: PathPolicy], privileged: any PrivilegedRunner,
                 dryRun: Bool, log: CleanupLog, requiresAdmin: @escaping @Sendable (GroupID) -> Bool = { $0.requiresAdmin },
-                processes: any ProcessChecker = SystemProcessChecker()) {
+                processes: any ProcessChecker = SystemProcessChecker(),
+                commands: any CommandRunner = SystemCommandRunner(),
+                loginItems: any LoginItemsSource = SystemLoginItems()) {
         self.policyProvider = policyProvider
         self.privileged = privileged
         self.dryRun = dryRun
         self.log = log
         self.requiresAdmin = requiresAdmin
         self.processes = processes
+        self.commands = commands
+        self.loginItems = loginItems
     }
 
     public func clean(_ items: [JunkItem]) -> AsyncStream<CleanEvent> {
@@ -82,6 +92,7 @@ public final class CleanEngine: Cleaning {
         var removed: [String] = []
         var failed: [String: String] = [:]
         var deferred: [(JunkItem, [PrivilegedCommand])] = []
+        var restartPreferences = false
 
         func finish(_ item: JunkItem, _ result: Result<Int64, CleanFailure>) {
             switch result {
@@ -122,7 +133,23 @@ public final class CleanEngine: Cleaning {
                 continue
             }
             do {
-                try Self.removeUnprivileged(removal)
+                switch removal {
+                case .removeSessionLoginItem(let name, let url):
+                    guard loginItems.remove(LoginItemEntry(name: name, url: url)) else {
+                        throw CleanFailure(reason: "could not remove login item")
+                    }
+                case .removeLaunchdItem(let plist, _):
+                    _ = commands.run("/bin/launchctl", ["unload", plist.path])
+                    try Self.removeUnprivileged(removal)
+                case .removePreference(let file):
+                    if file.pathExtension.lowercased() != "lockfile" {
+                        _ = commands.run("/usr/bin/defaults", ["delete", file.deletingPathExtension().path])
+                    }
+                    try Self.removeUnprivileged(removal)
+                    restartPreferences = true
+                default:
+                    try Self.removeUnprivileged(removal)
+                }
                 finish(item, .success(item.totalSize))
             } catch let error as CocoaError where error.code == .fileWriteNoPermission || error.code == .fileReadNoPermission {
                 deferred.append((item, commands(for: removal)))
@@ -166,6 +193,10 @@ public final class CleanEngine: Cleaning {
             }
         }
 
+        if restartPreferences {
+            // O cfprefsd guarda as preferências em cache; reiniciá-lo evita que regrave o arquivo apagado.
+            _ = commands.run("/usr/bin/killall", ["-u", NSUserName(), "cfprefsd"])
+        }
         let report = CleanReport(freedBytes: freed, removed: removed, failed: failed, dryRun: dryRun)
         _ = try? log.write(report)
         return report
@@ -182,9 +213,14 @@ public final class CleanEngine: Cleaning {
             }
         }
         switch removal {
-        case .delete(let u), .moveToTrash(let u), .removeLoginItem(let u), .deleteStaleVersion(let u, _),
-             .deleteUnlessRunning(let u, _):
+        case .delete(let u), .moveToTrash(let u), .deleteStaleVersion(let u, _), .deleteUnlessRunning(let u, _),
+             .removePreference(let u):
             try check(u)
+        case .removeLaunchdItem(let plist, let helper):
+            try check(plist)
+            if let helper { try check(helper) }
+        case .removeSessionLoginItem:
+            break
         case .deleteContents(let u):
             try check(u, allowRoot: true)
         case .thinBinary(let exe, _, let bundle):
@@ -204,7 +240,9 @@ public final class CleanEngine: Cleaning {
 
     private func commands(for removal: RemovalAction) -> [PrivilegedCommand] {
         switch removal {
-        case .delete(let u), .removeLoginItem(let u), .deleteStaleVersion(let u, _), .deleteUnlessRunning(let u, _): [.remove(u)]
+        case .delete(let u), .deleteStaleVersion(let u, _), .deleteUnlessRunning(let u, _), .removePreference(let u): [.remove(u)]
+        case .removeLaunchdItem(let plist, let helper): (helper.map { [.remove($0)] } ?? []) + [.remove(plist)]
+        case .removeSessionLoginItem: []
         case .deleteContents(let u): [.removeContents(u)]
         case .removeLocalizations(_, let lprojs): lprojs.map { .remove($0) }
         case .deleteFiles(let urls): urls.map { .remove($0) }
@@ -232,8 +270,13 @@ public final class CleanEngine: Cleaning {
             try fm.removeItem(at: u)
         }
         switch removal {
-        case .delete(let u), .removeLoginItem(let u), .deleteStaleVersion(let u, _), .deleteUnlessRunning(let u, _):
+        case .delete(let u), .deleteStaleVersion(let u, _), .deleteUnlessRunning(let u, _), .removePreference(let u):
             try remove(u)
+        case .removeLaunchdItem(let plist, let helper):
+            if let helper { try remove(helper) }
+            try remove(plist)
+        case .removeSessionLoginItem:
+            break
         case .moveToTrash(let u):
             try fm.trashItem(at: u, resultingItemURL: nil)
         case .deleteContents(let u):

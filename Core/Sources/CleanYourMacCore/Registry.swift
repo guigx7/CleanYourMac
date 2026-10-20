@@ -15,6 +15,8 @@ public enum Registry {
             MailAttachmentsScanner(),
             TrashScanner(),
             MailTrashScanner(),
+            BrokenLoginItemsScanner(),
+            BrokenPreferencesScanner(),
         ]
         let covered = Set(specialized.map(\.group))
         let ruleBased = GroupID.allCases
