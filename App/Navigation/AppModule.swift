@@ -1,0 +1,28 @@
+import SwiftUI
+
+enum AppModule: String, CaseIterable, Identifiable {
+    case cleanup, performance, applications, spaceLens
+
+    var id: String { rawValue }
+
+    /// Só a Limpeza existe na v1.
+    var isAvailable: Bool { self == .cleanup }
+
+    var title: LocalizedStringKey {
+        switch self {
+        case .cleanup: "module.cleanup"
+        case .performance: "module.performance"
+        case .applications: "module.applications"
+        case .spaceLens: "module.spaceLens"
+        }
+    }
+
+    var symbol: String {
+        switch self {
+        case .cleanup: "sparkles"
+        case .performance: "bolt.fill"
+        case .applications: "square.grid.2x2.fill"
+        case .spaceLens: "circle.hexagongrid.fill"
+        }
+    }
+}

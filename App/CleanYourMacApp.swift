@@ -6,10 +6,17 @@ enum AppInfo {
 
 @main
 struct CleanYourMacApp: App {
+    init() {
+        #if DEBUG
+        DebugSnapshot.scheduleIfRequested()
+        #endif
+    }
+
     var body: some Scene {
         WindowGroup {
-            Text(AppInfo.name)
-                .frame(minWidth: 900, minHeight: 600)
+            RootView()
         }
+        .windowStyle(.hiddenTitleBar)
+        .windowResizability(.contentMinSize)
     }
 }
