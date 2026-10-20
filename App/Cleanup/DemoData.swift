@@ -4,14 +4,18 @@ import CleanYourMacCore
 
 /// Dados fictícios para revisar a interface (`CYM_DEMO=1`). Nada aponta para arquivos reais.
 enum DemoData {
-    struct Scanner: GroupScanner {
+    struct Scanner: ScopedScanner {
         let group: GroupID
         let items: [JunkItem]
+
+        func removalScope(_ context: ScanContext) -> RemovalScope {
+            RemovalScope(items: items.flatMap(\.leaves).compactMap(\.url))
+        }
 
         func scan(_ context: ScanContext, report: @Sendable (ScanProgress) -> Void) async throws -> [JunkItem] {
             var found: Int64 = 0
             for item in items {
-                try await Task.sleep(for: .milliseconds(400))
+                try await Task.sleep(for: .milliseconds(Int(ProcessInfo.processInfo.environment["CYM_DEMO_DELAY"] ?? "400") ?? 400))
                 found += item.totalSize
                 report(ScanProgress(group: group, currentPath: "/Users/demo/Library/\(item.name)", bytesFound: found))
             }

@@ -154,3 +154,34 @@ xcode.simulatorCaches	Simulator caches	Caches do simulador
 xcode.moduleCaches	Module caches	Caches de módulos
 xcode.documentation	Documentation cache	Cache de documentação
 xcode.runtimes	Simulator runtimes	Runtimes do simulador
+# Limpeza
+cleaning.title	Cleaning…	Limpando…
+cleaning.current	Removing %@	Removendo %@
+cleaning.freed	freed so far	liberados até agora
+cleaning.stop.confirm.title	Stop cleaning?	Parar a limpeza?
+cleaning.stop.confirm.message	Items that weren't cleaned yet will stay on your Mac.	Os itens que ainda não foram limpos continuam no Mac.
+cleaning.stop.continue	Keep cleaning	Continuar limpando
+scan.stop.confirm.title	Stop the scan?	Parar a análise?
+scan.stop.confirm.message	You'll see only what was found so far.	Você verá só o que foi encontrado até agora.
+scan.stop.continue	Keep scanning	Continuar analisando
+# Concluído
+done.title	Cleanup complete	Limpeza concluída
+done.junk	%@ of junk removed	%@ de detritos removidos
+done.mail	%@ of Mail attachments removed	%@ de anexos do Mail removidos
+done.trash	%@ removed from the trash	%@ removidos dos lixos
+done.simulated	Simulation: nothing was deleted.	Simulação: nada foi apagado.
+done.ok	OK	OK
+failure.title	Some items weren't removed	Alguns itens não foram removidos
+failure.message	Quit the apps that use these items and try again.	Feche os apps que usam esses itens e tente de novo.
+failure.showLog	Show log	Ver registro
+failure.hideLog	Hide log	Ocultar registro
+failure.reviewRemaining	Review remaining items	Revisar itens restantes
+log.failed	Failed	Falhou
+log.stopped	Stopped	Parado
+log.copy	Copy errors	Copiar erros
+log.reveal	Show in Finder	Mostrar no Finder
+reason.cancelled	You didn't authorize the action.	Você não autorizou a ação.
+reason.inUse	The app that uses it is open.	O app que usa o item está aberto.
+reason.permission	macOS didn't allow the change.	O macOS não permitiu a alteração.
+reason.signature	Removing it would break the app's signature, so it was restored.	A remoção quebraria a assinatura do app, então ele foi restaurado.
+reason.unknown	Unknown error.	Erro desconhecido.

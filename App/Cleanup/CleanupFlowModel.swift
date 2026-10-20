@@ -168,6 +168,11 @@ final class CleanupFlowModel {
 
     var hasFailures: Bool { !failures.isEmpty || !stoppedItems.isEmpty }
 
+    /// Itens que falharam, com o motivo técnico (a interface traduz com `FailureText`).
+    var failedItems: [(JunkItem, String)] {
+        pendingLeaves.compactMap { item in failures[item.id].map { (item, $0) } }
+    }
+
     private static func removing(_ ids: Set<String>, from item: JunkItem) -> JunkItem? {
         if ids.contains(item.id) { return nil }
         guard !item.children.isEmpty else { return item }

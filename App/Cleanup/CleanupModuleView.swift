@@ -16,8 +16,10 @@ struct CleanupModuleView: View {
                 ResultsView(model: model).transition(.stage)
             case .nothingFound:
                 NothingFoundView(model: model).transition(.stage)
-            default:
-                IntroView(onScan: model.startScan).transition(.stage)
+            case .cleaning:
+                CleaningView(model: model).transition(.stage)
+            case .done(let report):
+                DoneView(model: model, report: report).transition(.stage)
             }
         }
         .animation(.smooth(duration: 0.45), value: model.phase)
@@ -71,6 +73,9 @@ enum DebugAutomation {
         guard target != "scan" else { return }
         while model.phase == .scanning { try? await Task.sleep(for: .milliseconds(50)) }
         if target == "review" { model.openReview() }
+        if target == "clean" || target == "done" {
+            model.clean(tile: .systemJunk)
+        }
     }
 }
 #endif

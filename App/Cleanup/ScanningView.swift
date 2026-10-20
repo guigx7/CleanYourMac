@@ -3,6 +3,7 @@ import CleanYourMacCore
 
 struct ScanningView: View {
     var model: CleanupFlowModel
+    @State private var confirmStop = false
 
     var body: some View {
         ModuleStage {
@@ -32,7 +33,13 @@ struct ScanningView: View {
                 .padding(.top, 8)
             }
         } action: {
-            PrimaryRoundButton(title: "cleanup.action.stop", action: model.stopScan)
+            PrimaryRoundButton(title: "cleanup.action.stop") { confirmStop = true }
+        }
+        .alert("scan.stop.confirm.title", isPresented: $confirmStop) {
+            Button("scan.stop.continue", role: .cancel) {}
+            Button("cleanup.action.stop", role: .destructive) { model.stopScan() }
+        } message: {
+            Text("scan.stop.confirm.message")
         }
     }
 }
