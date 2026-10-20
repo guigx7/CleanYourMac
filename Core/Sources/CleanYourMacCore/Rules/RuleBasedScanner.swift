@@ -1,7 +1,7 @@
 import Foundation
 
 /// Scanner genérico guiado por `GroupRules`.
-public struct RuleBasedScanner: GroupScanner {
+public struct RuleBasedScanner: ScopedScanner {
     public let rules: GroupRules
     private let apps: any AppLookup
     private let sizer = FileSizer()
@@ -47,6 +47,23 @@ public struct RuleBasedScanner: GroupScanner {
         }
         return items
     }
+
+    public func removalScope(_ context: ScanContext) -> RemovalScope {
+        var scope = RemovalScope()
+        for rule in rules.rules {
+            for template in rule.roots {
+                let url = context.resolve(template)
+                switch rule.itemLevel {
+                case .children: scope.roots.append(url)
+                case .root: scope.items.append(url)
+                }
+            }
+        }
+        return scope
+    }
+
+    /// Raízes de onde saem itens filhos (usado em testes e diagnósticos).
+    public func allowedRoots(_ context: ScanContext) -> [URL] { removalScope(context).roots }
 
     private func candidates(_ rule: PathRule, root: URL) -> [URL] {
         guard isRealDirectory(root) else { return [] }

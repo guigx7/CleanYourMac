@@ -9,13 +9,18 @@ public enum PathPolicyError: Error, Equatable, Sendable {
 /// Garante que a limpeza só toque caminhos dentro das raízes permitidas de um grupo.
 public struct PathPolicy: Sendable {
     public let allowedRoots: [URL]
+    /// Caminhos exatos que podem ser removidos inteiros (e tudo dentro deles).
+    public let allowedItems: [URL]
     private let realRoots: [[String]]
     private let lexicalRoots: [[String]]
+    private let realItems: [[String]]
 
-    public init(allowedRoots: [URL]) {
+    public init(allowedRoots: [URL], allowedItems: [URL] = []) {
         self.allowedRoots = allowedRoots
+        self.allowedItems = allowedItems
         realRoots = allowedRoots.map { Self.components(Self.realPath($0.path)) }
-        lexicalRoots = allowedRoots.map { Self.components(Self.lexicalPath($0.path)) }
+        lexicalRoots = (allowedRoots + allowedItems).map { Self.components(Self.lexicalPath($0.path)) }
+        realItems = allowedItems.map { Self.components(Self.realPath($0.path)) }
     }
 
     /// Retorna o caminho com o diretório pai resolvido. O último componente não é
@@ -26,12 +31,13 @@ public struct PathPolicy: Sendable {
         let resolved = URL(fileURLWithPath: parent).appendingPathComponent(lexical.lastPathComponent)
         let parts = Self.components(resolved.path)
 
+        if realItems.contains(where: { $0 == parts || Self.isStrictPrefix($0, of: parts) }) { return resolved }
         if realRoots.contains(parts) { throw .isAllowedRootItself(resolved.path) }
         if realRoots.contains(where: { Self.isStrictPrefix($0, of: parts) }) { return resolved }
 
         let lexicalParts = Self.components(lexical.path)
         if lexicalRoots.contains(where: { Self.isStrictPrefix($0, of: lexicalParts) })
-            || realRoots.contains(where: { Self.isStrictPrefix($0, of: lexicalParts) }) {
+            || (realRoots + realItems).contains(where: { Self.isStrictPrefix($0, of: lexicalParts) }) {
             throw .symlinkEscape(lexical.path)
         }
         throw .outsideAllowedRoots(lexical.path)

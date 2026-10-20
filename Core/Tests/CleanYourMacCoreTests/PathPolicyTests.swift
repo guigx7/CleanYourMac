@@ -64,3 +64,13 @@ import Foundation
     let viaTmp = URL(fileURLWithPath: r.path.replacingOccurrences(of: "/private/var", with: "/var"))
     #expect(try PathPolicy(allowedRoots: [viaTmp]).validate(f).path == f.path)
 }
+
+@Test func exactItemAllowedButNotSiblings() throws {
+    let t = FixtureTree()
+    let foo = t.dir("Logs/Foo")
+    t.dir("Logs/Bar")
+    let p = PathPolicy(allowedRoots: [], allowedItems: [foo])
+    #expect(try p.validate(foo).path == foo.path)
+    #expect(throws: PathPolicyError.self) { try p.validate(t.url("Logs/Bar")) }
+    #expect(try p.validate(foo.appendingPathComponent("x")).path.hasSuffix("Logs/Foo/x"))
+}
