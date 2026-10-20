@@ -185,3 +185,14 @@ reason.inUse	The app that uses it is open.	O app que usa o item está aberto.
 reason.permission	macOS didn't allow the change.	O macOS não permitiu a alteração.
 reason.signature	Removing it would break the app's signature, so it was restored.	A remoção quebraria a assinatura do app, então ele foi restaurado.
 reason.unknown	Unknown error.	Erro desconhecido.
+permissions.fda.title	Allow Full Disk Access	Permita o Acesso Total ao Disco
+permissions.fda.message	Without it, macOS hides Mail, Safari and other app data, so some junk can't be found.	Sem ele, o macOS esconde os dados do Mail, do Safari e de outros apps, e parte dos detritos não aparece.
+permissions.openSettings	Open Settings	Abrir Ajustes
+permissions.continue	Continue	Continuar
+permissions.admin.title	Administrator password needed	Senha de administrador necessária
+permissions.admin.message	Some selected items belong to the system. macOS will ask for your password once.	Alguns itens selecionados pertencem ao sistema. O macOS vai pedir sua senha uma vez.
+permissions.apps.title	Allow changes to apps	Permita alterar apps
+permissions.apps.message	Removing extra code and languages changes other apps. macOS may require the App Management permission for CleanYourMac.	Remover código extra e idiomas altera outros apps. O macOS pode exigir a permissão Gerenciamento de Apps para o CleanYourMac.
+results.measureAdmin	Measure system caches	Medir caches do sistema
+results.measureAdmin.hint	Requires your administrator password.	Precisa da sua senha de administrador.
+reason.appManagement	macOS blocked changes to this app. Allow App Management in Settings.	O macOS bloqueou alterações neste app. Permita o Gerenciamento de Apps nos Ajustes.

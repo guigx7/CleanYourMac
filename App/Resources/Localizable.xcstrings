@@ -1497,6 +1497,159 @@
         }
       }
     },
+    "permissions.admin.message": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Some selected items belong to the system. macOS will ask for your password once."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Alguns itens selecionados pertencem ao sistema. O macOS vai pedir sua senha uma vez."
+          }
+        }
+      }
+    },
+    "permissions.admin.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Administrator password needed"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Senha de administrador necessária"
+          }
+        }
+      }
+    },
+    "permissions.apps.message": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Removing extra code and languages changes other apps. macOS may require the App Management permission for CleanYourMac."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Remover código extra e idiomas altera outros apps. O macOS pode exigir a permissão Gerenciamento de Apps para o CleanYourMac."
+          }
+        }
+      }
+    },
+    "permissions.apps.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Allow changes to apps"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Permita alterar apps"
+          }
+        }
+      }
+    },
+    "permissions.continue": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Continue"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Continuar"
+          }
+        }
+      }
+    },
+    "permissions.fda.message": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Without it, macOS hides Mail, Safari and other app data, so some junk can't be found."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sem ele, o macOS esconde os dados do Mail, do Safari e de outros apps, e parte dos detritos não aparece."
+          }
+        }
+      }
+    },
+    "permissions.fda.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Allow Full Disk Access"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Permita o Acesso Total ao Disco"
+          }
+        }
+      }
+    },
+    "permissions.openSettings": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Open Settings"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Abrir Ajustes"
+          }
+        }
+      }
+    },
+    "reason.appManagement": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "macOS blocked changes to this app. Allow App Management in Settings."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "O macOS bloqueou alterações neste app. Permita o Gerenciamento de Apps nos Ajustes."
+          }
+        }
+      }
+    },
     "reason.cancelled": {
       "extractionState": "manual",
       "localizations": {
@@ -1663,6 +1816,40 @@
           "stringUnit": {
             "state": "translated",
             "value": "Encontramos %@ de detritos no Mac."
+          }
+        }
+      }
+    },
+    "results.measureAdmin": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Measure system caches"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Medir caches do sistema"
+          }
+        }
+      }
+    },
+    "results.measureAdmin.hint": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Requires your administrator password."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Precisa da sua senha de administrador."
           }
         }
       }

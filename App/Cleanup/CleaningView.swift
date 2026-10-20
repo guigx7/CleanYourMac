@@ -9,6 +9,7 @@ enum FailureText {
         if r == "cancelled" { return "reason.cancelled" }
         if r == "in use" { return "reason.inUse" }
         if r.hasPrefix("signature") { return "reason.signature" }
+        if r.contains("operation not permitted") && r.contains(".app") { return "reason.appManagement" }
         if r.hasPrefix("path not allowed") || r.contains("permission") || r.contains("not permitted") { return "reason.permission" }
         return "reason.unknown"
     }

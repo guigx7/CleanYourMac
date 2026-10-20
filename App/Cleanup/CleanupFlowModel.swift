@@ -34,20 +34,58 @@ final class CleanupFlowModel {
 
     enum FreedKind: Hashable { case junk, mail, trash }
 
+    /// O que a limpeza vai exigir do usuário, para confirmar antes.
+    enum CleanRequirement: Hashable { case admin, appManagement }
+    enum AdminMeasureState: Equatable { case idle, measuring, done, cancelled }
+    private(set) var adminMeasure: AdminMeasureState = .idle
+
     private let scanEngine: ScanEngine
     private let cleanEngine: any Cleaning
     private var pendingLeaves: [JunkItem] = []
     private var finishedGroups: [GroupID: GroupResult] = [:]
     private let context: ScanContext
     private let groups: Set<GroupID>
+    private let privileged: any PrivilegedRunner
     private var task: Task<Void, Never>?
     private var bytesByGroup: [GroupID: Int64] = [:]
 
-    init(scanEngine: ScanEngine, cleanEngine: any Cleaning, context: ScanContext, groups: Set<GroupID>) {
+    init(scanEngine: ScanEngine, cleanEngine: any Cleaning, context: ScanContext, groups: Set<GroupID>,
+         privileged: any PrivilegedRunner = AppleScriptPrivilegedRunner()) {
         self.scanEngine = scanEngine
         self.cleanEngine = cleanEngine
         self.context = context
         self.groups = groups
+        self.privileged = privileged
+    }
+
+    func cleanRequirements(_ items: [JunkItem]) -> Set<CleanRequirement> {
+        let leaves = items.flatMap(\.leaves)
+        var out: Set<CleanRequirement> = []
+        if leaves.contains(where: { $0.group.requiresAdmin }) { out.insert(.admin) }
+        if leaves.contains(where: { [.universalBinaries, .languageFiles].contains($0.group) }) { out.insert(.appManagement) }
+        return out
+    }
+
+    /// Há grupos que só podem ser medidos com senha de administrador e ainda não foram.
+    var canMeasureAdminGroups: Bool {
+        report != nil && groups.contains(where: \.requiresAdminToScan) && adminMeasure != .done
+    }
+
+    /// Mede o Cache do Sistema com privilégio (uma senha) e atualiza o resultado.
+    func measureAdminGroups() async {
+        guard let report, adminMeasure != .measuring else { return }
+        adminMeasure = .measuring
+        do {
+            let result = try await AdminMeasure.systemCache(context: context, runner: privileged)
+            var groups = report.groups
+            groups[.systemCache] = result
+            self.report = ScanReport(groups: groups)
+            selection.load(self.report!)
+            adminMeasure = .done
+            if phase == .nothingFound, self.report?.isEmpty == false { phase = .results }
+        } catch {
+            adminMeasure = .cancelled
+        }
     }
 
     var cleaningFraction: Double {
@@ -247,6 +285,7 @@ final class CleanupFlowModel {
 
     private func resetScan() {
         report = nil
+        adminMeasure = .idle
         finishedGroups = [:]
         isPartial = false
         bytesFound = 0

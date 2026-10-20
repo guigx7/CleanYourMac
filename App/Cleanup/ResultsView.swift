@@ -5,6 +5,7 @@ struct ResultsView: View {
     var model: CleanupFlowModel
     @State private var confirmRestart = false
     @State private var appeared = false
+    @State private var pendingClean: [JunkItem]?
     @Environment(\.locale) private var locale
 
     private var tiles: [ResultTile] { model.report.map(ResultTile.make(from:)) ?? [] }
@@ -31,8 +32,19 @@ struct ResultsView: View {
                         .font(.callout)
                         .foregroundStyle(Theme.secondaryText)
                 }
-                Button("results.reviewAll") { model.openReview() }
-                    .buttonStyle(GlassButtonStyle())
+                HStack(spacing: 10) {
+                    Button("results.reviewAll") { model.openReview() }
+                        .buttonStyle(GlassButtonStyle())
+                    if model.canMeasureAdminGroups {
+                        Button {
+                            Task { await model.measureAdminGroups() }
+                        } label: {
+                            if model.adminMeasure == .measuring { ProgressView().controlSize(.small) } else { Label("results.measureAdmin", systemImage: "lock") }
+                        }
+                        .buttonStyle(GlassButtonStyle())
+                        .help(Text("results.measureAdmin.hint"))
+                    }
+                }
             }
             .padding(.top, 8)
             .padding(.bottom, 28)
@@ -45,6 +57,8 @@ struct ResultsView: View {
             .scrollIndicators(.never)
         }
         .onAppear { withAnimation(.smooth(duration: 0.5)) { appeared = true } }
+        .modifier(CleanConfirmation(model: model, pending: $pendingClean))
+        .environment(\.requestClean) { pendingClean = $0 }
         .alert("results.restart.confirm.title", isPresented: $confirmRestart) {
             Button("common.cancel", role: .cancel) {}
             Button("results.restart", role: .destructive) { model.restart() }
@@ -95,6 +109,7 @@ private struct TileView: View {
     var model: CleanupFlowModel
     var prominent: Bool
     @Environment(\.locale) private var locale
+    @Environment(\.requestClean) private var requestClean
 
     private var completed: Int64? { model.completedTiles[tile.kind] }
 
@@ -122,7 +137,10 @@ private struct TileView: View {
                     }
                     .buttonStyle(GlassButtonStyle())
                     if tile.canClean {
-                        Button("results.action.clean") { model.clean(tile: tile.kind) }
+                        Button("results.action.clean") {
+                            let groups = Set(tile.kind.groups)
+                            requestClean(model.report?.recommendedItems().filter { groups.contains($0.group) } ?? [])
+                        }
                             .buttonStyle(GlassButtonStyle(prominent: true))
                     }
                 }
@@ -169,5 +187,17 @@ struct NothingFoundView: View {
         } action: {
             PrimaryRoundButton(title: "results.restart", action: model.restart)
         }
+    }
+}
+
+/// Pede uma limpeza passando pelas confirmações (admin, Gerenciamento de Apps).
+private struct RequestCleanKey: EnvironmentKey {
+    static let defaultValue: @MainActor ([JunkItem]) -> Void = { _ in }
+}
+
+extension EnvironmentValues {
+    var requestClean: @MainActor ([JunkItem]) -> Void {
+        get { self[RequestCleanKey.self] }
+        set { self[RequestCleanKey.self] = newValue }
     }
 }

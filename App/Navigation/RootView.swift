@@ -20,8 +20,11 @@ struct RootView: View {
     private var main: some View {
         HStack(spacing: 0) {
             SidebarView(selection: $module)
-            content
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
+            VStack(spacing: 0) {
+                FullDiskAccessBanner()
+                content
+            }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
         .background(Theme.gradient(for: module).ignoresSafeArea())
         .foregroundStyle(.white)

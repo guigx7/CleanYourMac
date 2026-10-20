@@ -14,6 +14,7 @@ struct ReviewView: View {
     @State private var expanded: Set<String> = []
     @State private var confirmBack = false
     @State private var quickLookURL: URL?
+    @State private var pendingClean: [JunkItem]?
 
     private var selection: SelectionModel { model.selection }
     private var report: ScanReport? { model.report }
@@ -40,6 +41,7 @@ struct ReviewView: View {
         .foregroundStyle(.primary)
         .tint(Theme.reviewTint)
         .quickLookPreview($quickLookURL)
+        .modifier(CleanConfirmation(model: model, pending: $pendingClean))
         .onAppear {
             category = model.reviewCategory ?? .systemJunk
             group = ReviewLogic.groups(in: category, report: report).first
@@ -256,7 +258,7 @@ struct ReviewView: View {
             AnimatedBytes(bytes: selection.selectedBytes).foregroundStyle(.secondary)
             Spacer()
             Button {
-                model.clean(items: selection.selectedItems)
+                pendingClean = selection.selectedItems
             } label: {
                 Text("review.action.clean").frame(minWidth: 80)
             }

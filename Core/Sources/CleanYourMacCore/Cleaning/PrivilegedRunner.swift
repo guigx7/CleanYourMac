@@ -21,6 +21,12 @@ public enum PrivilegedCommand: Hashable, Sendable {
 
 public protocol PrivilegedRunner: Sendable {
     func run(_ commands: [PrivilegedCommand]) async throws(PrivilegedError) -> [Result<Void, CleanFailure>]
+    /// Mede (`du -sk`) caminhos ilegíveis para o usuário; `nil` onde não deu.
+    func measure(_ urls: [URL]) async throws(PrivilegedError) -> [Int64?]
+}
+
+extension PrivilegedRunner {
+    public func measure(_ urls: [URL]) async throws(PrivilegedError) -> [Int64?] { urls.map { _ in nil } }
 }
 
 /// Pede a senha de administrador uma vez e roda o lote via `do shell script … with administrator privileges`.
@@ -38,6 +44,36 @@ public struct AppleScriptPrivilegedRunner: PrivilegedRunner {
 
     public func run(_ commands: [PrivilegedCommand]) async throws(PrivilegedError) -> [Result<Void, CleanFailure>] {
         guard !commands.isEmpty else { return [] }
+        return Self.parse(try await execute(Self.makeScript(commands)), count: commands.count)
+    }
+
+    public func measure(_ urls: [URL]) async throws(PrivilegedError) -> [Int64?] {
+        guard !urls.isEmpty else { return [] }
+        return Self.parseSizes(try await execute(Self.makeMeasureScript(urls)), count: urls.count)
+    }
+
+    /// Script que imprime `CYM:<i>:ok:<KB>` por caminho.
+    public static func makeMeasureScript(_ urls: [URL]) -> String {
+        var lines = ["#!/bin/sh", "set -u"]
+        for (i, u) in urls.enumerated() {
+            lines.append("s=$(/usr/bin/du -sk -- \(quote(u.path)) 2>/dev/null | /usr/bin/cut -f1) && [ -n \"$s\" ] && echo \"CYM:\(i):ok:$s\" || echo 'CYM:\(i):fail'")
+        }
+        return lines.joined(separator: "\n") + "\n"
+    }
+
+    static func parseSizes(_ output: String, count: Int) -> [Int64?] {
+        var out = [Int64?](repeating: nil, count: count)
+        for line in output.split(separator: "\n") {
+            let parts = line.split(separator: ":")
+            guard parts.count == 4, parts[0] == "CYM", parts[2] == "ok", let i = Int(parts[1]), out.indices.contains(i),
+                  let kb = Int64(parts[3]) else { continue }
+            out[i] = kb * 1024
+        }
+        return out
+    }
+
+    /// Roda um script sh como root (uma senha) e devolve a saída.
+    private func execute(_ script: String) async throws(PrivilegedError) -> String {
         let dir: URL
         do {
             dir = FileManager.default.temporaryDirectory.appendingPathComponent("cym-priv-\(UUID().uuidString)")
@@ -47,7 +83,7 @@ public struct AppleScriptPrivilegedRunner: PrivilegedRunner {
         defer { try? FileManager.default.removeItem(at: dir) }
         let file = dir.appendingPathComponent("batch.sh")
         do {
-            try Self.makeScript(commands).write(to: file, atomically: true, encoding: .utf8)
+            try script.write(to: file, atomically: true, encoding: .utf8)
         } catch { throw .failed("\(error)") }
 
         let source = "do shell script \"/bin/sh \" & quoted form of \(Self.appleScriptString(file.path)) with administrator privileges"
@@ -66,7 +102,7 @@ public struct AppleScriptPrivilegedRunner: PrivilegedRunner {
         if output == "\u{0}cancel" { throw .userCancelled }
         if output.hasPrefix("\u{0}fail:") { throw .failed(String(output.dropFirst(6))) }
         // `do shell script` troca \n por \r na saída.
-        return Self.parse(output.replacingOccurrences(of: "\r", with: "\n"), count: commands.count)
+        return output.replacingOccurrences(of: "\r", with: "\n")
     }
 
     /// Script sh com cada caminho entre aspas simples; cada comando imprime `CYM:<i>:ok|fail`.
