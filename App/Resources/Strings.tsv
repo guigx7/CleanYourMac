@@ -139,3 +139,6 @@ aiKind.caches	Caches	Caches
 aiKind.logs	Logs	Registros
 aiKind.temporary	Temporary files	Arquivos temporários
 aiKind.staleVersions	Stale versions	Versões defasadas
+trash.system	Trash	Lixo
+trash.mounted	Trash on connected drives	Lixos dos discos conectados
+mail.downloads	Mail downloads	Downloads do Mail

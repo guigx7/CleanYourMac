@@ -1021,6 +1021,23 @@
         }
       }
     },
+    "mail.downloads": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mail downloads"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Downloads do Mail"
+          }
+        }
+      }
+    },
     "module.applications": {
       "extractionState": "manual",
       "localizations": {
@@ -2241,6 +2258,40 @@
           "stringUnit": {
             "state": "translated",
             "value": "%@ de detritos do Xcode removidos"
+          }
+        }
+      }
+    },
+    "trash.mounted": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Trash on connected drives"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lixos dos discos conectados"
+          }
+        }
+      }
+    },
+    "trash.system": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Trash"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lixo"
           }
         }
       }

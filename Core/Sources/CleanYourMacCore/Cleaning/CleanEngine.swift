@@ -214,19 +214,36 @@ public final class CleanEngine: Cleaning {
 
     static func removeUnprivileged(_ removal: RemovalAction) throws {
         let fm = FileManager.default
+        /// Já apagado nesta limpeza (caminhos sobrepostos entre grupos): ignora sem erro.
+        func gone(_ u: URL) -> Bool {
+            var st = stat()
+            return lstat(u.path, &st) != 0 && errno == ENOENT
+        }
+        /// Tira a trava `uchg` antes de apagar (o item seria removido de qualquer forma).
+        func unlock(_ u: URL) {
+            var st = stat()
+            if lstat(u.path, &st) == 0, st.st_flags & UInt32(UF_IMMUTABLE) != 0 {
+                lchflags(u.path, st.st_flags & ~UInt32(UF_IMMUTABLE))
+            }
+        }
+        func remove(_ u: URL) throws {
+            if gone(u) { return }
+            unlock(u)
+            try fm.removeItem(at: u)
+        }
         switch removal {
         case .delete(let u), .removeLoginItem(let u), .deleteStaleVersion(let u, _), .deleteUnlessRunning(let u, _):
-            try fm.removeItem(at: u)
+            try remove(u)
         case .moveToTrash(let u):
             try fm.trashItem(at: u, resultingItemURL: nil)
         case .deleteContents(let u):
             for child in try fm.contentsOfDirectory(at: u, includingPropertiesForKeys: nil) {
-                try fm.removeItem(at: child)
+                try remove(child)
             }
         case .removeLocalizations(_, let lprojs):
             for l in lprojs { try fm.removeItem(at: l) }
         case .deleteFiles(let urls):
-            for u in urls { try fm.removeItem(at: u) }
+            for u in urls { try remove(u) }
         case .removeOllamaModel(let manifest, let store):
             try OllamaStore(root: store).remove(manifest: manifest)
         case .thinBinary, .deleteDocumentVersions:
