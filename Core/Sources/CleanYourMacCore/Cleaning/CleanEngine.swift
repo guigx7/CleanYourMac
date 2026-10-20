@@ -147,6 +147,8 @@ public final class CleanEngine: Cleaning {
                     guard documentVersions.remove(version: version, of: document) else {
                         throw CleanFailure(reason: "could not remove version")
                     }
+                case .thinBinary(let exe, let arch, let bundle):
+                    try thin(exe, keep: arch, bundle: bundle)
                 case .deleteSimulator(let udid, let simctl):
                     guard commands.run(simctl, ["delete", udid]).status == 0 else { throw CleanFailure(reason: "simctl delete failed") }
                 case .deleteRuntime(let id, let simctl):
@@ -259,7 +261,8 @@ public final class CleanEngine: Cleaning {
         case .deleteContents(let u): [.removeContents(u)]
         case .removeLocalizations(_, let lprojs): lprojs.map { .remove($0) }
         case .deleteFiles(let urls): urls.map { .remove($0) }
-        case .moveToTrash, .thinBinary, .removeFileVersion, .deleteSimulator, .deleteRuntime, .removeOllamaModel: []
+        case .thinBinary(let exe, let arch, _): [.lipoThin(exe, keepArch: arch)]
+        case .moveToTrash, .removeFileVersion, .deleteSimulator, .deleteRuntime, .removeOllamaModel: []
         }
     }
 
@@ -304,6 +307,38 @@ public final class CleanEngine: Cleaning {
             try OllamaStore(root: store).remove(manifest: manifest)
         case .thinBinary, .removeFileVersion, .deleteSimulator, .deleteRuntime:
             throw CleanFailure(reason: "unsupported removal")
+        }
+    }
+
+    /// Reescreve o binário só com a fatia `keep` (universal-binaries.md §Remoção), sem reassinar.
+    /// Salvaguarda nossa: se a assinatura do app era válida e deixa de ser, restaura o original.
+    private func thin(_ exe: URL, keep: String, bundle: URL) throws {
+        let fm = FileManager.default
+        let signedBefore = commands.run("/usr/bin/codesign", ["--verify", "--deep", "--strict", bundle.path]).status == 0
+        let tmp = exe.appendingPathExtension("lipo")
+        guard access(exe.deletingLastPathComponent().path, W_OK) == 0, access(exe.path, W_OK) == 0 else {
+            throw CocoaError(.fileWriteNoPermission)
+        }
+        let backup = fm.temporaryDirectory.appendingPathComponent("cym-thin-\(UUID().uuidString)")
+        try fm.copyItem(at: exe, to: backup)
+        defer { try? fm.removeItem(at: backup) }
+        let result = commands.run("/usr/bin/lipo", [exe.path, "-extract", keep, "-output", tmp.path])
+        guard result.status == 0, fm.fileExists(atPath: tmp.path) else {
+            try? fm.removeItem(at: tmp)
+            throw CleanFailure(reason: "lipo failed")
+        }
+        var st = stat()
+        if lstat(exe.path, &st) == 0 {
+            chmod(tmp.path, st.st_mode & 0o7777)
+            chown(tmp.path, st.st_uid, st.st_gid)
+        }
+        guard rename(tmp.path, exe.path) == 0 else {
+            try? fm.removeItem(at: tmp)
+            throw CleanFailure(reason: "could not replace binary")
+        }
+        if signedBefore, commands.run("/usr/bin/codesign", ["--verify", "--deep", "--strict", bundle.path]).status != 0 {
+            _ = rename(backup.path, exe.path)
+            throw CleanFailure(reason: "signature would break; restored")
         }
     }
 

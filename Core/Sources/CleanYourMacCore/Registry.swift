@@ -21,6 +21,7 @@ public enum Registry {
             IOSBackupsScanner(),
             DocumentVersionsScanner(apps: apps),
             XcodeJunkScanner(),
+            UniversalBinariesScanner(),
         ]
         let covered = Set(specialized.map(\.group))
         let ruleBased = GroupID.allCases
