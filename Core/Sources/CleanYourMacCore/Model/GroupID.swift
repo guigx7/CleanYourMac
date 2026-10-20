@@ -27,7 +27,7 @@ public enum GroupID: String, CaseIterable, Codable, Sendable {
     /// A limpeza precisa de privilégio de administrador (definido pela spec de cada grupo).
     public var requiresAdmin: Bool {
         switch self {
-        case .systemCache, .systemLogs: true
+        case .systemCache, .systemLogs, .deletedUsers: true
         default: false
         }
     }

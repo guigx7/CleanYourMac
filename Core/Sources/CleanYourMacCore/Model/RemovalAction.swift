@@ -15,7 +15,12 @@ public enum RemovalAction: Hashable, Sendable {
     case removeSessionLoginItem(name: String?, url: URL?)
     /// Plist de preferências defeituoso: `defaults delete`, apagar e reiniciar o cfprefsd no fim.
     case removePreference(URL)
-    case deleteDocumentVersions(volume: URL, fileID: String)
+    /// Versão antiga de um documento, removida pela API de versões (`NSFileVersion.remove()`).
+    case removeFileVersion(document: URL, version: URL)
+    /// `simctl delete <udid>`.
+    case deleteSimulator(udid: String, simctl: String)
+    /// `simctl runtime delete <identifier>`.
+    case deleteRuntime(identifier: String, simctl: String)
     /// Versão defasada: antes de apagar, confere se `activeLink` não passou a apontar para ela.
     case deleteStaleVersion(URL, activeLink: URL)
     /// Pasta temporária de uma ferramenta: pulada se o processo estiver rodando.

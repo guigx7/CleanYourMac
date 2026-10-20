@@ -304,7 +304,7 @@ private struct ItemRow: View {
             ItemIcon(source: item.icon).frame(width: 30, height: 30)
             VStack(alignment: .leading, spacing: 1) {
                 Group {
-                    if let key = item.titleKey { Text(LocalizedStringKey(stringLiteral: key)) } else { Text(item.name) }
+                    if let key = item.titleKey, key != "xcode.simulators" { Text(LocalizedStringKey(stringLiteral: key)) } else { Text(item.name) }
                 }
                 .lineLimit(1).truncationMode(.middle)
                 if let detail = item.detail {

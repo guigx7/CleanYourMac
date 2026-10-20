@@ -41,12 +41,14 @@ public final class CleanEngine: Cleaning {
     private let processes: any ProcessChecker
     private let commands: any CommandRunner
     private let loginItems: any LoginItemsSource
+    private let documentVersions: any DocumentVersionSource
 
     public init(policies: [GroupID: PathPolicy], privileged: any PrivilegedRunner, dryRun: Bool, log: CleanupLog,
                 requiresAdmin: @escaping @Sendable (GroupID) -> Bool = { $0.requiresAdmin },
                 processes: any ProcessChecker = SystemProcessChecker(),
                 commands: any CommandRunner = SystemCommandRunner(),
-                loginItems: any LoginItemsSource = SystemLoginItems()) {
+                loginItems: any LoginItemsSource = SystemLoginItems(),
+                documentVersions: any DocumentVersionSource = SystemDocumentVersions()) {
         self.policyProvider = { policies }
         self.privileged = privileged
         self.dryRun = dryRun
@@ -55,6 +57,7 @@ public final class CleanEngine: Cleaning {
         self.processes = processes
         self.commands = commands
         self.loginItems = loginItems
+        self.documentVersions = documentVersions
     }
 
     /// Políticas calculadas na hora da limpeza (raízes podem surgir depois do início do app).
@@ -62,7 +65,8 @@ public final class CleanEngine: Cleaning {
                 dryRun: Bool, log: CleanupLog, requiresAdmin: @escaping @Sendable (GroupID) -> Bool = { $0.requiresAdmin },
                 processes: any ProcessChecker = SystemProcessChecker(),
                 commands: any CommandRunner = SystemCommandRunner(),
-                loginItems: any LoginItemsSource = SystemLoginItems()) {
+                loginItems: any LoginItemsSource = SystemLoginItems(),
+                documentVersions: any DocumentVersionSource = SystemDocumentVersions()) {
         self.policyProvider = policyProvider
         self.privileged = privileged
         self.dryRun = dryRun
@@ -71,6 +75,7 @@ public final class CleanEngine: Cleaning {
         self.processes = processes
         self.commands = commands
         self.loginItems = loginItems
+        self.documentVersions = documentVersions
     }
 
     public func clean(_ items: [JunkItem]) -> AsyncStream<CleanEvent> {
@@ -138,6 +143,14 @@ public final class CleanEngine: Cleaning {
                     guard loginItems.remove(LoginItemEntry(name: name, url: url)) else {
                         throw CleanFailure(reason: "could not remove login item")
                     }
+                case .removeFileVersion(let document, let version):
+                    guard documentVersions.remove(version: version, of: document) else {
+                        throw CleanFailure(reason: "could not remove version")
+                    }
+                case .deleteSimulator(let udid, let simctl):
+                    guard commands.run(simctl, ["delete", udid]).status == 0 else { throw CleanFailure(reason: "simctl delete failed") }
+                case .deleteRuntime(let id, let simctl):
+                    guard commands.run(simctl, ["runtime", "delete", id]).status == 0 else { throw CleanFailure(reason: "simctl runtime delete failed") }
                 case .removeLaunchdItem(let plist, _):
                     _ = commands.run("/bin/launchctl", ["unload", plist.path])
                     try Self.removeUnprivileged(removal)
@@ -229,8 +242,8 @@ public final class CleanEngine: Cleaning {
         case .removeLocalizations(let bundle, let lprojs):
             try check(bundle)
             for l in lprojs { try check(l) }
-        case .deleteDocumentVersions(let volume, _):
-            try check(volume, allowRoot: true)
+        case .removeFileVersion, .deleteSimulator, .deleteRuntime:
+            break // pela API/ferramenta do sistema, não apaga caminhos diretamente
         case .deleteFiles(let urls):
             for u in urls { try check(u) }
         case .removeOllamaModel(let manifest, _):
@@ -246,7 +259,7 @@ public final class CleanEngine: Cleaning {
         case .deleteContents(let u): [.removeContents(u)]
         case .removeLocalizations(_, let lprojs): lprojs.map { .remove($0) }
         case .deleteFiles(let urls): urls.map { .remove($0) }
-        case .moveToTrash, .thinBinary, .deleteDocumentVersions, .removeOllamaModel: []
+        case .moveToTrash, .thinBinary, .removeFileVersion, .deleteSimulator, .deleteRuntime, .removeOllamaModel: []
         }
     }
 
@@ -289,7 +302,7 @@ public final class CleanEngine: Cleaning {
             for u in urls { try remove(u) }
         case .removeOllamaModel(let manifest, let store):
             try OllamaStore(root: store).remove(manifest: manifest)
-        case .thinBinary, .deleteDocumentVersions:
+        case .thinBinary, .removeFileVersion, .deleteSimulator, .deleteRuntime:
             throw CleanFailure(reason: "unsupported removal")
         }
     }

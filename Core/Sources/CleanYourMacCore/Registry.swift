@@ -17,6 +17,10 @@ public enum Registry {
             MailTrashScanner(),
             BrokenLoginItemsScanner(),
             BrokenPreferencesScanner(),
+            DeletedUsersScanner(),
+            IOSBackupsScanner(),
+            DocumentVersionsScanner(apps: apps),
+            XcodeJunkScanner(),
         ]
         let covered = Set(specialized.map(\.group))
         let ruleBased = GroupID.allCases
