@@ -194,7 +194,7 @@ public final class CleanEngine: Cleaning {
                 case .removeLaunchdItem(let plist, _):
                     _ = commands.run("/bin/launchctl", ["unload", plist.path])
                     try Self.removeUnprivileged(removal)
-                case .moveToTrash(let u):
+                case .moveToTrash(let u), .trashAppBundle(let u):
                     try trashUnlessGone(u)
                 case .unloadAndTrash(let plist, let domain):
                     guard domain == .user else { throw CocoaError(.fileWriteNoPermission) }
@@ -306,6 +306,15 @@ public final class CleanEngine: Cleaning {
             if let helper { try check(helper) }
         case .unloadAndTrash(let plist, _):
             try check(plist)
+        case .trashAppBundle(let u):
+            // As cópias podem estar em qualquer pasta do usuário: a trava é estrutural, não de raiz.
+            let real = PathPolicy.realPath(u.path)
+            var st = stat()
+            guard u.pathExtension == "app", lstat(u.path, &st) == 0, (st.st_mode & S_IFMT) == S_IFDIR,
+                  FileManager.default.fileExists(atPath: u.appendingPathComponent("Contents/Info.plist").path),
+                  !real.hasPrefix("/System/"), !PathPolicy.isVital(real) else {
+                throw CleanFailure(reason: "path not allowed: not an app bundle \(u.path)")
+            }
         case .forgetReceipt(let id):
             guard HelperExecutor.isSafeIdentifier(id) else { throw CleanFailure(reason: "invalid receipt id") }
         case .removeSessionLoginItem:
@@ -337,7 +346,7 @@ public final class CleanEngine: Cleaning {
 
     private func commands(for removal: RemovalAction, owner: String?) -> [PrivilegedCommand] {
         switch removal {
-        case .moveToTrash(let u): return owner.map { [.trash(u, owner: $0)] } ?? []
+        case .moveToTrash(let u), .trashAppBundle(let u): return owner.map { [.trash(u, owner: $0)] } ?? []
         case .unloadAndTrash(let plist, _): return owner.map { [.launchdBootout(plist: plist, owner: $0), .trash(plist, owner: $0)] } ?? []
         case .forgetReceipt(let id): return owner.map { [.forgetPackage(id, owner: $0)] } ?? []
         default: return legacyCommands(for: removal)
@@ -355,7 +364,7 @@ public final class CleanEngine: Cleaning {
         case .deleteFiles(let urls): urls.map { .remove($0) }
         case .thinBinary(let exe, let arch, _): [.lipoThin(exe, keepArch: arch)]
         case .moveToTrash, .removeFileVersion, .deleteSimulator, .deleteRuntime, .removeOllamaModel,
-             .unloadAndTrash, .forgetReceipt: []
+             .unloadAndTrash, .forgetReceipt, .trashAppBundle: []
         }
     }
 
@@ -401,7 +410,7 @@ public final class CleanEngine: Cleaning {
             for u in urls { try remove(u) }
         case .removeOllamaModel(let manifest, let store):
             try OllamaStore(root: store).remove(manifest: manifest)
-        case .thinBinary, .removeFileVersion, .deleteSimulator, .deleteRuntime, .unloadAndTrash, .forgetReceipt:
+        case .thinBinary, .removeFileVersion, .deleteSimulator, .deleteRuntime, .unloadAndTrash, .forgetReceipt, .trashAppBundle:
             throw CleanFailure(reason: "unsupported removal")
         }
     }

@@ -35,6 +35,8 @@ public enum RemovalAction: Hashable, Sendable {
     case unloadAndTrash(plist: URL, domain: LaunchdDomain)
     /// Recibo de pacote de um app (`pkgutil --forget`, via lote privilegiado).
     case forgetReceipt(String)
+    /// Bundle de um app (ou cópia dele) para o Lixo: só um `.app` real com Info.plist, fora do /System.
+    case trashAppBundle(URL)
 }
 
 public enum LaunchdDomain: String, Hashable, Sendable {

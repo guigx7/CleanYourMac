@@ -4,6 +4,8 @@ public enum ItemBadge: String, Hashable, Sendable {
     case latest
     /// Imagem de disco montada: aparece, mas não pode ser marcada (apps/installers.md §Remoção).
     case mounted
+    /// Aparece só como referência, sem checkbox (bundle protegido, arquivo de app da Apple fora da home).
+    case locked
 }
 
 public enum IconSource: Hashable, Sendable {
