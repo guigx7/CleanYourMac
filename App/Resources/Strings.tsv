@@ -201,3 +201,146 @@ helper.install	Install helper	Instalar ajudante
 helper.approve	Approve helper in Settings	Aprovar ajudante nos Ajustes
 helper.install.hint	A small background service measures and cleans system files without asking for your password every time.	Um pequeno serviço em segundo plano mede e limpa arquivos do sistema sem pedir sua senha toda vez.
 review.category.needsDiskAccess	macOS hides this area until CleanYourMac has Full Disk Access.	O macOS esconde esta área até o CleanYourMac ter Acesso Total ao Disco.
+
+# Módulo Aplicativos
+apps.intro.title	Applications	Aplicativos
+apps.intro.subtitle	See every app on your Mac with the files it spreads around, find apps that are out of date, and clean up what removed apps left behind.	Veja cada app do Mac com os arquivos que ele espalha pelo sistema, descubra quais estão desatualizados e limpe o que apps já removidos deixaram para trás.
+apps.category.uninstaller	Uninstaller	Desinstalador
+apps.category.updater	Updater	Atualizador
+apps.category.leftovers	Leftovers	Sobras
+apps.scan.title	Looking at your apps…	Olhando seus apps…
+apps.scan.phase.apps	Listing installed apps	Listando os apps instalados
+apps.scan.phase.related	Finding each app's files	Procurando os arquivos de cada app
+apps.scan.phase.leftovers	Looking for leftovers of removed apps	Procurando sobras de apps removidos
+apps.scan.phase.installers	Looking for installers	Procurando instaladores
+apps.scan.phase.updates	Checking for updates	Verificando atualizações
+apps.nothing.title	No apps found	Nenhum app encontrado
+apps.nothing.message	There are no apps to show on this Mac.	Não há apps para mostrar neste Mac.
+apps.results.header.one	%d app on this Mac	%d app neste Mac
+apps.results.header.other	%d apps on this Mac	%d apps neste Mac
+apps.results.manage	Manage Apps	Gerenciar Apps
+apps.restart.confirm.message	The list will be rebuilt and your current selection will be lost.	A lista será refeita e a seleção atual será perdida.
+apps.updates.offline	Couldn't check for updates (no connection).	Não foi possível verificar atualizações (sem conexão).
+apps.tile.macOSUpdates.title	%d macOS updates available	%d atualizações do macOS disponíveis
+apps.tile.macOSUpdates.description	Updates for the system itself are installed from System Settings.	As atualizações do próprio sistema são instaladas pelos Ajustes do Sistema.
+apps.tile.macOSUpdates.open	Open Settings	Abrir Ajustes
+apps.tile.appUpdates.title	%d app updates available	%d atualizações de apps disponíveis
+apps.tile.appUpdates.description	Newer versions of some of your apps are out. See where to get each one.	Há versões novas de alguns apps. Veja onde obter cada uma.
+apps.tile.uninstaller.title	Apps you might not need	Apps que talvez você não use mais
+apps.tile.uninstaller.description	Review your apps and remove the ones you no longer use, together with their files.	Revise seus apps e remova os que não usa mais, junto com os arquivos deles.
+apps.tile.bit32.title	%@ in 32-bit apps	%@ em apps de 32 bits
+apps.tile.bit32.description	These apps can't run on this version of macOS.	Esses apps não rodam nesta versão do macOS.
+apps.tile.leftovers.title	%@ left by removed apps	%@ deixados por apps removidos
+apps.tile.leftovers.description	Files of apps that are no longer installed.	Arquivos de apps que não estão mais instalados.
+apps.tile.installers.title	%@ in installer files	%@ em arquivos de instalação
+apps.tile.installers.description	Disk images (DMG) you may not need anymore.	Imagens de disco (DMG) que talvez você não precise mais.
+apps.action.uninstall	Uninstall	Desinstalar
+apps.action.reset	Reset	Redefinir
+apps.action.remove	Remove	Remover
+apps.manager.title	App Manager	Gerenciador de Aplicativos
+apps.section.uninstaller	Uninstaller	Desinstalador
+apps.section.updater	Updater	Atualizador
+apps.section.leftovers	Leftovers	Sobras
+apps.uninstaller.description	Remove apps completely, with every related file.	Remova apps por completo, com todos os arquivos relacionados.
+apps.updater.description	See which apps have a newer version and where to get it.	Veja quais apps têm versão nova e onde obtê-la.
+apps.leftovers.description	Files left by apps that were deleted, and installers you no longer need.	Arquivos deixados por apps apagados e instaladores que você não precisa mais.
+apps.filter.all	All Apps	Todos os Apps
+apps.filter.unused	Unused	Não Usados
+apps.filter.suspicious	Suspicious	Suspeitos
+apps.filter.selected	Selected	Selecionados
+apps.filter.stores	Stores	Lojas
+apps.filter.vendors	Vendors	Fornecedores
+apps.filter.plugins	Plug-ins	Plug-ins
+apps.filter.audioPlugins	Audio Plug-ins	Plug-ins de Áudio
+apps.store.appStore	App Store	App Store
+apps.store.setapp	Setapp	Setapp
+apps.store.steam	Steam	Steam
+apps.store.battleNet	Battle.net	Battle.net
+apps.store.other	Other	Outra
+apps.vendor.apple	Apple	Apple
+apps.vendor.google	Google	Google
+apps.vendor.jetBrains	JetBrains	JetBrains
+apps.vendor.macPaw	MacPaw	MacPaw
+apps.vendor.microsoft	Microsoft	Microsoft
+apps.vendor.adobe	Adobe	Adobe
+apps.vendor.other	Others	Outros
+apps.sort.name	Name	Nome
+apps.sort.size	Size	Tamanho
+apps.sort.lastOpened	Last Opened	Última Abertura
+apps.lastOpened	Opened %@	Aberto em %@
+apps.empty.all	No apps here.	Nenhum app aqui.
+apps.empty.unused	No app has gone unopened for more than six months.	Nenhum app ficou mais de seis meses sem ser aberto.
+apps.empty.selected	Apps you select appear here.	Os apps que você marcar aparecem aqui.
+apps.kind.applications	Applications	Aplicativos
+apps.kind.binaries	App	App
+apps.kind.container	Container	Contêiner
+apps.kind.crashes	Crash Reports	Relatórios de Falha
+apps.kind.dockIcon	Dock Icon	Ícone no Dock
+apps.kind.help	Help	Ajuda
+apps.kind.installers	Installers	Instaladores
+apps.kind.loginItems	Startup Items	Itens de Início
+apps.kind.logs	Logs	Registros
+apps.kind.other	Other	Outros
+apps.kind.plugins	Plug-ins	Plug-ins
+apps.kind.preferences	Preferences	Preferências
+apps.kind.supportingFiles	Support Files	Arquivos de Apoio
+apps.kind.userData	User Data	Dados do Usuário
+apps.mode.uninstall	Uninstall	Desinstalar
+apps.mode.reset	Reset	Redefinir
+apps.mode.uninstall.hint	The app and the checked files go to the Trash.	O app e os arquivos marcados vão para o Lixo.
+apps.mode.reset.hint	Only the checked files go to the Trash; the app stays.	Só os arquivos marcados vão para o Lixo; o app fica.
+apps.mode.protected	This app is protected by macOS: it can only be reset.	Este app é protegido pelo macOS: só pode ser redefinido.
+apps.mode.self	CleanYourMac can't remove or reset itself.	O CleanYourMac não remove nem redefine a si mesmo.
+apps.locked.help	Shown for reference only; this item can't be removed here.	Mostrado só como referência; este item não pode ser removido aqui.
+apps.locked.mounted	This disk image is in use. Eject it first.	Esta imagem de disco está em uso. Ejete-a antes.
+apps.reveal	Show in Finder	Mostrar no Finder
+apps.show	Show items	Mostrar itens
+apps.hide	Hide items	Ocultar itens
+apps.leftovers.files	Leftover Files	Arquivos de Sobras
+apps.leftovers.installers	Installers	Instaladores
+apps.leftovers.empty	No leftovers found.	Nenhuma sobra encontrada.
+apps.installers.empty	No installer files found.	Nenhum arquivo de instalação encontrado.
+apps.updater.empty	Your apps are up to date.	Seus apps estão em dia.
+apps.updater.version	Version %@	Versão %@
+apps.updater.source	Source:	Fonte:
+apps.updater.versions	Version:	Versão:
+apps.updater.date	Released:	Lançamento:
+apps.updater.size	Update size:	Tamanho:
+apps.updater.notes	What's new	Novidades
+apps.updater.notes.link	Release notes	Notas da versão
+apps.updater.open.appStore	Open in App Store	Abrir na App Store
+apps.updater.open.settings	Open Software Update	Abrir Atualização de Software
+apps.updater.open.app	Open the App	Abrir o App
+apps.updater.copy	Copy Command	Copiar Comando
+apps.updater.copied	Copied	Copiado
+apps.updater.homepage	Vendor page	Página do fornecedor
+apps.updater.stage1.hint	CleanYourMac doesn't install updates yet: it opens the right place for each one.	O CleanYourMac ainda não instala atualizações: ele abre o lugar certo para cada uma.
+apps.source.appStore	App Store	App Store
+apps.source.sparkle	The app's update feed	Canal de atualização do app
+apps.source.homebrew	Homebrew	Homebrew
+apps.source.macOS	macOS Software Update	Atualização de Software do macOS
+apps.confirm.title	Move %d items to the Trash?	Mover %d itens para o Lixo?
+apps.confirm.message	%@ will go to the Trash. You can restore them from there until you empty it.	%@ irão para o Lixo. Você pode recuperá-los de lá até esvaziá-lo.
+apps.confirm.message.mixed	%@ will be removed. Files go to the Trash; installer disk images are deleted right away.	%@ serão removidos. Os arquivos vão para o Lixo; as imagens de instalação são apagadas na hora.
+apps.confirm.action	Continue	Continuar
+apps.quit.title	Quit the apps first	Feche os apps antes
+apps.quit.message	These apps are open. They need to quit before being uninstalled.	Estes apps estão abertos. Eles precisam ser fechados antes de desinstalar.
+apps.quit.notResponding	Some apps didn't quit. You can force them to quit.	Alguns apps não fecharam. Você pode forçar o encerramento.
+apps.quit.action	Quit and Continue	Fechar e Continuar
+apps.quit.force	Force Quit	Forçar Encerramento
+apps.quit.force.confirm.title	Force the apps to quit?	Forçar o encerramento dos apps?
+apps.quit.force.confirm.message	Unsaved changes in these apps will be lost.	Alterações não salvas nesses apps serão perdidas.
+apps.reset.confirm.title	This will remove data you created in the app	Isto vai remover dados que você criou no app
+apps.reset.confirm.message	The items below hold the app's documents and data, such as messages, libraries, projects or virtual machines. They will go to the Trash and can be restored from there until you empty it.	Os itens abaixo guardam documentos e dados do app, como mensagens, bibliotecas, projetos ou máquinas virtuais. Eles irão para o Lixo e podem ser recuperados de lá até você esvaziá-lo.
+apps.reset.confirm.action	Move to Trash	Mover para o Lixo
+apps.acting.title	Moving to the Trash…	Movendo para o Lixo…
+apps.acting.progress	%d of %d	%d de %d
+apps.done.title	Done!	Pronto!
+apps.done.partial.title	Some items weren't removed	Alguns itens não foram removidos
+apps.done.message	%d items removed. Apps and files are in the Trash.	%d itens removidos. Apps e arquivos estão no Lixo.
+apps.done.dryRun	Simulation: %d items would be removed. Nothing was touched.	Simulação: %d itens seriam removidos. Nada foi alterado.
+apps.done.openTrash	Open Trash	Abrir Lixo
+apps.done.log	Open Log	Abrir Registro
+reason.kept	Kept because an earlier step failed	Mantido porque um passo anterior falhou
+apps.tile.macOSUpdates.title.one	%d macOS update available	%d atualização do macOS disponível
+apps.tile.appUpdates.title.one	%d app update available	%d atualização de app disponível
