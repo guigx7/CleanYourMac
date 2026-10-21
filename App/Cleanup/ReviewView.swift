@@ -361,13 +361,14 @@ private struct ItemRow: View {
 /// Checkbox com estado misto.
 struct TriStateCheckbox: View {
     var state: SelectionModel.State
+    var tint: Color = Theme.reviewTint
     var action: () -> Void
 
     var body: some View {
         Button(action: action) {
             Image(systemName: symbol)
                 .font(.system(size: 16))
-                .foregroundStyle(state == .off ? Color.secondary : Theme.reviewTint)
+                .foregroundStyle(state == .off ? Color.secondary : tint)
         }
         .buttonStyle(.plain)
         .accessibilityValue(Text(verbatim: "\(state)"))
