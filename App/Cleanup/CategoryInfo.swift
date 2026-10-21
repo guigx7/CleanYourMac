@@ -10,6 +10,7 @@ extension CategoryID {
         case .aiClutter: "cpu.fill"
         case .mailAttachments: "envelope.fill"
         case .trashBins: "trash.fill"
+        case .applications: "square.grid.2x2.fill"
         }
     }
 }
@@ -36,6 +37,9 @@ extension GroupID {
         case .mailAttachments: "paperclip"
         case .trash: "trash"
         case .mailTrash: "envelope.badge"
+        case .appUninstall: "square.grid.2x2"
+        case .appLeftovers: "puzzlepiece.extension"
+        case .appInstallers: "shippingbox"
         }
     }
 }

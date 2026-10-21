@@ -9,6 +9,8 @@ public enum GroupID: String, CaseIterable, Codable, Sendable {
     case mailAttachments
     // Lixos
     case trash, mailTrash
+    // Aplicativos (desinstalar/redefinir, sobras, instaladores)
+    case appUninstall, appLeftovers, appInstallers
 
     public var category: CategoryID {
         switch self {
@@ -21,6 +23,8 @@ public enum GroupID: String, CaseIterable, Codable, Sendable {
             .mailAttachments
         case .trash, .mailTrash:
             .trashBins
+        case .appUninstall, .appLeftovers, .appInstallers:
+            .applications
         }
     }
 

@@ -111,7 +111,7 @@ struct ReviewView: View {
     // MARK: Colunas
 
     private var categoryColumn: some View {
-        List(CategoryID.allCases, id: \.self, selection: Binding(get: { category }, set: { c in
+        List(CategoryID.cleanupCases, id: \.self, selection: Binding(get: { category }, set: { c in
             guard let c else { return }
             category = c
             group = ReviewLogic.groups(in: c, report: report).first

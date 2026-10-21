@@ -16,7 +16,7 @@ struct IntroView: View {
                     .foregroundStyle(Theme.secondaryText)
                     .fixedSize(horizontal: false, vertical: true)
                 VStack(alignment: .leading, spacing: 14) {
-                    ForEach(CategoryID.allCases, id: \.self) { c in
+                    ForEach(CategoryID.cleanupCases, id: \.self) { c in
                         HStack(spacing: 14) {
                             CategoryBadge(symbol: c.symbol)
                             Text(c.title).font(.system(size: 15, weight: .semibold))

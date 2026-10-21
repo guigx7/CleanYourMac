@@ -147,7 +147,7 @@ final class CleanupFlowModel {
 
     func openReview(category: CategoryID? = nil) {
         guard report != nil else { return }
-        reviewCategory = category ?? CategoryID.allCases.first { (report?.totalSize(of: $0) ?? 0) > 0 }
+        reviewCategory = category ?? CategoryID.cleanupCases.first { (report?.totalSize(of: $0) ?? 0) > 0 }
         reviewGroup = nil
         phase = .review
     }
