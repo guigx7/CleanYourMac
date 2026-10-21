@@ -1,0 +1,10 @@
+{
+  "_comment": "Divergências conhecidas da paridade do módulo Aplicativos (ver apps-report-2026-10-21.md). Nome do CleanMyMac → nosso. volatile: arquivos que o app aberto reescreve o tempo todo (tamanho muda entre as duas análises).",
+  "leftoverNames": {
+    "Thumbnail Extension": "ThumbnailShareExtension (Global)",
+    "QuickLook Extension": "QuickLookShareExtension (Global)"
+  },
+  "volatile": [
+    "Warp.app/logs/warp.log"
+  ]
+}

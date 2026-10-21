@@ -1,0 +1,1089 @@
+{
+  "apps" : [
+    {
+      "lastOpened" : "2026-08-20",
+      "name" : "Bruno.app",
+      "related" : {
+        "binaries" : [
+          {
+            "name" : "Bruno.app",
+            "size" : 524795904
+          }
+        ]
+      },
+      "size" : 524795904
+    },
+    {
+      "lastOpened" : "2026-09-25",
+      "name" : "ChatGPT.app",
+      "related" : {
+        "binaries" : [
+          {
+            "name" : "ChatGPT.app",
+            "size" : 1450393600
+          }
+        ],
+        "logs" : [
+          {
+            "name" : "com.openai.codex",
+            "size" : 3956736
+          }
+        ],
+        "preferences" : [
+          {
+            "name" : "com.openai.codex.plist",
+            "size" : 4096
+          }
+        ],
+        "supportingFiles" : [
+          {
+            "name" : "com.openai.codex",
+            "size" : 4096
+          },
+          {
+            "name" : "com.openai.codex",
+            "size" : 311296
+          },
+          {
+            "name" : "com.openai.codex",
+            "size" : 0
+          },
+          {
+            "name" : "com.openai.codex.helper",
+            "size" : 4943872
+          }
+        ]
+      },
+      "size" : 1459613696
+    },
+    {
+      "lastOpened" : "2026-10-20",
+      "name" : "Claude Code URL Handler.app",
+      "related" : {
+        "binaries" : [
+          {
+            "name" : "Claude Code URL Handler.app",
+            "size" : 4096
+          }
+        ]
+      },
+      "size" : 4096
+    },
+    {
+      "lastOpened" : "2026-10-20",
+      "name" : "Claude.app",
+      "related" : {
+        "binaries" : [
+          {
+            "name" : "Claude.app",
+            "size" : 662904832
+          }
+        ],
+        "logs" : [
+          {
+            "name" : "Claude",
+            "size" : 1781760
+          }
+        ],
+        "preferences" : [
+          {
+            "name" : "com.anthropic.claudefordesktop.plist",
+            "size" : 4096
+          }
+        ],
+        "supportingFiles" : [
+          {
+            "name" : "Claude",
+            "size" : 518750208
+          },
+          {
+            "name" : "com.anthropic.claudefordesktop",
+            "size" : 741376
+          },
+          {
+            "name" : "com.anthropic.claudefordesktop",
+            "size" : 0
+          },
+          {
+            "name" : "com.anthropic.claudefordesktop.helper",
+            "size" : 7352320
+          },
+          {
+            "name" : "com.anthropic.claudefordesktop.ShipIt",
+            "size" : 20480
+          }
+        ]
+      },
+      "size" : 1191555072
+    },
+    {
+      "lastOpened" : "2026-10-21",
+      "name" : "CleanMyMac.app",
+      "related" : {
+        "binaries" : [
+          {
+            "name" : "CleanMyMac.app",
+            "size" : 438902784
+          }
+        ],
+        "loginItems" : [
+          {
+            "name" : "com.macpaw.CleanMyMac-setapp.Agent",
+            "size" : 2351104
+          },
+          {
+            "name" : "com.macpaw.CleanMyMac-setapp.Agent.plist",
+            "size" : 4096
+          }
+        ],
+        "logs" : [
+          {
+            "name" : "CleanMyMac_5_Setapp_2026-10-20-133158_MacBook-Air-de-Guilherme.hang",
+            "size" : 5537792
+          },
+          {
+            "name" : "CleanMyMac_5_Setapp_2026-10-20-145341_MacBook-Air-de-Guilherme.cpu_resource.diag",
+            "size" : 86016
+          },
+          {
+            "name" : "CleanMyMac_5_Setapp_2026-10-21-152313_MacBook-Air-de-Guilherme.cpu_resource.diag",
+            "size" : 143360
+          },
+          {
+            "name" : "CleanMyMac_5_Setapp_C60F8F5A-5123-50E6-832E-E23DD63DD651.plist",
+            "size" : 4096
+          },
+          {
+            "name" : "CleanMyMac_5_Setapp_Menu_C60F8F5A-5123-50E6-832E-E23DD63DD651.plist",
+            "size" : 4096
+          },
+          {
+            "name" : "com.macpaw.CleanMyMac-setapp",
+            "size" : 24576
+          },
+          {
+            "name" : "com.macpaw.CleanMyMac-setapp.Menu",
+            "size" : 4096
+          }
+        ],
+        "preferences" : [
+          {
+            "name" : "com.macpaw.CleanMyMac-setapp.HealthMonitor.plist",
+            "size" : 4096
+          },
+          {
+            "name" : "com.macpaw.CleanMyMac-setapp.Menu.plist",
+            "size" : 4096
+          },
+          {
+            "name" : "com.macpaw.CleanMyMac-setapp.plist",
+            "size" : 4096
+          }
+        ],
+        "supportingFiles" : [
+          {
+            "name" : "CleanMyMac_5_Setapp",
+            "size" : 4096
+          },
+          {
+            "name" : "com.macpaw.CleanMyMac-setapp",
+            "size" : 675840
+          },
+          {
+            "name" : "com.macpaw.CleanMyMac-setapp",
+            "size" : 438272
+          },
+          {
+            "name" : "com.macpaw.CleanMyMac-setapp.FinderSyncExtension",
+            "size" : 0
+          },
+          {
+            "name" : "com.macpaw.CleanMyMac-setapp.HealthMonitor",
+            "size" : 282624
+          },
+          {
+            "name" : "com.macpaw.CleanMyMac-setapp.Menu",
+            "size" : 0
+          },
+          {
+            "name" : "com.macpaw.CleanMyMac-setapp.Menu",
+            "size" : 0
+          }
+        ]
+      },
+      "size" : 448475136
+    },
+    {
+      "lastOpened" : "2026-10-21",
+      "name" : "CleanYourMac.app",
+      "related" : {
+        "binaries" : [
+          {
+            "name" : "CleanYourMac.app",
+            "size" : 19226624
+          }
+        ],
+        "logs" : [
+          {
+            "name" : "CleanYourMac",
+            "size" : 24576
+          },
+          {
+            "name" : "CleanYourMac_C60F8F5A-5123-50E6-832E-E23DD63DD651.plist",
+            "size" : 4096
+          }
+        ],
+        "preferences" : [
+          {
+            "name" : "io.github.guigx7.CleanYourMac.plist",
+            "size" : 4096
+          }
+        ],
+        "supportingFiles" : [
+          {
+            "name" : "io.github.guigx7.CleanYourMac",
+            "size" : 19173376
+          },
+          {
+            "name" : "io.github.guigx7.CleanYourMac",
+            "size" : 1413120
+          }
+        ]
+      },
+      "size" : 39845888
+    },
+    {
+      "lastOpened" : "2026-09-25",
+      "name" : "Discord.app",
+      "related" : {
+        "binaries" : [
+          {
+            "name" : "Discord.app",
+            "size" : 307630080
+          }
+        ],
+        "preferences" : [
+          {
+            "name" : "com.hnc.Discord.plist",
+            "size" : 4096
+          }
+        ],
+        "supportingFiles" : [
+          {
+            "name" : "discord",
+            "size" : 1212522496
+          }
+        ]
+      },
+      "size" : 1520156672
+    },
+    {
+      "lastOpened" : "2026-03-05",
+      "name" : "GarageBand.app",
+      "related" : {
+        "binaries" : [
+          {
+            "name" : "GarageBand.app",
+            "size" : 1201893376
+          }
+        ],
+        "container" : [
+          {
+            "name" : "com.apple.garageband10",
+            "size" : 4096
+          }
+        ],
+        "supportingFiles" : [
+          {
+            "name" : "GarageBand",
+            "size" : 952102912
+          }
+        ]
+      },
+      "size" : 2154000384
+    },
+    {
+      "lastOpened" : "2026-10-20",
+      "name" : "GlucoTracker.app",
+      "related" : {
+        "binaries" : [
+          {
+            "name" : "GlucoTracker.app",
+            "size" : 14237696
+          },
+          {
+            "name" : "GlucoTracker.app",
+            "size" : 34480128
+          },
+          {
+            "name" : "GlucoTracker.app",
+            "size" : 17510400
+          },
+          {
+            "name" : "GlucoTracker.app",
+            "size" : 32489472
+          }
+        ],
+        "container" : [
+          {
+            "name" : "com.guigx.GlucoTracker",
+            "size" : 10330112
+          }
+        ],
+        "loginItems" : [
+          {
+            "name" : "GlucoTracker.app",
+            "size" : 0
+          }
+        ],
+        "supportingFiles" : [
+          {
+            "name" : "com.guigx.GlucoTracker",
+            "size" : 1183744
+          }
+        ]
+      },
+      "size" : 110231552
+    },
+    {
+      "lastOpened" : "2026-10-21",
+      "name" : "Google Chrome.app",
+      "related" : {
+        "binaries" : [
+          {
+            "name" : "Google Chrome.app",
+            "size" : 1508970496
+          }
+        ],
+        "preferences" : [
+          {
+            "name" : "com.google.Chrome.app.hfjaaekflgponolkmnmemdpfopjamaol.plist",
+            "size" : 4096
+          },
+          {
+            "name" : "com.google.Chrome.app.kjadmedhkblcgnokefifbpcmdjagkefo.plist",
+            "size" : 4096
+          },
+          {
+            "name" : "com.google.Chrome.app.mjoklplbddabcmpepnokjaffbmgbkkgg.plist",
+            "size" : 4096
+          },
+          {
+            "name" : "com.google.Chrome.plist",
+            "size" : 4096
+          }
+        ],
+        "supportingFiles" : [
+          {
+            "name" : "com.google.Chrome",
+            "size" : 0
+          },
+          {
+            "name" : "com.google.Chrome.app.hfjaaekflgponolkmnmemdpfopjamaol",
+            "size" : 0
+          },
+          {
+            "name" : "com.google.Chrome.EwEVXI",
+            "size" : 0
+          },
+          {
+            "name" : "com.google.Chrome.helper",
+            "size" : 24375296
+          },
+          {
+            "name" : "com.google.Chrome.OTORrV",
+            "size" : 0
+          },
+          {
+            "name" : "com.google.Chrome.PlkjtO",
+            "size" : 0
+          },
+          {
+            "name" : "com.google.Chrome.SnmqbF",
+            "size" : 0
+          },
+          {
+            "name" : "com.google.Chrome.uEzgMV",
+            "size" : 0
+          }
+        ]
+      },
+      "size" : 1533362176
+    },
+    {
+      "lastOpened" : "2026-10-20",
+      "name" : "Hidden Bar.app",
+      "related" : {
+        "binaries" : [
+          {
+            "name" : "Hidden Bar.app",
+            "size" : 1421312
+          }
+        ],
+        "loginItems" : [
+          {
+            "name" : "Hidden Bar.app",
+            "size" : 0
+          }
+        ],
+        "preferences" : [
+          {
+            "name" : "com.dwarvesv.minimalbar.plist",
+            "size" : 4096
+          }
+        ],
+        "supportingFiles" : [
+          {
+            "name" : "com.dwarvesv.minimalbar",
+            "size" : 204800
+          }
+        ]
+      },
+      "size" : 1630208
+    },
+    {
+      "lastOpened" : "2026-10-20",
+      "name" : "Logi Options+.app",
+      "related" : {
+        "binaries" : [
+          {
+            "name" : "logioptionsplus.app",
+            "size" : 348164096
+          }
+        ],
+        "preferences" : [
+          {
+            "name" : "com.logi.optionsplus.driverhost.plist",
+            "size" : 4096
+          },
+          {
+            "name" : "com.logi.optionsplus.plist",
+            "size" : 4096
+          }
+        ],
+        "supportingFiles" : [
+          {
+            "name" : "com.logi.optionsplus",
+            "size" : 0
+          },
+          {
+            "name" : "com.logi.optionsplus.helper",
+            "size" : 0
+          },
+          {
+            "name" : "LogiOptionsPlus",
+            "size" : 17768448
+          }
+        ]
+      },
+      "size" : 365940736
+    },
+    {
+      "lastOpened" : "2026-10-15",
+      "name" : "LogiPluginService.app",
+      "related" : {
+        "binaries" : [
+          {
+            "name" : "LogiPluginService.app",
+            "size" : 358916096
+          }
+        ]
+      },
+      "size" : 358916096
+    },
+    {
+      "lastOpened" : "2026-10-21",
+      "name" : "MacICNS.app",
+      "related" : {
+        "binaries" : [
+          {
+            "name" : "MacICNS.app",
+            "size" : 2265088
+          }
+        ],
+        "logs" : [
+          {
+            "name" : "MacICNS_2026-10-21-145455_MacBook-Air-de-Guilherme.diag",
+            "size" : 12288
+          },
+          {
+            "name" : "MacICNS_C60F8F5A-5123-50E6-832E-E23DD63DD651.plist",
+            "size" : 4096
+          }
+        ],
+        "preferences" : [
+          {
+            "name" : "com.guigx.macicns.plist",
+            "size" : 4096
+          }
+        ],
+        "supportingFiles" : [
+          {
+            "name" : "com.guigx.macicns",
+            "size" : 139264
+          },
+          {
+            "name" : "MacICNS",
+            "size" : 614400
+          }
+        ]
+      },
+      "size" : 3039232
+    },
+    {
+      "lastOpened" : "2026-09-21",
+      "name" : "Obsidian.app",
+      "related" : {
+        "binaries" : [
+          {
+            "name" : "Obsidian.app",
+            "size" : 333537280
+          }
+        ],
+        "preferences" : [
+          {
+            "name" : "md.obsidian.plist",
+            "size" : 4096
+          }
+        ],
+        "supportingFiles" : [
+          {
+            "name" : "obsidian",
+            "size" : 13123584
+          }
+        ]
+      },
+      "size" : 346664960
+    },
+    {
+      "lastOpened" : "2026-10-20",
+      "name" : "Perssua.app",
+      "related" : {
+        "binaries" : [
+          {
+            "name" : "Perssua.app",
+            "size" : 772616192
+          }
+        ],
+        "logs" : [
+          {
+            "name" : "Perssua",
+            "size" : 36864
+          }
+        ],
+        "preferences" : [
+          {
+            "name" : "com.perssua.beta.plist",
+            "size" : 4096
+          }
+        ],
+        "supportingFiles" : [
+          {
+            "name" : "com.perssua.beta",
+            "size" : 0
+          },
+          {
+            "name" : "com.perssua.beta.helper.GPU",
+            "size" : 2318336
+          },
+          {
+            "name" : "Perssua",
+            "size" : 5718016
+          }
+        ]
+      },
+      "size" : 780693504
+    },
+    {
+      "lastOpened" : "2026-10-20",
+      "name" : "Setapp.app",
+      "related" : {
+        "binaries" : [
+          {
+            "name" : "Setapp.app",
+            "size" : 314605568
+          }
+        ],
+        "logs" : [
+          {
+            "name" : "Setapp",
+            "size" : 3993600
+          }
+        ],
+        "preferences" : [
+          {
+            "name" : "com.setapp.DesktopClient.plist",
+            "size" : 12288
+          },
+          {
+            "name" : "com.setapp.DesktopClient.SetappAgent.plist",
+            "size" : 4096
+          },
+          {
+            "name" : "com.setapp.DesktopClient.SetappLauncher.plist",
+            "size" : 4096
+          }
+        ],
+        "supportingFiles" : [
+          {
+            "name" : "com.setapp.DesktopClient",
+            "size" : 4096
+          },
+          {
+            "name" : "com.setapp.DesktopClient",
+            "size" : 0
+          },
+          {
+            "name" : "com.setapp.DesktopClient",
+            "size" : 0
+          },
+          {
+            "name" : "com.setapp.DesktopClient.SetappAgent",
+            "size" : 5042176
+          },
+          {
+            "name" : "com.setapp.DesktopClient.SetappLauncher",
+            "size" : 4096
+          },
+          {
+            "name" : "com.setapp.DesktopClient.SetappLauncher",
+            "size" : 0
+          },
+          {
+            "name" : "com.setapp.DesktopClient.SetappUpdater",
+            "size" : 0
+          },
+          {
+            "name" : "Setapp",
+            "size" : 312438784
+          }
+        ],
+        "userData" : [
+          {
+            "name" : "Setapp",
+            "size" : 0
+          }
+        ]
+      },
+      "size" : 636108800
+    },
+    {
+      "lastOpened" : "2026-10-02",
+      "name" : "Spotifast.app",
+      "related" : {
+        "binaries" : [
+          {
+            "name" : "Spotifast.app",
+            "size" : 60268544
+          }
+        ]
+      },
+      "size" : 60268544
+    },
+    {
+      "lastOpened" : "2026-09-29",
+      "name" : "TeamSpeak.app",
+      "related" : {
+        "binaries" : [
+          {
+            "name" : "TeamSpeak.app",
+            "size" : 451330048
+          }
+        ],
+        "logs" : [
+          {
+            "name" : "TeamSpeak",
+            "size" : 57344
+          }
+        ],
+        "preferences" : [
+          {
+            "name" : "TeamSpeak",
+            "size" : 335872
+          }
+        ]
+      },
+      "size" : 451723264
+    },
+    {
+      "lastOpened" : "2026-10-20",
+      "name" : "UTM.app",
+      "related" : {
+        "binaries" : [
+          {
+            "name" : "UTM.app",
+            "size" : 813064192
+          }
+        ],
+        "container" : [
+          {
+            "name" : "com.utmapp.UTM",
+            "size" : 965271552
+          }
+        ],
+        "supportingFiles" : [
+          {
+            "name" : "com.utmapp.UTM",
+            "size" : 0
+          }
+        ]
+      },
+      "size" : 1778335744
+    },
+    {
+      "lastOpened" : "2026-09-16",
+      "name" : "Visual Studio Code.app",
+      "related" : {
+        "binaries" : [
+          {
+            "name" : "Visual Studio Code.app",
+            "size" : 955498496
+          }
+        ],
+        "preferences" : [
+          {
+            "name" : "com.microsoft.VSCode.plist",
+            "size" : 4096
+          }
+        ],
+        "supportingFiles" : [
+          {
+            "name" : "Code",
+            "size" : 1272352768
+          }
+        ]
+      },
+      "size" : 2227855360
+    },
+    {
+      "lastOpened" : "2026-10-21",
+      "name" : "Vorssaint.app",
+      "related" : {
+        "binaries" : [
+          {
+            "name" : "Vorssaint.app",
+            "size" : 85004288
+          }
+        ],
+        "loginItems" : [
+          {
+            "name" : "Vorssaint.app",
+            "size" : 0
+          }
+        ],
+        "logs" : [
+          {
+            "name" : "Vorssaint_2026-10-20-014519_MacBook-Air-de-Guilherme.cpu_resource.diag",
+            "size" : 53248
+          }
+        ],
+        "preferences" : [
+          {
+            "name" : "com.vorssaint.utils.plist",
+            "size" : 12288
+          }
+        ],
+        "supportingFiles" : [
+          {
+            "name" : "com.vorssaint.utils",
+            "size" : 16384
+          },
+          {
+            "name" : "com.vorssaint.utils",
+            "size" : 5996544
+          },
+          {
+            "name" : "com.vorssaint.utils",
+            "size" : 8855552
+          }
+        ]
+      },
+      "size" : 99938304
+    },
+    {
+      "lastOpened" : "2026-10-21",
+      "name" : "Warp.app",
+      "related" : {
+        "binaries" : [
+          {
+            "name" : "Warp.app",
+            "size" : 457113600
+          }
+        ],
+        "loginItems" : [
+          {
+            "name" : "Warp.app",
+            "size" : 0
+          }
+        ],
+        "logs" : [
+          {
+            "name" : "warp.log",
+            "size" : 4198400
+          }
+        ],
+        "preferences" : [
+          {
+            "name" : "dev.warp.Warp-Stable.plist",
+            "size" : 188416
+          }
+        ],
+        "supportingFiles" : [
+          {
+            "name" : "dev.warp.Warp-Stable",
+            "size" : 655171584
+          },
+          {
+            "name" : "dev.warp.Warp-Stable",
+            "size" : 0
+          },
+          {
+            "name" : "dev.warp.Warp-Stable",
+            "size" : 69632
+          }
+        ]
+      },
+      "size" : 1116741632
+    },
+    {
+      "lastOpened" : "2026-10-21",
+      "name" : "WhatsApp.app",
+      "related" : {
+        "binaries" : [
+          {
+            "name" : "WhatsApp.app",
+            "size" : 393535488
+          }
+        ],
+        "container" : [
+          {
+            "name" : "net.whatsapp.WhatsApp",
+            "size" : 118980608
+          }
+        ],
+        "supportingFiles" : [
+          {
+            "name" : "net.whatsapp.WhatsApp",
+            "size" : 122880
+          },
+          {
+            "name" : "net.whatsapp.WhatsApp.ServiceExtension",
+            "size" : 0
+          }
+        ]
+      },
+      "size" : 512638976
+    },
+    {
+      "lastOpened" : "2026-10-16",
+      "name" : "Xcode.app",
+      "related" : {
+        "binaries" : [
+          {
+            "name" : "Xcode.app",
+            "size" : 4176900096
+          }
+        ],
+        "preferences" : [
+          {
+            "name" : "com.apple.dt.Xcode.plist",
+            "size" : 4096
+          },
+          {
+            "name" : "com.apple.dt.Xcode.plist",
+            "size" : 4096
+          }
+        ],
+        "supportingFiles" : [
+          {
+            "name" : "com.apple.dt.Xcode",
+            "size" : 1183744
+          },
+          {
+            "name" : "Xcode",
+            "size" : 0
+          }
+        ]
+      },
+      "size" : 4178092032
+    },
+    {
+      "lastOpened" : "2026-10-21",
+      "name" : "Zed.app",
+      "related" : {
+        "binaries" : [
+          {
+            "name" : "Zed.app",
+            "size" : 270012416
+          }
+        ],
+        "logs" : [
+          {
+            "name" : "Zed",
+            "size" : 1351680
+          }
+        ],
+        "preferences" : [
+          {
+            "name" : "dev.zed.Zed.plist",
+            "size" : 4096
+          }
+        ],
+        "supportingFiles" : [
+          {
+            "name" : "dev.zed.Zed",
+            "size" : 135168
+          },
+          {
+            "name" : "Zed",
+            "size" : 1234448384
+          },
+          {
+            "name" : "Zed",
+            "size" : 0
+          }
+        ]
+      },
+      "size" : 1505951744
+    }
+  ],
+  "capturedAt" : "2026-10-21T20:54:54Z",
+  "filters" : {
+    "all" : 26,
+    "apple" : 2,
+    "appStore" : 3,
+    "audioPlugins" : 1,
+    "google" : 1,
+    "macPaw" : 2,
+    "microsoft" : 1,
+    "selected" : 0,
+    "setapp" : 1,
+    "storeOther" : 22,
+    "suspicious" : 0,
+    "unused" : 1,
+    "vendorOther" : 20
+  },
+  "fullDiskAccess" : true,
+  "leftovers" : {
+    "installers" : [
+      {
+        "name" : "v0.2026.10.14.08.27.stable_03.Warp.dmg",
+        "size" : 185446400
+      }
+    ],
+    "leftoverFiles" : [
+      {
+        "name" : "QuickLookShareExtension (Global)",
+        "related" : {
+          "container" : [
+            {
+              "name" : "com.canva.affinity.quicklook",
+              "size" : 24576
+            }
+          ]
+        },
+        "size" : 24576
+      },
+      {
+        "name" : "ThumbnailShareExtension (Global)",
+        "related" : {
+          "container" : [
+            {
+              "name" : "com.canva.affinity.thumbnail",
+              "size" : 24576
+            }
+          ]
+        },
+        "size" : 24576
+      },
+      {
+        "name" : "com.getcleanshot.app-setapp.AnnotateShareExtension",
+        "related" : {
+          "container" : [
+            {
+              "name" : "com.getcleanshot.app-setapp.AnnotateShareExtension",
+              "size" : 4096
+            }
+          ]
+        },
+        "size" : 4096
+      },
+      {
+        "name" : "com.getcleanshot.app-setapp.PinShareExtension",
+        "related" : {
+          "container" : [
+            {
+              "name" : "com.getcleanshot.app-setapp.PinShareExtension",
+              "size" : 4096
+            }
+          ]
+        },
+        "size" : 4096
+      },
+      {
+        "name" : "com.getcleanshot.app-setapp.QuickLookExtension",
+        "related" : {
+          "container" : [
+            {
+              "name" : "com.getcleanshot.app-setapp.QuickLookExtension",
+              "size" : 4096
+            }
+          ]
+        },
+        "size" : 4096
+      },
+      {
+        "name" : "com.getcleanshot.app-setapp.QuickLookThumbnailingExtension",
+        "related" : {
+          "container" : [
+            {
+              "name" : "com.getcleanshot.app-setapp.QuickLookThumbnailingExtension",
+              "size" : 4096
+            }
+          ]
+        },
+        "size" : 4096
+      },
+      {
+        "name" : "com.sindresorhus.Supercharge-setapp.Finder-Extension",
+        "related" : {
+          "container" : [
+            {
+              "name" : "com.sindresorhus.Supercharge-setapp.Finder-Extension",
+              "size" : 4096
+            }
+          ]
+        },
+        "size" : 4096
+      }
+    ]
+  },
+  "offline" : false,
+  "tool" : "cym",
+  "updates" : [
+    {
+      "available" : "10.4.14",
+      "installed" : "10.4.13",
+      "name" : "GarageBand",
+      "source" : "appStore"
+    },
+    {
+      "available" : "27.0",
+      "installed" : "",
+      "name" : "Safari",
+      "source" : "macOS"
+    },
+    {
+      "available" : "26.7.1",
+      "installed" : "26.6.2",
+      "name" : "macOS Tahoe 26.7.1",
+      "source" : "macOS"
+    },
+    {
+      "available" : "27.0.1",
+      "installed" : "26.6.2",
+      "name" : "macOS 27.0.1",
+      "source" : "macOS"
+    }
+  ]
+}
