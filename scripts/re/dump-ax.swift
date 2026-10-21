@@ -35,7 +35,9 @@ func walk(_ el: AXUIElement, depth: Int) {
     let t = text(el)
     var mark = ""
     if let v = attr(el, kAXValueAttribute) as? NSNumber, role == kAXCheckBoxRole { mark = " [checked=\(v)]" }
-    if !t.isEmpty || role == kAXCheckBoxRole {
+    // Linhas de listas em árvore: o nível mostra quem é filho de quem.
+    if role == kAXRowRole, let level = attr(el, kAXDisclosureLevelAttribute) as? NSNumber { mark = " [level=\(level)]" }
+    if !t.isEmpty || role == kAXCheckBoxRole || !mark.isEmpty {
         lines.append(String(repeating: "  ", count: depth) + role + mark + ": " + t)
     }
     for child in (attr(el, kAXChildrenAttribute) as? [AXUIElement]) ?? [] {
@@ -44,6 +46,8 @@ func walk(_ el: AXUIElement, depth: Int) {
 }
 
 let root = AXUIElementCreateApplication(app.processIdentifier)
+// Listas grandes deixam o app lento para responder: o padrão (6 s) devolveria uma árvore vazia.
+AXUIElementSetMessagingTimeout(root, 60)
 
 // --press "<título exato>": clica num elemento de navegação antes do dump.
 // Nunca clica em nada que limpe/remova (regra de ouro: só análise no CleanMyMac).
@@ -60,12 +64,16 @@ if let i = CommandLine.arguments.firstIndex(of: "--press"), i + 1 < CommandLine.
     var matches: [AXUIElement] = []
     func find(_ el: AXUIElement, depth: Int) {
         guard depth < 60 else { return }
-        let names = [kAXTitleAttribute, kAXValueAttribute, kAXDescriptionAttribute].compactMap { attr(el, $0) as? String }
+        let names = [kAXTitleAttribute, kAXValueAttribute, kAXDescriptionAttribute, kAXHelpAttribute].compactMap { attr(el, $0) as? String }
         if names.contains(target) { matches.append(el) }
         for child in (attr(el, kAXChildrenAttribute) as? [AXUIElement]) ?? [] { find(child, depth: depth + 1) }
     }
     find(root, depth: 0)
-    guard let hit = useLast ? matches.last : matches.first else {
+    // --index N: usa a N-ésima ocorrência (0 = primeira), ex.: o botão de detalhe da N-ésima linha.
+    var indexed: AXUIElement?
+    if let j = CommandLine.arguments.firstIndex(of: "--index"), j + 1 < CommandLine.arguments.count,
+       let n = Int(CommandLine.arguments[j + 1]), n >= 0, n < matches.count { indexed = matches[n] }
+    guard let hit = indexed ?? (useLast ? matches.last : matches.first) else {
         FileHandle.standardError.write("Elemento '\(target)' não encontrado.\n".data(using: .utf8)!)
         exit(3)
     }

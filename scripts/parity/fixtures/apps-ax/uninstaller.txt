@@ -1,0 +1,211 @@
+== window: CleanMyMac
+  AXWindow: CleanMyMac
+    AXButton: Enabled | Recomeçar
+        AXImage: back button circle
+        AXStaticText: Recomeçar
+    AXStaticText: Aplicativos
+              AXStaticText: Desinstalador
+              AXStaticText: Atualizador
+              AXStaticText: Sobras
+              AXStaticText: Desinstalador
+              AXStaticText: Remova corretamente aplicativos por completo, com todos os arquivos relacionados.
+              AXStaticText: Todos os Aplicativos
+              AXStaticText: 26
+              AXStaticText: Não Usados
+              AXStaticText: 1
+              AXStaticText: Suspeitos
+              AXStaticText: 0
+              AXStaticText: Selecionados
+              AXStaticText: 0
+              AXStaticText: Lojas
+              AXStaticText: App Store
+              AXStaticText: 3
+              AXStaticText: Setapp
+              AXStaticText: 1
+              AXStaticText: Outro
+              AXStaticText: 22
+              AXStaticText: Fornecedores
+              AXStaticText: Apple
+              AXStaticText: 2
+              AXStaticText: Google
+              AXStaticText: 1
+              AXStaticText: MacPaw
+              AXStaticText: 2
+              AXStaticText: Microsoft
+              AXStaticText: 1
+              AXStaticText: Outros
+              AXStaticText: 20
+              AXStaticText: Plug‑ins
+              AXStaticText: Plug‑ins de Áudio
+              AXStaticText: 1
+            AXCell: Bruno.app
+              AXCheckBox [checked=0]: 
+              AXStaticText: Bruno.app | Bruno.app
+              AXStaticText: 20 de ago. de 2026 | O dia em que você abriu o aplicativo pela última vez
+              AXStaticText: 525 MB | Tamanho total ou contagem dos itens incluídos
+              AXButton: Mostre os itens incluídos
+            AXCell: ChatGPT.app
+              AXCheckBox [checked=0]: 
+              AXStaticText: ChatGPT.app | ChatGPT.app
+              AXStaticText: 25 de set. de 2026 | O dia em que você abriu o aplicativo pela última vez
+              AXStaticText: 1,5 GB | Tamanho total ou contagem dos itens incluídos
+              AXButton: Mostre os itens incluídos
+            AXCell: Claude Code URL Handler.app
+              AXCheckBox [checked=0]: 
+              AXStaticText: Claude Code URL Handler.app | Claude Code URL Handler.app
+              AXStaticText: 20 de out. de 2026 | O dia em que você abriu o aplicativo pela última vez
+              AXStaticText: 4,1 KB | Tamanho total ou contagem dos itens incluídos
+              AXButton: Mostre os itens incluídos
+            AXCell: Claude.app
+              AXCheckBox [checked=0]: 
+              AXStaticText: Claude.app | Claude.app
+              AXStaticText: 20 de out. de 2026 | O dia em que você abriu o aplicativo pela última vez
+              AXStaticText: 1,2 GB | Tamanho total ou contagem dos itens incluídos
+              AXButton: Mostre os itens incluídos
+            AXCell: CleanMyMac.app
+              AXCheckBox [checked=0]: 
+              AXStaticText: CleanMyMac.app | CleanMyMac.app
+              AXStaticText: 21 de out. de 2026 | O dia em que você abriu o aplicativo pela última vez
+              AXStaticText: 484 MB | Tamanho total ou contagem dos itens incluídos
+              AXButton: Mostre os itens incluídos
+            AXCell: CleanYourMac.app
+              AXCheckBox [checked=0]: 
+              AXStaticText: CleanYourMac.app | CleanYourMac.app
+              AXStaticText: 20 de out. de 2026 | O dia em que você abriu o aplicativo pela última vez
+              AXStaticText: 14,5 MB | Tamanho total ou contagem dos itens incluídos
+              AXButton: Mostre os itens incluídos
+            AXCell: Discord.app
+              AXCheckBox [checked=0]: 
+              AXStaticText: Discord.app | Discord.app
+              AXStaticText: 25 de set. de 2026 | O dia em que você abriu o aplicativo pela última vez
+              AXStaticText: 1,5 GB | Tamanho total ou contagem dos itens incluídos
+              AXButton: Mostre os itens incluídos
+            AXCell: GarageBand.app
+              AXCheckBox [checked=0]: 
+              AXStaticText: GarageBand.app | GarageBand.app
+              AXStaticText: 5 de mar. de 2026 | O dia em que você abriu o aplicativo pela última vez
+              AXStaticText: 2,2 GB | Tamanho total ou contagem dos itens incluídos
+              AXButton: Mostre os itens incluídos
+            AXCell: GlucoTracker.app
+              AXCheckBox [checked=0]: 
+              AXStaticText: GlucoTracker.app | GlucoTracker.app
+              AXStaticText: 20 de out. de 2026 | O dia em que você abriu o aplicativo pela última vez
+              AXStaticText: 90,1 MB | Tamanho total ou contagem dos itens incluídos
+              AXButton: Mostre os itens incluídos
+            AXCell: Google Chrome.app
+              AXCheckBox [checked=0]: 
+              AXStaticText: Google Chrome.app | Google Chrome.app
+              AXStaticText: 21 de out. de 2026 | O dia em que você abriu o aplicativo pela última vez
+              AXStaticText: 6 GB | Tamanho total ou contagem dos itens incluídos
+              AXButton: Mostre os itens incluídos
+            AXCell: Hidden Bar.app
+              AXCheckBox [checked=0]: 
+              AXStaticText: Hidden Bar.app | Hidden Bar.app
+              AXStaticText: 20 de out. de 2026 | O dia em que você abriu o aplicativo pela última vez
+              AXStaticText: 1,6 MB | Tamanho total ou contagem dos itens incluídos
+              AXButton: Mostre os itens incluídos
+            AXCell: Logi Options+.app
+              AXCheckBox [checked=0]: 
+              AXStaticText: Logi Options+.app | Logi Options+.app
+              AXStaticText: 20 de out. de 2026 | O dia em que você abriu o aplicativo pela última vez
+              AXStaticText: 365 MB | Tamanho total ou contagem dos itens incluídos
+              AXButton: Mostre os itens incluídos
+            AXCell: LogiPluginService.app
+              AXCheckBox [checked=0]: 
+              AXStaticText: LogiPluginService.app | LogiPluginService.app
+              AXStaticText: 15 de out. de 2026 | O dia em que você abriu o aplicativo pela última vez
+              AXStaticText: 363 MB | Tamanho total ou contagem dos itens incluídos
+              AXButton: Mostre os itens incluídos
+            AXCell: MacICNS.app
+              AXCheckBox [checked=0]: 
+              AXStaticText: MacICNS.app | MacICNS.app
+              AXStaticText: 21 de out. de 2026 | O dia em que você abriu o aplicativo pela última vez
+              AXStaticText: 3 MB | Tamanho total ou contagem dos itens incluídos
+              AXButton: Mostre os itens incluídos
+            AXCell: Obsidian.app
+              AXCheckBox [checked=0]: 
+              AXStaticText: Obsidian.app | Obsidian.app
+              AXStaticText: 21 de set. de 2026 | O dia em que você abriu o aplicativo pela última vez
+              AXStaticText: 347 MB | Tamanho total ou contagem dos itens incluídos
+              AXButton: Mostre os itens incluídos
+            AXCell: Perssua.app
+              AXCheckBox [checked=0]: 
+              AXStaticText: Perssua.app | Perssua.app
+              AXStaticText: 20 de out. de 2026 | O dia em que você abriu o aplicativo pela última vez
+              AXStaticText: 781 MB | Tamanho total ou contagem dos itens incluídos
+              AXButton: Mostre os itens incluídos
+            AXCell: Setapp.app
+              AXCheckBox [checked=0]: 
+              AXStaticText: Setapp.app | Setapp.app
+              AXStaticText: 20 de out. de 2026 | O dia em que você abriu o aplicativo pela última vez
+              AXStaticText: 761 MB | Tamanho total ou contagem dos itens incluídos
+              AXButton: Mostre os itens incluídos
+            AXCell: Spotifast.app
+              AXCheckBox [checked=0]: 
+              AXStaticText: Spotifast.app | Spotifast.app
+              AXStaticText: 2 de out. de 2026 | O dia em que você abriu o aplicativo pela última vez
+              AXStaticText: 60,3 MB | Tamanho total ou contagem dos itens incluídos
+              AXButton: Mostre os itens incluídos
+            AXCell: TeamSpeak.app
+              AXCheckBox [checked=0]: 
+              AXStaticText: TeamSpeak.app | TeamSpeak.app
+              AXStaticText: 29 de set. de 2026 | O dia em que você abriu o aplicativo pela última vez
+              AXStaticText: 452 MB | Tamanho total ou contagem dos itens incluídos
+              AXButton: Mostre os itens incluídos
+            AXCell: UTM.app
+              AXCheckBox [checked=0]: 
+              AXStaticText: UTM.app | UTM.app
+              AXStaticText: 20 de out. de 2026 | O dia em que você abriu o aplicativo pela última vez
+              AXStaticText: 1,8 GB | Tamanho total ou contagem dos itens incluídos
+              AXButton: Mostre os itens incluídos
+            AXCell: Visual Studio Code.app
+              AXCheckBox [checked=0]: 
+              AXStaticText: Visual Studio Code.app | Visual Studio Code.app
+              AXStaticText: 16 de set. de 2026 | O dia em que você abriu o aplicativo pela última vez
+              AXStaticText: 4,1 GB | Tamanho total ou contagem dos itens incluídos
+              AXButton: Mostre os itens incluídos
+            AXCell: Vorssaint.app
+              AXCheckBox [checked=0]: 
+              AXStaticText: Vorssaint.app | Vorssaint.app
+              AXStaticText: 21 de out. de 2026 | O dia em que você abriu o aplicativo pela última vez
+              AXStaticText: 99,7 MB | Tamanho total ou contagem dos itens incluídos
+              AXButton: Mostre os itens incluídos
+            AXCell: Warp.app
+              AXCheckBox [checked=0]: 
+              AXStaticText: Warp.app | Warp.app
+              AXStaticText: 21 de out. de 2026 | O dia em que você abriu o aplicativo pela última vez
+              AXStaticText: 1,1 GB | Tamanho total ou contagem dos itens incluídos
+              AXButton: Mostre os itens incluídos
+            AXCell: WhatsApp.app
+              AXCheckBox [checked=0]: 
+              AXStaticText: WhatsApp.app | WhatsApp.app
+              AXStaticText: 21 de out. de 2026 | O dia em que você abriu o aplicativo pela última vez
+              AXStaticText: 492 MB | Tamanho total ou contagem dos itens incluídos
+              AXButton: Mostre os itens incluídos
+            AXCell: Xcode.app
+              AXCheckBox [checked=0]: 
+              AXStaticText: Xcode.app | Xcode.app
+              AXStaticText: 16 de out. de 2026 | O dia em que você abriu o aplicativo pela última vez
+              AXStaticText: 4,9 GB | Tamanho total ou contagem dos itens incluídos
+              AXButton: Mostre os itens incluídos
+            AXCell: Zed.app
+              AXCheckBox [checked=0]: 
+              AXStaticText: Zed.app | Zed.app
+              AXStaticText: 21 de out. de 2026 | O dia em que você abriu o aplicativo pela última vez
+              AXStaticText: 1,5 GB | Tamanho total ou contagem dos itens incluídos
+              AXButton: Mostre os itens incluídos
+    AXButton: Enabled | Voltar
+        AXImage: back button pink
+        AXStaticText: Voltar
+    AXStaticText: Gerenciador de Aplicativos
+      AXTextField: Busque nos itens encontrados
+    AXButton: Nome | Ordenar por:
+        AXStaticText: Ordenar por:
+        AXStaticText: Nome
+        AXImage: ir para baixo
+    AXStaticText: 0 Aplicativo Selecionado(s)
+    AXStaticText: 0 KB
+    AXButton: Disabled | Desinstalar
+        AXStaticText: Desinstalar
+          AXStaticText: Aplicativos
+    ?: Parar
