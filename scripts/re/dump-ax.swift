@@ -47,7 +47,8 @@ let root = AXUIElementCreateApplication(app.processIdentifier)
 
 // --press "<título exato>": clica num elemento de navegação antes do dump.
 // Nunca clica em nada que limpe/remova (regra de ouro: só análise no CleanMyMac).
-let forbidden = ["limpar", "clean", "remov", "esvaziar", "empty", "apagar", "delete", "desinstalar", "uninstall"]
+let forbidden = ["limpar", "clean", "remov", "esvaziar", "empty", "apagar", "delete", "desinstalar", "uninstall",
+                 "atualizar", "update", "instalar", "install", "redefinir", "reset"]
 if let i = CommandLine.arguments.firstIndex(of: "--press"), i + 1 < CommandLine.arguments.count {
     let target = CommandLine.arguments[i + 1]
     guard !forbidden.contains(where: { target.lowercased().contains($0) }) else {
