@@ -37,12 +37,16 @@ public struct AppRecord: Identifiable, Hashable, Sendable {
     public let bundleSize: Int64
     /// `SUFeedURL` do Info.plist (Sparkle).
     public let feedURL: URL?
+    /// Outras cópias com o mesmo bundle ID (entram como "Binários" extras, desmarcadas).
+    public let copies: [URL]
+    /// Nome usado para casar arquivos relacionados: `CFBundleName` ou o nome do arquivo sem `.app`.
+    public let matchName: String
 
     public init(url: URL, bundleID: String, name: String, version: String? = nil, build: String? = nil,
                 teamID: String? = nil, store: AppStore = .other, vendor: AppVendor = .other,
                 kind: AppKind = .application, lastOpened: Date? = nil, lastUpdated: Date? = nil,
                 isProtected: Bool = false, isSelf: Bool = false, is32Bit: Bool = false,
-                bundleSize: Int64 = 0, feedURL: URL? = nil) {
+                bundleSize: Int64 = 0, feedURL: URL? = nil, copies: [URL] = [], matchName: String? = nil) {
         self.id = bundleID + "|" + url.path
         self.url = url
         self.bundleID = bundleID
@@ -60,6 +64,15 @@ public struct AppRecord: Identifiable, Hashable, Sendable {
         self.is32Bit = is32Bit
         self.bundleSize = bundleSize
         self.feedURL = feedURL
+        self.copies = copies
+        self.matchName = matchName ?? (url.lastPathComponent as NSString).deletingPathExtension
+    }
+
+    /// Sem abrir há mais de 6 meses de calendário (inventory.md §Não Usados).
+    public func isUnused(now: Date, calendar: Calendar = .current) -> Bool {
+        guard !isSelf, !isProtected, let lastOpened,
+              let limit = calendar.date(byAdding: .month, value: -6, to: now) else { return false }
+        return lastOpened < limit
     }
 }
 
