@@ -7,3 +7,4 @@ DerivedData/
 re-notes/
 *.xcodeproj/
 .superpowers/
+__pycache__/

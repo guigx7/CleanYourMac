@@ -180,10 +180,23 @@ private func run(_ engine: CleanEngine, _ items: [JunkItem]) async -> CleanRepor
         let s = Setup()
         let image = s.t.url("vol.dmg")
         let name = "cymvol\(UInt32.random(in: 0...999_999))"
-        func hdiutil(_ args: [String]) -> Int32 { SystemCommandRunner().run("/usr/bin/hdiutil", args).status }
+        // Com tempo-limite: o hdiutil às vezes fica preso; nesse caso o teste é pulado em vez de travar a suíte.
+        func hdiutil(_ args: [String]) -> Int32 {
+            let p = Process()
+            p.executableURL = URL(fileURLWithPath: "/usr/bin/hdiutil")
+            p.arguments = args
+            p.standardOutput = FileHandle.nullDevice
+            p.standardError = FileHandle.nullDevice
+            guard (try? p.run()) != nil else { return -1 }
+            let deadline = Date().addingTimeInterval(30)
+            while p.isRunning && Date() < deadline { usleep(100_000) }
+            if p.isRunning { p.terminate(); return -2 }
+            return p.terminationStatus
+        }
         guard hdiutil(["create", "-size", "20m", "-fs", "APFS", "-volname", name, image.path]) == 0,
               hdiutil(["attach", "-nobrowse", "-mountpoint", "/Volumes/\(name)", image.path]) == 0 else {
-            Issue.record("hdiutil indisponível")
+            _ = hdiutil(["detach", "/Volumes/\(name)", "-force"])
+            Issue.record("hdiutil indisponível ou preso")
             return
         }
         defer { _ = hdiutil(["detach", "/Volumes/\(name)", "-force"]) }
