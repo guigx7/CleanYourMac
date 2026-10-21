@@ -181,13 +181,18 @@ private let casks = """
             ["Display Name": "macOS Tahoe 26.7.1", "Display Version": "26.7.1", "Identifier": "MSU_UPDATE_25H_patch_26.7.1",
              "Product Key": "MSU_UPDATE_25H_patch_26.7.1", "MobileSoftwareUpdate": true],
             ["Display Name": "macOS 27", "Display Version": "27.0.1", "Identifier": "MSU_UPDATE_26A_major", "Product Key": "MSU_MAJOR",
-             "MobileSoftwareUpdate": true]]]
+             "MobileSoftwareUpdate": true],
+            ["Display Name": "Safari", "Display Version": "27.0", "Identifier": "com.apple.pkg.Safari", "Product Key": "SAF"]]]
         try! PropertyListSerialization.data(fromPropertyList: dict, format: .xml, options: 0).write(to: plist)
         let cmds = HelperFakeCommands()
         let updates = await MacOSUpdateSource(plist: plist, systemVersion: os26, commands: cmds).updates(now: Date())
-        #expect(updates.count == 2)
+        #expect(updates.count == 3)
         #expect(updates.allSatisfy { $0.action == .openSoftwareUpdate && $0.source == .macOS })
         #expect(updates.first { $0.availableVersion == "27.0.1" }?.isMajor == true)
+        // Entrada que não é o sistema (ex.: Safari): a versão instalada não é a do macOS.
+        let safari = updates.first { $0.name == "Safari" }
+        #expect(safari?.installedVersion == "")
+        #expect(safari?.isMajor == false)
         #expect(cmds.calls.isEmpty) // plist recente: não roda softwareupdate
     }
 

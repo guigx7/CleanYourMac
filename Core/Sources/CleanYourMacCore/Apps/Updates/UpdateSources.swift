@@ -267,10 +267,12 @@ public struct MacOSUpdateSource: Sendable {
         return entries.compactMap { e in
             guard let name = e["Display Name"] as? String, let version = e["Display Version"] as? String else { return nil }
             let key = (e["Product Key"] as? String) ?? (e["Identifier"] as? String) ?? name
+            // Só as entradas do sistema comparam com a versão do macOS; as outras (ex.: Safari) não têm versão instalada aqui.
+            let isSystem = (e["MobileSoftwareUpdate"] as? Bool) == true
             let major = Int(version.split(separator: ".").first ?? "") ?? systemVersion.majorVersion
-            return AppUpdate(id: "macOS:\(key)", appID: nil, name: name, source: .macOS, installedVersion: installed,
+            return AppUpdate(id: "macOS:\(key)", appID: nil, name: name, source: .macOS, installedVersion: isSystem ? installed : "",
                              availableVersion: version, size: sizes[version], action: .openSoftwareUpdate,
-                             isMajor: major != systemVersion.majorVersion)
+                             isMajor: isSystem && major != systemVersion.majorVersion)
         }
     }
 

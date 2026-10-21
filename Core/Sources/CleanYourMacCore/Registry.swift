@@ -31,6 +31,27 @@ public enum Registry {
         return specialized + ruleBased
     }
 
+    /// Análise do módulo Aplicativos (produção). `privilegedAvailable`: o ajudante está aprovado.
+    public static func appsScan(fetcher: any HTTPFetcher = URLSessionFetcher(), privilegedAvailable: Bool = false,
+                                updates: UpdateChecker? = nil) -> AppsScan {
+        let catalog = AppCatalog()
+        let finder = RelatedFilesFinder(privilegedAvailable: privilegedAvailable)
+        return AppsScan(catalog: catalog, uninstaller: UninstallerScanner(catalog: catalog, finder: finder),
+                        leftovers: LeftoversScanner(catalog: catalog, finder: finder), installers: InstallersScanner(),
+                        updates: updates ?? UpdateChecker(sources: [AppStoreSource(), SparkleSource(), HomebrewSource()], fetcher: fetcher))
+    }
+
+    /// Onde a remoção do módulo Aplicativos pode tocar.
+    public static func appsPolicies(context: ScanContext) -> [GroupID: PathPolicy] {
+        let scanners: [any ScopedScanner] = [UninstallerScanner(), LeftoversScanner(), InstallersScanner()]
+        var out: [GroupID: PathPolicy] = [:]
+        for s in scanners {
+            let scope = s.removalScope(context)
+            out[s.group] = PathPolicy(allowedRoots: scope.roots, allowedItems: scope.items)
+        }
+        return out
+    }
+
     public static func policies(for scanners: [any GroupScanner], context: ScanContext) -> [GroupID: PathPolicy] {
         var result: [GroupID: PathPolicy] = [:]
         for scanner in scanners {

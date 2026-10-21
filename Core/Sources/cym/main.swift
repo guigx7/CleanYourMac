@@ -5,6 +5,7 @@ import CleanYourMacCore
 //
 //   cym scan [--groups a,b] [--json] [--paths] [--home DIR --user NOME]
 //   cym clean --dry-run [--groups a,b] [--recommended]
+//   cym apps [--json] [--no-network]   (módulo Aplicativos; só leitura)
 //
 // Não existe limpeza de verdade pelo CLI: `clean` exige --dry-run.
 
@@ -48,7 +49,31 @@ if let list = value("--groups") {
     fail("análise não terminou")
 }
 
+/// Sem rede: nenhuma requisição sai (as fontes ficam sem resposta).
+struct OfflineFetcher: HTTPFetcher {
+    func get(_ url: URL, timeout: Duration) async throws -> Data { throw URLError(.notConnectedToInternet) }
+}
+
 switch command {
+case "apps":
+    let scan = has("--no-network") ? Registry.appsScan(fetcher: OfflineFetcher()) : Registry.appsScan()
+    var appsReport: AppsReport?
+    for try await event in scan.run(context) { if case .finished(let r) = event { appsReport = r } }
+    guard let appsReport else { fail("análise não terminou") }
+    let json = appsReport.parityJSON()
+    if has("--json") {
+        let data = try JSONSerialization.data(withJSONObject: json, options: [.prettyPrinted, .sortedKeys])
+        print(String(decoding: data, as: UTF8.self))
+    } else {
+        for item in appsReport.uninstaller {
+            print(String(format: "%10@  %@", SizeFormatter.string(item.totalSize, locale: Locale(identifier: "pt-BR")), item.name))
+        }
+        print("filtros:", (json["filters"] as? [String: Int] ?? [:]).sorted { $0.key < $1.key }.map { "\($0.key)=\($0.value)" }.joined(separator: " "))
+        print("atualizações:", appsReport.updates.updates.map { "\($0.name) \($0.installedVersion)→\($0.availableVersion) (\($0.source.rawValue))" },
+              appsReport.updates.offline ? "[sem rede]" : "")
+        print("sobras:", appsReport.leftovers.map { "\($0.name) \(SizeFormatter.string($0.totalSize, locale: Locale(identifier: "pt-BR")))" })
+        print("instaladores:", appsReport.installers.map { "\($0.name) \(SizeFormatter.string($0.totalSize, locale: Locale(identifier: "pt-BR")))" })
+    }
 case "scan":
     let report = try await runScan()
     if has("--json") {
