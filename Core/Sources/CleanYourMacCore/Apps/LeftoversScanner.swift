@@ -120,7 +120,7 @@ public struct LeftoversScanner: ScopedScanner {
             }
             let ghost = AppRecord(url: URL(fileURLWithPath: appPath.isEmpty ? "/nonexistent/\(id).app" : appPath),
                                   bundleID: id, name: name, matchName: name)
-            let files = finder.files(for: ghost, installed: installed + [ghost], context: context)
+            let files = finder.files(for: ghost, installed: installed + [ghost], context: context, idOnly: true)
             guard !files.isEmpty else { continue }
             var groups: [ResourceKind: [JunkItem]] = [:]
             for f in files {

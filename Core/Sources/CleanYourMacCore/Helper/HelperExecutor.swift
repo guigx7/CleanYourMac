@@ -25,12 +25,16 @@ public struct HelperExecutor: Sendable {
     private let launchdFolders: [String]
     private let commands: any CommandRunner
     private let homeOf: @Sendable (uid_t) -> String?
+    /// Onde procurar o app dono (para casar pelo nome e ler `SMPrivilegedExecutables`).
+    private let appRoots: [String]
 
     public init(allowedPrefixes: [String] = HelperExecutor.productionPrefixes,
                 trashPrefixes: [String] = HelperExecutor.productionTrashPrefixes,
                 launchdFolders: [String] = HelperExecutor.productionLaunchdFolders,
                 commands: any CommandRunner = SystemCommandRunner(),
-                homeOf: @escaping @Sendable (uid_t) -> String? = HelperExecutor.home(of:)) {
+                homeOf: @escaping @Sendable (uid_t) -> String? = HelperExecutor.home(of:),
+                appRoots: [String] = ["/Applications"]) {
+        self.appRoots = appRoots.map { PathPolicy.realPath($0) }
         prefixes = allowedPrefixes.map { PathPolicy.realPath($0) }
         self.trashPrefixes = trashPrefixes.map { PathPolicy.realPath($0) }
         self.launchdFolders = launchdFolders.map { PathPolicy.realPath($0) }
@@ -72,7 +76,7 @@ public struct HelperExecutor: Sendable {
             case .codesignAdhoc:
                 return .refused
             case .trash(let u, let owner):
-                guard Self.isSafeOwner(owner), let path = validatedForTrash(u, requester: requester) else { return .refused }
+                guard Self.isSafeOwner(owner), let path = validatedForTrash(u, requester: requester, owner: owner) else { return .refused }
                 return trash(path, requester: requester)
             case .launchdBootout(let plist, let owner):
                 guard Self.isSafeOwner(owner) else { return .refused }
@@ -115,17 +119,85 @@ public struct HelperExecutor: Sendable {
         isSafeIdentifier(owner) && !owner.lowercased().hasPrefix("com.apple.")
     }
 
-    /// Como `validated`, mas com os prefixos de `trash` e, em /Users, só a pasta de quem pediu.
-    func validatedForTrash(_ u: URL, requester: uid_t) -> String? {
-        guard let path = validated(u) else { return nil }
-        let inPrefix = trashPrefixes.contains { path.hasPrefix($0 + "/") }
-        guard inPrefix else { return nil }
-        let users = trashPrefixes.first { ($0 as NSString).lastPathComponent == "Users" }
-        if let users, path.hasPrefix(users + "/") {
+    /// Pastas da home de quem pediu que nunca vão para o Lixo inteiras (a lista vital do PathPolicy usa a home do root).
+    static let homeVitals = ["", "Documents", "Desktop", "Downloads", "Library", "Pictures", "Movies", "Music", "Applications",
+                             "Library/Application Support", "Library/Caches", "Library/Preferences", "Library/Containers",
+                             "Library/Group Containers", "Library/Logs", "Library/LaunchAgents", "Library/Mail", ".Trash"]
+
+    /// `trash`: filho estrito de um prefixo de `trash` (não dos de `remove`), sem symlink no último componente, nunca
+    /// vital, nunca `com.apple.*`, em /Users só na home de quem pediu, e ligado ao app dono (removal.md §Travas comuns).
+    func validatedForTrash(_ u: URL, requester: uid_t, owner: String) -> String? {
+        let lexical = PathPolicy.lexicalPath(u.path)
+        guard lexical.hasPrefix("/"), !lexical.contains("\n") else { return nil }
+        let parent = PathPolicy.realPath((lexical as NSString).deletingLastPathComponent)
+        let path = (parent as NSString).appendingPathComponent((lexical as NSString).lastPathComponent)
+        guard let prefix = trashPrefixes.first(where: { path.hasPrefix($0 + "/") }), !PathPolicy.isVital(path), !isSymlink(path) else { return nil }
+        if (prefix as NSString).lastPathComponent == "Users" {
             guard let home = homeOf(requester), path.hasPrefix(home + "/"),
-                  !PathPolicy.isVital(path), path != home + "/.Trash" else { return nil }
+                  !Self.homeVitals.contains(where: { path == ($0.isEmpty ? home : home + "/" + $0) }) else { return nil }
         }
+        let parts = String(path.dropFirst(prefix.count + 1)).split(separator: "/").map(String.init)
+        guard !parts.contains(where: { $0.lowercased().hasPrefix("com.apple.") }), isLinked(path, parts: parts, owner: owner) else { return nil }
         return path
+    }
+
+    /// Algum componente é do dono (bundle ID com fronteira, nome do app, relatório "<Nome>_"), ou o item é o bundle do
+    /// app, ou um plist do launchd / helper privilegiado ligado a ele.
+    private func isLinked(_ path: String, parts: [String], owner: String) -> Bool {
+        let id = owner.lowercased()
+        let names = ownerApps(owner).compactMap { Self.appName($0) }.filter { $0.count >= 3 }.map { $0.lowercased() }
+        for part in parts {
+            let base = part.lowercased(), bare = (base as NSString).deletingPathExtension
+            if [base, bare].contains(where: { $0 == id || $0.hasPrefix(id + ".") }) { return true }
+            if names.contains(where: { base == $0 || bare == $0 || part.hasPrefix(Self.capitalized($0, in: part) + "_") }) { return true }
+        }
+        if path.hasSuffix(".app"), Self.readPlistNoFollow(path + "/Contents/Info.plist")?["CFBundleIdentifier"] as? String == owner { return true }
+        let folder = (path as NSString).deletingLastPathComponent
+        if launchdFolders.contains(folder) {
+            if path.hasSuffix(".plist"), let dict = Self.readPlistNoFollow(path), launchdLinked(dict, file: (path as NSString).lastPathComponent, owner: owner) {
+                return true
+            }
+            if privilegedExecutables(owner).contains((path as NSString).lastPathComponent) { return true }
+        }
+        return false
+    }
+
+    private static func capitalized(_ lower: String, in part: String) -> String {
+        String(part.prefix(lower.count))
+    }
+
+    /// Apps com esse bundle ID nas pastas de apps (lidos como root, sem seguir links).
+    private func ownerApps(_ owner: String) -> [String] {
+        var out: [String] = []
+        for root in appRoots {
+            for name in (try? FileManager.default.contentsOfDirectory(atPath: root)) ?? [] where name.hasSuffix(".app") {
+                let app = root + "/" + name
+                guard !isSymlink(app), Self.readPlistNoFollow(app + "/Contents/Info.plist")?["CFBundleIdentifier"] as? String == owner else { continue }
+                out.append(app)
+            }
+        }
+        return out
+    }
+
+    private static func appName(_ app: String) -> String? {
+        (readPlistNoFollow(app + "/Contents/Info.plist")?["CFBundleName"] as? String) ?? ((app as NSString).lastPathComponent as NSString).deletingPathExtension
+    }
+
+    private func privilegedExecutables(_ owner: String) -> Set<String> {
+        Set(ownerApps(owner).flatMap { ((Self.readPlistNoFollow($0 + "/Contents/Info.plist")?["SMPrivilegedExecutables"] as? [String: Any]) ?? [:]).keys })
+    }
+
+    /// Mesmo vínculo de related-files.md §loginItems, revalidado como root.
+    private func launchdLinked(_ dict: [String: Any], file: String, owner: String) -> Bool {
+        let label = dict["Label"] as? String ?? ""
+        let name = (file as NSString).deletingPathExtension
+        func ofOwner(_ x: String) -> Bool { x == owner || x.hasPrefix(owner + ".") }
+        if ofOwner(label) && ofOwner(name) { return true }
+        let associated = (dict["AssociatedBundleIdentifiers"] as? [String]) ?? ((dict["AssociatedBundleIdentifiers"] as? String).map { [$0] } ?? [])
+        if associated.contains(owner) { return true }
+        if name == label, privilegedExecutables(owner).contains(label) { return true }
+        let program = (dict["Program"] as? String) ?? (dict["ProgramArguments"] as? [String])?.first
+        return program.map { Self.bundleID(containing: $0) == owner } == true
     }
 
     private func within(_ path: String, allowEqual: Bool) -> Bool {
@@ -151,7 +223,9 @@ public struct HelperExecutor: Sendable {
         }
     }
 
-    /// Move para o Lixo de quem pediu, no mesmo volume, com nome livre; o item passa a ser do usuário.
+    /// Move para o Lixo de quem pediu, no mesmo volume, com nome livre. As pastas de origem e do Lixo são abertas sem
+    /// seguir links em nenhum componente e o `rename` é relativo a elas e exclusivo; o dono do item não muda (nada de
+    /// `chown` como root, que seguiria links trocados pelo usuário).
     private func trash(_ path: String, requester: uid_t) -> HelperResult {
         var st = stat()
         guard lstat(path, &st) == 0 else { return errno == ENOENT ? .ok : .failed(String(cString: strerror(errno))) }
@@ -163,28 +237,28 @@ public struct HelperExecutor: Sendable {
             lchown(bin, requester, gid_t(UInt32.max))
         }
         guard (binStat.st_mode & S_IFMT) == S_IFDIR else { return .refused }
-        // Entre volumes o helper não copia árvores.
-        guard binStat.st_dev == st.st_dev else { return .refused }
+        let noFollowAny: Int32 = 0x2000_0000 // O_NOFOLLOW_ANY
+        let parentFD = open((path as NSString).deletingLastPathComponent, O_RDONLY | O_DIRECTORY | noFollowAny)
+        guard parentFD >= 0 else { return .refused }
+        defer { close(parentFD) }
+        let binFD = open(bin, O_RDONLY | O_DIRECTORY | noFollowAny)
+        guard binFD >= 0 else { return .refused }
+        defer { close(binFD) }
         let name = (path as NSString).lastPathComponent
-        var target = bin + "/" + name
-        var n = 2
-        var probe = stat()
-        while lstat(target, &probe) == 0 {
-            target = bin + "/" + name + " \(n)"
+        var item = stat(), binInfo = stat()
+        // O último componente é revisto pelo fd do pai: link → recusa (mesmo se trocado depois da validação).
+        guard fstatat(parentFD, name, &item, AT_SYMLINK_NOFOLLOW) == 0, (item.st_mode & S_IFMT) != S_IFLNK,
+              fstat(binFD, &binInfo) == 0 else { return .refused }
+        // Entre volumes o helper não copia árvores.
+        guard binInfo.st_dev == item.st_dev else { return .refused }
+        var n = 1
+        while n < 1000 {
+            let target = n == 1 ? name : "\(name) \(n)"
+            if renameatx_np(parentFD, name, binFD, target, UInt32(RENAME_EXCL)) == 0 { return .ok }
+            guard errno == EEXIST else { return .failed(String(cString: strerror(errno))) }
             n += 1
         }
-        guard rename(path, target) == 0 else { return .failed(String(cString: strerror(errno))) }
-        Self.chownTree(target, to: requester)
-        return .ok
-    }
-
-    /// `lchown -R` sem seguir links.
-    private static func chownTree(_ path: String, to uid: uid_t) {
-        lchown(path, uid, gid_t(UInt32.max))
-        guard let e = FileManager.default.enumerator(atPath: path) else { return }
-        while let rel = e.nextObject() as? String {
-            lchown((path as NSString).appendingPathComponent(rel), uid, gid_t(UInt32.max))
-        }
+        return .failed("no free name in trash")
     }
 
     /// Descarrega um job do launchd. O plist é relido como root; o vínculo com o app é revalidado.
@@ -197,9 +271,7 @@ public struct HelperExecutor: Sendable {
               !isSymlink(path), let dict = Self.readPlistNoFollow(path),
               let label = dict["Label"] as? String, !label.isEmpty, !label.hasPrefix("com.apple."),
               Self.isSafeIdentifier(label) || !label.contains("/") else { return .refused }
-        let program = (dict["Program"] as? String) ?? (dict["ProgramArguments"] as? [String])?.first
-        let linked = label.hasPrefix(owner) || file.hasPrefix(owner) || program.map { Self.bundleID(containing: $0) == owner } == true
-        guard linked else { return .refused }
+        guard launchdLinked(dict, file: file, owner: owner) else { return .refused }
         let target = (folder as NSString).lastPathComponent == "LaunchAgents" ? "gui/\(requester)/\(label)" : "system/\(label)"
         let r = commands.run("/bin/launchctl", ["bootout", target])
         // 3 (ESRCH) / 113: o job não estava carregado.

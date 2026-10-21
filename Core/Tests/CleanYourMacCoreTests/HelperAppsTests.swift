@@ -25,21 +25,22 @@ private func plist(_ t: FixtureTree, _ rel: String, _ dict: [String: Any]) -> UR
     return url
 }
 
-private func appsExecutor(_ t: FixtureTree, commands: HelperFakeCommands = HelperFakeCommands()) -> HelperExecutor {
+private func appsExecutor(_ t: FixtureTree, commands: HelperFakeCommands = HelperFakeCommands(),
+                          allowed: [String]? = nil) -> HelperExecutor {
     let home = t.url("Users/me").path
-    return HelperExecutor(allowedPrefixes: [t.url("Library").path, t.url("Users").path],
+    return HelperExecutor(allowedPrefixes: allowed ?? [t.url("Library").path, t.url("Users").path],
                    trashPrefixes: [t.url("Library/Application Support").path, t.url("Library/LaunchDaemons").path, t.url("Users").path],
                    launchdFolders: [t.url("Library/LaunchDaemons").path, t.url("Library/LaunchAgents").path],
                    commands: commands,
-                   homeOf: { _ in home })
+                   homeOf: { _ in home }, appRoots: [t.url("Applications").path])
 }
 
 // MARK: - trash
 
 @Test func helperApps_trashMovesIntoUserTrashWithUniqueName() throws {
     let t = FixtureTree()
-    let a = t.file("Library/Application Support/a/x", bytes: 10)
-    let b = t.file("Library/Application Support/b/x", bytes: 10)
+    let a = t.file("Library/Application Support/com.example.a/x", bytes: 10)
+    let b = t.file("Library/Application Support/com.example.b/x", bytes: 10)
     t.dir("Users/me")
     let e = appsExecutor(t)
     #expect(e.run([.trash(a, owner: "com.example.a"), .trash(b, owner: "com.example.b")], requester: getuid()) == [.ok, .ok])
@@ -54,7 +55,7 @@ private func appsExecutor(_ t: FixtureTree, commands: HelperFakeCommands = Helpe
     let t = FixtureTree()
     let etc = t.file("etc/hosts", bytes: 10)
     let other = t.file("Users/other/Library/f", bytes: 10)
-    let mine = t.file("Users/me/Library/Caches/f", bytes: 10)
+    let mine = t.file("Users/me/Library/Caches/com.example.a", bytes: 10)
     t.dir("Library/Application Support")
     let e = appsExecutor(t)
     #expect(e.run([.trash(etc, owner: "com.example.a")], requester: getuid()) == [.refused])
@@ -77,11 +78,90 @@ private func appsExecutor(_ t: FixtureTree, commands: HelperFakeCommands = Helpe
 
 @Test func helperApps_refusesAppleOrMalformedOwner() {
     let t = FixtureTree()
-    let f = t.file("Library/Application Support/a/x", bytes: 10)
+    let f = t.file("Library/Application Support/com.example.a/x", bytes: 10)
     let e = appsExecutor(t)
     #expect(e.run([.trash(f, owner: "com.apple.Safari")], requester: getuid()) == [.refused])
     #expect(e.run([.trash(f, owner: "")], requester: getuid()) == [.refused])
     #expect(e.run([.trash(f, owner: "com.x;rm")], requester: getuid()) == [.refused])
+}
+
+@Test func helperApps_trashRefusesSymlinkLastComponent() {
+    let t = FixtureTree()
+    t.dir("Users/me")
+    let victim = t.file("Library/PrivilegedHelperTools/victim", bytes: 10)
+    t.dir("Library/Application Support")
+    t.symlink("Library/Application Support/com.example.a", to: victim.deletingLastPathComponent())
+    #expect(appsExecutor(t).run([.trash(t.url("Library/Application Support/com.example.a"), owner: "com.example.a")], requester: getuid()) == [.refused])
+    #expect(FileManager.default.fileExists(atPath: victim.path))
+}
+
+@Test func helperApps_trashRefusesSymlinkedTrashFolder() {
+    let t = FixtureTree()
+    let f = t.file("Library/Application Support/com.example.a/x", bytes: 10)
+    t.dir("Users/me")
+    t.dir("elsewhere")
+    t.symlink("Users/me/.Trash", to: t.url("elsewhere"))
+    #expect(appsExecutor(t).run([.trash(f.deletingLastPathComponent(), owner: "com.example.a")], requester: getuid()) == [.refused])
+    #expect(FileManager.default.fileExists(atPath: f.path))
+}
+
+@Test func helperApps_trashUsesTrashPrefixesNotRemovePrefixes() {
+    let t = FixtureTree()
+    t.dir("Users/me")
+    let f = t.file("Library/Application Support/com.example.a/x", bytes: 10)
+    // Prefixos de "remove" estreitos (como em produção): `trash` usa os próprios.
+    let e = appsExecutor(t, allowed: [t.url("Library/Caches").path])
+    #expect(e.run([.trash(f.deletingLastPathComponent(), owner: "com.example.a")], requester: getuid()) == [.ok])
+}
+
+@Test func helperApps_trashRequiresLinkToOwnerAndNeverApple() {
+    let t = FixtureTree()
+    t.dir("Users/me")
+    AppFixtureLite.app(t, "Applications/Foo.app", bundleID: "com.example.a", name: "Foo")
+    let other = t.file("Library/Application Support/com.other.x/d", bytes: 10)
+    let apple = t.file("Library/LaunchDaemons/com.apple.thing.plist", bytes: 10)
+    let byName = t.file("Library/Application Support/Foo/d", bytes: 10)
+    let byPrefix = t.file("Library/Application Support/com.example.a.helper/d", bytes: 10)
+    let lookalike = t.file("Library/Application Support/com.example.ab/d", bytes: 10)
+    let e = appsExecutor(t)
+    #expect(e.run([.trash(other.deletingLastPathComponent(), owner: "com.example.a")], requester: getuid()) == [.refused])
+    #expect(e.run([.trash(apple, owner: "com.example.a")], requester: getuid()) == [.refused])
+    #expect(e.run([.trash(lookalike.deletingLastPathComponent(), owner: "com.example.a")], requester: getuid()) == [.refused])
+    #expect(e.run([.trash(byName.deletingLastPathComponent(), owner: "com.example.a")], requester: getuid()) == [.ok])
+    #expect(e.run([.trash(byPrefix.deletingLastPathComponent(), owner: "com.example.a")], requester: getuid()) == [.ok])
+}
+
+@Test func helperApps_trashProtectsRequesterHomeFolders() {
+    let t = FixtureTree()
+    t.dir("Users/me/Library/Caches")
+    t.dir("Users/me/Documents")
+    let e = appsExecutor(t)
+    for rel in ["Users/me/Library", "Users/me/Documents", "Users/me/Library/Caches", "Users/me"] {
+        #expect(e.run([.trash(t.url(rel), owner: "com.example.a")], requester: getuid()) == [.refused], "\(rel)")
+    }
+}
+
+@Test func helperApps_bootoutAcceptsAssociationAndPrivilegedHelperWithBoundary() {
+    let t = FixtureTree()
+    AppFixtureLite.app(t, "Applications/Docker.app", bundleID: "com.docker.docker", name: "Docker",
+                       extra: ["SMPrivilegedExecutables": ["com.docker.vmnetd": "anchor apple"]])
+    let assoc = plist(t, "Library/LaunchAgents/org.other.agent.plist", ["Label": "org.other.agent", "AssociatedBundleIdentifiers": ["com.docker.docker"]])
+    let helper = plist(t, "Library/LaunchDaemons/com.docker.vmnetd.plist", ["Label": "com.docker.vmnetd"])
+    let lookalike = plist(t, "Library/LaunchDaemons/com.docker.dockerx.plist", ["Label": "com.docker.dockerx"])
+    let e = appsExecutor(t)
+    #expect(e.run([.launchdBootout(plist: assoc, owner: "com.docker.docker")], requester: 501) == [.ok])
+    #expect(e.run([.launchdBootout(plist: helper, owner: "com.docker.docker")], requester: 501) == [.ok])
+    #expect(e.run([.launchdBootout(plist: lookalike, owner: "com.docker.docker")], requester: 501) == [.refused])
+}
+
+/// App mínimo para os testes do helper (o helper lê o Info.plist como root).
+enum AppFixtureLite {
+    static func app(_ t: FixtureTree, _ rel: String, bundleID: String, name: String, extra: [String: Any] = [:]) {
+        let u = t.dir("\(rel)/Contents")
+        var info: [String: Any] = ["CFBundleIdentifier": bundleID, "CFBundleName": name]
+        info.merge(extra) { $1 }
+        try! PropertyListSerialization.data(fromPropertyList: info, format: .xml, options: 0).write(to: u.appendingPathComponent("Info.plist"))
+    }
 }
 
 // MARK: - launchdBootout

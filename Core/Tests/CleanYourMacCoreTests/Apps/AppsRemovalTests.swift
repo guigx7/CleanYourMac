@@ -176,7 +176,9 @@ private func run(_ engine: CleanEngine, _ items: [JunkItem]) async -> CleanRepor
         #expect(s.privileged.batches.isEmpty)
     }
 
-    @Test func trashOnExternalVolumeUsesVolumeTrash() async throws {
+    /// Usa um volume real (hdiutil): roda só com CYM_TEST_VOLUMES=1, porque um hdiutil preso no kernel travaria a suíte.
+    @Test(.enabled(if: ProcessInfo.processInfo.environment["CYM_TEST_VOLUMES"] == "1"))
+    func trashOnExternalVolumeUsesVolumeTrash() async throws {
         let s = Setup()
         let image = s.t.url("vol.dmg")
         let name = "cymvol\(UInt32.random(in: 0...999_999))"

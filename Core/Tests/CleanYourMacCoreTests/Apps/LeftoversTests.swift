@@ -94,6 +94,17 @@ private func scanner(_ t: FixtureTree, registered: Set<String> = []) -> Leftover
         #expect(items.map(\.name) == ["com.getcleanshot.app-setapp.QuickLookExtension"])
     }
 
+    /// O fantasma casa só pelo bundle ID: um nome genérico ("Google") não leva pastas compartilhadas do fornecedor.
+    @Test func ghostMatchesByIDOnly() async throws {
+        let t = FixtureTree()
+        container(t, "com.example.ghost", bundle: "/Applications/Google.app")
+        t.dir("Users/tester/Library/Application Support/Google/shared")
+        t.file("Users/tester/Library/Preferences/com.example.ghost.plist", bytes: 10)
+        let item = try #require(try await scanner(t).scan(t.context()) { _ in }.first)
+        #expect(!item.leaves.contains { $0.url?.path.hasSuffix("Application Support/Google") == true })
+        #expect(item.leaves.contains { $0.url?.lastPathComponent == "com.example.ghost.plist" })
+    }
+
     @Test func symlinkedContainerIgnored() async throws {
         let t = FixtureTree()
         container(t, "com.example.real", bundle: "/nowhere/R.app")

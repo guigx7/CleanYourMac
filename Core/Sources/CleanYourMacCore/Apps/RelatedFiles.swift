@@ -58,19 +58,19 @@ public struct RelatedFilesFinder: Sendable {
     enum Match { case exactID, prefixID, name }
 
     /// `id(x)` e `nome(x)` da spec. `isFile`: compara o nome sem a extensão.
-    static func match(_ child: String, isFile: Bool, app: AppRecord) -> Match? {
+    static func match(_ child: String, isFile: Bool, app: AppRecord, idOnly: Bool = false) -> Match? {
         let base = (isFile ? (child as NSString).deletingPathExtension : child).lowercased()
         let id = app.bundleID.lowercased()
         if base == id { return .exactID }
         if base.hasPrefix(id + "."), !base.dropFirst(id.count + 1).contains(where: \.isNumber) { return .prefixID }
         let name = app.matchName.lowercased()
-        if name.count >= 3, base == name { return .name }
+        if !idOnly, name.count >= 3, base == name { return .name }
         return nil
     }
 
     /// O item pertence a `app` se só ele casa, ou se ele é o único casamento exato por bundle ID.
-    static func belongs(_ child: String, isFile: Bool, to app: AppRecord, installed: [AppRecord]) -> Bool {
-        guard let mine = match(child, isFile: isFile, app: app) else { return false }
+    static func belongs(_ child: String, isFile: Bool, to app: AppRecord, installed: [AppRecord], idOnly: Bool = false) -> Bool {
+        guard let mine = match(child, isFile: isFile, app: app, idOnly: idOnly) else { return false }
         if child.lowercased().hasPrefix("com.apple."), !app.bundleID.lowercased().hasPrefix("com.apple.") { return false }
         let others = installed.filter { $0.id != app.id && $0.kind == .application }.compactMap { match(child, isFile: isFile, app: $0) }
         if others.isEmpty { return true }
@@ -88,7 +88,8 @@ public struct RelatedFilesFinder: Sendable {
         var standalone = false
     }
 
-    public func files(for app: AppRecord, installed: [AppRecord], context: ScanContext) -> [RelatedFile] {
+    /// `idOnly`: só casamento por bundle ID (apps fantasmas das sobras: o nome deles não é confiável).
+    public func files(for app: AppRecord, installed: [AppRecord], context: ScanContext, idOnly: Bool = false) -> [RelatedFile] {
         let fm = FileManager.default
         let home = PathPolicy.realPath(context.home.path)
         var out: [Candidate] = []
@@ -110,7 +111,7 @@ public struct RelatedFilesFinder: Sendable {
         func add(_ dirs: [URL], _ kind: ResourceKind, filter: (String, Bool) -> Bool = { _, _ in true }) {
             for d in dirs {
                 for (u, isFile) in children(at: d) where filter(u.lastPathComponent, isFile)
-                    && Self.belongs(u.lastPathComponent, isFile: isFile, to: app, installed: installed) {
+                    && Self.belongs(u.lastPathComponent, isFile: isFile, to: app, installed: installed, idOnly: idOnly) {
                     out.append(Candidate(url: u, kind: kind, removal: .moveToTrash(u)))
                 }
             }
@@ -212,7 +213,7 @@ public struct RelatedFilesFinder: Sendable {
                 out.append(Candidate(url: u, kind: .loginItems, removal: .unloadAndTrash(plist: u, domain: domain)))
                 if byHelper {
                     let tool = context.resolve("/Library/PrivilegedHelperTools/\(name)")
-                    if FileManager.default.fileExists(atPath: tool.path) {
+                    if Self.isRealItem(tool) {
                         out.append(Candidate(url: tool, kind: .loginItems, removal: .moveToTrash(tool)))
                     }
                 }
@@ -238,7 +239,7 @@ public struct RelatedFilesFinder: Sendable {
             }
         }
         let pdf = context.resolve("~/Library/PDF Services/\(app.matchName)")
-        if fm.fileExists(atPath: pdf.path) { out.append(Candidate(url: pdf, kind: .plugins, removal: .moveToTrash(pdf))) }
+        if Self.isRealItem(pdf) { out.append(Candidate(url: pdf, kind: .plugins, removal: .moveToTrash(pdf))) }
         return out
     }
 
@@ -260,6 +261,12 @@ public struct RelatedFilesFinder: Sendable {
                                  size: 0, selected: privilegedAvailable, standalone: true))
         }
         return out
+    }
+
+    /// Existe e não é symlink (o link nunca vira item: a remoção levaria o destino ao helper).
+    static func isRealItem(_ url: URL) -> Bool {
+        var st = stat()
+        return lstat(url.path, &st) == 0 && (st.st_mode & S_IFMT) != S_IFLNK
     }
 
     /// Pastas padrão de `~/Library` e `/Library` (instalação limpa do macOS): nunca viram "Dados do Usuário".

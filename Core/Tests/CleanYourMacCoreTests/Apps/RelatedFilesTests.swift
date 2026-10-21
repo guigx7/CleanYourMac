@@ -117,6 +117,19 @@ private struct Env {
         #expect(daemon?.removal == .unloadAndTrash(plist: daemon!.url, domain: .system))
     }
 
+    @Test func pdfServicesAndPrivilegedToolNeverSymlinks() {
+        let e = Env(extra: ["SMPrivilegedExecutables": ["com.foo.App.Helper": "anchor apple"]])
+        let target = e.t.dir("Library/LaunchDaemons-real")
+        e.t.dir("Users/tester/Library/PDF Services")
+        e.t.symlink("Users/tester/Library/PDF Services/Foo", to: target)
+        plist(e.t, "Library/LaunchDaemons/com.foo.App.Helper.plist", ["Label": "com.foo.App.Helper"])
+        e.t.dir("Library/PrivilegedHelperTools")
+        e.t.symlink("Library/PrivilegedHelperTools/com.foo.App.Helper", to: target)
+        let paths = e.paths(e.find(privileged: true))
+        #expect(!paths.contains { $0.contains("PDF Services") })
+        #expect(!paths.contains { $0.contains("PrivilegedHelperTools") })
+    }
+
     @Test func sessionLoginItemOfTheApp() {
         let e = Env()
         let files = e.find(login: [LoginItemEntry(name: "Foo", url: e.app.url), LoginItemEntry(name: "Other", url: URL(fileURLWithPath: "/x.app"))])
