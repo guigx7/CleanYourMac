@@ -22,6 +22,19 @@ enum Theme {
         }
     }
 
+    /// Tom escuro do botão principal de cada módulo.
+    static func deep(for module: AppModule) -> Color {
+        switch module {
+        case .cleanup: Color(hex: 0x2F6B2A)
+        case .performance: Color(hex: 0xA2401A)
+        case .applications: Color(hex: 0x2A3FB0)
+        case .spaceLens: Color(hex: 0x4A1FA0)
+        }
+    }
+
+    /// Tinta das telas claras do Gerenciador de Aplicativos.
+    static let appsTint = Color(hex: 0x2F62D8)
+
     /// Tinta das telas claras (Gerenciador de Limpeza).
     static let reviewTint = Color(hex: 0x2E8B47)
 

@@ -48,6 +48,11 @@ extension GroupID {
 struct CategoryBadge: View {
     var symbol: String
     var size: CGFloat = 34
+    var module: AppModule = .cleanup
+
+    private var colors: [Color] {
+        module == .applications ? [Color(hex: 0x8DB6FF), Color(hex: 0x3D63D6)] : [Color(hex: 0xA6D96A), Color(hex: 0x3E8E3A)]
+    }
 
     var body: some View {
         Image(systemName: symbol)
@@ -55,8 +60,7 @@ struct CategoryBadge: View {
             .foregroundStyle(.white)
             .shadow(color: .black.opacity(0.25), radius: size * 0.03, y: size * 0.02)
             .frame(width: size, height: size)
-            .background(Circle().fill(LinearGradient(colors: [Color(hex: 0xA6D96A), Color(hex: 0x3E8E3A)],
-                                                     startPoint: .top, endPoint: .bottom)))
+            .background(Circle().fill(LinearGradient(colors: colors, startPoint: .top, endPoint: .bottom)))
             .overlay(Circle().strokeBorder(LinearGradient(colors: [.white.opacity(0.55), .white.opacity(0.05)],
                                                           startPoint: .top, endPoint: .bottom), lineWidth: max(1, size * 0.02)))
             .shadow(color: .black.opacity(0.2), radius: size * 0.08, y: size * 0.05)

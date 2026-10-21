@@ -13,7 +13,7 @@ struct ModuleArtwork: View {
     @Environment(\.displayScale) private var displayScale
 
     var body: some View {
-        ArtworkLayerView(layers: ArtworkLayers.cached(accent: Theme.accent(for: module), size: size, scale: displayScale),
+        ArtworkLayerView(layers: ArtworkLayers.cached(module: module, size: size, scale: displayScale),
                          size: size, active: isAnimating,
                          animate: !reduceMotion && ProcessInfo.processInfo.environment["CYM_STATIC_ART"] == nil)
             .frame(width: size, height: size)
@@ -96,7 +96,7 @@ final class ArtworkNSView: NSView {
         orbit.lineCap = .round
         orbit.strokeStart = 0
         orbit.strokeEnd = 0.28
-        orbit.shadowColor = NSColor(Theme.accent(for: .cleanup)).cgColor
+        orbit.shadowColor = NSColor(layers.accent).cgColor
         orbit.shadowRadius = size * 0.02
         orbit.shadowOpacity = 1
         orbit.shadowOffset = .zero
@@ -174,10 +174,10 @@ final class ArtworkNSView: NSView {
 fileprivate struct ArtworkLayers {
     private static var cache: [String: ArtworkLayers] = [:]
 
-    static func cached(accent: Color, size: CGFloat, scale: CGFloat) -> ArtworkLayers {
-        let key = "\(accent.description)-\(size)-\(scale)"
+    static func cached(module: AppModule, size: CGFloat, scale: CGFloat) -> ArtworkLayers {
+        let key = "\(module.rawValue)-\(size)-\(scale)"
         if let hit = cache[key] { return hit }
-        let made = make(accent: accent, size: size, scale: scale)
+        let made = make(palette: ArtPalette.for(module), size: size, scale: scale)
         cache[key] = made
         return made
     }
@@ -187,8 +187,10 @@ fileprivate struct ArtworkLayers {
     let disc: NSImage
     let band: NSImage
     let star: NSImage
+    let accent: Color
 
-    static func make(accent: Color, size: CGFloat, scale: CGFloat) -> ArtworkLayers {
+    static func make(palette: ArtPalette, size: CGFloat, scale: CGFloat) -> ArtworkLayers {
+        let accent = palette.accent
         func render(_ view: some View) -> NSImage {
             let r = ImageRenderer(content: view)
             r.scale = max(scale, 2)
@@ -204,20 +206,22 @@ fileprivate struct ArtworkLayers {
             shadow: render(Ellipse()
                 .fill(RadialGradient(colors: [.black.opacity(0.4), .clear], center: .center, startRadius: 0, endRadius: disc * 0.42))
                 .frame(width: disc * 0.95, height: disc * 0.22)),
-            disc: render(StaticDisc(accent: accent, disc: disc, core: core)),
+            disc: render(StaticDisc(palette: palette, disc: disc, core: core)),
             band: render(Rectangle()
                 .fill(LinearGradient(colors: [.clear, .white.opacity(0.2), .clear], startPoint: .leading, endPoint: .trailing))
                 .frame(width: disc * 0.3, height: disc * 1.6)),
-            star: render(Sparkle()
-                .fill(LinearGradient(colors: [Color(hex: 0x4A9A44), Color(hex: 0x2A6B2E)], startPoint: .top, endPoint: .bottom))
-                .frame(width: core * 0.5, height: core * 0.5))
+            star: render(palette.glyph
+                .fill(LinearGradient(colors: palette.glyphColors, startPoint: .top, endPoint: .bottom))
+                .frame(width: core * 0.5, height: core * 0.5)),
+            accent: accent
         )
     }
 }
 
 /// Camadas que não se movem entre si: desenhadas uma vez e transformadas como um bloco.
 private struct StaticDisc: View {
-    var accent: Color
+    var palette: ArtPalette
+    var accent: Color { palette.accent }
     var disc: CGFloat
     var core: CGFloat
 
@@ -226,15 +230,13 @@ private struct StaticDisc: View {
         ZStack {
             // Lateral (espessura).
             Circle()
-                .fill(LinearGradient(colors: [Color(hex: 0x1E5A26), Color(hex: 0x0E3518)], startPoint: .top, endPoint: .bottom))
+                .fill(LinearGradient(colors: palette.side, startPoint: .top, endPoint: .bottom))
                 .frame(width: disc, height: disc)
                 .offset(y: thickness)
 
             // Face de vidro translúcida.
             Circle()
-                .fill(LinearGradient(colors: [Color(hex: 0x9BD47A, opacity: 0.8), Color(hex: 0x3F8A3A, opacity: 0.75),
-                                              Color(hex: 0x1F5E27, opacity: 0.88)],
-                                     startPoint: .topLeading, endPoint: .bottomTrailing))
+                .fill(LinearGradient(colors: palette.face, startPoint: .topLeading, endPoint: .bottomTrailing))
                 .overlay(Circle().fill(RadialGradient(colors: [.white.opacity(0.26), .clear], center: UnitPoint(x: 0.35, y: 0.3),
                                                       startRadius: 0, endRadius: disc * 0.55)))
                 .overlay(Circle().fill(RadialGradient(colors: [accent.opacity(0.28), .clear], center: UnitPoint(x: 0.78, y: 0.8),
@@ -259,13 +261,42 @@ private struct StaticDisc: View {
                 .frame(width: core * 1.3, height: core * 1.3)
                 .offset(y: core * 0.08)
             Circle()
-                .fill(LinearGradient(colors: [Color(hex: 0xF7FCF3), Color(hex: 0xD3E6CB), Color(hex: 0xB8D1AE)],
-                                     startPoint: .top, endPoint: .bottom))
+                .fill(LinearGradient(colors: palette.core, startPoint: .top, endPoint: .bottom))
                 .overlay(Circle().strokeBorder(LinearGradient(colors: [.white, .white.opacity(0.1)], startPoint: .top, endPoint: .bottom),
                                                lineWidth: core * 0.035))
                 .frame(width: core, height: core)
         }
         .frame(width: disc * 1.2, height: disc * 1.2)
+    }
+}
+
+/// Cores e símbolo do núcleo de cada módulo.
+struct ArtPalette {
+    var accent: Color
+    var side: [Color]
+    var face: [Color]
+    var core: [Color]
+    var glyph: AnyShape
+    var glyphColors: [Color]
+
+    static func `for`(_ module: AppModule) -> ArtPalette {
+        switch module {
+        case .applications:
+            // Azul, com "ícones de app" (quadrados arredondados) no lugar das estrelas.
+            ArtPalette(accent: Theme.accent(for: module),
+                       side: [Color(hex: 0x1F3A9E), Color(hex: 0x0E1E5C)],
+                       face: [Color(hex: 0x8DB6FF, opacity: 0.8), Color(hex: 0x3D63D6, opacity: 0.75), Color(hex: 0x1D3393, opacity: 0.88)],
+                       core: [Color(hex: 0xF4F7FF), Color(hex: 0xD2DDF7), Color(hex: 0xB4C4EC)],
+                       glyph: AnyShape(RoundedRectangle(cornerRadius: 9, style: .continuous)),
+                       glyphColors: [Color(hex: 0x5B8CF0), Color(hex: 0x2A4FC0)])
+        default:
+            ArtPalette(accent: Theme.accent(for: module),
+                       side: [Color(hex: 0x1E5A26), Color(hex: 0x0E3518)],
+                       face: [Color(hex: 0x9BD47A, opacity: 0.8), Color(hex: 0x3F8A3A, opacity: 0.75), Color(hex: 0x1F5E27, opacity: 0.88)],
+                       core: [Color(hex: 0xF7FCF3), Color(hex: 0xD3E6CB), Color(hex: 0xB8D1AE)],
+                       glyph: AnyShape(Sparkle()),
+                       glyphColors: [Color(hex: 0x4A9A44), Color(hex: 0x2A6B2E)])
+        }
     }
 }
 

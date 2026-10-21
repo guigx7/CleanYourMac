@@ -54,6 +54,7 @@ struct ModuleStage<Art: View, Side: View, Action: View>: View {
 struct PrimaryRoundButton: View {
     var title: LocalizedStringKey
     var size: CGFloat = 96
+    var module: AppModule = .cleanup
     var action: () -> Void
     @State private var hovering = false
 
@@ -65,9 +66,9 @@ struct PrimaryRoundButton: View {
                 .frame(width: size, height: size)
                 .background {
                     Circle()
-                        .fill(LinearGradient(colors: [Theme.accent(for: .cleanup).opacity(0.9), Color(hex: 0x2F6B2A)],
+                        .fill(LinearGradient(colors: [Theme.accent(for: module).opacity(0.9), Theme.deep(for: module)],
                                              startPoint: .top, endPoint: .bottom))
-                        .shadow(color: Theme.accent(for: .cleanup).opacity(hovering ? 0.7 : 0.45), radius: hovering ? 26 : 18)
+                        .shadow(color: Theme.accent(for: module).opacity(hovering ? 0.7 : 0.45), radius: hovering ? 26 : 18)
                 }
                 .overlay(Circle().strokeBorder(.white.opacity(0.55), lineWidth: 1.5))
                 .scaleEffect(hovering ? 1.04 : 1)
