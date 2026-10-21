@@ -69,8 +69,23 @@ def filters(lines):
 
 def related(lines, app):
     """Tipos e itens abaixo da linha do app, até a próxima linha de app."""
+    all_cells = cells(lines)
+    if any(c["level"] is not None for c in all_cells):
+        # Com nível: 0 = app, 1 = tipo, 2 = item; níveis mais fundos (dentro de um contêiner) ficam de fora.
+        out, kind, inside = {}, None, False
+        for c in all_cells:
+            if c["level"] == 0:
+                if inside:
+                    break
+                inside = c["name"] == app
+            elif inside and c["level"] == 1 and c["name"] in KINDS:
+                kind = KINDS[c["name"]]
+                out.setdefault(kind, [])
+            elif inside and c["level"] == 2 and kind is not None:
+                out[kind].append({"name": c["name"], "size": c["size"]})
+        return out
     out, kind, inside = {}, None, False
-    for c in cells(lines):
+    for c in all_cells:
         if c["date"] is not None:
             if inside:
                 break

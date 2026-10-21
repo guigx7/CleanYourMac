@@ -61,6 +61,24 @@ def save(out_dir, name, lines):
         f.write("\n".join(lines or []))
 
 
+def collect_app(out_dir, i, app):
+    """Expande a linha do app e, dentro dela, só as linhas de tipo (não as subpastas)."""
+    lines = dump("b", "--press", SHOW, "--index", str(i))
+    for _ in range(20):
+        buttons = show_buttons(lines or [])
+        app_row = [k for k, (c, is_app) in enumerate(buttons) if is_app]
+        nxt = next((k for k in app_row if k >= i), len(buttons))
+        kinds = [k for k in range(i, nxt) if buttons[k][0] in KIND_NAMES]
+        if lines is None or not kinds:
+            break
+        lines = dump("b", "--press", SHOW, "--index", str(kinds[0]))
+    time.sleep(0.5)
+    final = dump("b") if lines is not None else None
+    save(out_dir, "app-" + app if final is not None else "timeout-" + app, final)
+    dump("b", "--press", HIDE, "--index", "0")
+    print("ok:" if final is not None else "tempo esgotado:", app, flush=True)
+
+
 def main():
     if not os.access(AX, os.X_OK):
         sys.exit("compile antes: swiftc -O scripts/re/dump-ax.swift -o re-notes/dump-ax")
@@ -88,27 +106,20 @@ def main():
             save(out_dir, "filter-" + f, lines)
     dump("b", "--press", view or "Todos os Aplicativos")
 
-    # Cada app: expande a linha e todos os tipos dela, despeja, recolhe.
-    base = show_buttons(dump("b") or [])
-    apps = [c for c, is_app in base if is_app]
-    for i, app in enumerate(apps):
-        if only and app not in only:
-            continue
-        # Expande a linha do app e, dentro dela, só as linhas de tipo (não as subpastas).
-        lines = dump("b", "--press", SHOW, "--index", str(i))
-        for _ in range(20):
-            buttons = show_buttons(lines or [])
-            app_row = [k for k, (c, is_app) in enumerate(buttons) if is_app]
-            nxt = next((k for k in app_row if k >= i), len(buttons))
-            kinds = [k for k in range(i, nxt) if buttons[k][0] in KIND_NAMES]
-            if lines is None or not kinds:
-                break
-            lines = dump("b", "--press", SHOW, "--index", str(kinds[0]))
-        time.sleep(0.5)
-        final = dump("b") if lines is not None else None
-        save(out_dir, "app-" + app if final is not None else "timeout-" + app, final)
-        dump("b", "--press", HIDE, "--index", "0")
-        print("ok:" if final is not None else "tempo esgotado:", app, flush=True)
+    # Cada app: expande a linha e os tipos dela, despeja, recolhe. Se o clique em "Todos" falhar, a lista
+    # fica filtrada: os apps que faltarem são coletados pelos filtros de fornecedor.
+    done = set()
+    for view_name in [view or "Todos os Aplicativos", "Apple", "Google", "MacPaw", "Microsoft", "Outros"]:
+        dump("b", "--press", view_name)
+        base = show_buttons(dump("b") or [])
+        apps = [c for c, is_app in base if is_app]
+        for i, app in enumerate(apps):
+            if app in done or (only and app not in only):
+                continue
+            collect_app(out_dir, i, app)
+            done.add(app)
+        if view:
+            break
 
     save(out_dir, "updater", dump("b", "--press", "Atualizador"))
     save(out_dir, "leftovers", dump("b", "--press", "Sobras"))

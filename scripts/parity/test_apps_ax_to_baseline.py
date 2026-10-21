@@ -69,6 +69,17 @@ class AppsAxToBaselineTests(unittest.TestCase):
             "supportingFiles": [{"name": "discord", "size": 1_200_000_000}],
         })
 
+    def test_related_uses_levels_when_present(self):
+        d = tempfile.mkdtemp()
+        with open(os.path.join(FIXTURE, "uninstaller.txt"), encoding="utf-8") as src, \
+                open(os.path.join(d, "uninstaller.txt"), "w", encoding="utf-8") as dst:
+            dst.write(src.read())
+        with open(os.path.join(d, "app-GarageBand.app.txt"), "w", encoding="utf-8") as f:
+            f.write(GARAGEBAND_LEVELS)
+        gb = next(a for a in self.convert(d)["apps"] if a["name"] == "GarageBand.app")
+        self.assertEqual(gb["related"], {"container": [{"name": "com.apple.garageband10", "size": 4100}],
+                                         "binaries": [{"name": "GarageBand.app", "size": 2_200_000_000}]})
+
     def test_prefers_all_apps_filter_dump(self):
         d = tempfile.mkdtemp()
         with open(os.path.join(FIXTURE, "uninstaller.txt"), encoding="utf-8") as src:
@@ -88,6 +99,32 @@ class AppsAxToBaselineTests(unittest.TestCase):
              "related": {"container": [{"name": "com.canva.affinity.thumbnail", "size": 24600}]}},
             {"name": "com.example.Gone", "size": 0, "related": {}},
         ])
+
+
+GARAGEBAND_LEVELS = """\
+          AXRow [level=0]: 
+            AXCell: GarageBand.app
+              AXStaticText: 5 de mar. de 2026 | O dia em que você abriu o aplicativo pela última vez
+              AXStaticText: 2,2 GB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=1]: 
+            AXCell: Contêiner
+          AXRow [level=2]: 
+            AXCell: com.apple.garageband10
+              AXStaticText: 4,1 KB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=3]: 
+            AXCell: Preferências
+          AXRow [level=4]: 
+            AXCell: com.apple.garageband10.plist
+              AXStaticText: 4,1 KB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=1]: 
+            AXCell: Binários
+          AXRow [level=2]: 
+            AXCell: GarageBand.app
+              AXStaticText: 2,2 GB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: GlucoTracker.app
+              AXStaticText: 20 de out. de 2026 | O dia em que você abriu o aplicativo pela última vez
+"""
 
 
 LEFTOVERS = """\
