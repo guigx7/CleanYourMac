@@ -5,8 +5,8 @@ enum AppModule: String, CaseIterable, Identifiable {
 
     var id: String { rawValue }
 
-    /// Só a Limpeza existe na v1.
-    var isAvailable: Bool { self == .cleanup }
+    /// Módulos já implementados.
+    var isAvailable: Bool { self == .cleanup || self == .applications }
 
     var title: LocalizedStringKey {
         switch self {
