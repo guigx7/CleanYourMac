@@ -17,6 +17,12 @@ public enum PrivilegedCommand: Hashable, Sendable, Codable {
     case removeContents(URL)
     case lipoThin(URL, keepArch: String)
     case codesignAdhoc(URL)
+    /// Mover para o Lixo do usuário que pediu (apps-removal.md §Helper). `owner` = bundle ID do app dono do item.
+    case trash(URL, owner: String)
+    /// Descarregar um job do launchd; o domínio vem da pasta do plist.
+    case launchdBootout(plist: URL, owner: String)
+    /// Esquecer o recibo de um pacote (`pkgutil --forget`).
+    case forgetPackage(String, owner: String)
 }
 
 public protocol PrivilegedRunner: Sendable {
@@ -37,6 +43,13 @@ public struct AppleScriptPrivilegedRunner: PrivilegedRunner {
         public var lipo = "/usr/bin/lipo"
         public var mv = "/bin/mv"
         public var codesign = "/usr/bin/codesign"
+        public var launchctl = "/bin/launchctl"
+        public var pkgutil = "/usr/sbin/pkgutil"
+        public var chown = "/usr/sbin/chown"
+        public var stat = "/usr/bin/stat"
+        /// Lixo e uid do usuário do app (o script roda como root, mas o item vai para o Lixo dele).
+        public var trash = FileManager.default.homeDirectoryForCurrentUser.appendingPathComponent(".Trash").path
+        public var uid: uid_t = getuid()
         public init(rm: String = "/bin/rm") { self.rm = rm }
     }
 
@@ -118,6 +131,18 @@ public struct AppleScriptPrivilegedRunner: PrivilegedRunner {
                 body = "\(tools.lipo) \(quote(u.path)) -thin \(quote(arch)) -output \(tmp) && \(tools.mv) -f \(tmp) \(quote(u.path))"
             case .codesignAdhoc(let u):
                 body = "\(tools.codesign) --force --deep --sign - \(quote(u.path))"
+            case .trash(let u, _):
+                // Mesmo volume do Lixo (sem cópia entre volumes) e nome livre: "x", "x 2", "x 3"…
+                let src = quote(u.path), dir = quote(tools.trash), name = quote(u.lastPathComponent)
+                body = "[ \"$(\(tools.stat) -f %d -- \(src))\" = \"$(\(tools.stat) -f %d -- \(dir))\" ] && "
+                    + "{ t=\(dir)/\(name); n=2; while [ -e \"$t\" ] || [ -L \"$t\" ]; do t=\(dir)/\(name)\" $n\"; n=$((n+1)); done; "
+                    + "\(tools.mv) -- \(src) \"$t\" && \(tools.chown) -R -h \(tools.uid) \"$t\"; }"
+            case .launchdBootout(let plist, _):
+                let domain = plist.deletingLastPathComponent().lastPathComponent == "LaunchAgents" ? "gui/\(tools.uid)" : "system"
+                body = "{ \(tools.launchctl) bootout \(domain) \(quote(plist.path)); s=$?; [ $s -eq 0 ] || [ $s -eq 3 ] || [ $s -eq 113 ]; }"
+            case .forgetPackage(let id, _):
+                body = HelperExecutor.isSafeIdentifier(id) && !id.hasPrefix("com.apple.")
+                    ? "\(tools.pkgutil) --forget \(quote(id))" : "false"
             }
             lines.append("if \(body); then echo 'CYM:\(i):ok'; else echo 'CYM:\(i):fail'; fi")
         }

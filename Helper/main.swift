@@ -7,13 +7,19 @@ import CleanYourMacCore
 
 final class Service: NSObject, HelperXPCProtocol {
     private let executor = HelperExecutor()
+    /// Quem pediu, pela conexão XPC (nunca pela mensagem): define o Lixo e o domínio gui/<uid> do launchd.
+    private let requester: uid_t
+
+    init(requester: uid_t) {
+        self.requester = requester
+    }
 
     func handle(_ request: Data, reply: @escaping @Sendable (Data) -> Void) {
         guard let req = try? JSONDecoder().decode(HelperRequest.self, from: request) else {
             reply(Data())
             return
         }
-        let response = executor.handle(req)
+        let response = executor.handle(req, requester: requester)
         reply((try? JSONEncoder().encode(response)) ?? Data())
     }
 }
@@ -28,7 +34,7 @@ final class Delegate: NSObject, NSXPCListenerDelegate {
     func listener(_ listener: NSXPCListener, shouldAcceptNewConnection connection: NSXPCConnection) -> Bool {
         connection.setCodeSigningRequirement(requirement)
         connection.exportedInterface = NSXPCInterface(with: HelperXPCProtocol.self)
-        connection.exportedObject = Service()
+        connection.exportedObject = Service(requester: connection.effectiveUserIdentifier)
         connection.resume()
         return true
     }
