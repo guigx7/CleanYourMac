@@ -244,6 +244,13 @@ public final class CleanEngine: Cleaning {
         case .delete(let u), .moveToTrash(let u), .deleteStaleVersion(let u, _), .deleteUnlessRunning(let u, _),
              .removePreference(let u):
             try check(u)
+        case .deleteDiskImage(let u):
+            try check(u)
+            var st = stat()
+            guard u.pathExtension.lowercased() == "dmg", lstat(u.path, &st) == 0, (st.st_mode & S_IFMT) == S_IFREG else {
+                throw CleanFailure(reason: "path not allowed: not a disk image \(u.path)")
+            }
+            if systemMountedImages().contains(PathPolicy.realPath(u.path)) { throw CleanFailure(reason: "in use") }
         case .removeLaunchdItem(let plist, let helper):
             try check(plist)
             if let helper { try check(helper) }
@@ -276,7 +283,8 @@ public final class CleanEngine: Cleaning {
 
     private func commands(for removal: RemovalAction) -> [PrivilegedCommand] {
         switch removal {
-        case .delete(let u), .deleteStaleVersion(let u, _), .deleteUnlessRunning(let u, _), .removePreference(let u): [.remove(u)]
+        case .delete(let u), .deleteStaleVersion(let u, _), .deleteUnlessRunning(let u, _), .removePreference(let u),
+             .deleteDiskImage(let u): [.remove(u)]
         case .removeLaunchdItem(let plist, let helper): (helper.map { [.remove($0)] } ?? []) + [.remove(plist)]
         case .removeSessionLoginItem: []
         case .deleteContents(let u): [.removeContents(u)]
@@ -307,7 +315,8 @@ public final class CleanEngine: Cleaning {
             try fm.removeItem(at: u)
         }
         switch removal {
-        case .delete(let u), .deleteStaleVersion(let u, _), .deleteUnlessRunning(let u, _), .removePreference(let u):
+        case .delete(let u), .deleteStaleVersion(let u, _), .deleteUnlessRunning(let u, _), .removePreference(let u),
+             .deleteDiskImage(let u):
             try remove(u)
         case .removeLaunchdItem(let plist, let helper):
             if let helper { try remove(helper) }

@@ -2,6 +2,8 @@ import Foundation
 
 public enum ItemBadge: String, Hashable, Sendable {
     case latest
+    /// Imagem de disco montada: aparece, mas não pode ser marcada (apps/installers.md §Remoção).
+    case mounted
 }
 
 public enum IconSource: Hashable, Sendable {

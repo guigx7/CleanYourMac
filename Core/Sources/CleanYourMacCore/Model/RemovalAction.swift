@@ -29,4 +29,6 @@ public enum RemovalAction: Hashable, Sendable {
     case deleteFiles([URL])
     /// Manifesto do Ollama + blobs que ficarem sem referência (recalculado na hora).
     case removeOllamaModel(manifest: URL, store: URL)
+    /// Instalador: apagar na hora, só se for um `.dmg` comum (sem link) e não estiver montado.
+    case deleteDiskImage(URL)
 }
