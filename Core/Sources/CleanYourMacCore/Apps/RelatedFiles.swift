@@ -135,11 +135,12 @@ public struct RelatedFilesFinder: Sendable {
         }
 
         add(["~/Library/Logs", "/Library/Logs"], .logs)
-        let prefix = app.matchName.lowercased() + "_"
+        // Nome de casamento exato (com maiúsculas): "Chrome_" não pega "chrome_crashpad_handler_…".
+        let prefix = app.matchName + "_"
         for (dir, exts) in [("~/Library/Logs/DiagnosticReports", ["crash", "diag", "hang", "spin"]),
                             ("/Library/Logs/DiagnosticReports", ["crash", "diag", "hang", "spin"]),
                             ("~/Library/Application Support/CrashReporter", ["plist"])] {
-            for (u, isFile) in children(dir) where isFile && u.lastPathComponent.lowercased().hasPrefix(prefix)
+            for (u, isFile) in children(dir) where isFile && u.lastPathComponent.hasPrefix(prefix)
                 && exts.contains(u.pathExtension.lowercased()) {
                 out.append(Candidate(url: u, kind: .logs, removal: .moveToTrash(u)))
             }

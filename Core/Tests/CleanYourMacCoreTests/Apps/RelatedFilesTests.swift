@@ -131,6 +131,8 @@ private struct Env {
         e.t.file("Users/tester/Library/Logs/DiagnosticReports/Foo_2026-10-21-101010_mac.diag", bytes: 10)
         e.t.file("Users/tester/Library/Logs/DiagnosticReports/Foo-2026-10-21-101010.ips", bytes: 10)
         e.t.file("Users/tester/Library/Logs/DiagnosticReports/Foobar_2026.diag", bytes: 10)
+        // Prefixo com o nome exato (maiúsculas contam): o relatório de outro processo não entra.
+        e.t.file("Users/tester/Library/Application Support/CrashReporter/foo_crashpad_handler_ABC.plist", bytes: 10)
         e.t.file("Users/tester/Library/Logs/foo.log", bytes: 10)
         e.t.file("Users/tester/Library/Logs/foo.log.old.0", bytes: 10)
         #expect(e.paths(e.find()) == ["/Users/tester/Library/Logs/DiagnosticReports/Foo_2026-10-21-101010_mac.diag",
