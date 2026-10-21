@@ -42,13 +42,18 @@ public final class CleanEngine: Cleaning {
     private let commands: any CommandRunner
     private let loginItems: any LoginItemsSource
     private let documentVersions: any DocumentVersionSource
+    private let runningApps: any RunningApps
+    private let trasher: any Trasher
 
     public init(policies: [GroupID: PathPolicy], privileged: any PrivilegedRunner, dryRun: Bool, log: CleanupLog,
                 requiresAdmin: @escaping @Sendable (GroupID) -> Bool = { $0.requiresAdmin },
                 processes: any ProcessChecker = SystemProcessChecker(),
                 commands: any CommandRunner = SystemCommandRunner(),
                 loginItems: any LoginItemsSource = SystemLoginItems(),
-                documentVersions: any DocumentVersionSource = SystemDocumentVersions()) {
+                documentVersions: any DocumentVersionSource = SystemDocumentVersions(),
+                runningApps: any RunningApps = WorkspaceRunningApps(), trasher: any Trasher = FileTrasher()) {
+        self.runningApps = runningApps
+        self.trasher = trasher
         self.policyProvider = { policies }
         self.privileged = privileged
         self.dryRun = dryRun
@@ -66,7 +71,10 @@ public final class CleanEngine: Cleaning {
                 processes: any ProcessChecker = SystemProcessChecker(),
                 commands: any CommandRunner = SystemCommandRunner(),
                 loginItems: any LoginItemsSource = SystemLoginItems(),
-                documentVersions: any DocumentVersionSource = SystemDocumentVersions()) {
+                documentVersions: any DocumentVersionSource = SystemDocumentVersions(),
+                runningApps: any RunningApps = WorkspaceRunningApps(), trasher: any Trasher = FileTrasher()) {
+        self.runningApps = runningApps
+        self.trasher = trasher
         self.policyProvider = policyProvider
         self.privileged = privileged
         self.dryRun = dryRun
@@ -117,15 +125,32 @@ public final class CleanEngine: Cleaning {
             case .thinBinary, .removeLocalizations:
                 finish(item, .failure(CleanFailure(reason: "permission: app not writable (Operation not permitted, .app)")))
             default:
-                deferred.append((item, commands(for: removal)))
+                deferred.append((item, commands(for: removal, owner: AppItemID.owner(of: item.id))))
             }
         }
 
-        for item in leaves {
+        // Apps abertos bloqueiam a desinstalação deles (removal.md §Apps abertos); redefinir segue.
+        let uninstallOwners = Set(leaves.compactMap { AppItemID.mode(of: $0.id) == .uninstall ? AppItemID.owner(of: $0.id) : nil })
+        let openApps = uninstallOwners.isEmpty ? [] : Set(runningApps.running(bundleIDs: uninstallOwners).map(\.bundleID))
+        // O bundle do app sai por último, e só se nada antes dele falhou.
+        let ordered = leaves.filter { !AppItemID.isBundle($0.id) }
+        let bundles = leaves.filter { AppItemID.isBundle($0.id) }
+
+        func pass(_ items: [JunkItem]) async {
+        for item in items {
             // Parar: os itens restantes não são tocados.
             if Task.isCancelled { break }
             emit(.started(item))
             guard let removal = item.removal else { continue }
+            if AppItemID.mode(of: item.id) == .uninstall, let owner = AppItemID.owner(of: item.id), openApps.contains(owner) {
+                finish(item, .failure(CleanFailure(reason: "in use")))
+                continue
+            }
+            if AppItemID.isBundle(item.id), let app = AppItemID.appID(of: item.id),
+               failed.keys.contains(where: { $0 != item.id && AppItemID.appID(of: $0) == app }) {
+                finish(item, .failure(CleanFailure(reason: "kept: an earlier step failed")))
+                continue
+            }
             do {
                 try validate(removal, group: item.group, policies: policies)
             } catch {
@@ -145,7 +170,7 @@ public final class CleanEngine: Cleaning {
                 continue
             }
             if requiresAdmin(item.group) {
-                deferred.append((item, commands(for: removal)))
+                deferred.append((item, commands(for: removal, owner: AppItemID.owner(of: item.id))))
                 continue
             }
             do {
@@ -169,6 +194,21 @@ public final class CleanEngine: Cleaning {
                 case .removeLaunchdItem(let plist, _):
                     _ = commands.run("/bin/launchctl", ["unload", plist.path])
                     try Self.removeUnprivileged(removal)
+                case .moveToTrash(let u):
+                    try trashUnlessGone(u)
+                case .unloadAndTrash(let plist, let domain):
+                    guard domain == .user else { throw CocoaError(.fileWriteNoPermission) }
+                    let r = commands.run("/bin/launchctl", ["bootout", "gui/\(getuid())", plist.path])
+                    // 3 (ESRCH) / 113: não estava carregado.
+                    guard [0, 3, 113].contains(r.status) else { throw CleanFailure(reason: "launchctl bootout failed") }
+                    do {
+                        try trashUnlessGone(plist)
+                    } catch where Self.isPermissionError(error) {
+                        deferred.append((item, AppItemID.owner(of: item.id).map { [.trash(plist, owner: $0)] } ?? []))
+                        continue
+                    }
+                case .forgetReceipt:
+                    throw CocoaError(.fileWriteNoPermission)
                 case .removePreference(let file):
                     if file.pathExtension.lowercased() != "lockfile" {
                         _ = commands.run("/usr/bin/defaults", ["delete", file.deletingPathExtension().path])
@@ -192,6 +232,9 @@ public final class CleanEngine: Cleaning {
             }
         }
 
+        }
+
+        func flush() async {
         let batch = Task.isCancelled ? [] : deferred.filter { !$0.1.isEmpty }
         for (item, cmds) in deferred where cmds.isEmpty {
             finish(item, .failure(CleanFailure(reason: "unsupported removal")))
@@ -220,6 +263,13 @@ public final class CleanEngine: Cleaning {
                 for (item, _) in batch { finish(item, .failure(reason)) }
             }
         }
+        deferred.removeAll()
+        }
+
+        await pass(ordered)
+        await flush()
+        await pass(bundles)
+        await flush()
 
         if restartPreferences {
             // O cfprefsd guarda as preferências em cache; reiniciá-lo evita que regrave o arquivo apagado.
@@ -254,6 +304,10 @@ public final class CleanEngine: Cleaning {
         case .removeLaunchdItem(let plist, let helper):
             try check(plist)
             if let helper { try check(helper) }
+        case .unloadAndTrash(let plist, _):
+            try check(plist)
+        case .forgetReceipt(let id):
+            guard HelperExecutor.isSafeIdentifier(id) else { throw CleanFailure(reason: "invalid receipt id") }
         case .removeSessionLoginItem:
             break
         case .deleteContents(let u):
@@ -281,7 +335,16 @@ public final class CleanEngine: Cleaning {
         }
     }
 
-    private func commands(for removal: RemovalAction) -> [PrivilegedCommand] {
+    private func commands(for removal: RemovalAction, owner: String?) -> [PrivilegedCommand] {
+        switch removal {
+        case .moveToTrash(let u): return owner.map { [.trash(u, owner: $0)] } ?? []
+        case .unloadAndTrash(let plist, _): return owner.map { [.launchdBootout(plist: plist, owner: $0), .trash(plist, owner: $0)] } ?? []
+        case .forgetReceipt(let id): return owner.map { [.forgetPackage(id, owner: $0)] } ?? []
+        default: return legacyCommands(for: removal)
+        }
+    }
+
+    private func legacyCommands(for removal: RemovalAction) -> [PrivilegedCommand] {
         switch removal {
         case .delete(let u), .deleteStaleVersion(let u, _), .deleteUnlessRunning(let u, _), .removePreference(let u),
              .deleteDiskImage(let u): [.remove(u)]
@@ -291,7 +354,8 @@ public final class CleanEngine: Cleaning {
         case .removeLocalizations(_, let lprojs): lprojs.map { .remove($0) }
         case .deleteFiles(let urls): urls.map { .remove($0) }
         case .thinBinary(let exe, let arch, _): [.lipoThin(exe, keepArch: arch)]
-        case .moveToTrash, .removeFileVersion, .deleteSimulator, .deleteRuntime, .removeOllamaModel: []
+        case .moveToTrash, .removeFileVersion, .deleteSimulator, .deleteRuntime, .removeOllamaModel,
+             .unloadAndTrash, .forgetReceipt: []
         }
     }
 
@@ -337,9 +401,16 @@ public final class CleanEngine: Cleaning {
             for u in urls { try remove(u) }
         case .removeOllamaModel(let manifest, let store):
             try OllamaStore(root: store).remove(manifest: manifest)
-        case .thinBinary, .removeFileVersion, .deleteSimulator, .deleteRuntime:
+        case .thinBinary, .removeFileVersion, .deleteSimulator, .deleteRuntime, .unloadAndTrash, .forgetReceipt:
             throw CleanFailure(reason: "unsupported removal")
         }
+    }
+
+    /// Lixo do volume do item; já sumido conta como feito.
+    private func trashUnlessGone(_ u: URL) throws {
+        var st = stat()
+        if lstat(u.path, &st) != 0 && errno == ENOENT { return }
+        try trasher.trash(u)
     }
 
     /// Reescreve o binário só com a fatia `keep` (universal-binaries.md §Remoção), sem reassinar.

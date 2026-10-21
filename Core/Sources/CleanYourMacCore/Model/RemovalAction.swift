@@ -31,4 +31,15 @@ public enum RemovalAction: Hashable, Sendable {
     case removeOllamaModel(manifest: URL, store: URL)
     /// Instalador: apagar na hora, só se for um `.dmg` comum (sem link) e não estiver montado.
     case deleteDiskImage(URL)
+    /// Plist do launchd de um app: descarregar (`bootout`) e mandar o plist para o Lixo.
+    case unloadAndTrash(plist: URL, domain: LaunchdDomain)
+    /// Recibo de pacote de um app (`pkgutil --forget`, via lote privilegiado).
+    case forgetReceipt(String)
+}
+
+public enum LaunchdDomain: String, Hashable, Sendable {
+    /// `~/Library/LaunchAgents` (gui/<uid>, sem root).
+    case user
+    /// `/Library/LaunchAgents|LaunchDaemons|PrivilegedHelperTools` (helper).
+    case system
 }
