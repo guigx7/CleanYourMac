@@ -2,11 +2,12 @@ import Foundation
 import Testing
 @testable import CleanYourMacCore
 
-private func container(_ t: FixtureTree, _ id: String, bundle: String?, legacy: Bool = false, bytes: Int = 4096) {
+private func container(_ t: FixtureTree, _ id: String, bundle: String?, legacy: Bool = false, bytes: Int = 4096, emptyMeta: Bool = false) {
     t.file("Users/tester/Library/Containers/\(id)/Data/Library/Caches/x", bytes: bytes)
-    guard let bundle else { return }
-    let meta: [String: Any] = ["MCMMetadataIdentifier": id, "MCMMetadataInfo": ["SandboxProfileDataValidationInfo": [
-        "SandboxProfileDataValidationParametersKey": ["application_bundle": bundle]]]]
+    guard bundle != nil || emptyMeta else { return }
+    let meta: [String: Any] = bundle.map { ["MCMMetadataIdentifier": id, "MCMMetadataInfo": ["SandboxProfileDataValidationInfo": [
+        "SandboxProfileDataValidationParametersKey": ["application_bundle": $0]]]] }
+        ?? ["MCMMetadataIdentifier": id, "MCMMetadataInfo": ["com.apple.MobileInstallation.ContentProtectionClass": 0]]
     let name = legacy ? "Container.plist" : ".com.apple.containermanagerd.metadata.plist"
     try! PropertyListSerialization.data(fromPropertyList: meta, format: .binary, options: 0)
         .write(to: t.url("Users/tester/Library/Containers/\(id)/\(name)"))
@@ -33,6 +34,17 @@ private func scanner(_ t: FixtureTree, registered: Set<String> = []) -> Leftover
         #expect(item.leaves.allSatisfy { if case .moveToTrash = $0.removal { true } else { false } })
     }
 
+    /// Formato real do containermanagerd: `SandboxProfileDataValidationInfo/Parameters/application_bundle`.
+    @Test func readsParametersKeyOfRealMetadata() throws {
+        let t = FixtureTree()
+        let dir = t.dir("Users/tester/Library/Containers/com.canva.affinity.thumbnail")
+        let meta: [String: Any] = ["MCMMetadataInfo": ["SandboxProfileDataValidationInfo": ["Parameters": [
+            "application_bundle": "/Applications/Affinity.app/Contents/PlugIns/ThumbnailShareExtension (Global).appex"]]]]
+        try PropertyListSerialization.data(fromPropertyList: meta, format: .binary, options: 0)
+            .write(to: dir.appendingPathComponent(".com.apple.containermanagerd.metadata.plist"))
+        #expect(LeftoversScanner.owner(of: dir) == .path("/Applications/Affinity.app/Contents/PlugIns/ThumbnailShareExtension (Global).appex"))
+    }
+
     @Test func containerWithoutAppPathNamedByBundleID() async throws {
         let t = FixtureTree()
         container(t, "com.example.Gone.Extension", bundle: "/Applications/Setapp/Gone.app/Contents/PlugIns/Ext.appex", legacy: true)
@@ -50,11 +62,36 @@ private func scanner(_ t: FixtureTree, registered: Set<String> = []) -> Leftover
         #expect(items.isEmpty)
     }
 
-    @Test func appleAndUnreadableExcluded() async throws {
+    @Test func appleExcluded() async throws {
         let t = FixtureTree()
         container(t, "com.apple.Notes", bundle: "/nowhere/Notes.app")
-        container(t, "com.example.nometa", bundle: nil)
         #expect(try await scanner(t).scan(t.context()) { _ in }.isEmpty)
+    }
+
+    /// Sem `application_bundle` nos metadados (extensões): é sobra se nenhum app instalado for "pai" do bundle ID.
+    @Test func containerWithoutAppPathIsLeftoverUnlessParentInstalled() async throws {
+        let t = FixtureTree()
+        AppFixture.makeApp(t, "Applications/WhatsApp.app", bundleID: "net.whatsapp.WhatsApp")
+        container(t, "com.getcleanshot.app-setapp.PinShareExtension", bundle: nil, emptyMeta: true)
+        container(t, "net.whatsapp.WhatsApp.ServiceExtension", bundle: nil, emptyMeta: true)
+        container(t, "com.example.nometa", bundle: nil)
+        let items = try await scanner(t).scan(t.context()) { _ in }
+        #expect(items.map(\.name) == ["com.getcleanshot.app-setapp.PinShareExtension"])
+    }
+
+    @Test func bundlesInsideInstalledAppsAndSameVendorAreNotLeftovers() async throws {
+        let t = FixtureTree()
+        let utm = AppFixture.makeApp(t, "Applications/UTM.app", bundleID: "com.utmapp.UTM")
+        let xpc = t.dir("Applications/UTM.app/Contents/XPCServices/QEMUHelper.xpc/Contents")
+        try PropertyListSerialization.data(fromPropertyList: ["CFBundleIdentifier": "com.utmapp.QEMUHelper"], format: .xml, options: 0)
+            .write(to: xpc.appendingPathComponent("Info.plist"))
+        _ = utm
+        AppFixture.makeApp(t, "Applications/Chrome.app", bundleID: "com.google.Chrome")
+        container(t, "com.utmapp.QEMUHelper", bundle: nil, emptyMeta: true)
+        container(t, "com.google.GeminiMacOS.FinderSync", bundle: nil, emptyMeta: true)
+        container(t, "com.getcleanshot.app-setapp.QuickLookExtension", bundle: nil, emptyMeta: true)
+        let items = try await scanner(t).scan(t.context()) { _ in }
+        #expect(items.map(\.name) == ["com.getcleanshot.app-setapp.QuickLookExtension"])
     }
 
     @Test func symlinkedContainerIgnored() async throws {
