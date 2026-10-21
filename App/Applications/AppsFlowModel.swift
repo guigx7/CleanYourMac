@@ -67,12 +67,14 @@ final class AppsFlowModel {
     private let cleaner: any Cleaning
     private let runningApps: any RunningApps
     private let opener: any URLOpening
+    private let helperActive: @MainActor () -> Bool
     let context: ScanContext
     private var task: Task<Void, Never>?
     private var pending: [JunkItem] = []
 
     init(scan: any AppsScanning, cleaner: any Cleaning, runningApps: any RunningApps, context: ScanContext,
-         opener: any URLOpening = WorkspaceOpener()) {
+         opener: any URLOpening = WorkspaceOpener(), helperActive: @escaping @MainActor () -> Bool = { false }) {
+        self.helperActive = helperActive
         self.scan = scan
         self.cleaner = cleaner
         self.runningApps = runningApps
@@ -145,6 +147,25 @@ final class AppsFlowModel {
     }
 
     // MARK: - Ação
+
+    /// O que a ação vai exigir: Gerenciamento de Apps para mexer em apps de /Applications;
+    /// senha (sem o ajudante) para itens fora da pasta do usuário.
+    func requirements(_ leaves: [JunkItem]) -> Set<CleanupFlowModel.CleanRequirement> {
+        var out: Set<CleanupFlowModel.CleanRequirement> = []
+        let apps = PathPolicy.realPath(context.resolve("/Applications").path) + "/"
+        let home = PathPolicy.realPath(context.home.path) + "/"
+        for leaf in leaves {
+            guard let url = leaf.url else { continue }
+            let path = PathPolicy.realPath(url.path)
+            let inApps = path.hasPrefix(apps)
+            if case .trashAppBundle = leaf.removal, inApps { out.insert(.appManagement) }
+            guard !helperActive(), !path.hasPrefix(home), !path.hasPrefix("/private/var/folders/") else { continue }
+            // Em /Applications, só o que não é do usuário (ex.: apps da App Store, de root) pede senha.
+            var st = stat()
+            if !inApps || (lstat(path, &st) == 0 && st.st_uid != getuid()) { out.insert(.admin) }
+        }
+        return out
+    }
 
     func act() {
         let leaves = selection.selectedLeaves
@@ -264,6 +285,7 @@ enum AppsEnvironment {
         if env["CYM_DEMO"] == "1" { scan = AppsDemoData.scan }
         #endif
         _ = env
-        return AppsFlowModel(scan: scan, cleaner: cleaner, runningApps: WorkspaceRunningApps(), context: context)
+        return AppsFlowModel(scan: scan, cleaner: cleaner, runningApps: WorkspaceRunningApps(), context: context,
+                             helperActive: { HelperManager.shared.state == .active })
     }
 }

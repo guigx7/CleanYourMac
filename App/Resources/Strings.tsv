@@ -344,3 +344,4 @@ apps.done.log	Open Log	Abrir Registro
 reason.kept	Kept because an earlier step failed	Mantido porque um passo anterior falhou
 apps.tile.macOSUpdates.title.one	%d macOS update available	%d atualização do macOS disponível
 apps.tile.appUpdates.title.one	%d app update available	%d atualização de app disponível
+helper.update	Update Helper	Atualizar ajudante

@@ -84,7 +84,7 @@ public struct PathPolicy: Sendable {
     }
 
     /// realpath(3) no maior prefixo existente; o resto é anexado sem resolver.
-    static func realPath(_ path: String) -> String {
+    public static func realPath(_ path: String) -> String {
         var head = path
         var tail: [String] = []
         while !head.isEmpty, head != "/" {

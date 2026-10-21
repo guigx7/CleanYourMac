@@ -31,6 +31,7 @@ struct RootView: View {
             }
         }
         .animation(.smooth(duration: 0.4), value: fullScreen)
+        .task { await HelperManager.shared.checkVersion() }
         .frame(minWidth: 1040, minHeight: 680)
     }
 

@@ -48,3 +48,32 @@ struct SizingRunner: PrivilegedRunner {
     #expect(m.report?.groups[.systemCache]?.totalSize == 1_800_000_000)
     #expect(m.cleanRequirements([stubItem(.systemCache, "s", 1)]).isEmpty)
 }
+
+@MainActor @Test func oldHelperAsksReinstall() {
+    #expect(HelperManager.state(for: .enabled, version: 1) == .outdated)
+    #expect(HelperManager.state(for: .enabled, version: HelperConstants.version) == .active)
+    // Sem resposta do ping (ainda subindo): continua ativo; o plano B do AppleScript cobre.
+    #expect(HelperManager.state(for: .enabled, version: nil) == .active)
+    #expect(HelperManager.state(for: .requiresApproval, version: nil) == .needsApproval)
+}
+
+@MainActor @Test func appManagementNeededForAppsInApplications() {
+    let ctx = ScanContext(root: URL(fileURLWithPath: "/tmp/cym-stub"), home: URL(fileURLWithPath: "/tmp/cym-stub/home"),
+                          userName: "t", preferredLanguages: ["en"], now: .now)
+    func leaf(_ path: String, _ removal: (URL) -> RemovalAction) -> JunkItem {
+        let u = URL(fileURLWithPath: path)
+        return JunkItem(id: AppItemID.leaf(mode: .uninstall, appID: "com.x|/Applications/X.app", path: path), group: .appUninstall,
+                        name: u.lastPathComponent, url: u, size: 1, removal: removal(u))
+    }
+    let bundle = leaf("/tmp/cym-stub/Applications/X.app") { .trashAppBundle($0) }
+    let system = leaf("/tmp/cym-stub/Library/Application Support/X") { .moveToTrash($0) }
+    let home = leaf("/tmp/cym-stub/home/Library/Caches/com.x") { .moveToTrash($0) }
+    let report = AppsReport(apps: [], uninstaller: [], leftovers: [], installers: [], updates: UpdateCheckResult(updates: [], offline: false))
+    let m = AppsFlowModel(scan: StubAppsScan(report: report), cleaner: RecordingCleaner(), runningApps: StubRunning(), context: ctx)
+    #expect(m.requirements([bundle]) == [.appManagement])
+    #expect(m.requirements([system]) == [.admin])
+    #expect(m.requirements([home]) == [])
+    let withHelper = AppsFlowModel(scan: StubAppsScan(report: report), cleaner: RecordingCleaner(), runningApps: StubRunning(),
+                                   context: ctx, helperActive: { true })
+    #expect(withHelper.requirements([system]) == [])
+}

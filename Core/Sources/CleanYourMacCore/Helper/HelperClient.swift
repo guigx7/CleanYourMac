@@ -8,6 +8,11 @@ public struct HelperPrivilegedRunner: PrivilegedRunner {
         (try? await send(.ping)) != nil
     }
 
+    /// Versão do protocolo do helper em execução (nil se não respondeu).
+    public func version() async -> Int? {
+        (try? await send(.ping))?.version
+    }
+
     public func run(_ commands: [PrivilegedCommand]) async throws(PrivilegedError) -> [Result<Void, CleanFailure>] {
         guard !commands.isEmpty else { return [] }
         let response = try await send(.run(commands))

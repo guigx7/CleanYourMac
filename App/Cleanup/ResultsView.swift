@@ -81,16 +81,7 @@ struct ResultsView: View {
             HStack(spacing: 10) {
                 Button("results.reviewAll") { model.openReview() }
                     .buttonStyle(GlassButtonStyle(size: .large))
-                if HelperManager.shared.state != .active, HelperManager.shared.state != .unavailable {
-                    Button {
-                        HelperManager.shared.install()
-                    } label: {
-                        Label(HelperManager.shared.state == .needsApproval ? "helper.approve" : "helper.install",
-                              systemImage: "shield.lefthalf.filled")
-                    }
-                    .buttonStyle(GlassButtonStyle(size: .large))
-                    .help(Text("helper.install.hint"))
-                }
+                HelperButton()
                 if model.canMeasureAdminGroups && HelperManager.shared.state != .active {
                     Button {
                         Task { await model.measureAdminGroups() }
@@ -261,6 +252,23 @@ private struct TileView: View {
             ForEach(Array(ordered.enumerated()), id: \.element) { i, g in
                 CategoryBadge(symbol: g.symbol, size: ordered.count == 3 && i == 1 ? big : (ordered.count == 3 ? small : big * 0.8))
             }
+        }
+    }
+}
+
+/// Instalar, aprovar ou atualizar o ajudante (some quando ele está ativo e atual).
+struct HelperButton: View {
+    var body: some View {
+        let state = HelperManager.shared.state
+        if state != .active, state != .unavailable {
+            Button {
+                state == .outdated ? HelperManager.shared.update() : HelperManager.shared.install()
+            } label: {
+                Label(state == .needsApproval ? "helper.approve" : state == .outdated ? "helper.update" : "helper.install",
+                      systemImage: "shield.lefthalf.filled")
+            }
+            .buttonStyle(GlassButtonStyle(size: .large))
+            .help(Text("helper.install.hint"))
         }
     }
 }

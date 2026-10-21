@@ -67,8 +67,11 @@ struct AppsResultsView: View {
                     .font(.callout)
                     .foregroundStyle(Theme.secondaryText)
             }
-            Button("apps.results.manage") { model.openManager(.uninstaller, filter: .all) }
-                .buttonStyle(GlassButtonStyle(size: .large))
+            HStack(spacing: 10) {
+                Button("apps.results.manage") { model.openManager(.uninstaller, filter: .all) }
+                    .buttonStyle(GlassButtonStyle(size: .large))
+                HelperButton()
+            }
         }
     }
 
@@ -145,16 +148,28 @@ struct AppsPrompts: ViewModifier {
     @State private var confirmForce = false
     @Environment(\.locale) private var locale
 
+    private var requirements: Set<CleanupFlowModel.CleanRequirement> { model.requirements(model.selection.selectedLeaves) }
+
+    private var confirmMessage: String {
+        let leaves = model.selection.selectedLeaves
+        var text = String(format: NSLocalizedString(leaves.contains { $0.removal.isDelete } ? "apps.confirm.message.mixed" : "apps.confirm.message",
+                                                    comment: ""), SizeFormatter.string(model.selection.selectedBytes, locale: locale))
+        if requirements.contains(.appManagement) { text += "\n\n" + NSLocalizedString("permissions.apps.message", comment: "") }
+        if requirements.contains(.admin) { text += "\n\n" + NSLocalizedString("permissions.admin.message", comment: "") }
+        return text
+    }
+
     func body(content: Content) -> some View {
         content
             .alert(Text(String(format: NSLocalizedString("apps.confirm.title", comment: ""), model.selection.selectedLeaves.count)),
                    isPresented: $confirmAct) {
                 Button("common.cancel", role: .cancel) {}
+                if requirements.contains(.appManagement) {
+                    Button("permissions.openSettings") { PermissionsService.openSettings(.appManagement) }
+                }
                 Button("apps.confirm.action") { model.act() }
             } message: {
-                Text(String(format: NSLocalizedString(model.selection.selectedLeaves.contains { $0.removal.isDelete } ? "apps.confirm.message.mixed"
-                                                      : "apps.confirm.message", comment: ""),
-                            SizeFormatter.string(model.selection.selectedBytes, locale: locale)))
+                Text(confirmMessage)
             }
             .sheet(isPresented: Binding(get: { model.quitPrompt != nil }, set: { if !$0 { model.cancelQuit() } })) {
                 QuitAppsSheet(model: model, confirmForce: $confirmForce)

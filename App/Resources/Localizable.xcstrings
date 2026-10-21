@@ -3724,6 +3724,23 @@
         }
       }
     },
+    "helper.update": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Update Helper"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Atualizar ajudante"
+          }
+        }
+      }
+    },
     "ios.broken": {
       "extractionState": "manual",
       "localizations": {

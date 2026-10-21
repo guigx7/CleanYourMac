@@ -6,7 +6,8 @@ import CleanYourMacCore
 /// Instala e acompanha o helper privilegiado (daemon registrado via SMAppService).
 @MainActor @Observable
 final class HelperManager {
-    enum State: Equatable { case notInstalled, needsApproval, active, unavailable }
+    /// `outdated`: registrado e rodando, mas com um protocolo antigo (o processo antigo segue vivo até reiniciar).
+    enum State: Equatable { case notInstalled, needsApproval, active, outdated, unavailable }
 
     static let shared = HelperManager()
     private(set) var state: State = .notInstalled
@@ -15,14 +16,35 @@ final class HelperManager {
 
     init() { refresh() }
 
+    private var runningVersion: Int?
+
     func refresh() {
-        state = switch service.status {
-        case .enabled: .active
+        state = Self.state(for: service.status, version: runningVersion)
+        Self.isOutdated = state == .outdated
+    }
+
+    static func state(for status: SMAppService.Status, version: Int?) -> State {
+        switch status {
+        case .enabled: version.map { $0 == HelperConstants.version ? .active : .outdated } ?? .active
         case .requiresApproval: .needsApproval
         // Um daemon nunca registrado também aparece como .notFound.
         case .notRegistered, .notFound: .notInstalled
         @unknown default: .unavailable
         }
+    }
+
+    /// Pergunta a versão ao helper em execução (o app pode ter sido atualizado com o helper antigo ainda rodando).
+    func checkVersion() async {
+        guard service.status == .enabled else { return }
+        runningVersion = await HelperPrivilegedRunner().version()
+        refresh()
+    }
+
+    /// Reinicia o helper com o binário novo do app (desregistra e registra de novo).
+    func update() {
+        try? service.unregister()
+        runningVersion = nil
+        install()
     }
 
     /// Registra o daemon. O macOS pede aprovação em Ajustes do Sistema › Itens de Início e Extensões.
@@ -43,8 +65,11 @@ final class HelperManager {
         refresh()
     }
 
+    /// Ativo e com o protocolo atual (o helper antigo não entende os comandos novos).
+    nonisolated(unsafe) static var isOutdated = false
+
     nonisolated static var isActive: Bool {
-        SMAppService.daemon(plistName: HelperConstants.plistName).status == .enabled
+        SMAppService.daemon(plistName: HelperConstants.plistName).status == .enabled && !isOutdated
     }
 }
 
