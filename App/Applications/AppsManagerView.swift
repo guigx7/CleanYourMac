@@ -69,7 +69,6 @@ struct AppsManagerView: View {
         }
         .padding(.horizontal, 16)
         .padding(.vertical, 10)
-        .padding(.leading, 64)
     }
 
     /// Grupos da seção visível: a ação só leva o que é desta seção.

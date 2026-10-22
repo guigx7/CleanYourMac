@@ -101,7 +101,6 @@ struct ReviewView: View {
         }
         .padding(.horizontal, 16)
         .padding(.vertical, 10)
-        .padding(.leading, 64) // botões da janela
     }
 
     private func sortTitle(_ key: ReviewLogic.SortKey) -> LocalizedStringKey {
