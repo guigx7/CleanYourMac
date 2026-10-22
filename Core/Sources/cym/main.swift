@@ -77,13 +77,21 @@ case "apps":
         print("instaladores:", appsReport.installers.map { "\($0.name) \(SizeFormatter.string($0.totalSize, locale: Locale(identifier: "pt-BR")))" })
     }
 case "spacelens":
-    let target = args.first { !$0.hasPrefix("--") } ?? "/"
+    let path = args.first { !$0.hasPrefix("--") }
     let start = Date()
-    let node = try SpaceScanner().scan(URL(fileURLWithPath: target))
-    print(String(format: "%.1f s · %d itens · %@", Date().timeIntervalSince(start), node.items,
-                 SizeFormatter.string(node.size, locale: Locale(identifier: "pt-BR"))))
+    var lensReport: SpaceLensReport?
+    for try await event in Registry.spaceLensScan().run(path.map { .folder(URL(fileURLWithPath: $0)) } ?? .disk) {
+        if case .finished(let r) = event { lensReport = r }
+    }
+    guard let lensReport else { fail("análise não terminou") }
+    let ptBR = Locale(identifier: "pt-BR")
+    let node = lensReport.root
+    print(String(format: "%.1f s · %d itens · %@ · %@ de %@ usados%@", Date().timeIntervalSince(start), node.items,
+                 SizeFormatter.string(node.size, locale: ptBR), SizeFormatter.string(lensReport.used, locale: ptBR),
+                 SizeFormatter.string(lensReport.capacity, locale: ptBR),
+                 lensReport.purgeable.map { " · purgável " + SizeFormatter.string($0, locale: ptBR) } ?? ""))
     for c in node.children.prefix(15) {
-        print(String(format: "%10@  %@%@", SizeFormatter.string(c.size, locale: Locale(identifier: "pt-BR")), c.name, c.hasUnreadable ? "  [sem acesso a parte]" : ""))
+        print(String(format: "%10@  %@%@", SizeFormatter.string(c.size, locale: ptBR), c.name, c.hasUnreadable ? "  [sem acesso a parte]" : ""))
     }
 case "performance":
     var perfReport: PerformanceReport?

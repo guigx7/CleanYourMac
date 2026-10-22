@@ -289,6 +289,14 @@ struct ArtPalette {
                        core: [Color(hex: 0xF4F7FF), Color(hex: 0xD2DDF7), Color(hex: 0xB4C4EC)],
                        glyph: AnyShape(RoundedRectangle(cornerRadius: 9, style: .continuous)),
                        glyphColors: [Color(hex: 0x5B8CF0), Color(hex: 0x2A4FC0)])
+        case .spaceLens:
+            // Roxo, com bolhas de tamanhos diferentes (o mapa do disco) no lugar das estrelas.
+            ArtPalette(accent: Theme.accent(for: module),
+                       side: [Color(hex: 0x3A1A8A), Color(hex: 0x1E0B4A)],
+                       face: [Color(hex: 0xC9B6FF, opacity: 0.8), Color(hex: 0x7B55E0, opacity: 0.75), Color(hex: 0x4A1FA0, opacity: 0.88)],
+                       core: [Color(hex: 0xF8F5FF), Color(hex: 0xE0D6F8), Color(hex: 0xC8B8EE)],
+                       glyph: AnyShape(Bubbles()),
+                       glyphColors: [Color(hex: 0x8C6AF0), Color(hex: 0x5230B8)])
         case .performance:
             // Laranja, com um raio no lugar das estrelas.
             ArtPalette(accent: Theme.accent(for: module),
@@ -305,6 +313,18 @@ struct ArtPalette {
                        glyph: AnyShape(Sparkle()),
                        glyphColors: [Color(hex: 0x4A9A44), Color(hex: 0x2A6B2E)])
         }
+    }
+}
+
+/// Três bolhas encostadas (uma grande e duas menores), desenhadas na caixa dada.
+private struct Bubbles: Shape {
+    func path(in r: CGRect) -> Path {
+        var p = Path()
+        let s = min(r.width, r.height)
+        for (x, y, d) in [(0.0, 0.18, 0.64), (0.6, 0.0, 0.4), (0.58, 0.56, 0.3)] as [(CGFloat, CGFloat, CGFloat)] {
+            p.addEllipse(in: CGRect(x: r.minX + x * s, y: r.minY + y * s, width: d * s, height: d * s))
+        }
+        return p
     }
 }
 
