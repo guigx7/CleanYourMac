@@ -99,24 +99,16 @@ das tarefas periódicas é "versão atual menor que 1400" [E6].
 - **Tempo-limite**: nenhum explícito encontrado.
 - **Aplicável**: `semSandbox` (a pasta do Mail só é checada ao executar).
 
-**Nossa forma**:
-- Aplicável só se `~/Library/Mail` existe **e** há uma pasta `V*` com
-  `MailData/Envelope Index` (divergência consciente: não listar uma tarefa que vai falhar).
-- Exige Acesso Total ao Disco (guia de permissões existente).
-- **Só com o Mail fechado.** Se o Mail estiver aberto, pedir para fechar (ou oferecer
-  encerrar com `NSRunningApplication.terminate()`, nunca à força). Se reabrir no meio, aborta.
-- Copiar o `Envelope Index` (e os `-wal`/`-shm`, se existirem) para uma pasta de backup nossa
-  antes; depois rodar `/usr/bin/sqlite3 "<Envelope Index>" "PRAGMA integrity_check;"` e,
-  só com `ok`, `/usr/bin/sqlite3 "<Envelope Index>" "VACUUM;"`. Em erro, restaurar o backup.
-- Em seguida, `/usr/bin/mdimport ~/Library/Mail` (como o usuário).
-- Root: **não**. Tempo-limite sugerido: 10 min (VACUUM) + 10 min (mdimport).
-- Nota: o design da v0.3 pede cautela com escrever no `Envelope Index` "por fora". O VACUUM
-  não muda o conteúdo (só reescreve o arquivo compactado), usa uma ferramenta do macOS, é o
-  que o CleanMyMac faz, e aqui roda só com o Mail fechado e backup. Se o dono do projeto
-  preferir não tocar no banco, a alternativa é só o `mdimport` (efeito menor) e a tarefa
-  descreve isso.
+**Nossa forma** (decisão do construtor na execução, ver ledger da v0.3):
+- O design da v0.3 proíbe escrever no `Envelope Index` por fora, então **não fazemos VACUUM**.
+  A tarefa roda só `/usr/bin/mdimport ~/Library/Mail` (como o usuário), que pede ao Spotlight
+  para reimportar as mensagens: é o que melhora a busca do Mail, e a descrição promete só isso.
+- Aplicável se `~/Library/Mail` existe (o CleanMyMac mostra sempre; quem não usa o Mail não vê
+  uma tarefa que falharia).
+- Exige Acesso Total ao Disco (guia de permissões existente). Pode rodar com o Mail aberto.
+- Root: **não**. Tempo-limite: 10 min.
 
-### 2. Esvaziar Cache do DNS (`flushDNS`)
+## 2. Esvaziar Cache do DNS (`flushDNS`)
 **O que o CleanMyMac faz** [E5][E15]: o app pede `FlushDNSCacheRequest` ao ajudante. O
 ajudante, **como root**, roda `/usr/bin/dscacheutil -flushcache` e depois
 `/usr/bin/killall -HUP mDNSResponder`. Se o ajudante não está autorizado ou conectado, a
@@ -250,7 +242,7 @@ guarda comando, código de saída e saída de erro (sem dados pessoais do Mail).
 
 | ID | Aplicável quando | Recomendada quando | Root? | Timeout sugerido | Nosso comando |
 |---|---|---|---|---|---|
-| speedUpMail | `~/Library/Mail/V*/MailData/Envelope Index` existe (CMM: sempre, fora de sandbox) | aplicável | não (precisa de Acesso Total ao Disco; Mail fechado) | 10 min + 10 min | backup → `sqlite3 <EI> "PRAGMA integrity_check;"` → `sqlite3 <EI> "VACUUM;"` → `mdimport ~/Library/Mail` |
+| speedUpMail | `~/Library/Mail` existe (CMM: sempre, fora de sandbox) | aplicável | não (precisa de Acesso Total ao Disco) | 10 min | `mdimport ~/Library/Mail` (sem VACUUM, regra do design) |
 | flushDNS | sempre (fora de sandbox) | aplicável | **sim** | 30 s | `dscacheutil -flushcache` + `killall -HUP mDNSResponder` |
 | freeUpPurgeable | estimativa > 0 (CMM: sempre) | aplicável | não | 10 min | `CSDiskSpaceStartRecovery("/", livre + estimativa, 0)` (API pública) |
 | reindexSpotlight | sempre; nós: só se a indexação de `/` estiver ligada | aplicável | **sim** | 60 s | `mdutil -E /` |
@@ -350,8 +342,8 @@ Protocolo só de leitura, com implementação real e falsa (testes):
   tamanho 0x40000000, urgência 3) decompilados.
 
 ## Divergências conhecidas
-- **speedUpMail** só aparece se o `Envelope Index` existir, só roda com o Mail fechado, faz
-  backup e checa a integridade antes do VACUUM (o CleanMyMac não faz nada disso).
+- **speedUpMail** só aparece se `~/Library/Mail` existir e não faz o VACUUM do `Envelope Index`
+  (só o `mdimport`), por regra do design.
 - **freeUpPurgeable** some com estimativa 0 (no CleanMyMac, não confirmado).
 - **reindexSpotlight** some se a indexação de `/` estiver desligada.
 - **freeUpRAM** em Intel usa `purge` em vez de pressão de memória.
