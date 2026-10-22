@@ -7,6 +7,7 @@ import CleanYourMacCore
 //   cym clean --dry-run [--groups a,b] [--recommended]
 //   cym apps [--json] [--no-network]   (módulo Aplicativos; só leitura)
 //   cym performance [--json]           (módulo Desempenho; só leitura)
+//   cym spacelens [caminho]            (Lupa de Espaço; só leitura: tempo, total e os maiores filhos)
 //
 // Não existe limpeza de verdade pelo CLI: `clean` exige --dry-run.
 
@@ -74,6 +75,15 @@ case "apps":
               appsReport.updates.offline ? "[sem rede]" : "")
         print("sobras:", appsReport.leftovers.map { "\($0.name) \(SizeFormatter.string($0.totalSize, locale: Locale(identifier: "pt-BR")))" })
         print("instaladores:", appsReport.installers.map { "\($0.name) \(SizeFormatter.string($0.totalSize, locale: Locale(identifier: "pt-BR")))" })
+    }
+case "spacelens":
+    let target = args.first { !$0.hasPrefix("--") } ?? "/"
+    let start = Date()
+    let node = try SpaceScanner().scan(URL(fileURLWithPath: target))
+    print(String(format: "%.1f s · %d itens · %@", Date().timeIntervalSince(start), node.items,
+                 SizeFormatter.string(node.size, locale: Locale(identifier: "pt-BR"))))
+    for c in node.children.prefix(15) {
+        print(String(format: "%10@  %@%@", SizeFormatter.string(c.size, locale: Locale(identifier: "pt-BR")), c.name, c.hasUnreadable ? "  [sem acesso a parte]" : ""))
     }
 case "performance":
     var perfReport: PerformanceReport?

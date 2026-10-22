@@ -1,17 +1,18 @@
 import Foundation
 
 /// Varre uma pasta (ou o disco) e monta a árvore com tamanhos alocados. Não segue links; pastas excluídas (outros
-/// volumes, `/System/Volumes`…) ficam de fora. As primeiras camadas são lidas em série e cada subárvore abaixo delas
-/// roda num `fts` próprio, em paralelo (sem `chdir`, que não é seguro entre threads).
+/// volumes, `/System/Volumes`…) ficam de fora. Várias threads tiram pastas de uma fila comum e leem cada uma com
+/// `getattrlistbulk` (nome, tipo, dispositivo e tamanho alocado de todas as entradas numa só chamada).
 public struct SpaceScanner: Sendable {
     public struct Options: Sendable {
-        /// Até que profundidade dividir a varredura em tarefas paralelas (0 = uma só).
-        public var splitDepth: Int
+        /// Threads de leitura.
+        public var workers: Int
         /// (caminho, dispositivo) → a pasta não entra na análise.
         public var isExcluded: @Sendable (String, dev_t) -> Bool
 
-        public init(splitDepth: Int = 2, isExcluded: @escaping @Sendable (String, dev_t) -> Bool = { _, _ in false }) {
-            self.splitDepth = splitDepth
+        public init(workers: Int = max(2, ProcessInfo.processInfo.activeProcessorCount),
+                    isExcluded: @escaping @Sendable (String, dev_t) -> Bool = { _, _ in false }) {
+            self.workers = workers
             self.isExcluded = isExcluded
         }
     }
@@ -20,14 +21,45 @@ public struct SpaceScanner: Sendable {
 
     public init(options: Options = Options()) { self.options = options }
 
-    private final class Counter: @unchecked Sendable {
-        private let lock = NSLock()
-        private var value = 0
-        private var stopped = false
-        func add(_ n: Int) -> Int { lock.withLock { value += n; return value } }
-        var total: Int { lock.withLock { value } }
-        func stop() { lock.withLock { stopped = true } }
-        var isStopped: Bool { lock.withLock { stopped } }
+    /// Fila de pastas a ler, com fim quando ela esvazia e ninguém está lendo.
+    private final class WorkQueue: @unchecked Sendable {
+        private let cond = NSCondition()
+        private var pending: [(SpaceNode, String)] = []
+        private var busy = 0
+        private(set) var stopped = false
+        private var count = 0
+
+        init(_ first: (SpaceNode, String)) { pending = [first] }
+
+        func next() -> (SpaceNode, String)? {
+            cond.lock()
+            defer { cond.unlock() }
+            while pending.isEmpty && busy > 0 && !stopped { cond.wait() }
+            guard !stopped, let item = pending.popLast() else {
+                cond.broadcast()
+                return nil
+            }
+            busy += 1
+            return item
+        }
+
+        /// Termina uma pasta: entrega as subpastas achadas e quantos itens ela tinha.
+        func done(_ found: [(SpaceNode, String)], items: Int) -> Int {
+            cond.lock()
+            defer { cond.unlock() }
+            pending.append(contentsOf: found)
+            busy -= 1
+            count += items
+            cond.broadcast()
+            return count
+        }
+
+        func stop() {
+            cond.lock()
+            stopped = true
+            cond.broadcast()
+            cond.unlock()
+        }
     }
 
     /// `progress` recebe quantos itens já foram lidos (de tempos em tempos, de qualquer thread).
@@ -37,115 +69,105 @@ public struct SpaceScanner: Sendable {
         var st = stat()
         guard lstat(path, &st) == 0 else { throw CocoaError(.fileNoSuchFile) }
         let isDir = (st.st_mode & S_IFMT) == S_IFDIR
-        let root = SpaceNode(name: (path as NSString).lastPathComponent, isDirectory: isDir, size: Int64(st.st_blocks) * 512, rootPath: path)
+        let root = SpaceNode(name: (path as NSString).lastPathComponent, isDirectory: isDir, size: isDir ? 0 : Int64(st.st_blocks) * 512,
+                             rootPath: path)
         guard isDir else { return root }
-
-        let counter = Counter()
-        var tasks: [(SpaceNode, String)] = []
-        if options.splitDepth == 0 {
-            tasks = [(root, path)]
-        } else {
-            try expand(root, path, depth: 0, tasks: &tasks, counter: counter, isCancelled: isCancelled)
+        let queue = WorkQueue((root, path))
+        let workers = max(1, options.workers)
+        DispatchQueue.concurrentPerform(iterations: workers) { _ in
+            var reported = 0
+            while let (node, dirPath) = queue.next() {
+                if isCancelled() { queue.stop(); return }
+                let (subdirs, items) = read(node, dirPath)
+                let total = queue.done(subdirs, items: items)
+                if let progress, total - reported >= 20_000 {
+                    reported = total
+                    progress(total)
+                }
+            }
         }
-        let list = tasks
-        DispatchQueue.concurrentPerform(iterations: list.count) { i in
-            walk(list[i].0, list[i].1, counter: counter, isCancelled: isCancelled, progress: progress)
-        }
-        if counter.isStopped || isCancelled() { throw CancellationError() }
+        if queue.stopped || isCancelled() { throw CancellationError() }
         root.finalize()
         return root
     }
 
-    /// Lê as primeiras camadas em série; as pastas na profundidade `splitDepth` viram tarefas do `fts`.
-    private func expand(_ node: SpaceNode, _ path: String, depth: Int, tasks: inout [(SpaceNode, String)], counter: Counter,
-                        isCancelled: () -> Bool) throws {
-        if isCancelled() { throw CancellationError() }
-        guard let dir = opendir(path) else {
-            node.isUnreadable = true
-            return
-        }
-        defer { closedir(dir) }
-        var entries = 0
-        while let e = readdir(dir) {
-            let name = withUnsafeBytes(of: e.pointee.d_name) { raw in
-                String(decoding: raw.prefix(Int(e.pointee.d_namlen)), as: UTF8.self)
-            }
-            guard name != ".", name != ".." else { continue }
-            let child = path == "/" ? "/" + name : path + "/" + name
-            var st = stat()
-            guard lstat(child, &st) == 0 else { continue }
-            let isDir = (st.st_mode & S_IFMT) == S_IFDIR
-            if isDir, options.isExcluded(child, st.st_dev) { continue }
-            let n = SpaceNode(name: name, isDirectory: isDir, size: Int64(st.st_blocks) * 512)
-            node.append(n)
-            entries += 1
-            guard isDir else { continue }
-            if depth + 1 < options.splitDepth {
-                try expand(n, child, depth: depth + 1, tasks: &tasks, counter: counter, isCancelled: isCancelled)
-            } else {
-                tasks.append((n, child))
-            }
-        }
-        _ = counter.add(entries)
-    }
+    // MARK: - getattrlistbulk
 
-    /// Uma subárvore com `fts`: monta os nós abaixo de `node` (que já existe).
-    private func walk(_ node: SpaceNode, _ path: String, counter: Counter, isCancelled: @Sendable () -> Bool,
-                      progress: (@Sendable (Int) -> Void)?) {
-        guard !counter.isStopped else { return }
-        let fts: UnsafeMutablePointer<FTS>? = path.withCString { p in
-            var argv: [UnsafeMutablePointer<CChar>?] = [strdup(p), nil]
-            defer { free(argv[0]) }
-            return fts_open(&argv, FTS_PHYSICAL | FTS_NOCHDIR, nil)
-        }
-        guard let fts else {
+    private static let bufferSize = 256 * 1024
+
+    /// Lê as entradas de uma pasta, cria os nós e devolve as subpastas a visitar.
+    private func read(_ node: SpaceNode, _ path: String) -> ([(SpaceNode, String)], Int) {
+        let fd = open(path, O_RDONLY | O_DIRECTORY | O_NOFOLLOW)
+        guard fd >= 0 else {
             node.isUnreadable = true
-            return
+            return ([], 0)
         }
-        defer { fts_close(fts) }
-        // stack[nível] = pasta aberta nesse nível (nível 0 = a raiz da tarefa).
-        var stack: [SpaceNode] = [node]
-        var seen = 0
-        while let e = fts_read(fts) {
-            let level = Int(e.pointee.fts_level)
-            let info = Int32(e.pointee.fts_info)
-            if level == 0 {
-                if info == FTS_DNR || info == FTS_ERR { node.isUnreadable = true }
-                continue
+        defer { close(fd) }
+        var attrs = attrlist()
+        attrs.bitmapcount = u_short(ATTR_BIT_MAP_COUNT)
+        attrs.commonattr = attrgroup_t(ATTR_CMN_RETURNED_ATTRS) | attrgroup_t(ATTR_CMN_NAME) | attrgroup_t(ATTR_CMN_DEVID)
+            | attrgroup_t(ATTR_CMN_OBJTYPE) | attrgroup_t(ATTR_CMN_ERROR)
+        attrs.fileattr = attrgroup_t(ATTR_FILE_ALLOCSIZE)
+        let buffer = UnsafeMutableRawPointer.allocate(byteCount: Self.bufferSize, alignment: 8)
+        defer { buffer.deallocate() }
+        var subdirs: [(SpaceNode, String)] = []
+        var items = 0
+        while true {
+            let n = getattrlistbulk(fd, &attrs, buffer, Self.bufferSize, 0)
+            if n < 0 {
+                node.isUnreadable = true
+                break
             }
-            if info == FTS_DP { continue }
-            seen += 1
-            if seen & 0xFFF == 0 {
-                if isCancelled() { counter.stop() }
-                if counter.isStopped { return }
-                let total = counter.add(0x1000)
-                progress?(total)
-            }
-            // fts_name é um vetor de tamanho variável; o nome é o fim de fts_path.
-            let name = String(cString: e.pointee.fts_path + Int(e.pointee.fts_pathlen) - Int(e.pointee.fts_namelen))
-            let parent = stack[min(level - 1, stack.count - 1)]
-            let st = e.pointee.fts_statp
-            switch info {
-            case FTS_D:
-                if let st, options.isExcluded(String(cString: e.pointee.fts_path), st.pointee.st_dev) {
-                    fts_set(fts, e, FTS_SKIP)
-                    seen -= 1
-                    continue
+            if n == 0 { break }
+            var entry = buffer
+            for _ in 0..<n {
+                let length = Int(entry.load(as: UInt32.self))
+                defer { entry += length }
+                var p = entry + 4
+                let returned = p.loadUnaligned(as: attribute_set_t.self)
+                p += MemoryLayout<attribute_set_t>.size
+                // Na ordem dos bits: nome, dispositivo, tipo, erro; depois o tamanho alocado (arquivos).
+                var name = ""
+                if returned.commonattr & attrgroup_t(ATTR_CMN_NAME) != 0 {
+                    let ref = p.loadUnaligned(as: attrreference_t.self)
+                    name = String(cString: (p + Int(ref.attr_dataoffset)).assumingMemoryBound(to: CChar.self))
+                    p += MemoryLayout<attrreference_t>.size
                 }
-                let n = SpaceNode(name: name, isDirectory: true, size: st.map { Int64($0.pointee.st_blocks) * 512 } ?? 0)
-                parent.append(n)
-                if stack.count > level { stack.removeSubrange(level...) }
-                stack.append(n)
-            case FTS_DNR, FTS_ERR:
-                let n = SpaceNode(name: name, isDirectory: true, size: 0)
-                n.isUnreadable = true
-                parent.append(n)
-            case FTS_DC:
-                continue
-            default:
-                parent.append(SpaceNode(name: name, isDirectory: false, size: st.map { Int64($0.pointee.st_blocks) * 512 } ?? 0))
+                var dev: dev_t = 0
+                if returned.commonattr & attrgroup_t(ATTR_CMN_DEVID) != 0 {
+                    dev = p.loadUnaligned(as: dev_t.self)
+                    p += MemoryLayout<dev_t>.size
+                }
+                var type: fsobj_type_t = 0
+                if returned.commonattr & attrgroup_t(ATTR_CMN_OBJTYPE) != 0 {
+                    type = p.loadUnaligned(as: fsobj_type_t.self)
+                    p += MemoryLayout<fsobj_type_t>.size
+                }
+                var error: UInt32 = 0
+                if returned.commonattr & attrgroup_t(ATTR_CMN_ERROR) != 0 {
+                    error = p.loadUnaligned(as: UInt32.self)
+                    p += MemoryLayout<UInt32>.size
+                }
+                var alloc: Int64 = 0
+                if returned.fileattr & attrgroup_t(ATTR_FILE_ALLOCSIZE) != 0 {
+                    alloc = p.loadUnaligned(as: off_t.self)
+                }
+                guard !name.isEmpty, error == 0 else { continue }
+                items += 1
+                let childPath = path == "/" ? "/" + name : path + "/" + name
+                if type == fsobj_type_t(VDIR.rawValue) {
+                    if options.isExcluded(childPath, dev) {
+                        items -= 1
+                        continue
+                    }
+                    let child = SpaceNode(name: name, isDirectory: true, size: 0)
+                    node.append(child)
+                    subdirs.append((child, childPath))
+                } else {
+                    node.append(SpaceNode(name: name, isDirectory: false, size: alloc))
+                }
             }
         }
-        _ = counter.add(seen & 0xFFF)
+        return (subdirs, items)
     }
 }

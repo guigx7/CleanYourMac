@@ -88,8 +88,8 @@ import Testing
     @Test func parallelSplitMatchesSerial() throws {
         let t = FixtureTree()
         for i in 0..<300 { t.file("p\(i % 7)/q\(i % 13)/f\(i)", bytes: 1000 + i) }
-        let serial = try scan(t, .init(splitDepth: 0))
-        let parallel = try scan(t, .init(splitDepth: 3))
+        let serial = try scan(t, .init(workers: 1))
+        let parallel = try scan(t, .init(workers: 8))
         #expect(serial.size == parallel.size && serial.items == parallel.items)
         #expect(serial.children.map(\.name) == parallel.children.map(\.name))
     }
