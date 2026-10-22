@@ -9,9 +9,9 @@ private func plist(_ t: FixtureTree, _ rel: String, _ dict: [String: Any]) -> UR
     return url
 }
 
-private func executor(_ t: FixtureTree, _ cmds: HelperFakeCommands) -> HelperExecutor {
+private func executor(_ t: FixtureTree, _ cmds: HelperFakeCommands, admin: Bool = true) -> HelperExecutor {
     let home = t.url("Users/me").path
-    return HelperExecutor(allowedPrefixes: [t.url("Library").path], trashPrefixes: [t.url("Library").path],
+    return HelperExecutor(isAdmin: { _ in admin }, allowedPrefixes: [t.url("Library").path], trashPrefixes: [t.url("Library").path],
                    launchdFolders: [t.url("Library/LaunchDaemons").path, t.url("Library/LaunchAgents").path],
                    commands: cmds, homeOf: { _ in home }, appRoots: [t.url("Applications").path])
 }
@@ -107,4 +107,24 @@ private func executor(_ t: FixtureTree, _ cmds: HelperFakeCommands) -> HelperExe
     clean.responses["print-disabled"] = (0, "disabled services = {\n}\n")
     #expect(executor(t, clean).run([.launchdClearDisabled(plist: daemon, owner: "com.example.svc")], requester: 501) == [.ok])
     #expect(clean.calls == [["/bin/launchctl", "print-disabled", "system"]])
+}
+
+/// Só administradores mexem no domínio system pelo ajudante; agentes do usuário (gui) continuam liberados.
+@Test func systemDomainNeedsAdminRequester() {
+    let t = FixtureTree()
+    let daemon = plist(t, "Library/LaunchDaemons/com.example.svc.plist", ["Label": "com.example.svc"])
+    let agent = plist(t, "Library/LaunchAgents/com.example.agent.plist", ["Label": "com.example.agent"])
+    let cmds = HelperFakeCommands()
+    let e = executor(t, cmds, admin: false)
+    for cmd in [PrivilegedCommand.launchdDisable(plist: daemon, owner: "com.example.svc"), .launchdEnable(plist: daemon, owner: "com.example.svc"),
+                .launchdClearDisabled(plist: daemon, owner: "com.example.svc"), .launchdBootout(plist: daemon, owner: "com.example.svc")] {
+        #expect(e.run([cmd], requester: 502) == [.refused])
+    }
+    #expect(cmds.calls.isEmpty)
+    #expect(e.run([.launchdDisable(plist: agent, owner: "com.example.agent")], requester: 502) == [.ok])
+}
+
+@Test func adminCheckUsesAccountGroups() {
+    #expect(HelperExecutor.isAdmin(uid: 0))
+    #expect(!HelperExecutor.isAdmin(uid: 4_000_000))
 }

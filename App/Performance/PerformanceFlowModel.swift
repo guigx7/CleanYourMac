@@ -353,6 +353,6 @@ enum PerformanceEnvironment {
             maintenance: MaintenanceRunner(privileged: privileged, dryRun: dryRun, log: .standard),
             startup: StartupItemsActions(privileged: privileged, context: context, dryRun: dryRun),
             snapshots: { snapshots.delete($0, dryRun: dryRun) }, context: context, dryRun: dryRun,
-            helperActive: { HelperManager.shared.state == .active })
+            helperActive: { HelperManager.shared.state == .active && HelperManager.userIsAdmin })
     }
 }

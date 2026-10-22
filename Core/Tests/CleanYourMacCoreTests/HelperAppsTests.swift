@@ -38,7 +38,7 @@ private func plist(_ t: FixtureTree, _ rel: String, _ dict: [String: Any]) -> UR
 private func appsExecutor(_ t: FixtureTree, commands: HelperFakeCommands = HelperFakeCommands(),
                           allowed: [String]? = nil) -> HelperExecutor {
     let home = t.url("Users/me").path
-    return HelperExecutor(allowedPrefixes: allowed ?? [t.url("Library").path, t.url("Users").path],
+    return HelperExecutor(isAdmin: { _ in true }, allowedPrefixes: allowed ?? [t.url("Library").path, t.url("Users").path],
                    trashPrefixes: [t.url("Library/Application Support").path, t.url("Library/LaunchDaemons").path, t.url("Users").path],
                    launchdFolders: [t.url("Library/LaunchDaemons").path, t.url("Library/LaunchAgents").path],
                    commands: commands,

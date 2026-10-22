@@ -27,19 +27,34 @@ public struct HelperExecutor: Sendable {
     private let homeOf: @Sendable (uid_t) -> String?
     /// Onde procurar o app dono (para casar pelo nome e ler `SMPrivilegedExecutables`).
     private let appRoots: [String]
+    /// Quem pediu é administrador? Só administradores mexem em jobs do domínio system.
+    private let isAdmin: @Sendable (uid_t) -> Bool
 
-    public init(allowedPrefixes: [String] = HelperExecutor.productionPrefixes,
+    public init(isAdmin: @escaping @Sendable (uid_t) -> Bool = HelperExecutor.isAdmin(uid:),
+                allowedPrefixes: [String] = HelperExecutor.productionPrefixes,
                 trashPrefixes: [String] = HelperExecutor.productionTrashPrefixes,
                 launchdFolders: [String] = HelperExecutor.productionLaunchdFolders,
                 commands: any CommandRunner = SystemCommandRunner(),
                 homeOf: @escaping @Sendable (uid_t) -> String? = HelperExecutor.home(of:),
                 appRoots: [String] = ["/Applications"]) {
+        self.isAdmin = isAdmin
         self.appRoots = appRoots.map { PathPolicy.realPath($0) }
         prefixes = allowedPrefixes.map { PathPolicy.realPath($0) }
         self.trashPrefixes = trashPrefixes.map { PathPolicy.realPath($0) }
         self.launchdFolders = launchdFolders.map { PathPolicy.realPath($0) }
         self.commands = commands
         self.homeOf = { uid in homeOf(uid).map(PathPolicy.realPath) }
+    }
+
+    /// Membro do grupo admin pelo banco de contas (root conta como administrador).
+    public static func isAdmin(uid: uid_t) -> Bool {
+        if uid == 0 { return true }
+        guard let pw = getpwuid(uid), let name = pw.pointee.pw_name, let admin = getgrnam("admin") else { return false }
+        let adminGID = admin.pointee.gr_gid
+        var count: Int32 = 64
+        var groups = [Int32](repeating: 0, count: Int(count))
+        guard getgrouplist(name, Int32(bitPattern: pw.pointee.pw_gid), &groups, &count) != -1 else { return false }
+        return groups.prefix(Int(count)).contains(Int32(bitPattern: adminGID))
     }
 
     /// Pasta do usuário pelo banco de contas (nunca pela mensagem).
@@ -313,6 +328,8 @@ public struct HelperExecutor: Sendable {
               Self.isSafeIdentifier(label) || !label.contains("/") else { return nil }
         guard launchdLinked(dict, file: file, owner: owner) else { return nil }
         let domain = (folder as NSString).lastPathComponent == "LaunchAgents" ? "gui/\(requester)" : "system"
+        // Daemons valem para o Mac inteiro: só um administrador pode desligá-los ou descarregá-los.
+        guard domain != "system" || isAdmin(requester) else { return nil }
         return (path, domain, "\(domain)/\(label)")
     }
 

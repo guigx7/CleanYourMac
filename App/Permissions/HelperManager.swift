@@ -71,6 +71,9 @@ final class HelperManager {
     nonisolated static var isActive: Bool {
         SMAppService.daemon(plistName: HelperConstants.plistName).status == .enabled && !isOutdated
     }
+
+    /// O ajudante recusa daemons de quem não é administrador; essa conta usa a senha (de um administrador).
+    nonisolated static let userIsAdmin = HelperExecutor.isAdmin(uid: getuid())
 }
 
 /// Usa o helper quando ativo; senão (ou se ele não responder), pede a senha pelo AppleScript.
@@ -79,7 +82,7 @@ struct AppPrivilegedRunner: PrivilegedRunner {
     private let fallback = AppleScriptPrivilegedRunner()
 
     func run(_ commands: [PrivilegedCommand]) async throws(PrivilegedError) -> [Result<Void, CleanFailure>] {
-        if HelperManager.isActive, let results = try? await helper.run(commands) { return results }
+        if HelperManager.isActive, HelperManager.userIsAdmin, let results = try? await helper.run(commands) { return results }
         return try await fallback.run(commands)
     }
 
