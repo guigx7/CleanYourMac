@@ -53,4 +53,17 @@ struct FakeVolume: SpaceVolumeInfo {
         let result = try? await task.value
         #expect(result?.0 == nil)
     }
+
+    /// /System/Volumes inteiro fica fora (o volume de dados já aparece pelos firmlinks; VM, Preboot e afins não são
+    /// arquivos do usuário): /System soma 19,93 GB nesta máquina, os 19,9 GB do CleanMyMac.
+    @Test func defaultDiskExclusionSkipsSystemVolumes() {
+        var st = stat()
+        lstat("/", &st)
+        let exclude = SpaceLensScan.defaultDiskExclusion()
+        #expect(exclude("/System/Volumes", st.st_dev))
+        #expect(exclude("/Volumes", st.st_dev))
+        #expect(!exclude("/System/Library", st.st_dev))
+        // Outro dispositivo (um disco externo montado dentro da árvore) também fica fora.
+        #expect(exclude("/Users/me/montado", st.st_dev &+ 12345))
+    }
 }

@@ -60,14 +60,15 @@ public final class SpaceLensScan: Sendable {
         self.workers = workers
     }
 
-    /// Fora da análise do disco: outros volumes e as cópias do volume de dados que os firmlinks já mostram.
+    /// Fora da análise do disco: outros volumes e `/System/Volumes` inteiro (o volume de dados já aparece pelos
+    /// firmlinks; VM, Preboot e afins não são arquivos de ninguém).
     public static func defaultDiskExclusion() -> @Sendable (String, dev_t) -> Bool {
         var root = stat(), data = stat()
         let rootDev = lstat("/", &root) == 0 ? root.st_dev : 0
         let dataDev = lstat("/System/Volumes/Data", &data) == 0 ? data.st_dev : rootDev
         return { path, dev in
             if dev != rootDev && dev != dataDev { return true }
-            return path == "/System/Volumes/Data" || path == "/Volumes" || path == "/dev"
+            return path == "/System/Volumes" || path == "/Volumes" || path == "/dev"
         }
     }
 
