@@ -1,0 +1,12 @@
+{
+  "_comment": "Divergências conhecidas da paridade do módulo Desempenho (ver perf-report-2026-10-22.md). Por seção: nome → motivo. Nenhuma aparece nesta máquina; ficam as regras para outras.",
+  "tasks": {
+    "speedUpMail": "Só aparece se ~/Library/Mail existir; o CleanMyMac mostra sempre.",
+    "freeUpPurgeable": "Some quando a estimativa é 0 (não confirmado no CleanMyMac).",
+    "reindexSpotlight": "Some quando a indexação de / está desligada.",
+    "periodicScripts": "Exige também /usr/sbin/periodic."
+  },
+  "loginItems": {},
+  "backgroundItems": {},
+  "tiles": {}
+}
