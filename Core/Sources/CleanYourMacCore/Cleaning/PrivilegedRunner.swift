@@ -27,6 +27,8 @@ public enum PrivilegedCommand: Hashable, Sendable, Codable {
     /// o domínio vem da pasta (background-items.md §Nossa forma). `owner`: app dono ou o próprio Label.
     case launchdDisable(plist: URL, owner: String)
     case launchdEnable(plist: URL, owner: String)
+    /// Tira o "disabled" do launchd de um item que vai ser removido (só se ele estiver desativado).
+    case launchdClearDisabled(plist: URL, owner: String)
     /// Tarefa de manutenção como root: o executor mapeia o id para comandos fixos (maintenance-tasks.md).
     case maintenance(MaintenanceTaskID)
 }
@@ -152,13 +154,16 @@ public struct AppleScriptPrivilegedRunner: PrivilegedRunner {
             case .forgetPackage(let id, _):
                 body = HelperExecutor.isSafeIdentifier(id) && !id.hasPrefix("com.apple.")
                     ? "\(tools.pkgutil) --forget \(quote(id))" : "false"
-            case .launchdDisable(let plist, _), .launchdEnable(let plist, _):
+            case .launchdDisable(let plist, _), .launchdEnable(let plist, _), .launchdClearDisabled(let plist, _):
                 let domain = plist.deletingLastPathComponent().lastPathComponent == "LaunchAgents" ? "gui/\(tools.uid)" : "system"
                 let p = quote(plist.path)
                 // O Label sai do próprio plist; nunca com.apple.*, vazio ou com barra.
                 let label = "l=$(\(tools.plistBuddy) -c 'Print :Label' \(p) 2>/dev/null) && [ ! -L \(p) ] && "
                     + "case \"$l\" in ''|com.apple.*|*/*) false;; *) true;; esac"
-                if case .launchdDisable = cmd {
+                if case .launchdClearDisabled = cmd {
+                    body = "\(label) && { \(tools.launchctl) print-disabled \(domain) | /usr/bin/grep -qF \"\\\"$l\\\" => disabled\" "
+                        + "&& \(tools.launchctl) enable \"\(domain)/$l\" || true; }"
+                } else if case .launchdDisable = cmd {
                     body = "\(label) && \(tools.launchctl) disable \"\(domain)/$l\" && "
                         + "{ \(tools.launchctl) bootout \"\(domain)/$l\"; s=$?; [ $s -eq 0 ] || [ $s -eq 3 ] || [ $s -eq 113 ]; }"
                 } else {

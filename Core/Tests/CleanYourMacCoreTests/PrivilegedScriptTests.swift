@@ -103,7 +103,7 @@ private func sh(_ args: [String]) throws -> (Int32, String) {
     let script = AppleScriptPrivilegedRunner.makeScript([
         .launchdDisable(plist: ok, owner: "com.example.svc"), .launchdEnable(plist: ok, owner: "com.example.svc"),
         .launchdDisable(plist: apple, owner: "com.example.a"), .maintenance(.flushDNS), .maintenance(.repairPermissions),
-        .maintenance(.speedUpMail),
+        .maintenance(.speedUpMail), .launchdClearDisabled(plist: ok, owner: "com.example.svc"),
     ], tools: tools)
     let file = root.appendingPathComponent("s.sh")
     try script.write(to: file, atomically: true, encoding: .utf8)
@@ -111,6 +111,8 @@ private func sh(_ args: [String]) throws -> (Int32, String) {
     let (_, output) = try sh([file.path])
     for i in [0, 1, 3, 4] { #expect(output.contains("CYM:\(i):ok"), "comando \(i)") }
     for i in [2, 5] { #expect(output.contains("CYM:\(i):fail"), "comando \(i)") }
+    // Com o launchctl falso, print-disabled não lista o item: nada a limpar, e conta como ok.
+    #expect(output.contains("CYM:6:ok"))
     #expect(output.contains("disable system/com.example.svc"))
     #expect(output.contains("bootout system/com.example.svc"))
     #expect(output.contains("enable system/com.example.svc"))

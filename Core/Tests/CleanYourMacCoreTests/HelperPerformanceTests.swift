@@ -94,3 +94,17 @@ private func executor(_ t: FixtureTree, _ cmds: HelperFakeCommands) -> HelperExe
 @Test func helperVersionIs3() {
     #expect(HelperConstants.version == 3)
 }
+
+/// Remover um item desativado tira o "disabled" do launchd (senão uma reinstalação nunca sobe).
+@Test func launchdClearDisabledOnlyWhenDisabled() {
+    let t = FixtureTree()
+    let daemon = plist(t, "Library/LaunchDaemons/com.example.svc.plist", ["Label": "com.example.svc"])
+    let cmds = HelperFakeCommands()
+    cmds.responses["print-disabled"] = (0, "\ndisabled services = {\n\t\t\"com.example.svc\" => disabled\n}\n")
+    #expect(executor(t, cmds).run([.launchdClearDisabled(plist: daemon, owner: "com.example.svc")], requester: 501) == [.ok])
+    #expect(cmds.calls == [["/bin/launchctl", "print-disabled", "system"], ["/bin/launchctl", "enable", "system/com.example.svc"]])
+    let clean = HelperFakeCommands()
+    clean.responses["print-disabled"] = (0, "disabled services = {\n}\n")
+    #expect(executor(t, clean).run([.launchdClearDisabled(plist: daemon, owner: "com.example.svc")], requester: 501) == [.ok])
+    #expect(clean.calls == [["/bin/launchctl", "print-disabled", "system"]])
+}

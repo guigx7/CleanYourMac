@@ -97,6 +97,13 @@ public struct HelperExecutor: Sendable {
                 // 17/37: já carregado.
                 let b = self.commands.run("/bin/launchctl", ["bootstrap", job.domain, job.path])
                 return [0, 17, 37].contains(b.status) ? .ok : .failed("launchctl bootstrap: \(b.status)")
+            case .launchdClearDisabled(let plist, let owner):
+                guard Self.isSafeOwner(owner), let job = validatedJob(plist, owner: owner, requester: requester) else { return .refused }
+                let label = String(job.target.dropFirst(job.domain.count + 1))
+                let overrides = StartupItemsScanner.parseDisabled(self.commands.run("/bin/launchctl", ["print-disabled", job.domain]).output)
+                guard overrides[label] == true else { return .ok }
+                let r = self.commands.run("/bin/launchctl", ["enable", job.target])
+                return r.status == 0 ? .ok : .failed("launchctl enable: \(r.status)")
             case .maintenance(let id):
                 guard let steps = Self.maintenanceCommands(id, uid: requester) else { return .refused }
                 for (exe, args) in steps {

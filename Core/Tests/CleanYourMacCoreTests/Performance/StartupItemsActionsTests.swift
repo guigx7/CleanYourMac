@@ -184,6 +184,18 @@ private func reason(_ r: Result<Void, CleanFailure>?) -> String? { if case .fail
         #expect(s.commands.calls.count == before && s.privileged.batches.isEmpty && s.trasher.trashed.isEmpty)
         #expect(FileManager.default.fileExists(atPath: d.path) && FileManager.default.fileExists(atPath: u.path))
     }
+
+    @Test func removeDisabledItemClearsOverride() async {
+        let s = Setup()
+        plist(s.t, "Users/tester/Library/LaunchAgents/com.example.u.plist", ["Label": "com.example.u", "Disabled": true])
+        let d = plist(s.t, "Library/LaunchDaemons/com.example.d.plist", ["Label": "com.example.d", "Disabled": true])
+        let items = s.scan()
+        #expect(items.allSatisfy { $0.state == .disabled })
+        _ = await s.actions().perform(.remove, on: items)
+        #expect(s.commands.calls.contains(["/bin/launchctl", "enable", "gui/\(s.ctx.uid)/com.example.u"]))
+        #expect(s.privileged.batches == [[.launchdBootout(plist: d, owner: "com.example.d"), .launchdClearDisabled(plist: d, owner: "com.example.d"),
+                                          .trash(d, owner: "com.example.d")]])
+    }
 }
 
 /// Lista de sessão com um app de outro fixture.

@@ -157,7 +157,9 @@ public struct StartupItemsActions: Sendable {
         case (.disable, .systemDaemon): [.launchdDisable(plist: job.plist, owner: job.owner)]
         case (.enable, .systemDaemon): [.launchdEnable(plist: job.plist, owner: job.owner)]
         case (.remove, .systemDaemon), (.remove, .systemAgent):
-            [.launchdBootout(plist: job.plist, owner: job.owner), .trash(job.plist, owner: job.owner)]
+            [.launchdBootout(plist: job.plist, owner: job.owner)]
+                + (item.state == .disabled ? [.launchdClearDisabled(plist: job.plist, owner: job.owner)] : [])
+                + [.trash(job.plist, owner: job.owner)]
                 + (helperTool(item, job).map { [.trash($0, owner: job.owner)] } ?? [])
         default: nil
         }
@@ -179,6 +181,8 @@ public struct StartupItemsActions: Sendable {
                 ? .success(()) : .failure(CleanFailure(reason: "launchctl bootstrap failed"))
         case .remove:
             guard launchctl(["bootout", target], okStatus: [0, 3, 113]) else { return .failure(CleanFailure(reason: "launchctl bootout failed")) }
+            // Sem isso o "disabled" fica no launchd e uma reinstalação do app nunca sobe.
+            if item.state == .disabled, !launchctl(["enable", target]) { return .failure(CleanFailure(reason: "launchctl enable failed")) }
             do {
                 try trasher.trash(job.plist)
                 return .success(())
