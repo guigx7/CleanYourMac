@@ -6,6 +6,7 @@ import CleanYourMacCore
 //   cym scan [--groups a,b] [--json] [--paths] [--home DIR --user NOME]
 //   cym clean --dry-run [--groups a,b] [--recommended]
 //   cym apps [--json] [--no-network]   (módulo Aplicativos; só leitura)
+//   cym performance [--json]           (módulo Desempenho; só leitura)
 //
 // Não existe limpeza de verdade pelo CLI: `clean` exige --dry-run.
 
@@ -73,6 +74,19 @@ case "apps":
               appsReport.updates.offline ? "[sem rede]" : "")
         print("sobras:", appsReport.leftovers.map { "\($0.name) \(SizeFormatter.string($0.totalSize, locale: Locale(identifier: "pt-BR")))" })
         print("instaladores:", appsReport.installers.map { "\($0.name) \(SizeFormatter.string($0.totalSize, locale: Locale(identifier: "pt-BR")))" })
+    }
+case "performance":
+    var perfReport: PerformanceReport?
+    for try await event in Registry.performanceScan().run(context) { if case .finished(let r) = event { perfReport = r } }
+    guard let perfReport else { fail("análise não terminou") }
+    if has("--json") {
+        let data = try JSONSerialization.data(withJSONObject: perfReport.parityJSON(), options: [.prettyPrinted, .sortedKeys])
+        print(String(decoding: data, as: UTF8.self))
+    } else {
+        print("tarefas:", perfReport.tasks.map { $0.id.rawValue + ($0.detail.map { " (até \(SizeFormatter.string($0, locale: Locale(identifier: "pt-BR"))))" } ?? "") })
+        print("itens de início:", perfReport.loginItems.map { $0.name + ($0.state == .disabled ? " [desativado]" : "") })
+        print("em segundo plano:", perfReport.backgroundItems.map { $0.name + ($0.state == .disabled ? " [desativado]" : "") })
+        print("capturas:", perfReport.snapshots.map(\.id))
     }
 case "scan":
     let report = try await runScan()
