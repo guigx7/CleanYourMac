@@ -93,4 +93,18 @@ import Testing
         #expect(serial.size == parallel.size && serial.items == parallel.items)
         #expect(serial.children.map(\.name) == parallel.children.map(\.name))
     }
+
+    @Test func detachSubtractsFromAncestors() throws {
+        let t = FixtureTree()
+        t.file("a/b/x.bin", bytes: 100_000)
+        t.file("a/y.bin", bytes: 10_000)
+        let root = try scan(t)
+        let a = try #require(root.child("a")), b = try #require(a.child("b"))
+        let (rootSize, aSize, bSize) = (root.size, a.size, b.size)
+        let (rootItems, bItems) = (root.items, b.items)
+        b.detach()
+        #expect(a.child("b") == nil && b.parent == nil)
+        #expect(a.size == aSize - bSize && root.size == rootSize - bSize)
+        #expect(root.items == rootItems - bItems - 1)
+    }
 }

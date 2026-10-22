@@ -37,6 +37,15 @@ public struct SpaceLensReport: @unchecked Sendable {
     public let capacity: Int64
     /// Só na análise do disco.
     public let purgeable: Int64?
+
+    public init(root: SpaceNode, isDisk: Bool, volumeName: String, used: Int64, capacity: Int64, purgeable: Int64?) {
+        self.root = root
+        self.isDisk = isDisk
+        self.volumeName = volumeName
+        self.used = used
+        self.capacity = capacity
+        self.purgeable = purgeable
+    }
 }
 
 public enum SpaceLensScanEvent: Sendable {

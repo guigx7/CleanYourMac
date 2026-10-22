@@ -47,6 +47,19 @@ public final class SpaceNode: @unchecked Sendable, Identifiable {
         return out
     }
 
+    /// Tira o nó da árvore (depois de removido do disco) e desconta tamanho e itens dos ancestrais.
+    public func detach() {
+        guard let parent else { return }
+        parent.children.removeAll { $0 === self }
+        var p: SpaceNode? = parent
+        while let n = p {
+            n.size -= size
+            n.items -= items + 1
+            p = n.parent
+        }
+        self.parent = nil
+    }
+
     func append(_ child: SpaceNode) {
         child.parent = self
         children.append(child)
