@@ -1,0 +1,89 @@
+== window: 
+== window: 
+== window: 
+== window: CleanMyMac
+  AXWindow: CleanMyMac
+    AXButton: Enabled | Recomeçar
+        AXImage: back button circle
+        AXStaticText: Recomeçar
+    AXStaticText: Desempenho
+              AXStaticText: Tarefas de Manutenção
+              AXStaticText: Itens de Início
+              AXStaticText: Itens em Segundo Plano
+          AXRow [level=0]: 
+              AXStaticText: Itens em Segundo Plano
+              AXStaticText: Gerencie a lista de processos e aplicativos executados em segundo plano. Talvez você não precise de alguns deles.
+                AXButton: Nenhum | Selecionar:
+                    AXStaticText: Selecionar:
+                    AXStaticText: Nenhum
+                    AXImage: ir para baixo
+          AXRow [level=0]: 
+            AXCell: com.bjango.istatmenus.installer.plist
+              AXCheckBox [checked=0]: 
+              AXStaticText: com.bjango.istatmenus.installer.plist | com.bjango.istatmenus.installer.plist
+              AXImage: smart tip default | Obtenha informações inteligentes sobre este item
+          AXRow [level=0]: 
+            AXCell: GoogleUpdater.app
+              AXCheckBox [checked=0]: 
+              AXStaticText: GoogleUpdater.app | GoogleUpdater.app
+              AXImage: smart tip default | Obtenha informações inteligentes sobre este item
+          AXRow [level=0]: 
+            AXCell: Logi Options+.app
+              AXCheckBox [checked=0]: 
+              AXStaticText: Logi Options+.app | Logi Options+.app
+              AXImage: smart tip default | Obtenha informações inteligentes sobre este item
+          AXRow [level=0]: 
+            AXCell: Logi Options+.app
+              AXCheckBox [checked=0]: 
+              AXStaticText: Logi Options+.app | Logi Options+.app
+              AXImage: smart tip default | Obtenha informações inteligentes sobre este item
+          AXRow [level=0]: 
+            AXCell: LogiRightSight.app
+              AXCheckBox [checked=0]: 
+              AXStaticText: LogiRightSight.app | LogiRightSight.app
+              AXImage: smart tip default | Obtenha informações inteligentes sobre este item
+          AXRow [level=0]: 
+            AXCell: Setapp.app
+              AXCheckBox [checked=0]: 
+              AXStaticText: Setapp.app | Setapp.app
+              AXImage: smart tip default | Obtenha informações inteligentes sobre este item
+          AXRow [level=0]: 
+            AXCell: SetappAssistant.app
+              AXCheckBox [checked=0]: 
+              AXStaticText: SetappAssistant.app | SetappAssistant.app
+              AXImage: smart tip default | Obtenha informações inteligentes sobre este item
+          AXRow [level=0]: 
+            AXCell: SetappLauncher.app
+              AXCheckBox [checked=0]: 
+              AXStaticText: SetappLauncher.app | SetappLauncher.app
+              AXImage: smart tip default | Obtenha informações inteligentes sobre este item
+          AXRow [level=0]: 
+            AXCell: SetappUpdater.app
+              AXCheckBox [checked=0]: 
+              AXStaticText: SetappUpdater.app | SetappUpdater.app
+              AXImage: smart tip default | Obtenha informações inteligentes sobre este item
+    AXButton: Enabled | Voltar
+        AXImage: back button pink
+        AXStaticText: Voltar
+    AXStaticText: Gerenciador de Desempenho
+      AXTextField: Busque nos itens encontrados
+    AXButton: Nome | Ordenar por:
+        AXStaticText: Ordenar por:
+        AXStaticText: Nome
+        AXImage: ir para baixo
+    AXStaticText: 0 Item Selecionado
+    AXButton: Disabled | Remover
+        AXStaticText: Remover
+          AXStaticText: Cuidados Inteligentes
+          AXStaticText: Limpeza
+          AXStaticText: Proteção
+          AXStaticText: Desempenho
+          AXImage: InfoIndicator
+          AXStaticText: Aplicativos
+          AXStaticText: Acúmulos
+          AXStaticText: Lupa de Espaço
+          AXStaticText: Limpeza de Nuvem
+          AXStaticText: Ferramentas
+          AXStaticText: Atividades
+    AXButton: este botão também possui uma ação para ampliar ou reduzir a janela
+    ?: Parar

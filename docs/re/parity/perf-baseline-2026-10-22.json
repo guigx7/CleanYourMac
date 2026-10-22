@@ -1,0 +1,32 @@
+{
+  "tasks": [
+    "Acelerar o Mail",
+    "Esvaziar Cache do DNS",
+    "Liberar Espaço Purgável",
+    "Reindexar o Spotlight",
+    "Reparar Permissões do Disco"
+  ],
+  "purgeable": 3900000000,
+  "loginItems": [
+    "GlucoTracker.app",
+    "Hidden Bar.app",
+    "Vorssaint.app",
+    "Warp.app"
+  ],
+  "backgroundItems": [
+    "com.bjango.istatmenus.installer.plist",
+    "GoogleUpdater.app",
+    "Logi Options+.app",
+    "Logi Options+.app",
+    "LogiRightSight.app",
+    "Setapp.app",
+    "SetappAssistant.app",
+    "SetappLauncher.app",
+    "SetappUpdater.app"
+  ],
+  "tiles": {
+    "loginItems": 4,
+    "maintenance": 5,
+    "backgroundItems": 9
+  }
+}

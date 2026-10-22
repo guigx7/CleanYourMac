@@ -1,0 +1,71 @@
+== window: 
+== window: 
+== window: 
+== window: CleanMyMac
+  AXWindow: CleanMyMac
+    AXButton: Enabled | Recomeçar
+        AXImage: back button circle
+        AXStaticText: Recomeçar
+    AXStaticText: Desempenho
+              AXStaticText: Tarefas de Manutenção
+              AXStaticText: Itens de Início
+              AXStaticText: Itens em Segundo Plano
+          AXRow [level=0]: 
+              AXStaticText: Tarefas de Manutenção
+              AXStaticText: Os cuidados essenciais do Mac incluem tarefas gerais e específicas que ajudam a manter software e hardware em forma. Execute as atividades de manutenção em um só lugar.
+          AXRow [level=0]: 
+            AXCell: Acelerar o Mail
+              AXCheckBox [checked=0]: 
+              AXImage: maintenance tasks speed up mai
+              AXStaticText: Acelerar o Mail | Acelerar o Mail
+                  AXImage: Informações
+          AXRow [level=0]: 
+            AXCell: Esvaziar Cache do DNS
+              AXCheckBox [checked=0]: 
+              AXImage: maintenance tasks flush DNS ca
+              AXStaticText: Esvaziar Cache do DNS | Esvaziar Cache do DNS
+                  AXImage: Informações
+          AXRow [level=0]: 
+            AXCell: Liberar Espaço Purgável
+              AXCheckBox [checked=0]: 
+              AXImage: maintenance tasks purgeable sp
+              AXStaticText: Liberar Espaço Purgável | Liberar Espaço Purgável
+              AXStaticText: Até 3,8 GB
+                  AXImage: Informações
+          AXRow [level=0]: 
+            AXCell: Reindexar o Spotlight
+              AXCheckBox [checked=0]: 
+              AXImage: maintenance tasks reindex spot
+              AXStaticText: Reindexar o Spotlight | Reindexar o Spotlight
+                  AXImage: Informações
+          AXRow [level=0]: 
+            AXCell: Reparar Permissões do Disco
+              AXCheckBox [checked=0]: 
+              AXImage: maintenance tasks repair disk 
+              AXStaticText: Reparar Permissões do Disco | Reparar Permissões do Disco
+                  AXImage: Informações
+    AXButton: Enabled | Voltar
+        AXImage: back button pink
+        AXStaticText: Voltar
+    AXStaticText: Gerenciador de Desempenho
+      AXTextField: Busque nos itens encontrados
+    AXButton: Nome | Ordenar por:
+        AXStaticText: Ordenar por:
+        AXStaticText: Nome
+        AXImage: ir para baixo
+    AXStaticText: 0 Tarefa Selecionada
+    AXButton: Disabled | Executar
+        AXStaticText: Executar
+          AXStaticText: Cuidados Inteligentes
+          AXStaticText: Limpeza
+          AXStaticText: Proteção
+          AXStaticText: Desempenho
+          AXImage: InfoIndicator
+          AXStaticText: Aplicativos
+          AXStaticText: Acúmulos
+          AXStaticText: Lupa de Espaço
+          AXStaticText: Limpeza de Nuvem
+          AXStaticText: Ferramentas
+          AXStaticText: Atividades
+    AXButton: este botão também possui uma ação para ampliar ou reduzir a janela
+    ?: Parar

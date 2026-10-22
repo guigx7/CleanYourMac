@@ -1,0 +1,44 @@
+== window: 
+== window: 
+== window: 
+== window: CleanMyMac
+  AXWindow: CleanMyMac
+    AXButton: Enabled | Recomeçar
+        AXImage: back button circle
+        AXStaticText: Recomeçar
+    AXStaticText: Desempenho
+    AXStaticText: Aplique as recomendações selecionadas
+ou execute tarefas de manutenção manualmente.
+    AXButton: Enabled | Ver Todas as Tarefas
+        AXStaticText: Ver Todas as Tarefas
+            AXStaticText: Você Tem 4 Itens de Início
+            AXStaticText: Revise a lista de aplicativos abertos automaticamente ao ligar o Mac. Talvez você queira desativar alguns deles.
+            AXButton: Enabled | Revisar
+                AXStaticText: Revisar
+            AXStaticText: 5 Tarefas de Manutenção Recomendadas
+            AXStaticText: A rotina semanal de manutenção está pronta! Execute estas tarefas para manter o Mac em forma.
+            AXImage: maintenance tasks speed up mai
+            AXImage: maintenance tasks flush DNS ca
+            AXImage: maintenance tasks purgeable sp
+            AXButton: Enabled | Revisar
+                AXStaticText: Revisar
+            AXButton: Enabled | Executar Tarefas
+                AXStaticText: Executar Tarefas
+            AXStaticText: 9 Itens em Segundo Plano Encontrados
+            AXStaticText: Revise a lista de processos em segundo plano com permissão de execução no Mac. Você precisa de todos eles?
+            AXButton: Enabled | Revisar
+                AXStaticText: Revisar
+            AXImage: launch agents category
+          AXStaticText: Cuidados Inteligentes
+          AXStaticText: Limpeza
+          AXStaticText: Proteção
+          AXStaticText: Desempenho
+          AXImage: InfoIndicator
+          AXStaticText: Aplicativos
+          AXStaticText: Acúmulos
+          AXStaticText: Lupa de Espaço
+          AXStaticText: Limpeza de Nuvem
+          AXStaticText: Ferramentas
+          AXStaticText: Atividades
+    AXButton: este botão também possui uma ação para ampliar ou reduzir a janela
+    ?: Parar

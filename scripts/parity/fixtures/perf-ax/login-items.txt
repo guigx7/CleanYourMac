@@ -1,0 +1,64 @@
+== window: 
+== window: 
+== window: 
+== window: CleanMyMac
+  AXWindow: CleanMyMac
+    AXButton: Enabled | Recomeçar
+        AXImage: back button circle
+        AXStaticText: Recomeçar
+    AXStaticText: Desempenho
+              AXStaticText: Tarefas de Manutenção
+              AXStaticText: Itens de Início
+              AXStaticText: Itens em Segundo Plano
+          AXRow [level=0]: 
+              AXStaticText: Itens de Início
+              AXStaticText: Gerencie a lista de aplicativos abertos automaticamente ao iniciar a sessão. Não desperdice o desempenho do Mac com processos que você não precisa.
+                AXButton: Nenhum | Selecionar:
+                    AXStaticText: Selecionar:
+                    AXStaticText: Nenhum
+                    AXImage: ir para baixo
+          AXRow [level=0]: 
+            AXCell: GlucoTracker.app
+              AXCheckBox [checked=0]: 
+              AXStaticText: GlucoTracker.app | GlucoTracker.app
+              AXImage: smart tip default | Obtenha informações inteligentes sobre este item
+          AXRow [level=0]: 
+            AXCell: Hidden Bar.app
+              AXCheckBox [checked=0]: 
+              AXStaticText: Hidden Bar.app | Hidden Bar.app
+              AXImage: smart tip default | Obtenha informações inteligentes sobre este item
+          AXRow [level=0]: 
+            AXCell: Vorssaint.app
+              AXCheckBox [checked=0]: 
+              AXStaticText: Vorssaint.app | Vorssaint.app
+              AXImage: smart tip default | Obtenha informações inteligentes sobre este item
+          AXRow [level=0]: 
+            AXCell: Warp.app
+              AXCheckBox [checked=0]: 
+              AXStaticText: Warp.app | Warp.app
+              AXImage: smart tip default | Obtenha informações inteligentes sobre este item
+    AXButton: Enabled | Voltar
+        AXImage: back button pink
+        AXStaticText: Voltar
+    AXStaticText: Gerenciador de Desempenho
+      AXTextField: Busque nos itens encontrados
+    AXButton: Nome | Ordenar por:
+        AXStaticText: Ordenar por:
+        AXStaticText: Nome
+        AXImage: ir para baixo
+    AXStaticText: 0 Item Selecionado
+    AXButton: Disabled | Remover
+        AXStaticText: Remover
+          AXStaticText: Cuidados Inteligentes
+          AXStaticText: Limpeza
+          AXStaticText: Proteção
+          AXStaticText: Desempenho
+          AXImage: InfoIndicator
+          AXStaticText: Aplicativos
+          AXStaticText: Acúmulos
+          AXStaticText: Lupa de Espaço
+          AXStaticText: Limpeza de Nuvem
+          AXStaticText: Ferramentas
+          AXStaticText: Atividades
+    AXButton: este botão também possui uma ação para ampliar ou reduzir a janela
+    ?: Parar
