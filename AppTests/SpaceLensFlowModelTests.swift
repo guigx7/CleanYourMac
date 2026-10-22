@@ -204,4 +204,23 @@ struct LensSetup {
             #expect(m.current?.ancestry.first === root)
         }
     }
+
+    /// "Outros itens" abre: mostra todos os filhos da pasta, que viram selecionáveis; ao trocar de pasta volta a agrupar.
+    @Test func othersExpandShowsEveryChild() async {
+        let t = TempTree()
+        for i in 0..<20 { t.file("f\(i).bin", bytes: (i + 1) * 40_000) }
+        let m = SpaceLensFlowModel(scan: FixtureSpaceScan(root: t.root), remover: RecordingSpaceRemover())
+        m.target = .folder(t.root)
+        m.start()
+        while m.phase == .scanning { await Task.yield() }
+        guard case .others(_, let hidden) = m.entries.last else { Issue.record("sem Outros"); return }
+        #expect(!hidden.isEmpty)
+        m.expandOthers()
+        #expect(m.entries.count == 20)
+        #expect(m.entries.allSatisfy { if case .node = $0 { true } else { false } })
+        m.toggle(hidden[0])
+        #expect(m.isSelected(hidden[0]))
+        m.collapseOthers()
+        #expect(m.entries.count < 20)
+    }
 }

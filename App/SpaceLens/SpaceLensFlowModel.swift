@@ -31,7 +31,11 @@ final class SpaceLensFlowModel {
     private(set) var phase: Phase = .intro
     var target: SpaceLensTarget = .disk
     private(set) var report: SpaceLensReport?
-    private(set) var current: SpaceNode?
+    private(set) var current: SpaceNode? {
+        didSet { if oldValue !== current { othersExpanded = false } }
+    }
+    /// "Outros itens" aberto: a pasta atual mostra todos os filhos.
+    private(set) var othersExpanded = false
     private(set) var scanned = 0
     /// Selecionados, sem sobreposição (uma pasta marcada absorve os descendentes).
     private(set) var selection: [SpaceNode] = []
@@ -156,13 +160,17 @@ final class SpaceLensFlowModel {
     /// Lista e bolhas da pasta atual.
     var entries: [Entry] {
         guard let current else { return [] }
-        let split = SpaceGrouping.split(current.children.map(\.size), total: current.size)
+        let split = othersExpanded ? (visible: current.children.count, others: Int64(0))
+            : SpaceGrouping.split(current.children.map(\.size), total: current.size)
         var out: [Entry] = current.children.prefix(split.visible).map { .node($0) }
         let rest = Array(current.children.dropFirst(split.visible))
         if !rest.isEmpty { out.append(.others(size: rest.reduce(0) { $0 + $1.size }, nodes: rest)) }
         if current === report?.root, let purgeable = report?.purgeable, purgeable > 0 { out.append(.purgeable(purgeable)) }
         return out
     }
+
+    func expandOthers() { othersExpanded = true }
+    func collapseOthers() { othersExpanded = false }
 
     // MARK: - Seleção
 

@@ -17,7 +17,11 @@ struct SpaceLensResultsView: View {
                     .frame(width: 360)
                 GlassCard {
                     BubbleMap(entries: model.entries, hovered: $hovered) { entry in
-                        if case .node(let node) = entry { model.open(node) }
+                        switch entry {
+                        case .node(let node): model.open(node)
+                        case .others: model.expandOthers()
+                        case .purgeable: break
+                        }
                     }
                 }
             }
@@ -82,6 +86,12 @@ struct SpaceLensResultsView: View {
                     SpaceEntryRow(entry: entry, model: model, isHovered: hovered == entry.id)
                         .onHover { hovered = $0 ? entry.id : (hovered == entry.id ? nil : hovered) }
                     Divider().opacity(0.25)
+                }
+                if model.othersExpanded {
+                    Button { model.collapseOthers() } label: { Label("lens.others.collapse", systemImage: "chevron.up") }
+                        .buttonStyle(.plain)
+                        .foregroundStyle(Theme.secondaryText)
+                        .padding(.top, 10)
                 }
                 if model.current?.isUnreadable == true {
                     Label("lens.unreadable", systemImage: "lock.fill")
@@ -178,6 +188,9 @@ struct SpaceEntryRow: View {
                 Text(verbatim: "(\(nodes.count))").foregroundStyle(Theme.secondaryText)
                 Spacer()
                 Text(SizeFormatter.string(size, locale: locale)).monospacedDigit().foregroundStyle(Theme.secondaryText)
+                Button { model.expandOthers() } label: { Image(systemName: "chevron.down") }
+                    .buttonStyle(.plain)
+                    .accessibilityLabel(Text("lens.others.expand"))
             case .purgeable(let size):
                 Image(systemName: "sparkles").frame(width: 22 + 16 + 10)
                 Text("lens.purgeable").lineLimit(1)
@@ -189,7 +202,13 @@ struct SpaceEntryRow: View {
         .padding(.horizontal, 6)
         .background(RoundedRectangle(cornerRadius: 8).fill(.white.opacity(isHovered ? 0.1 : 0)))
         .contentShape(Rectangle())
-        .onTapGesture(count: 2) { if case .node(let n) = entry { model.open(n) } }
+        .onTapGesture(count: 2) {
+            switch entry {
+            case .node(let n): model.open(n)
+            case .others: model.expandOthers()
+            case .purgeable: break
+            }
+        }
     }
 }
 

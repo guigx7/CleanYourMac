@@ -4523,6 +4523,40 @@
         }
       }
     },
+    "lens.others.collapse": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Group small items"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Agrupar itens pequenos"
+          }
+        }
+      }
+    },
+    "lens.others.expand": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Show all items"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mostrar todos os itens"
+          }
+        }
+      }
+    },
     "lens.protected": {
       "extractionState": "manual",
       "localizations": {
