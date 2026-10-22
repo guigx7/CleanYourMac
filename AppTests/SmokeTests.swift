@@ -82,3 +82,25 @@ import CleanYourMacCore
     #expect(parts[1].contains("Time Machine snapshots"))
     #expect(parts[2].contains("capturas locais do Time Machine"))
 }
+
+@MainActor @Test func allSpaceLensStringsLocalized() throws {
+    let repo = URL(fileURLWithPath: #filePath).deletingLastPathComponent().deletingLastPathComponent()
+    let tsv = try String(contentsOf: repo.appendingPathComponent("App/Resources/Strings.tsv"), encoding: .utf8)
+    var known: [String: [String]] = [:]
+    for line in tsv.split(separator: "\n") where !line.hasPrefix("#") {
+        let parts = line.split(separator: "\t", omittingEmptySubsequences: false).map(String.init)
+        if parts.count == 3 { known[parts[0]] = [parts[1], parts[2]] }
+    }
+    var used = Set<String>()
+    let dir = repo.appendingPathComponent("App/SpaceLens")
+    for file in try FileManager.default.contentsOfDirectory(at: dir, includingPropertiesForKeys: nil) where file.pathExtension == "swift" {
+        let text = try String(contentsOf: file, encoding: .utf8)
+        let regex = try NSRegularExpression(pattern: #""(lens\.[A-Za-z0-9_.]+[A-Za-z0-9_])""#)
+        for m in regex.matches(in: text, range: NSRange(text.startIndex..., in: text)) {
+            used.insert(String(text[Range(m.range(at: 1), in: text)!]))
+        }
+    }
+    #expect(used.count > 20)
+    let missing = used.filter { known[$0] == nil || known[$0]!.contains(where: \.isEmpty) }.sorted()
+    #expect(missing.isEmpty, "sem tradução: \(missing)")
+}

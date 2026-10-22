@@ -13,6 +13,7 @@ struct RootView: View {
     @State private var cleanup = CleanupEnvironment.makeModel()
     @State private var apps = AppsEnvironment.makeModel()
     @State private var performance = PerformanceEnvironment.makeModel()
+    @State private var lens = SpaceLensEnvironment.makeModel()
 
     /// Telas claras em tela cheia: os Gerenciadores de Limpeza, Aplicativos e Desempenho.
     private var fullScreen: Bool {
@@ -67,6 +68,7 @@ struct RootView: View {
         switch module {
         case .applications: apps.phase == .intro
         case .performance: performance.phase == .intro
+        case .spaceLens: lens.phase == .intro
         default: cleanup.phase == .intro
         }
     }
@@ -79,6 +81,8 @@ struct RootView: View {
             AppsModuleView(model: apps)
         case .performance:
             PerformanceModuleView(model: performance)
+        case .spaceLens:
+            SpaceLensModuleView(model: lens)
         default:
             EmptyView()
         }

@@ -483,3 +483,35 @@ reason.openSettings	macOS only allows this in System Settings › General › Lo
 perf.done.dryRun	Simulation: nothing was changed on this Mac.	Simulação: nada foi alterado neste Mac.
 perf.confirm.admin	macOS will ask for an administrator password (or install the helper to skip this).	O macOS vai pedir a senha de administrador (ou instale o ajudante para não precisar).
 perf.acting.waitingAdmin	Stopping after the administrator tasks finish — they can't be interrupted. If macOS is asking for your password, click Cancel there to skip them.	Parando quando as tarefas de administrador terminarem — elas não podem ser interrompidas. Se o macOS estiver pedindo a senha, clique em Cancelar lá para pulá-las.
+lens.intro.title	Space Lens	Lupa de Espaço
+lens.intro.subtitle	See what takes up your disk as a map you can walk through, folder by folder, and move what you don't need to the Trash.	Veja o que ocupa o disco num mapa que dá para percorrer pasta por pasta e mande para o Lixo o que você não precisa.
+lens.category.map	Map of your storage	Mapa do armazenamento
+lens.category.hidden	Hidden files included	Arquivos ocultos incluídos
+lens.category.folders	Largest folders first	Maiores pastas primeiro
+lens.target.label	What to scan	O que analisar
+lens.target.choose	Choose Folder…	Escolher Pasta…
+lens.target.choosePrompt	Scan	Analisar
+lens.scan.title	Measuring your storage…	Medindo o armazenamento…
+lens.scan.items	%@ items read	%@ itens lidos
+lens.folder.summary	%@ · %@ items	%@ · %@ itens
+lens.volume.used	%@ of %@ used	%@ de %@ usados
+lens.others	Other items	Outros itens
+lens.purgeable	Purgeable space	Espaço purgável
+lens.protected	Part of macOS or a standard folder: it can't be selected here. Open it to choose what's inside.	Faz parte do macOS ou é uma pasta-padrão: não dá para marcar aqui. Abra para escolher o que tem dentro.
+lens.unreadable	Some folders couldn't be read (Full Disk Access or another owner).	Algumas pastas não puderam ser lidas (Acesso Total ao Disco ou outro dono).
+lens.open	Open %@	Abrir %@
+lens.nav.back	Back	Voltar
+lens.nav.forward	Forward	Avançar
+lens.select.clear	Clear Selection	Limpar Seleção
+lens.action.review	Review and Remove	Revisar e Remover
+lens.review.title	Review before removing	Revise antes de remover
+lens.review.subtitle	Everything you checked, from every folder.	Tudo o que você marcou, de todas as pastas.
+lens.review.total	%d item(s) · %@	%d item(ns) · %@
+lens.review.unselect	Remove %@ from the list	Tirar %@ da lista
+lens.review.trashNote	Items go to the Trash: you can put them back until you empty it.	Os itens vão para o Lixo: dá para colocá-los de volta até você esvaziá-lo.
+lens.action.trash	Move to Trash	Mover para o Lixo
+lens.removing.title	Moving to the Trash…	Movendo para o Lixo…
+lens.done.title	Done!	Pronto!
+lens.done.partial	Some items weren't moved	Alguns itens não foram movidos
+lens.done.message	%d item(s) moved to the Trash · %@	%d item(ns) movido(s) para o Lixo · %@
+lens.done.backToResults	Back to Results	Voltar aos Resultados

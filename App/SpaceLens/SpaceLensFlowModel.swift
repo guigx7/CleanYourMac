@@ -40,10 +40,14 @@ final class SpaceLensFlowModel {
 
     private let scan: any SpaceLensScanning
     private let remover: any SpaceRemoving
-    private let isProtected: @MainActor (SpaceNode) -> Bool
+    let isProtected: @MainActor (SpaceNode) -> Bool
+    /// Debug simula por padrão: a conclusão avisa que nada foi alterado.
+    let dryRun: Bool
     private var task: Task<Void, Never>?
 
-    init(scan: any SpaceLensScanning, remover: any SpaceRemoving, isProtected: @escaping @MainActor (SpaceNode) -> Bool = { _ in false }) {
+    init(scan: any SpaceLensScanning, remover: any SpaceRemoving, isProtected: @escaping @MainActor (SpaceNode) -> Bool = { _ in false },
+         dryRun: Bool = false) {
+        self.dryRun = dryRun
         self.scan = scan
         self.remover = remover
         self.isProtected = isProtected
@@ -123,6 +127,43 @@ final class SpaceLensFlowModel {
     /// Clique no caminho.
     func jump(to node: SpaceNode) { open(node) }
 
+    // MARK: - O que a pasta atual mostra
+
+    enum Entry: Identifiable {
+        case node(SpaceNode)
+        /// Os itens pequenos agrupados ("Outros itens").
+        case others(size: Int64, nodes: [SpaceNode])
+        /// Só na raiz do disco.
+        case purgeable(Int64)
+
+        var id: String {
+            switch self {
+            case .node(let n): "n:" + n.name
+            case .others: "others"
+            case .purgeable: "purgeable"
+            }
+        }
+
+        var size: Int64 {
+            switch self {
+            case .node(let n): n.size
+            case .others(let s, _): s
+            case .purgeable(let s): s
+            }
+        }
+    }
+
+    /// Lista e bolhas da pasta atual.
+    var entries: [Entry] {
+        guard let current else { return [] }
+        let split = SpaceGrouping.split(current.children.map(\.size), total: current.size)
+        var out: [Entry] = current.children.prefix(split.visible).map { .node($0) }
+        let rest = Array(current.children.dropFirst(split.visible))
+        if !rest.isEmpty { out.append(.others(size: rest.reduce(0) { $0 + $1.size }, nodes: rest)) }
+        if current === report?.root, let purgeable = report?.purgeable, purgeable > 0 { out.append(.purgeable(purgeable)) }
+        return out
+    }
+
     // MARK: - Seleção
 
     func isSelected(_ node: SpaceNode) -> Bool {
@@ -148,6 +189,11 @@ final class SpaceLensFlowModel {
     }
 
     func clearSelection() { selection = [] }
+
+    /// Tamanho mostrado: a raiz do disco soma o espaço purgável, como no CleanMyMac.
+    func displayedSize(_ node: SpaceNode) -> Int64 {
+        node === report?.root ? node.size + (report?.purgeable ?? 0) : node.size
+    }
 
     var selectionSize: Int64 { selection.reduce(0) { $0 + $1.size } }
 
@@ -194,4 +240,21 @@ final class SpaceLensFlowModel {
 
     /// Da tela final de volta aos Resultados, com a árvore já atualizada.
     func backToResults() { phase = .results }
+}
+
+extension SpaceRemover: SpaceRemoving {}
+
+/// Monta o fluxo de produção. Debug: `CYM_DRY_RUN=0` desliga a simulação.
+@MainActor
+enum SpaceLensEnvironment {
+    static func makeModel() -> SpaceLensFlowModel {
+        #if DEBUG
+        let dryRun = ProcessInfo.processInfo.environment["CYM_DRY_RUN"] != "0"
+        #else
+        let dryRun = false
+        #endif
+        let protection = SpaceProtection()
+        return SpaceLensFlowModel(scan: Registry.spaceLensScan(), remover: SpaceRemover(protection: protection, dryRun: dryRun, log: .standard),
+                                  isProtected: { protection.level($0) != .none }, dryRun: dryRun)
+    }
 }

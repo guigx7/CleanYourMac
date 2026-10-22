@@ -21,10 +21,14 @@ public enum BubbleLayout {
         var result: [Circle] = []
         // Alguns passes: o raio mínimo depende da escala final, que depende do empacotamento.
         for _ in 0..<5 {
-            let (circles, enclosing) = packed(radii, gap: padding)
-            let scale = min(bounds.width, bounds.height) / 2 / max(enclosing.r, 1e-9)
+            let (circles, _) = packed(radii, gap: padding)
+            // Escala pela caixa que contém as bolhas (preenche melhor um retângulo que o círculo envolvente).
+            let minX = circles.map { $0.x - $0.r }.min()!, maxX = circles.map { $0.x + $0.r }.max()!
+            let minY = circles.map { $0.y - $0.r }.min()!, maxY = circles.map { $0.y + $0.r }.max()!
+            let scale = min(bounds.width / max(maxX - minX, 1e-9), bounds.height / max(maxY - minY, 1e-9))
+            let cx = (minX + maxX) / 2, cy = (minY + maxY) / 2
             result = circles.map { c in
-                Circle(x: bounds.width / 2 + (c.x - enclosing.x) * scale, y: bounds.height / 2 + (c.y - enclosing.y) * scale, r: c.r * scale)
+                Circle(x: bounds.width / 2 + (c.x - cx) * scale, y: bounds.height / 2 + (c.y - cy) * scale, r: c.r * scale)
             }
             guard minRadius > 0, result.contains(where: { $0.r < minRadius - 1e-6 }) else { break }
             radii = radii.indices.map { i in result[i].r < minRadius ? minRadius / scale * 1.08 : radii[i] }
