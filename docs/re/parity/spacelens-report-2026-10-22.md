@@ -27,7 +27,13 @@ Tempo da análise do disco inteiro: ~20 s nos dois (3,6 milhões de itens).
 - A raiz do disco soma o espaço purgável (242 = 238 + 3,9).
 - "Usados" = capacidade − disponível para uso importante.
 - "Outros itens": regra nossa (a do CleanMyMac não foi achada no binário), que reproduz as três telas — ver
-  `docs/re/specs/spacelens/ui-and-removal.md`. Frágil na pasta pessoal (`.cache` 2,44 × `Pictures` 2,42 GB).
+  `docs/re/specs/spacelens/ui-and-removal.md`. O corte (1/75,4 da pasta) foi ajustado por duas coletas da pasta pessoal:
+  `.cache` (1,331% e 1,334%) entra e `Pictures` (1,320% e 1,322%) não. Frágil por natureza.
+
+## Depois da revisão final
+Refeita em sequência (coleta `spacelens-baseline-2026-10-22-final.json` e nossa análise logo depois): **0 falhas, 1 nota**
+(purgável). Na primeira tentativa, com o disco ~1 GB maior, o corte antigo (1/75) tirava `.cache` da lista e o CleanMyMac
+não: daí o 1/75,4.
 
 ## Divergências conhecidas (de ação, não de análise)
 - **Remover:** o CleanMyMac apaga de vez (com o ajudante quando precisa); nós movemos para o Lixo, sem o ajudante.

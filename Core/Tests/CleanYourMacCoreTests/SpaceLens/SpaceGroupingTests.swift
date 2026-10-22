@@ -18,6 +18,12 @@ import Testing
     }
 
     /// Raiz do disco: 9 itens com tamanho e só itens vazios em "Outros itens".
+    /// Segunda coleta (pasta pessoal maior): o CleanMyMac ainda mostra .cache (1,331%) e não Pictures (1,320%).
+    @Test func homeSecondSample() {
+        let sizes = [70.197, 65.436, 14.602, 10.079, 8.600, 2.592, 2.440, 2.420, 2.0, 1.9, 1.7, 0.9].map { gb($0) }
+        #expect(SpaceGrouping.split(sizes, total: gb(183.343)).visible == 7)
+    }
+
     @Test func fewChildrenShowAllNonEmpty() {
         let sizes = [183, 19.9, 15.8, 8.2, 6.3, 3.8, 0.831, 0.0049, 0.0025, 0, 0, 0, 0].map { gb($0) }
         let split = SpaceGrouping.split(sizes, total: gb(242))

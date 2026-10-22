@@ -15,8 +15,9 @@ public enum SpaceGrouping {
             // Até 10 itens com tamanho: todos eles; os vazios vão para "Outros".
             visible = sizes.filter { $0 > 0 }.count
         } else {
-            // Itens com pelo menos 1/75 (≈ 1,33%) da pasta, no máximo 12.
-            visible = min(maxVisible, sizes.prefix { $0 * 75 >= total }.count)
+            // Itens com pelo menos ~1,326% da pasta (1/75,4), no máximo 12. Corte ajustado pelas duas coletas da pasta
+            // pessoal: o CleanMyMac mostrou .cache (1,331% e 1,334%) e não Pictures (1,320% e 1,322%).
+            visible = min(maxVisible, sizes.prefix { Double($0) * 75.4 >= Double(total) }.count)
         }
         // "Outros itens" só com 2 ou mais itens.
         if count - visible == 1 { visible = count }
