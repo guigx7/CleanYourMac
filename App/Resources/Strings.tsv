@@ -407,3 +407,40 @@ perf.task.repairPermissions.title	Repair Disk Permissions	Reparar Permissões do
 perf.task.freeUpRAM.title	Free Up RAM	Liberar RAM
 perf.task.periodicScripts.title	Run Periodic Scripts	Executar Scripts Periódicos
 perf.task.thinSnapshots.title	Thin Time Machine Snapshots	Diminuir Capturas do Time Machine
+common.ok	OK	OK
+perf.results.viewAll	See All Tasks	Ver Todas as Tarefas
+perf.action.runTasks	Run Tasks	Executar Tarefas
+perf.action.freeUp	Free Up	Liberar
+perf.action.run	Run	Executar
+perf.action.disable	Turn Off	Desativar
+perf.action.enable	Turn On	Reativar
+perf.action.remove	Remove	Remover
+perf.action.deleteSnapshots	Delete	Apagar
+perf.tile.freeUpRAM.title	Free up memory	Libere a memória
+perf.tile.freeUpRAM.description	Ask macOS to drop cached memory so apps have more room.	Peça ao macOS para descartar a memória em cache e dar mais espaço aos apps.
+perf.tile.maintenance.title.one	%d recommended maintenance task	%d tarefa de manutenção recomendada
+perf.tile.maintenance.title.other	%d recommended maintenance tasks	%d tarefas de manutenção recomendadas
+perf.tile.maintenance.description	macOS tools that tidy up caches, indexes and permissions.	Ferramentas do macOS que arrumam caches, índices e permissões.
+perf.tile.thinSnapshots.title	Thin Time Machine snapshots	Diminua as capturas do Time Machine
+perf.tile.thinSnapshots.description	Local snapshots take disk space; your backups on the backup disk stay as they are.	As capturas locais ocupam espaço no disco; os backups no disco de backup continuam como estão.
+perf.tile.loginItems.title.one	%d app opens at login	%d app abre ao iniciar a sessão
+perf.tile.loginItems.title.other	%d apps open at login	%d apps abrem ao iniciar a sessão
+perf.tile.loginItems.description	Check what opens every time you log in.	Confira o que abre toda vez que você inicia a sessão.
+perf.tile.backgroundItems.title.one	%d background item found	%d item em segundo plano encontrado
+perf.tile.backgroundItems.title.other	%d background items found	%d itens em segundo plano encontrados
+perf.tile.backgroundItems.description	Agents and helpers that macOS starts on its own. Turn off the ones you don't use.	Agentes e auxiliares que o macOS inicia sozinho. Desative os que você não usa.
+perf.confirm.heavy.title	This may take a while	Isso pode demorar
+perf.confirm.heavy.freeUpPurgeable	Free Up Purgeable Space asks macOS to clear caches it can rebuild. The Mac may feel slower for a few minutes.	Liberar Espaço Purgável pede ao macOS para limpar caches que ele consegue refazer. O Mac pode ficar mais lento por alguns minutos.
+perf.confirm.heavy.reindexSpotlight	Reindex Spotlight rebuilds the search index from scratch. Searches will be incomplete until it finishes, which can take hours.	Reindexar o Spotlight refaz o índice de busca do zero. As buscas ficam incompletas até terminar, o que pode levar horas.
+perf.confirm.disable.title	Turn off %d item(s)?	Desativar %d item(ns)?
+perf.confirm.disable.message	They stay on the Mac and won't start anymore. You can turn them back on here.	Eles continuam no Mac e deixam de iniciar. Você pode reativá-los aqui.
+perf.confirm.enable.title	Turn on %d item(s)?	Reativar %d item(ns)?
+perf.confirm.enable.message	They will start with the Mac again.	Eles voltam a iniciar junto com o Mac.
+perf.confirm.remove.title	Remove %d item(s)?	Remover %d item(ns)?
+perf.confirm.remove.message	The item files go to the Trash. The apps that own them stay installed.	Os arquivos dos itens vão para o Lixo. Os apps donos continuam instalados.
+perf.confirm.owner	%@ is still installed and may add the item back the next time it opens. To get rid of it for good, uninstall the app.	%@ continua instalado e pode recolocar o item na próxima vez que abrir. Para se livrar dele de vez, desinstale o app.
+perf.confirm.openUninstaller	Open in Uninstaller	Abrir no Desinstalador
+perf.confirm.snapshots.title	Delete %d snapshot(s)?	Apagar %d captura(s)?
+perf.confirm.snapshots.message	Local snapshots let you restore files without the backup disk. Backups on the backup disk aren't affected.	As capturas locais permitem restaurar arquivos sem o disco de backup. Os backups no disco de backup não são afetados.
+perf.modern.title	Turn this off in System Settings	Desative isto nos Ajustes do Sistema
+perf.modern.message	macOS only lets you change %@ in System Settings › General › Login Items. Settings is open: switch it off there.	O macOS só deixa mudar %@ em Ajustes do Sistema › Geral › Itens de Início. Os Ajustes estão abertos: desligue por lá.

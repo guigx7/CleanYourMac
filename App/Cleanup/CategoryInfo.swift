@@ -51,7 +51,11 @@ struct CategoryBadge: View {
     var module: AppModule = .cleanup
 
     private var colors: [Color] {
-        module == .applications ? [Color(hex: 0x8DB6FF), Color(hex: 0x3D63D6)] : [Color(hex: 0xA6D96A), Color(hex: 0x3E8E3A)]
+        switch module {
+        case .applications: [Color(hex: 0x8DB6FF), Color(hex: 0x3D63D6)]
+        case .performance: [Color(hex: 0xFFB877), Color(hex: 0xC4521F)]
+        default: [Color(hex: 0xA6D96A), Color(hex: 0x3E8E3A)]
+        }
     }
 
     var body: some View {

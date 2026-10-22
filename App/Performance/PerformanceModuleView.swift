@@ -23,5 +23,22 @@ struct PerformanceModuleView: View {
             }
         }
         .animation(.smooth(duration: 0.45), value: model.phase)
+        #if DEBUG
+        .task { await PerformanceDebugAutomation.run(model) }
+        #endif
     }
 }
+
+#if DEBUG
+/// `CYM_PERF_AUTO=scan|results|maintenance|loginItems|backgroundItems|snapshots` leva o fluxo até a tela pedida (capturas).
+@MainActor
+enum PerformanceDebugAutomation {
+    static func run(_ model: PerformanceFlowModel) async {
+        guard let target = ProcessInfo.processInfo.environment["CYM_PERF_AUTO"] else { return }
+        model.start()
+        guard target != "scan" else { return }
+        while model.phase == .scanning { try? await Task.sleep(for: .milliseconds(50)) }
+        if let section = PerformanceFlowModel.Section(rawValue: target) { model.openManager(section) }
+    }
+}
+#endif

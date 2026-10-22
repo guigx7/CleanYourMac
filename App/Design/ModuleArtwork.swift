@@ -289,6 +289,14 @@ struct ArtPalette {
                        core: [Color(hex: 0xF4F7FF), Color(hex: 0xD2DDF7), Color(hex: 0xB4C4EC)],
                        glyph: AnyShape(RoundedRectangle(cornerRadius: 9, style: .continuous)),
                        glyphColors: [Color(hex: 0x5B8CF0), Color(hex: 0x2A4FC0)])
+        case .performance:
+            // Laranja, com um raio no lugar das estrelas.
+            ArtPalette(accent: Theme.accent(for: module),
+                       side: [Color(hex: 0x9A3A12), Color(hex: 0x5A1A0C)],
+                       face: [Color(hex: 0xFFC58A, opacity: 0.8), Color(hex: 0xE0702E, opacity: 0.75), Color(hex: 0xA2401A, opacity: 0.88)],
+                       core: [Color(hex: 0xFFF8F1), Color(hex: 0xF6DDC8), Color(hex: 0xEBC4A6)],
+                       glyph: AnyShape(Bolt()),
+                       glyphColors: [Color(hex: 0xF08A3C), Color(hex: 0xB8461A)])
         default:
             ArtPalette(accent: Theme.accent(for: module),
                        side: [Color(hex: 0x1E5A26), Color(hex: 0x0E3518)],
@@ -297,6 +305,18 @@ struct ArtPalette {
                        glyph: AnyShape(Sparkle()),
                        glyphColors: [Color(hex: 0x4A9A44), Color(hex: 0x2A6B2E)])
         }
+    }
+}
+
+/// Raio estilizado (seis pontos), desenhado na caixa dada.
+private struct Bolt: Shape {
+    func path(in r: CGRect) -> Path {
+        var p = Path()
+        let pts: [(CGFloat, CGFloat)] = [(0.62, 0.0), (0.18, 0.56), (0.47, 0.56), (0.36, 1.0), (0.82, 0.42), (0.53, 0.42)]
+        p.move(to: CGPoint(x: r.minX + pts[0].0 * r.width, y: r.minY + pts[0].1 * r.height))
+        for (x, y) in pts.dropFirst() { p.addLine(to: CGPoint(x: r.minX + x * r.width, y: r.minY + y * r.height)) }
+        p.closeSubpath()
+        return p
     }
 }
 
