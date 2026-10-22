@@ -362,3 +362,14 @@ apps.done.trash	What was moved is in the Trash.	O que foi movido está no Lixo.
 apps.done.deleted	Installer files were deleted.	Os arquivos de instalação foram apagados.
 apps.quit.message.reset	These apps are open. Quit them before resetting, or continue with them open.	Estes apps estão abertos. Feche-os antes de redefinir ou continue com eles abertos.
 apps.permissions.appManagement	Removing apps from Applications may need the App Management permission for CleanYourMac (System Settings › Privacy & Security).	Remover apps de Aplicativos pode exigir a permissão Gerenciamento de Apps para o CleanYourMac (Ajustes › Privacidade e Segurança).
+guide.title	Permission for CleanYourMac	Permissão para o CleanYourMac
+guide.fda.title	Allow Full Disk Access	Permitir Acesso Total ao Disco
+guide.apps.title	Allow App Management	Permitir Gerenciamento de Apps
+guide.step.drag	1. Drag the CleanYourMac icon into the list in System Settings (or click + and pick it in Applications).	1. Arraste o ícone do CleanYourMac para a lista nos Ajustes (ou clique em + e escolha o app em Aplicativos).
+guide.step.toggle	2. Turn on the switch next to CleanYourMac.	2. Ligue a chave ao lado de CleanYourMac.
+guide.drag.help	Drag this icon into the list	Arraste este ícone para a lista
+guide.reveal	Show in Finder	Mostrar no Finder
+guide.done	Done	Pronto
+apps.done.appManagement	macOS blocked moving some apps to the Trash.	O macOS bloqueou mover alguns apps para o Lixo.
+apps.done.allowAppManagement	Allow App Management	Permitir Gerenciamento de Apps
+apps.leftovers.needsFDA	Without Full Disk Access, macOS hides the data CleanYourMac uses to find leftovers of removed apps.	Sem Acesso Total ao Disco, o macOS esconde os dados que o CleanYourMac usa para achar sobras de apps removidos.

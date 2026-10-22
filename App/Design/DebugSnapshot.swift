@@ -18,10 +18,16 @@ enum DebugSnapshot {
             }
             exit(0)
         }
+        // CYM_GUIDE=fda|apps: abre o guia de permissão (para capturar com CYM_SNAPSHOT_GUIDE=1).
+        if let guide = env["CYM_GUIDE"] {
+            DispatchQueue.main.async { PermissionGuide.show(guide == "apps" ? .appManagement : .fullDiskAccess) }
+        }
         guard let path = env["CYM_SNAPSHOT"] else { return }
         let delay = Double(env["CYM_SNAPSHOT_DELAY"] ?? "") ?? 2
         DispatchQueue.main.asyncAfter(deadline: .now() + delay) {
-            guard let view = NSApp.windows.first(where: \.isVisible)?.contentView,
+            let windows = NSApp.windows.filter(\.isVisible)
+            let target = env["CYM_SNAPSHOT_GUIDE"] == "1" ? windows.first { $0 is NSPanel } : windows.first
+            guard let view = target?.contentView,
                   let rep = view.bitmapImageRepForCachingDisplay(in: view.bounds) else { exit(1) }
             view.cacheDisplay(in: view.bounds, to: rep)
             try? rep.representation(using: .png, properties: [:])?.write(to: URL(fileURLWithPath: path))

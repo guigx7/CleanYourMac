@@ -274,6 +274,7 @@ final class AppsFlowModel {
         phase = .acting
         processed = 0
         lastCounts = (0, 0)
+        needsAppManagement = false
         toProcess = leaves.count
         failures = [:]
         let stream = cleaner.clean(leaves)
@@ -289,7 +290,9 @@ final class AppsFlowModel {
                     case .success:
                         removedIDs.insert(item.id)
                         if item.removal.isDelete { lastCounts.deleted += 1 } else { lastCounts.trashed += 1 }
-                    case .failure(let f): failures[item.id] = f.reason
+                    case .failure(let f):
+                        failures[item.id] = f.reason
+                        if case .trashAppBundle = item.removal, f.reason.lowercased().contains("not permitted") { needsAppManagement = true }
                     }
                 case .completed(let r):
                     final = r
@@ -319,6 +322,9 @@ final class AppsFlowModel {
         if deleted > 0 { out.append("apps.done.deleted") }
         return out
     }
+
+    /// O macOS bloqueou mover um app (Gerenciamento de Apps): a tela final oferece a permissão.
+    private(set) var needsAppManagement = false
 
     /// Quantos itens da última ação foram para o Lixo e quantos foram apagados.
     private(set) var lastCounts = (trashed: 0, deleted: 0)

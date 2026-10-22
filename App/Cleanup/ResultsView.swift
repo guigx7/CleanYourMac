@@ -30,6 +30,7 @@ struct ResultsView: View {
         .onReceive(NotificationCenter.default.publisher(for: NSApplication.didBecomeActiveNotification)) { _ in
             let was = HelperManager.shared.state
             HelperManager.shared.refresh()
+            Task { await HelperManager.shared.checkVersion() }
             // Aprovado agora nos Ajustes: já mede o Cache do Sistema.
             if was != .active, HelperManager.shared.state == .active, model.canMeasureAdminGroups {
                 Task { await model.measureAdminGroups() }

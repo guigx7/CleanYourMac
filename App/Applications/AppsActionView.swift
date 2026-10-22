@@ -60,6 +60,13 @@ struct AppsDoneView: View {
                     }
                     .frame(maxHeight: 180)
                 }
+                if model.needsAppManagement {
+                    Label("apps.done.appManagement", systemImage: "lock.shield")
+                        .font(.system(size: 14))
+                        .foregroundStyle(Theme.secondaryText)
+                    Button("apps.done.allowAppManagement") { PermissionsService.openSettings(.appManagement) }
+                        .buttonStyle(GlassButtonStyle(prominent: true, size: .large))
+                }
                 HStack(spacing: 10) {
                     Button("apps.done.openTrash") {
                         NSWorkspace.shared.open(FileManager.default.homeDirectoryForCurrentUser.appendingPathComponent(".Trash"))

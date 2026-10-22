@@ -528,6 +528,40 @@
         }
       }
     },
+    "apps.done.allowAppManagement": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Allow App Management"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Permitir Gerenciamento de Apps"
+          }
+        }
+      }
+    },
+    "apps.done.appManagement": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "macOS blocked moving some apps to the Trash."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "O macOS bloqueou mover alguns apps para o Lixo."
+          }
+        }
+      }
+    },
     "apps.done.deleted": {
       "extractionState": "manual",
       "localizations": {
@@ -1255,6 +1289,23 @@
           "stringUnit": {
             "state": "translated",
             "value": "Instaladores"
+          }
+        }
+      }
+    },
+    "apps.leftovers.needsFDA": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Without Full Disk Access, macOS hides the data CleanYourMac uses to find leftovers of removed apps."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sem Acesso Total ao Disco, o macOS esconde os dados que o CleanYourMac usa para achar sobras de apps removidos."
           }
         }
       }
@@ -3941,6 +3992,142 @@
           "stringUnit": {
             "state": "translated",
             "value": "Dados de build, arquivos e simuladores criados pelo Xcode."
+          }
+        }
+      }
+    },
+    "guide.apps.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Allow App Management"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Permitir Gerenciamento de Apps"
+          }
+        }
+      }
+    },
+    "guide.done": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Done"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pronto"
+          }
+        }
+      }
+    },
+    "guide.drag.help": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Drag this icon into the list"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Arraste este ícone para a lista"
+          }
+        }
+      }
+    },
+    "guide.fda.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Allow Full Disk Access"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Permitir Acesso Total ao Disco"
+          }
+        }
+      }
+    },
+    "guide.reveal": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Show in Finder"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mostrar no Finder"
+          }
+        }
+      }
+    },
+    "guide.step.drag": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1. Drag the CleanYourMac icon into the list in System Settings (or click + and pick it in Applications)."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1. Arraste o ícone do CleanYourMac para a lista nos Ajustes (ou clique em + e escolha o app em Aplicativos)."
+          }
+        }
+      }
+    },
+    "guide.step.toggle": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "2. Turn on the switch next to CleanYourMac."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "2. Ligue a chave ao lado de CleanYourMac."
+          }
+        }
+      }
+    },
+    "guide.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Permission for CleanYourMac"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Permissão para o CleanYourMac"
           }
         }
       }

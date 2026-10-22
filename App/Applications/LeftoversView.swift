@@ -36,7 +36,16 @@ struct LeftoversView: View {
             .onAppear { if model.focus == .installers { group = .installers } }
             Divider()
             let list = items(group)
-            if list.isEmpty {
+            if list.isEmpty, group == .leftovers, !PermissionsService.hasFullDiskAccess() {
+                // Sem Acesso Total ao Disco o macOS esconde os metadados dos contêineres: as sobras não aparecem.
+                VStack(spacing: 12) {
+                    Image(systemName: "lock.shield").font(.system(size: 34)).foregroundStyle(.secondary)
+                    Text("apps.leftovers.needsFDA").multilineTextAlignment(.center).foregroundStyle(.secondary).frame(maxWidth: 360)
+                    Button("permissions.openSettings") { PermissionsService.openSettings(.fullDiskAccess) }
+                        .buttonStyle(.borderedProminent)
+                }
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+            } else if list.isEmpty {
                 Text(group == .leftovers ? "apps.leftovers.empty" : "apps.installers.empty")
                     .foregroundStyle(.secondary)
                     .frame(maxWidth: .infinity, maxHeight: .infinity)

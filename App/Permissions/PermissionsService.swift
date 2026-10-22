@@ -18,10 +18,12 @@ enum PermissionsService {
 
     enum Pane { case fullDiskAccess, appManagement }
 
-    static func openSettings(_ pane: Pane) {
+    /// Abre a lista certa dos Ajustes e, junto, o guia de arrastar o app para ela.
+    @MainActor static func openSettings(_ pane: Pane) {
         let anchor = pane == .fullDiskAccess ? "Privacy_AllFiles" : "Privacy_AppBundles"
         if let url = URL(string: "x-apple.systempreferences:com.apple.preference.security?\(anchor)") {
             NSWorkspace.shared.open(url)
         }
+        PermissionGuide.show(pane)
     }
 }

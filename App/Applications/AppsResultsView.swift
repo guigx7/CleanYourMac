@@ -1,4 +1,5 @@
 import SwiftUI
+import AppKit
 import CleanYourMacCore
 
 struct AppsResultsView: View {
@@ -29,6 +30,10 @@ struct AppsResultsView: View {
             .scrollIndicators(.never)
         }
         .onAppear { withAnimation(.smooth(duration: 0.5)) { appeared = true } }
+        .onReceive(NotificationCenter.default.publisher(for: NSApplication.didBecomeActiveNotification)) { _ in
+            HelperManager.shared.refresh()
+            Task { await HelperManager.shared.checkVersion() }
+        }
         .appsPrompts(model, confirmAct: $confirmAct)
         .alert("results.restart.confirm.title", isPresented: $confirmRestart) {
             Button("common.cancel", role: .cancel) {}

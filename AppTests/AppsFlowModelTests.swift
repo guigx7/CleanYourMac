@@ -26,17 +26,18 @@ struct StubAppsScan: AppsScanning {
 final class RecordingCleaner: Cleaning, @unchecked Sendable {
     private(set) var requested: [[JunkItem]] = []
     var failing: Set<String> = []
+    var reason = "denied"
 
     func clean(_ items: [JunkItem]) -> AsyncStream<CleanEvent> {
         requested.append(items)
-        let failing = failing
+        let failing = failing, reason = reason
         return AsyncStream { cont in
             var removed: [String] = [], failed: [String: String] = [:]
             for leaf in items.flatMap(\.leaves) where leaf.removal != nil {
                 cont.yield(.started(leaf))
                 if failing.contains(leaf.id) {
-                    failed[leaf.id] = "denied"
-                    cont.yield(.finished(leaf, .failure(CleanFailure(reason: "denied"))))
+                    failed[leaf.id] = reason
+                    cont.yield(.finished(leaf, .failure(CleanFailure(reason: reason))))
                 } else {
                     removed.append(leaf.id)
                     cont.yield(.finished(leaf, .success(leaf.size)))
@@ -273,6 +274,30 @@ struct AppsFlowModelTests {
         #expect(ParityExport.isAllowedOutput(logs.appendingPathComponent("parity.json").path))
         #expect(!ParityExport.isAllowedOutput("/tmp/x.json"))
         #expect(!ParityExport.isAllowedOutput(logs.appendingPathComponent("../../x.json").path))
+    }
+
+    @Test func blockedAppBundleOffersAppManagement() async {
+        let cleaner = RecordingCleaner()
+        let bundle = fooItem().children[0].children[0]
+        cleaner.failing = [bundle.id]
+        cleaner.reason = "Operation not permitted"
+        let m = model(cleaner: cleaner)
+        m.start()
+        await waitFor(m) { $0.phase == .results }
+        m.selection.toggle(bundle)
+        m.act()
+        await waitFor(m) { if case .done = $0.phase { true } else { false } }
+        #expect(m.needsAppManagement)
+        // Outros motivos (app aberto, falha comum) não pedem a permissão.
+        let other = RecordingCleaner()
+        other.failing = [bundle.id]
+        let m2 = model(cleaner: other)
+        m2.start()
+        await waitFor(m2) { $0.phase == .results }
+        m2.selection.toggle(bundle)
+        m2.act()
+        await waitFor(m2) { if case .done = $0.phase { true } else { false } }
+        #expect(!m2.needsAppManagement)
     }
 
     @Test func textsFollowWhatTheActionDoes() {
