@@ -12,22 +12,29 @@ public struct SpaceProtection: Sendable {
 
     private let home: String
     private let systemFolders: Set<String>
+    private let personal: Set<String>
+
+    /// Dados pessoais em ~/Library que nunca vão para o Lixo pela Lupa (senhas, mensagens, contas, navegador…).
+    static let homePersonal = ["Library/Keychains", "Library/Messages", "Library/Accounts", "Library/Safari", "Library/Calendars",
+                               "Library/Cookies", "Library/IdentityServices", "Library/Application Support/AddressBook",
+                               "Library/Mail", "Library/Photos", "Library/Containers/com.apple.mail"]
 
     /// Pastas-padrão relativas à pasta pessoal.
     static let homeStandard = ["Desktop", "Documents", "Downloads", "Library", "Movies", "Music", "Pictures", "Public", "Applications",
                                "Library/Application Support", "Library/Caches", "Library/Containers", "Library/Group Containers",
-                               "Library/Logs", "Library/Mail", "Library/Mobile Documents", "Library/Preferences"]
+                               "Library/Logs", "Library/Mobile Documents", "Library/Preferences"]
 
     public init(home: URL = FileManager.default.homeDirectoryForCurrentUser) {
         let h = PathPolicy.lexicalPath(home.path)
         self.home = h
         systemFolders = Set(Self.homeStandard.map { h + "/" + $0 } + ["/Users/Shared", "/Library/Application Support"])
+        personal = Set(Self.homePersonal.map { h + "/" + $0 })
     }
 
     public func level(path raw: String) -> Level {
         let path = PathPolicy.lexicalPath(raw)
         let parts = path.split(separator: "/")
-        if path == "/" || parts.count == 1 || path == home || path.hasPrefix("/System/Volumes") || Self.isRestricted(path) {
+        if path == "/" || parts.count == 1 || path == home || personal.contains(path) || path.hasPrefix("/System/Volumes") || Self.isRestricted(path) {
             return .essential
         }
         // Ancestrais da pasta pessoal (ex.: /Users) também ficam.

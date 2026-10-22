@@ -98,3 +98,14 @@ import Testing
     #expect(r.values.allSatisfy { if case .failure(let f) = $0 { f.reason == "detached" } else { false } })
     #expect(trasher.trashed.isEmpty)
 }
+
+/// Dados pessoais que quebram o Mac ou somem com o histórico se forem para o Lixo.
+@Test func personalDataInLibraryIsEssential() {
+    let p = SpaceProtection(home: URL(fileURLWithPath: "/Users/me"))
+    for rel in ["Keychains", "Messages", "Accounts", "Safari", "Calendars", "Cookies", "IdentityServices",
+                "Application Support/AddressBook", "Mail"] {
+        #expect(p.level(path: "/Users/me/Library/" + rel) == .essential, "\(rel)")
+    }
+    // O conteúdo de pastas comuns continua marcável.
+    #expect(p.level(path: "/Users/me/Library/Caches/com.example") == .none)
+}
