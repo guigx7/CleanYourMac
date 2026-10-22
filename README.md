@@ -48,7 +48,7 @@ Tudo o que o módulo Aplicativos remove vai para o **Lixo** (os DMG são apagado
 
 As capturas locais do Time Machine, quando existem, ganham uma seção própria para apagar por data. Veja o [relatório de paridade](docs/re/parity/perf-report-2026-10-22.md).
 
-A Lupa de Espaço está no roadmap.
+**Lupa de Espaço** (v0.4) — analisa o disco inteiro (cerca de 3,6 milhões de itens em ~20 s nesta máquina) ou uma pasta escolhida e mostra o que ocupa espaço: a lista dos maiores itens de cada pasta (arquivos ocultos incluídos, os pequenos agrupados em "Outros itens") ao lado de um mapa de bolhas proporcional ao tamanho. Clique numa pasta para entrar; caminho, voltar e avançar para navegar. Marque o que não precisa, revise e mova para o **Lixo** — itens do macOS e pastas-padrão (Biblioteca, Downloads…) não podem ser marcados, e itens do iCloud têm aviso. Os números batem com os do CleanMyMac — veja o [relatório de paridade](docs/re/parity/spacelens-report-2026-10-22.md).
 
 ## Instalar
 
@@ -85,7 +85,7 @@ No Xcode, em **Signing & Capabilities**, troque o time pelo seu (o `project.yml`
 
 ## Use com cuidado
 
-- Na **Limpeza**, a remoção é **definitiva** (não vai para o Lixo), como no CleanMyMac. Nos **Aplicativos**, apps e arquivos vão para o Lixo. Revise antes de confirmar.
+- Na **Limpeza**, a remoção é **definitiva** (não vai para o Lixo), como no CleanMyMac. Nos **Aplicativos**, no **Desempenho** e na **Lupa de Espaço**, os itens vão para o Lixo. Revise antes de confirmar.
 - Ao alterar apps (binários universais e idiomas), a assinatura é verificada antes e depois; se quebrasse, o app é restaurado.
 - Cada limpeza gera um registro em `~/Library/Logs/CleanYourMac/`.
 - Software fornecido "como está", sem garantias (licença MIT).
@@ -96,8 +96,8 @@ No Xcode, em **Signing & Capabilities**, troque o time pelo seu (o `project.yml`
 |---|---|
 | Testes do Core | `swift test --package-path Core` |
 | Testes do app | `scripts/test-app.sh` |
-| CLI de diagnóstico (só leitura/simulação) | `swift run --package-path Core cym scan` · `cym clean --dry-run` · `cym apps [--json] [--no-network]` · `cym performance [--json]` |
-| Comparar com uma baseline | `python3 -I scripts/parity/compare.py <baseline.json> <cym.json>` · Aplicativos: `compare_apps.py` · Desempenho: `compare_perf.py` |
+| CLI de diagnóstico (só leitura/simulação) | `swift run --package-path Core cym scan` · `cym clean --dry-run` · `cym apps [--json] [--no-network]` · `cym performance [--json]` · `cym spacelens [pasta] [--json]` |
+| Comparar com uma baseline | `python3 -I scripts/parity/compare.py <baseline.json> <cym.json>` · Aplicativos: `compare_apps.py` · Desempenho: `compare_perf.py` · Lupa de Espaço: `compare_spacelens.py` |
 
 Estrutura: `Core/` (pacote Swift: scanners, motor de análise e de limpeza, helper), `App/` (SwiftUI), `Helper/` (daemon privilegiado), `docs/re/specs/` (especificação de cada grupo), `docs/superpowers/` (design e plano).
 
@@ -109,7 +109,7 @@ Para contribuir com uma regra nova: comece pela especificação em `docs/re/spec
 - [x] **v0.2 — Aplicativos**: desinstalador, redefinir, atualizador (mostra e abre), sobras e instaladores
 - [ ] Atualizador, etapa 2: instalar sozinho apps de site próprio e do Homebrew, conferindo a assinatura
 - [x] **v0.3 — Desempenho**: tarefas de manutenção, itens de início e em segundo plano (desativar, reativar, remover), capturas do Time Machine
-- [ ] Lupa de Espaço: mapa visual do armazenamento e pastas grandes
+- [x] **v0.4 — Lupa de Espaço**: mapa de bolhas do disco ou de uma pasta, navegação, revisão e remoção para o Lixo
 - [ ] Assinatura Developer ID e notarização
 
 ## Licença
