@@ -122,8 +122,16 @@ public struct SystemLoginItems: LoginItemsSource {
         return LSSharedFileListItemRemove(list, item) == noErr
     }
 
+    /// `LSSharedFileListInsertItemURL` com o primeiro argumento de posição como ponteiro cru: `kLSSharedFileListItemLast`
+    /// é um marcador (0x2), não um objeto, e o retain que o Swift faria num `LSSharedFileListItem` derruba o app.
+    private typealias InsertItemURL = @convention(c) (LSSharedFileList, UnsafeRawPointer?, CFString?, OpaquePointer?, CFURL,
+                                                      CFDictionary?, CFArray?) -> Unmanaged<LSSharedFileListItem>?
+
     public func add(_ app: URL) -> Bool {
-        guard let list = list() else { return false }
-        return LSSharedFileListInsertItemURL(list, kLSSharedFileListItemLast.takeUnretainedValue(), nil, nil, app as CFURL, nil, nil) != nil
+        guard let list = list(), let symbol = dlsym(UnsafeMutableRawPointer(bitPattern: -2), "LSSharedFileListInsertItemURL") else { return false }
+        let insert = unsafeBitCast(symbol, to: InsertItemURL.self)
+        guard let item = insert(list, UnsafeRawPointer(kLSSharedFileListItemLast.toOpaque()), nil, nil, app as CFURL, nil, nil) else { return false }
+        item.release()
+        return true
     }
 }
