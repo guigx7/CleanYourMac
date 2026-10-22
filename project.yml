@@ -12,8 +12,8 @@ packages:
 settings:
   base:
     SWIFT_VERSION: "6.0"
-    MARKETING_VERSION: "0.3.0"
-    CURRENT_PROJECT_VERSION: "4"
+    MARKETING_VERSION: "0.4.0"
+    CURRENT_PROJECT_VERSION: "5"
     # SMAppService exige app e helper assinados pelo mesmo time (Apple Development serve localmente).
     DEVELOPMENT_TEAM: Z452FGT943
     CODE_SIGN_STYLE: Manual
