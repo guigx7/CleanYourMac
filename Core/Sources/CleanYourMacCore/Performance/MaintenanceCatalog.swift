@@ -85,14 +85,6 @@ public struct SystemMaintenanceFacts: MaintenanceFacts {
         // "/:\n\tIndexing enabled." quando ligado.
         isSpotlightIndexingEnabled = commands.run("/usr/bin/mdutil", ["-s", "/"]).output.contains("Indexing enabled")
         periodicToolExists = FileManager.default.isExecutableFile(atPath: "/usr/sbin/periodic")
-        localTimeMachineSnapshots = TimeMachineSnapshotsList.parse(commands.run("/usr/bin/tmutil", ["listlocalsnapshots", "/"]).output)
-    }
-}
-
-/// Saída de `tmutil listlocalsnapshots /`: uma linha por captura (a primeira é um cabeçalho).
-enum TimeMachineSnapshotsList {
-    static func parse(_ output: String) -> [String] {
-        output.split(separator: "\n").map { $0.trimmingCharacters(in: .whitespaces) }
-            .filter { $0.hasPrefix("com.apple.TimeMachine.") }
+        localTimeMachineSnapshots = TimeMachineSnapshots(commands: commands).list().map(\.name)
     }
 }
