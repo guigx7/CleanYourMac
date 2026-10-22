@@ -153,7 +153,23 @@ final class PerformanceFlowModel {
         }
     }
 
+    /// Quantos itens o rodapé conta: só os da seção visível (a ação também só leva esses).
+    var footerCount: Int {
+        switch section {
+        case .maintenance: (report?.tasks ?? []).filter { selectedTasks.contains($0.id) }.count
+        case .loginItems, .backgroundItems: visibleItems.filter { selectedItems.contains($0.id) }.count
+        case .snapshots: (report?.snapshots ?? []).filter { selectedSnapshots.contains($0.id) }.count
+        }
+    }
+
+    /// Data da última execução bem-sucedida (gravada pelo MaintenanceRunner).
+    func lastRun(_ id: MaintenanceTaskID) -> Date? {
+        UserDefaults.standard.object(forKey: UserDefaultsMaintenanceHistory.key(id)) as? Date
+    }
+
     // MARK: - Tarefas
+
+    func runSelectedTasks() { runTasks(Array(selectedTasks)) }
 
     func runTasks(_ ids: [MaintenanceTaskID]) {
         let order = (report?.tasks ?? []).map(\.id).filter(ids.contains)

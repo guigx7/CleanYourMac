@@ -34,6 +34,7 @@ enum Theme {
 
     /// Tinta das telas claras do Gerenciador de Aplicativos.
     static let appsTint = Color(hex: 0x2F62D8)
+    static let perfTint = Color(hex: 0xC4521F)
 
     /// Tinta das telas claras (Gerenciador de Limpeza).
     static let reviewTint = Color(hex: 0x2E8B47)

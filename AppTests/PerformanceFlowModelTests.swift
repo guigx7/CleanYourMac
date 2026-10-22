@@ -168,4 +168,23 @@ struct PerfSetup {
         while m.phase == .acting { await Task.yield() }
         #expect(s.startup.performed.map(\.1) == [[google.id]])
     }
+
+    @Test func taskSelectionAndRunOnlyVisibleSection() async {
+        let s = PerfSetup()
+        let m = await s.scanned()
+        let warp = m.report!.loginItems[0]
+        m.openManager(.maintenance)
+        m.selectedTasks = [.flushDNS, .repairPermissions]
+        m.selectedItems = [warp.id]
+        #expect(m.footerCount == 2)
+        m.openManager(.loginItems)
+        #expect(m.footerCount == 1)
+        m.openManager(.backgroundItems)
+        #expect(m.footerCount == 0)
+        m.openManager(.maintenance)
+        m.runSelectedTasks()
+        while m.phase == .acting { await Task.yield() }
+        #expect(s.maintenance.requested == [[.flushDNS, .repairPermissions]])
+        #expect(s.startup.performed.isEmpty)
+    }
 }

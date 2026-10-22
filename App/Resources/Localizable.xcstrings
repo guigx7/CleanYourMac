@@ -5067,6 +5067,23 @@
         }
       }
     },
+    "perf.manager.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Performance Manager"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gerenciador de Desempenho"
+          }
+        }
+      }
+    },
     "perf.modern.message": {
       "extractionState": "manual",
       "localizations": {
@@ -5254,6 +5271,176 @@
         }
       }
     },
+    "perf.section.backgroundItems": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Background Items"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Itens em Segundo Plano"
+          }
+        }
+      }
+    },
+    "perf.section.backgroundItems.description": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Agents and helpers that launchd starts for apps. Apple items are never listed."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Agentes e auxiliares que o launchd inicia para os apps. Itens da Apple nunca aparecem."
+          }
+        }
+      }
+    },
+    "perf.section.loginItems": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Login Items"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Itens de Início"
+          }
+        }
+      }
+    },
+    "perf.section.loginItems.description": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Apps that open by themselves when you log in. Turning one off keeps the app; you can turn it back on here."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Apps que abrem sozinhos quando você inicia a sessão. Desativar mantém o app; dá para reativar aqui."
+          }
+        }
+      }
+    },
+    "perf.section.maintenance": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Maintenance Tasks"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tarefas de Manutenção"
+          }
+        }
+      }
+    },
+    "perf.section.maintenance.description": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Each task runs a macOS tool. Pick the ones you want and click Run."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cada tarefa roda uma ferramenta do macOS. Escolha as que quiser e clique em Executar."
+          }
+        }
+      }
+    },
+    "perf.section.snapshots": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Time Machine Snapshots"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Capturas do Time Machine"
+          }
+        }
+      }
+    },
+    "perf.section.snapshots.description": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Local copies Time Machine keeps on this disk. Backups on the backup disk aren't touched."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cópias locais que o Time Machine guarda neste disco. Os backups no disco de backup não são tocados."
+          }
+        }
+      }
+    },
+    "perf.task.admin": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Needs administrator permission"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Precisa de permissão de administrador"
+          }
+        }
+      }
+    },
+    "perf.task.flushDNS.description": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Clears the list of website addresses macOS remembers. Useful when a site moved or won't load."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Limpa a lista de endereços de sites que o macOS guarda. Útil quando um site mudou de lugar ou não abre."
+          }
+        }
+      }
+    },
     "perf.task.flushDNS.title": {
       "extractionState": "manual",
       "localizations": {
@@ -5267,6 +5454,23 @@
           "stringUnit": {
             "state": "translated",
             "value": "Esvaziar Cache do DNS"
+          }
+        }
+      }
+    },
+    "perf.task.freeUpPurgeable.description": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Asks macOS to clear caches and other data it can download or rebuild later, freeing that space now."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pede ao macOS para limpar caches e outros dados que ele consegue baixar ou refazer depois, liberando esse espaço agora."
           }
         }
       }
@@ -5288,6 +5492,23 @@
         }
       }
     },
+    "perf.task.freeUpRAM.description": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Asks macOS to drop cached memory so open apps have more room."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pede ao macOS para descartar a memória em cache e dar mais espaço aos apps abertos."
+          }
+        }
+      }
+    },
     "perf.task.freeUpRAM.title": {
       "extractionState": "manual",
       "localizations": {
@@ -5301,6 +5522,40 @@
           "stringUnit": {
             "state": "translated",
             "value": "Liberar RAM"
+          }
+        }
+      }
+    },
+    "perf.task.lastRun": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Last run on %@"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Última execução em %@"
+          }
+        }
+      }
+    },
+    "perf.task.periodicScripts.description": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Runs the daily, weekly and monthly macOS housekeeping scripts."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Roda os scripts de arrumação diária, semanal e mensal do macOS."
           }
         }
       }
@@ -5322,6 +5577,23 @@
         }
       }
     },
+    "perf.task.reindexSpotlight.description": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rebuilds the Spotlight index from scratch. Only worth it when search results are wrong or missing."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Refaz o índice do Spotlight do zero. Só vale a pena quando a busca dá resultados errados ou incompletos."
+          }
+        }
+      }
+    },
     "perf.task.reindexSpotlight.title": {
       "extractionState": "manual",
       "localizations": {
@@ -5335,6 +5607,23 @@
           "stringUnit": {
             "state": "translated",
             "value": "Reindexar o Spotlight"
+          }
+        }
+      }
+    },
+    "perf.task.repairPermissions.description": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Resets the permissions of the folders in your home folder to the macOS defaults."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Volta as permissões das pastas da sua pasta pessoal ao padrão do macOS."
           }
         }
       }
@@ -5356,6 +5645,57 @@
         }
       }
     },
+    "perf.task.speedUpMail.description": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Asks Spotlight to index your Mail messages again, which helps when search in Mail misses messages."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pede ao Spotlight para indexar de novo as mensagens do Mail, o que ajuda quando a busca do Mail não encontra mensagens."
+          }
+        }
+      }
+    },
+    "perf.task.speedUpMail.fda": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Needs Full Disk Access to read the Mail folder."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Precisa de Acesso Total ao Disco para ler a pasta do Mail."
+          }
+        }
+      }
+    },
+    "perf.task.speedUpMail.grant": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Grant Access"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Conceder Acesso"
+          }
+        }
+      }
+    },
     "perf.task.speedUpMail.title": {
       "extractionState": "manual",
       "localizations": {
@@ -5373,6 +5713,23 @@
         }
       }
     },
+    "perf.task.thinSnapshots.description": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Asks macOS to free about 1 GB by removing the oldest local Time Machine snapshots."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pede ao macOS para liberar cerca de 1 GB apagando as capturas locais mais antigas do Time Machine."
+          }
+        }
+      }
+    },
     "perf.task.thinSnapshots.title": {
       "extractionState": "manual",
       "localizations": {
@@ -5386,6 +5743,23 @@
           "stringUnit": {
             "state": "translated",
             "value": "Diminuir Capturas do Time Machine"
+          }
+        }
+      }
+    },
+    "perf.task.upTo": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Up to %@"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Até %@"
           }
         }
       }

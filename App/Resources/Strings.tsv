@@ -444,3 +444,25 @@ perf.confirm.snapshots.title	Delete %d snapshot(s)?	Apagar %d captura(s)?
 perf.confirm.snapshots.message	Local snapshots let you restore files without the backup disk. Backups on the backup disk aren't affected.	As capturas locais permitem restaurar arquivos sem o disco de backup. Os backups no disco de backup não são afetados.
 perf.modern.title	Turn this off in System Settings	Desative isto nos Ajustes do Sistema
 perf.modern.message	macOS only lets you change %@ in System Settings › General › Login Items. Settings is open: switch it off there.	O macOS só deixa mudar %@ em Ajustes do Sistema › Geral › Itens de Início. Os Ajustes estão abertos: desligue por lá.
+perf.manager.title	Performance Manager	Gerenciador de Desempenho
+perf.section.maintenance	Maintenance Tasks	Tarefas de Manutenção
+perf.section.maintenance.description	Each task runs a macOS tool. Pick the ones you want and click Run.	Cada tarefa roda uma ferramenta do macOS. Escolha as que quiser e clique em Executar.
+perf.section.loginItems	Login Items	Itens de Início
+perf.section.loginItems.description	Apps that open by themselves when you log in. Turning one off keeps the app; you can turn it back on here.	Apps que abrem sozinhos quando você inicia a sessão. Desativar mantém o app; dá para reativar aqui.
+perf.section.backgroundItems	Background Items	Itens em Segundo Plano
+perf.section.backgroundItems.description	Agents and helpers that launchd starts for apps. Apple items are never listed.	Agentes e auxiliares que o launchd inicia para os apps. Itens da Apple nunca aparecem.
+perf.section.snapshots	Time Machine Snapshots	Capturas do Time Machine
+perf.section.snapshots.description	Local copies Time Machine keeps on this disk. Backups on the backup disk aren't touched.	Cópias locais que o Time Machine guarda neste disco. Os backups no disco de backup não são tocados.
+perf.task.upTo	Up to %@	Até %@
+perf.task.admin	Needs administrator permission	Precisa de permissão de administrador
+perf.task.lastRun	Last run on %@	Última execução em %@
+perf.task.speedUpMail.fda	Needs Full Disk Access to read the Mail folder.	Precisa de Acesso Total ao Disco para ler a pasta do Mail.
+perf.task.speedUpMail.grant	Grant Access	Conceder Acesso
+perf.task.speedUpMail.description	Asks Spotlight to index your Mail messages again, which helps when search in Mail misses messages.	Pede ao Spotlight para indexar de novo as mensagens do Mail, o que ajuda quando a busca do Mail não encontra mensagens.
+perf.task.flushDNS.description	Clears the list of website addresses macOS remembers. Useful when a site moved or won't load.	Limpa a lista de endereços de sites que o macOS guarda. Útil quando um site mudou de lugar ou não abre.
+perf.task.freeUpPurgeable.description	Asks macOS to clear caches and other data it can download or rebuild later, freeing that space now.	Pede ao macOS para limpar caches e outros dados que ele consegue baixar ou refazer depois, liberando esse espaço agora.
+perf.task.reindexSpotlight.description	Rebuilds the Spotlight index from scratch. Only worth it when search results are wrong or missing.	Refaz o índice do Spotlight do zero. Só vale a pena quando a busca dá resultados errados ou incompletos.
+perf.task.repairPermissions.description	Resets the permissions of the folders in your home folder to the macOS defaults.	Volta as permissões das pastas da sua pasta pessoal ao padrão do macOS.
+perf.task.freeUpRAM.description	Asks macOS to drop cached memory so open apps have more room.	Pede ao macOS para descartar a memória em cache e dar mais espaço aos apps abertos.
+perf.task.periodicScripts.description	Runs the daily, weekly and monthly macOS housekeeping scripts.	Roda os scripts de arrumação diária, semanal e mensal do macOS.
+perf.task.thinSnapshots.description	Asks macOS to free about 1 GB by removing the oldest local Time Machine snapshots.	Pede ao macOS para liberar cerca de 1 GB apagando as capturas locais mais antigas do Time Machine.
