@@ -33,7 +33,15 @@ public struct SpaceProtection: Sendable {
         // Ancestrais da pasta pessoal (ex.: /Users) também ficam.
         if home.hasPrefix(path + "/") { return .essential }
         if systemFolders.contains(path) { return .systemFolder }
-        return PathPolicy.isVital(path) ? .essential : .none
+        if PathPolicy.isVital(path) || Self.isCloudOnly(path) { return .essential }
+        return .none
+    }
+
+    /// Item do iCloud que só existe na nuvem (não baixado): não há o que mandar para o Lixo aqui.
+    public static func isCloudOnly(_ path: String) -> Bool {
+        let keys: Set<URLResourceKey> = [.isUbiquitousItemKey, .ubiquitousItemDownloadingStatusKey]
+        guard let v = try? URL(fileURLWithPath: path).resourceValues(forKeys: keys), v.isUbiquitousItem == true else { return false }
+        return v.ubiquitousItemDownloadingStatus == .notDownloaded
     }
 
     public func level(_ node: SpaceNode) -> Level { level(path: node.path) }

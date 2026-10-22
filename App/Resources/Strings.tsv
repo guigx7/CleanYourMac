@@ -515,3 +515,4 @@ lens.done.title	Done!	Pronto!
 lens.done.partial	Some items weren't moved	Alguns itens não foram movidos
 lens.done.message	%d item(s) moved to the Trash · %@	%d item(ns) movido(s) para o Lixo · %@
 lens.done.backToResults	Back to Results	Voltar aos Resultados
+lens.review.cloud	Some items are in iCloud: moving them to the Trash also removes them from iCloud and from your other devices.	Alguns itens estão no iCloud: mandar para o Lixo também os tira do iCloud e dos seus outros aparelhos.

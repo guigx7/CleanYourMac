@@ -186,6 +186,11 @@ struct SpaceLensReviewView: View {
                 .buttonStyle(GlassButtonStyle(prominent: true, size: .large))
             }
             Text("lens.review.trashNote").font(.callout).foregroundStyle(Theme.secondaryText)
+            if model.selectionTouchesCloud {
+                Label("lens.review.cloud", systemImage: "icloud.fill")
+                    .font(.callout.weight(.semibold))
+                    .foregroundStyle(Color(hex: 0xFFD9A0))
+            }
         }
         .padding(32)
     }

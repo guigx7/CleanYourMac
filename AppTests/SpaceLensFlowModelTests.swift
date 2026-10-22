@@ -173,4 +173,14 @@ struct LensSetup {
         #expect(outcome.failed[d.name] == "denied")
         #expect(m.report!.root.child("d.bin") != nil)
     }
+
+    /// Mover para o Lixo algo do iCloud Drive também apaga da nuvem: a revisão avisa.
+    @Test func cloudItemsNeedWarning() async {
+        let s = LensSetup()
+        let m = await s.scanned()
+        let d = m.report!.root.child("d.bin")!
+        m.toggle(d)
+        #expect(!m.selectionTouchesCloud)
+        #expect(SpaceLensFlowModel.isCloudPath(NSHomeDirectory() + "/Library/Mobile Documents/com~apple~CloudDocs/x.pdf"))
+    }
 }

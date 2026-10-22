@@ -4574,6 +4574,23 @@
         }
       }
     },
+    "lens.review.cloud": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Some items are in iCloud: moving them to the Trash also removes them from iCloud and from your other devices."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Alguns itens estão no iCloud: mandar para o Lixo também os tira do iCloud e dos seus outros aparelhos."
+          }
+        }
+      }
+    },
     "lens.review.subtitle": {
       "extractionState": "manual",
       "localizations": {

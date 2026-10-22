@@ -199,6 +199,14 @@ final class SpaceLensFlowModel {
 
     // MARK: - Revisão e remoção
 
+    /// iCloud Drive (ou Mesa/Documentos sincronizados): mover para o Lixo também tira o item da nuvem.
+    nonisolated static func isCloudPath(_ path: String) -> Bool {
+        if path.hasPrefix(NSHomeDirectory() + "/Library/Mobile Documents/") { return true }
+        return (try? URL(fileURLWithPath: path).resourceValues(forKeys: [.isUbiquitousItemKey]))?.isUbiquitousItem == true
+    }
+
+    var selectionTouchesCloud: Bool { selection.contains { Self.isCloudPath($0.path) } }
+
     func review() {
         guard !selection.isEmpty else { return }
         phase = .reviewing

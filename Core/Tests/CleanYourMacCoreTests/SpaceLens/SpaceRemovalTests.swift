@@ -79,3 +79,7 @@ import Testing
         #expect(trasher.trashed.isEmpty && FileManager.default.fileExists(atPath: f.path))
     }
 }
+
+@Test func localFilesAreNotCloudOnly() {
+    #expect(!SpaceProtection.isCloudOnly(FileManager.default.temporaryDirectory.path))
+}
