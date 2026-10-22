@@ -38,7 +38,17 @@ Nesta máquina de referência, a análise bate com a do CleanMyMac 5.7.2 grupo a
 
 Tudo o que o módulo Aplicativos remove vai para o **Lixo** (os DMG são apagados na hora). Apps abertos precisam ser fechados antes de desinstalar. Só é consultada a rede durante a análise, para checar versões; nenhuma lista de apps sai do Mac (o catálogo do Homebrew é baixado e comparado localmente). Veja o [relatório de paridade](docs/re/parity/apps-report-2026-10-21.md).
 
-Os módulos Desempenho e Lupa de Espaço estão no roadmap.
+**Desempenho** (v0.3) — três partes, como no CleanMyMac:
+
+| Parte | O que faz |
+|---|---|
+| **Tarefas de manutenção** | só as que fazem sentido neste Mac: Acelerar o Mail (reindexa o Mail no Spotlight), Esvaziar Cache do DNS, Liberar Espaço Purgável, Reindexar o Spotlight, Reparar Permissões (pasta pessoal), e, quando se aplicam, Liberar RAM (Intel), Scripts Periódicos (macOS antigo) e Diminuir Capturas do Time Machine. Cada uma roda uma ferramenta do macOS, com tempo-limite e Parar |
+| **Itens de início** | apps que abrem ao iniciar a sessão: **Desativar** (sai da lista e fica guardado para **Reativar**) ou **Remover** |
+| **Itens em segundo plano** | agentes e daemons do launchd de terceiros (nunca os da Apple): **Desativar**/**Reativar** pelo `launchctl` ou **Remover** (o plist e o auxiliar vão para o Lixo; o app dono fica, e o app avisa quando ele pode recriar o item) |
+
+As capturas locais do Time Machine, quando existem, ganham uma seção própria para apagar por data. Veja o [relatório de paridade](docs/re/parity/perf-report-2026-10-22.md).
+
+A Lupa de Espaço está no roadmap.
 
 ## Instalar
 
@@ -68,10 +78,10 @@ No Xcode, em **Signing & Capabilities**, troque o time pelo seu (o `project.yml`
 | Permissão | Para quê | Onde conceder |
 |---|---|---|
 | **Acesso Total ao Disco** | sem ele, o macOS esconde dados do Mail, do Safari e de outros apps | Ajustes › Privacidade e Segurança › Acesso Total ao Disco › **+** › CleanYourMac |
-| **Ajudante (opcional)** | mede os caches do sistema em toda análise e limpa itens do sistema sem pedir senha; desinstala apps de outros donos e descarrega serviços do sistema dos apps | botão **Instalar ajudante** nos Resultados → Ajustes › Geral › Itens de Início e Extensões › permitir em segundo plano |
+| **Ajudante (opcional)** | mede os caches do sistema em toda análise e limpa itens do sistema sem pedir senha; desinstala apps de outros donos e descarrega serviços do sistema dos apps; roda as tarefas de manutenção de administrador e desativa daemons (só para contas administradoras) | botão **Instalar ajudante** nos Resultados → Ajustes › Geral › Itens de Início e Extensões › permitir em segundo plano |
 | **Gerenciamento de Apps** | remover código extra e idiomas de outros apps; desinstalar apps de /Applications | Ajustes › Privacidade e Segurança › Gerenciamento de Apps |
 
-**Sobre o ajudante:** é um serviço do sistema (SMAppService) embutido no app. Ele só aceita conexões do CleanYourMac assinado pelo mesmo desenvolvedor, não executa scripts — apenas apagar, esvaziar pasta, afinar binário, medir, mover para o Lixo de quem pediu, descarregar um serviço do launchd e esquecer o recibo de um pacote — e revalida cada pedido como root (nunca locais vitais, nunca através de links, nunca itens `com.apple.*`, sempre ligado ao app escolhido). Depois de atualizar o app, use **Atualizar ajudante** se o botão aparecer. Para remover: desative-o em Itens de Início e Extensões.
+**Sobre o ajudante:** é um serviço do sistema (SMAppService) embutido no app. Ele só aceita conexões do CleanYourMac assinado pelo mesmo desenvolvedor, não executa scripts — apenas apagar, esvaziar pasta, afinar binário, medir, mover para o Lixo de quem pediu, descarregar, desativar ou reativar um serviço do launchd, rodar uma das tarefas de manutenção (comandos fixos) e esquecer o recibo de um pacote — e revalida cada pedido como root (nunca locais vitais, nunca através de links, nunca itens `com.apple.*`, sempre ligado ao app escolhido). Depois de atualizar o app, use **Atualizar ajudante** se o botão aparecer. Para remover: desative-o em Itens de Início e Extensões.
 
 ## Use com cuidado
 
@@ -86,8 +96,8 @@ No Xcode, em **Signing & Capabilities**, troque o time pelo seu (o `project.yml`
 |---|---|
 | Testes do Core | `swift test --package-path Core` |
 | Testes do app | `scripts/test-app.sh` |
-| CLI de diagnóstico (só leitura/simulação) | `swift run --package-path Core cym scan` · `cym clean --dry-run` · `cym apps [--json] [--no-network]` |
-| Comparar com uma baseline | `python3 -I scripts/parity/compare.py <baseline.json> <cym.json>` · Aplicativos: `compare_apps.py` |
+| CLI de diagnóstico (só leitura/simulação) | `swift run --package-path Core cym scan` · `cym clean --dry-run` · `cym apps [--json] [--no-network]` · `cym performance [--json]` |
+| Comparar com uma baseline | `python3 -I scripts/parity/compare.py <baseline.json> <cym.json>` · Aplicativos: `compare_apps.py` · Desempenho: `compare_perf.py` |
 
 Estrutura: `Core/` (pacote Swift: scanners, motor de análise e de limpeza, helper), `App/` (SwiftUI), `Helper/` (daemon privilegiado), `docs/re/specs/` (especificação de cada grupo), `docs/superpowers/` (design e plano).
 
@@ -98,7 +108,7 @@ Para contribuir com uma regra nova: comece pela especificação em `docs/re/spec
 - [x] **v0.1 — Limpeza**
 - [x] **v0.2 — Aplicativos**: desinstalador, redefinir, atualizador (mostra e abre), sobras e instaladores
 - [ ] Atualizador, etapa 2: instalar sozinho apps de site próprio e do Homebrew, conferindo a assinatura
-- [ ] Desempenho: tarefas de manutenção, itens de início e em segundo plano
+- [x] **v0.3 — Desempenho**: tarefas de manutenção, itens de início e em segundo plano (desativar, reativar, remover), capturas do Time Machine
 - [ ] Lupa de Espaço: mapa visual do armazenamento e pastas grandes
 - [ ] Assinatura Developer ID e notarização
 
