@@ -518,3 +518,4 @@ lens.done.backToResults	Back to Results	Voltar aos Resultados
 lens.review.cloud	Some items are in iCloud: moving them to the Trash also removes them from iCloud and from your other devices.	Alguns itens estão no iCloud: mandar para o Lixo também os tira do iCloud e dos seus outros aparelhos.
 lens.others.expand	Show all items	Mostrar todos os itens
 lens.others.collapse	Group small items	Agrupar itens pequenos
+lens.items	%@ items	%@ itens

@@ -223,4 +223,16 @@ struct LensSetup {
         m.collapseOthers()
         #expect(m.entries.count < 20)
     }
+
+    /// "Selecionar: Todos" marca os itens marcáveis da pasta atual (protegidos ficam de fora); "Nenhum" limpa.
+    @Test func selectAllVisibleSkipsProtected() async {
+        let s = LensSetup(protected: ["small"])
+        let m = await s.scanned()
+        #expect(!m.allVisibleSelected)
+        m.selectAllVisible()
+        #expect(Set(m.selection.map(\.name)) == ["big", "d.bin"])
+        #expect(m.allVisibleSelected)
+        m.clearSelection()
+        #expect(m.selection.isEmpty && !m.allVisibleSelected)
+    }
 }

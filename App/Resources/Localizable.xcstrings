@@ -4455,6 +4455,23 @@
         }
       }
     },
+    "lens.items": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ items"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ itens"
+          }
+        }
+      }
+    },
     "lens.nav.back": {
       "extractionState": "manual",
       "localizations": {

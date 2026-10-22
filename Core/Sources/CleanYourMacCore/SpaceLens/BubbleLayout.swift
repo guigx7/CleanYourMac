@@ -36,6 +36,50 @@ public enum BubbleLayout {
         return result
     }
 
+    public struct Adaptive: Sendable {
+        /// Na ordem de `sizes`; as ocultas têm raio 0.
+        public var circles: [Circle]
+        /// Itens pequenos demais para aparecer mesmo com o menor expoente.
+        public var hidden: Set<Int>
+        /// Expoente usado: raio ∝ tamanho^power.
+        public var power: Double
+    }
+
+    /// Como o CleanMyMac (docs/re/specs/spacelens/ui-and-removal.md §3): raio = tamanho^p, com o maior p em
+    /// [0,01; 0,333] (bisseção, 10 passos) que deixa todas as bolhas com pelo menos `minDiameter`. Se nem o menor p
+    /// basta, as menores ficam ocultas e o resto é refeito.
+    public static func packAdaptive(_ sizes: [Double], in bounds: CGSize, minDiameter: CGFloat, padding: CGFloat = 0,
+                                    range: ClosedRange<Double> = 0.01...0.333) -> Adaptive {
+        guard !sizes.isEmpty else { return Adaptive(circles: [], hidden: [], power: range.upperBound) }
+        func layout(_ indices: [Int], _ p: Double) -> [Circle] {
+            pack(indices.map { pow(max(sizes[$0], 0), 2 * p) }, in: bounds, padding: padding)
+        }
+        func fits(_ circles: [Circle]) -> Bool { circles.allSatisfy { $0.r * 2 >= minDiameter - 0.5 } }
+        /// Maior p que cabe para estes índices (ou nil se nem o menor cabe).
+        func bestPower(_ indices: [Int]) -> Double? {
+            if fits(layout(indices, range.upperBound)) { return range.upperBound }
+            guard fits(layout(indices, range.lowerBound)) else { return nil }
+            var lo = range.lowerBound, hi = range.upperBound
+            for _ in 0..<10 {
+                let mid = (lo + hi) / 2
+                if fits(layout(indices, mid)) { lo = mid } else { hi = mid }
+            }
+            return lo
+        }
+        var visible = Array(sizes.indices).filter { sizes[$0] > 0 }
+        var power = bestPower(visible)
+        // Esconde a menor de cada vez até caber.
+        while power == nil, visible.count > 1 {
+            let smallest = visible.min { sizes[$0] < sizes[$1] }!
+            visible.removeAll { $0 == smallest }
+            power = bestPower(visible)
+        }
+        let p = power ?? range.lowerBound
+        var circles = Array(repeating: Circle(x: bounds.width / 2, y: bounds.height / 2, r: 0), count: sizes.count)
+        for (k, c) in zip(visible, layout(visible, p)) { circles[k] = c }
+        return Adaptive(circles: circles, hidden: Set(sizes.indices).subtracting(visible), power: p)
+    }
+
     // MARK: - Empacotamento
 
     private struct Node {

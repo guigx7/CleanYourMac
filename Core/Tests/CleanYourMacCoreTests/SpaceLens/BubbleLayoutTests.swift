@@ -51,3 +51,36 @@ import Testing
         #expect(!overlaps(out))
     }
 }
+
+/// Escala por potência (como o CleanMyMac): bolhas de tamanhos parecidos na tela, sem minúsculas.
+@Suite struct BubbleAdaptiveTests {
+    func overlaps(_ c: [BubbleLayout.Circle]) -> Bool {
+        for i in c.indices { for j in c.indices where j > i {
+            if hypot(c[i].x - c[j].x, c[i].y - c[j].y) < c[i].r + c[j].r - 1e-6 { return true }
+        } }
+        return false
+    }
+
+    /// Pasta pessoal: Library 70 GB … .cache 2,4 GB + Outros 9,3 GB — diâmetros entre ~1× e ~3×, como na tela do CleanMyMac.
+    @Test func homeLikeCleanMyMac() {
+        let sizes: [Double] = [70.2, 65.4, 14.6, 10.1, 8.6, 2.6, 2.4, 9.3]
+        let out = BubbleLayout.packAdaptive(sizes, in: CGSize(width: 820, height: 760), minDiameter: 90)
+        let d = out.circles.map { $0.r * 2 }
+        #expect(out.hidden.isEmpty)
+        #expect(d.max()! / d.min()! <= 3.5)
+        #expect(d.min()! >= 90)
+        #expect(!overlaps(out.circles))
+        // A ordem dos tamanhos continua visível.
+        #expect(d[0] > d[2] && d[2] > d[5])
+    }
+
+    /// Faixa enorme (raiz do disco: 183 GB … 2,5 MB): o expoente cai até caber; o que não cabe nem assim some.
+    @Test func hugeRangeStillReadable() {
+        let sizes: [Double] = [183e9, 19.9e9, 15.8e9, 8.5e9, 6.3e9, 3.8e9, 831e6, 4.9e6, 2.5e6, 3.9e9]
+        let out = BubbleLayout.packAdaptive(sizes, in: CGSize(width: 820, height: 760), minDiameter: 40)
+        let visible = out.circles.indices.filter { !out.hidden.contains($0) }
+        #expect(visible.allSatisfy { out.circles[$0].r * 2 >= 40 - 0.5 })
+        #expect(out.power >= 0.01 && out.power <= 0.334)
+        #expect(!overlaps(visible.map { out.circles[$0] }))
+    }
+}

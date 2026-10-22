@@ -198,6 +198,21 @@ final class SpaceLensFlowModel {
 
     func clearSelection() { selection = [] }
 
+    /// Itens da pasta atual que dá para marcar.
+    private var selectableVisible: [SpaceNode] {
+        (current?.children ?? []).filter { node in !isProtected(node) && canToggle(node) }
+    }
+
+    /// "Selecionar: Todos": marca tudo o que é marcável na pasta atual.
+    func selectAllVisible() {
+        for node in selectableVisible where !isSelected(node) { toggle(node) }
+    }
+
+    var allVisibleSelected: Bool {
+        let nodes = (current?.children ?? []).filter { !isProtected($0) }
+        return !nodes.isEmpty && nodes.allSatisfy { isSelected($0) }
+    }
+
     /// Tamanho mostrado: a raiz do disco soma o espaço purgável, como no CleanMyMac.
     func displayedSize(_ node: SpaceNode) -> Int64 {
         node === report?.root ? node.size + (report?.purgeable ?? 0) : node.size
