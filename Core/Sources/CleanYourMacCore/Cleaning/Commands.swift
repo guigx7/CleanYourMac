@@ -4,6 +4,14 @@ import Foundation
 /// Executa ferramentas do sistema (launchctl, defaults, killall). Injetável nos testes.
 public protocol CommandRunner: Sendable {
     func run(_ executable: String, _ arguments: [String]) -> (status: Int32, output: String)
+    /// Com tempo-limite: `nil` quando o tempo esgotou (o processo é encerrado antes de voltar).
+    func run(_ executable: String, _ arguments: [String], timeout: Duration) -> (status: Int32, output: String)?
+}
+
+extension CommandRunner {
+    public func run(_ executable: String, _ arguments: [String], timeout: Duration) -> (status: Int32, output: String)? {
+        run(executable, arguments)
+    }
 }
 
 public struct SystemCommandRunner: CommandRunner {
@@ -20,6 +28,41 @@ public struct SystemCommandRunner: CommandRunner {
         let data = pipe.fileHandleForReading.readDataToEndOfFile()
         p.waitUntilExit()
         return (p.terminationStatus, String(decoding: data, as: UTF8.self))
+    }
+
+    private final class Output: @unchecked Sendable {
+        var data = Data()
+    }
+
+    public func run(_ executable: String, _ arguments: [String], timeout: Duration) -> (status: Int32, output: String)? {
+        let p = Process()
+        p.executableURL = URL(fileURLWithPath: executable)
+        p.arguments = arguments
+        p.standardInput = FileHandle.nullDevice
+        let pipe = Pipe()
+        p.standardOutput = pipe
+        p.standardError = pipe
+        let exited = DispatchSemaphore(value: 0), drained = DispatchSemaphore(value: 0)
+        p.terminationHandler = { _ in exited.signal() }
+        guard (try? p.run()) != nil else { return (-1, "") }
+        let out = Output()
+        DispatchQueue.global().async {
+            out.data = pipe.fileHandleForReading.readDataToEndOfFile()
+            drained.signal()
+        }
+        let seconds = Double(timeout.components.seconds) + Double(timeout.components.attoseconds) / 1e18
+        guard exited.wait(timeout: .now() + seconds) == .success else {
+            p.terminate()
+            if exited.wait(timeout: .now() + 2) == .timedOut {
+                kill(p.processIdentifier, SIGKILL)
+                exited.wait()
+            }
+            // Filhos que herdaram o pipe podem segurá-lo; não esperar por eles.
+            _ = drained.wait(timeout: .now() + 1)
+            return nil
+        }
+        drained.wait()
+        return (p.terminationStatus, String(decoding: out.data, as: UTF8.self))
     }
 }
 

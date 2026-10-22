@@ -5,7 +5,7 @@ public enum HelperConstants {
     public static let machService = "io.github.guigx7.CleanYourMac.helper"
     public static let plistName = "io.github.guigx7.CleanYourMac.helper.plist"
     public static let clientIdentifier = "io.github.guigx7.CleanYourMac"
-    public static let version = 2
+    public static let version = 3
 }
 
 /// Interface XPC: um único método com JSON para manter o contrato tipado em Swift.

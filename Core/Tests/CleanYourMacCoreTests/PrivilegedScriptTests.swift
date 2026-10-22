@@ -83,3 +83,40 @@ private func sh(_ args: [String]) throws -> (Int32, String) {
     #expect(output.contains("bootout gui/\(getuid()) /Library/LaunchAgents/com.example.a.agent.plist"))
     #expect(output.contains("--forget com.example.pkg"))
 }
+
+/// Desativar/reativar leem o Label do plist no próprio script; manutenção usa comandos fixos.
+@Test func appleScriptRunnerSupportsPerformanceCommands() throws {
+    let root = FileManager.default.temporaryDirectory.appendingPathComponent("cym-ps-\(UUID().uuidString)")
+    let dir = root.appendingPathComponent("LaunchDaemons")
+    try FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)
+    func write(_ name: String, _ label: String) throws -> URL {
+        let u = dir.appendingPathComponent(name)
+        try PropertyListSerialization.data(fromPropertyList: ["Label": label], format: .xml, options: 0).write(to: u)
+        return u
+    }
+    let ok = try write("it's.plist", "com.example.svc")
+    let apple = try write("com.example.a.plist", "com.apple.evil")
+    var tools = AppleScriptPrivilegedRunner.Tools()
+    tools.launchctl = "/bin/echo"
+    tools.uid = 501
+    tools.maintenanceTools = ["/usr/bin/dscacheutil": "/bin/echo", "/usr/bin/killall": "/bin/echo", "/usr/sbin/diskutil": "/bin/echo"]
+    let script = AppleScriptPrivilegedRunner.makeScript([
+        .launchdDisable(plist: ok, owner: "com.example.svc"), .launchdEnable(plist: ok, owner: "com.example.svc"),
+        .launchdDisable(plist: apple, owner: "com.example.a"), .maintenance(.flushDNS), .maintenance(.repairPermissions),
+        .maintenance(.speedUpMail),
+    ], tools: tools)
+    let file = root.appendingPathComponent("s.sh")
+    try script.write(to: file, atomically: true, encoding: .utf8)
+    #expect(try sh(["-n", file.path]).0 == 0)
+    let (_, output) = try sh([file.path])
+    for i in [0, 1, 3, 4] { #expect(output.contains("CYM:\(i):ok"), "comando \(i)") }
+    for i in [2, 5] { #expect(output.contains("CYM:\(i):fail"), "comando \(i)") }
+    #expect(output.contains("disable system/com.example.svc"))
+    #expect(output.contains("bootout system/com.example.svc"))
+    #expect(output.contains("enable system/com.example.svc"))
+    #expect(output.contains("bootstrap system \(ok.path)"))
+    #expect(!output.contains("com.apple.evil"))
+    #expect(output.contains("-flushcache"))
+    #expect(output.contains("-HUP mDNSResponder"))
+    #expect(output.contains("resetUserPermissions / 501"))
+}

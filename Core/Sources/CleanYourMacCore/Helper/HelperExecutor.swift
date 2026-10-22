@@ -84,8 +84,26 @@ public struct HelperExecutor: Sendable {
             case .forgetPackage(let id, let owner):
                 guard Self.isSafeOwner(owner) else { return .refused }
                 return forget(id, owner: owner)
-            case .maintenance:
-                return .refused
+            case .launchdDisable(let plist, let owner):
+                guard Self.isSafeOwner(owner), let job = validatedJob(plist, owner: owner, requester: requester) else { return .refused }
+                let r = self.commands.run("/bin/launchctl", ["disable", job.target])
+                guard r.status == 0 else { return .failed("launchctl disable: \(r.status)") }
+                let b = self.commands.run("/bin/launchctl", ["bootout", job.target])
+                return [0, 3, 113].contains(b.status) ? .ok : .failed("launchctl bootout: \(b.status)")
+            case .launchdEnable(let plist, let owner):
+                guard Self.isSafeOwner(owner), let job = validatedJob(plist, owner: owner, requester: requester) else { return .refused }
+                let r = self.commands.run("/bin/launchctl", ["enable", job.target])
+                guard r.status == 0 else { return .failed("launchctl enable: \(r.status)") }
+                // 17/37: já carregado.
+                let b = self.commands.run("/bin/launchctl", ["bootstrap", job.domain, job.path])
+                return [0, 17, 37].contains(b.status) ? .ok : .failed("launchctl bootstrap: \(b.status)")
+            case .maintenance(let id):
+                guard let steps = Self.maintenanceCommands(id, uid: requester) else { return .refused }
+                for (exe, args) in steps {
+                    guard let r = self.commands.run(exe, args, timeout: MaintenanceCatalog.timeout(id)) else { return .failed("timed out") }
+                    guard r.status == 0 else { return .failed("\((exe as NSString).lastPathComponent): \(r.status)") }
+                }
+                return .ok
             }
         }
     }
@@ -263,8 +281,21 @@ public struct HelperExecutor: Sendable {
         return .failed("no free name in trash")
     }
 
-    /// Descarrega um job do launchd. O plist é relido como root; o vínculo com o app é revalidado.
-    private func bootout(_ plist: URL, owner: String, requester: uid_t) -> HelperResult {
+    /// Comandos fixos das tarefas de manutenção que exigem root (maintenance-tasks.md); `nil` para as outras.
+    /// Nada vem do cliente além do id: o uid é o de quem pediu, tirado da conexão.
+    public static func maintenanceCommands(_ id: MaintenanceTaskID, uid: uid_t) -> [(String, [String])]? {
+        switch id {
+        case .flushDNS: [("/usr/bin/dscacheutil", ["-flushcache"]), ("/usr/bin/killall", ["-HUP", "mDNSResponder"])]
+        case .reindexSpotlight: [("/usr/bin/mdutil", ["-E", "/"])]
+        case .repairPermissions: [("/usr/sbin/diskutil", ["resetUserPermissions", "/", String(uid)])]
+        case .freeUpRAM: [("/usr/sbin/purge", [])]
+        case .periodicScripts: [("/usr/sbin/periodic", ["daily", "weekly", "monthly"])]
+        case .speedUpMail, .freeUpPurgeable, .thinSnapshots: nil
+        }
+    }
+
+    /// Plist do launchd relido como root: numa pasta do launchd, sem link, Label de terceiros, ligado ao dono.
+    private func validatedJob(_ plist: URL, owner: String, requester: uid_t) -> (path: String, domain: String, target: String)? {
         let lexical = PathPolicy.lexicalPath(plist.path)
         let folder = PathPolicy.realPath((lexical as NSString).deletingLastPathComponent)
         let file = (lexical as NSString).lastPathComponent
@@ -272,10 +303,16 @@ public struct HelperExecutor: Sendable {
         guard launchdFolders.contains(folder), file.hasSuffix(".plist"), !file.hasPrefix("com.apple."),
               !isSymlink(path), let dict = Self.readPlistNoFollow(path),
               let label = dict["Label"] as? String, !label.isEmpty, !label.hasPrefix("com.apple."),
-              Self.isSafeIdentifier(label) || !label.contains("/") else { return .refused }
-        guard launchdLinked(dict, file: file, owner: owner) else { return .refused }
-        let target = (folder as NSString).lastPathComponent == "LaunchAgents" ? "gui/\(requester)/\(label)" : "system/\(label)"
-        let r = commands.run("/bin/launchctl", ["bootout", target])
+              Self.isSafeIdentifier(label) || !label.contains("/") else { return nil }
+        guard launchdLinked(dict, file: file, owner: owner) else { return nil }
+        let domain = (folder as NSString).lastPathComponent == "LaunchAgents" ? "gui/\(requester)" : "system"
+        return (path, domain, "\(domain)/\(label)")
+    }
+
+    /// Descarrega um job do launchd. O plist é relido como root; o vínculo com o app é revalidado.
+    private func bootout(_ plist: URL, owner: String, requester: uid_t) -> HelperResult {
+        guard let job = validatedJob(plist, owner: owner, requester: requester) else { return .refused }
+        let r = commands.run("/bin/launchctl", ["bootout", job.target])
         // 3 (ESRCH) / 113: o job não estava carregado.
         return [0, 3, 113].contains(r.status) ? .ok : .failed("launchctl bootout: \(r.status)")
     }

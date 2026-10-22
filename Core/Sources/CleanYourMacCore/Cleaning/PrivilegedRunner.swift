@@ -23,6 +23,10 @@ public enum PrivilegedCommand: Hashable, Sendable, Codable {
     case launchdBootout(plist: URL, owner: String)
     /// Esquecer o recibo de um pacote (`pkgutil --forget`).
     case forgetPackage(String, owner: String)
+    /// Desativar (`launchctl disable` + `bootout`) e reativar (`enable` + `bootstrap`) um job pelo `Label` do plist;
+    /// o domínio vem da pasta (background-items.md §Nossa forma). `owner`: app dono ou o próprio Label.
+    case launchdDisable(plist: URL, owner: String)
+    case launchdEnable(plist: URL, owner: String)
     /// Tarefa de manutenção como root: o executor mapeia o id para comandos fixos (maintenance-tasks.md).
     case maintenance(MaintenanceTaskID)
 }
@@ -49,6 +53,9 @@ public struct AppleScriptPrivilegedRunner: PrivilegedRunner {
         public var pkgutil = "/usr/sbin/pkgutil"
         public var chown = "/usr/sbin/chown"
         public var stat = "/usr/bin/stat"
+        public var plistBuddy = "/usr/libexec/PlistBuddy"
+        /// Troca de ferramentas das tarefas de manutenção (testes).
+        public var maintenanceTools: [String: String] = [:]
         /// Lixo e uid do usuário do app (o script roda como root, mas o item vai para o Lixo dele).
         public var trash = FileManager.default.homeDirectoryForCurrentUser.appendingPathComponent(".Trash").path
         public var uid: uid_t = getuid()
@@ -145,8 +152,24 @@ public struct AppleScriptPrivilegedRunner: PrivilegedRunner {
             case .forgetPackage(let id, _):
                 body = HelperExecutor.isSafeIdentifier(id) && !id.hasPrefix("com.apple.")
                     ? "\(tools.pkgutil) --forget \(quote(id))" : "false"
-            case .maintenance:
-                body = "false"
+            case .launchdDisable(let plist, _), .launchdEnable(let plist, _):
+                let domain = plist.deletingLastPathComponent().lastPathComponent == "LaunchAgents" ? "gui/\(tools.uid)" : "system"
+                let p = quote(plist.path)
+                // O Label sai do próprio plist; nunca com.apple.*, vazio ou com barra.
+                let label = "l=$(\(tools.plistBuddy) -c 'Print :Label' \(p) 2>/dev/null) && [ ! -L \(p) ] && "
+                    + "case \"$l\" in ''|com.apple.*|*/*) false;; *) true;; esac"
+                if case .launchdDisable = cmd {
+                    body = "\(label) && \(tools.launchctl) disable \"\(domain)/$l\" && "
+                        + "{ \(tools.launchctl) bootout \"\(domain)/$l\"; s=$?; [ $s -eq 0 ] || [ $s -eq 3 ] || [ $s -eq 113 ]; }"
+                } else {
+                    body = "\(label) && \(tools.launchctl) enable \"\(domain)/$l\" && "
+                        + "{ \(tools.launchctl) bootstrap \(domain) \(p); s=$?; [ $s -eq 0 ] || [ $s -eq 17 ] || [ $s -eq 37 ]; }"
+                }
+            case .maintenance(let id):
+                body = HelperExecutor.maintenanceCommands(id, uid: tools.uid).map { steps in
+                    steps.map { ([tools.maintenanceTools[$0.0] ?? $0.0] + $0.1).map(quote).joined(separator: " ") }
+                        .joined(separator: " && ")
+                } ?? "false"
             }
             lines.append("if \(body); then echo 'CYM:\(i):ok'; else echo 'CYM:\(i):fail'; fi")
         }

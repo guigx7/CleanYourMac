@@ -7,6 +7,16 @@ final class HelperFakeCommands: CommandRunner, @unchecked Sendable {
     private let lock = NSLock()
     private(set) var calls: [[String]] = []
     var responses: [String: (Int32, String)] = [:]
+    /// Primeiro argumento → simula tempo esgotado (só na chamada com tempo-limite).
+    var timeouts: Set<String> = []
+
+    func run(_ executable: String, _ arguments: [String], timeout: Duration) -> (status: Int32, output: String)? {
+        if timeouts.contains(arguments.first ?? "") {
+            lock.withLock { calls.append([executable] + arguments) }
+            return nil
+        }
+        return run(executable, arguments)
+    }
 
     func run(_ executable: String, _ arguments: [String]) -> (status: Int32, output: String) {
         lock.lock(); defer { lock.unlock() }
@@ -249,5 +259,5 @@ enum AppFixtureLite {
                                  .launchdBootout(plist: URL(fileURLWithPath: "/Library/LaunchDaemons/com.a.plist"), owner: "com.a"),
                                  .forgetPackage("com.a.pkg", owner: "com.a")])
     #expect(try JSONDecoder().decode(HelperRequest.self, from: JSONEncoder().encode(req)) == req)
-    #expect(HelperConstants.version == 2)
+    #expect(HelperConstants.version == 3)
 }
