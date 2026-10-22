@@ -40,7 +40,7 @@ struct ResultsView: View {
         .environment(\.requestClean) { pendingClean = $0 }
         .alert("results.restart.confirm.title", isPresented: $confirmRestart) {
             Button("common.cancel", role: .cancel) {}
-            Button("results.restart", role: .destructive) { model.restart() }
+            Button("results.restart", role: .destructive) { model.rescan() }
         } message: {
             Text("results.restart.confirm.message")
         }
@@ -52,7 +52,12 @@ struct ResultsView: View {
             Text("module.cleanup")
                 .font(.system(size: 13, weight: .semibold))
                 .foregroundStyle(Theme.secondaryText)
-            HStack {
+            HStack(spacing: 18) {
+                Button { model.back() } label: {
+                    Label("review.back", systemImage: "chevron.left").font(.system(size: 13, weight: .medium))
+                }
+                .buttonStyle(.plain)
+                .foregroundStyle(Theme.secondaryText)
                 Button { confirmRestart = true } label: {
                     Label("results.restart", systemImage: "arrow.counterclockwise")
                         .font(.system(size: 13, weight: .medium))

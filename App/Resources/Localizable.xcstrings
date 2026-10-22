@@ -7317,13 +7317,13 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Nothing will be cleaned. You'll need to scan again."
+            "value": "Nothing will be cleaned and a new scan starts."
           }
         },
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "Nada será limpo. Será preciso analisar de novo."
+            "value": "Nada será limpo e uma nova análise começa."
           }
         }
       }

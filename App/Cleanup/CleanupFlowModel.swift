@@ -134,7 +134,16 @@ final class CleanupFlowModel {
         phase = .results
     }
 
-    /// Recomeçar: descarta resultados e seleção e volta à Intro.
+    /// Voltar (topo dos Resultados): descarta resultados e seleção e volta à Intro, sem analisar.
+    func back() { restart() }
+
+    /// Recomeçar: descarta tudo e analisa de novo.
+    func rescan() {
+        restart()
+        startScan()
+    }
+
+    /// Descarta resultados e seleção e volta à Intro.
     func restart() {
         task?.cancel()
         task = nil

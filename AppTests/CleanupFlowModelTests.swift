@@ -262,3 +262,19 @@ func waitFor(_ condition: @escaping () -> Bool, timeout: Duration = .seconds(5))
     m.openReview()
     #expect(m.reviewGroup == nil)
 }
+
+/// Voltar (no topo dos Resultados): leva à Intro sem analisar de novo; Recomeçar analisa de novo.
+@MainActor @Test func backAndRescanFromResults() async {
+    let m = makeModel([StubScanner(group: .userCache, items: [stubItem(.userCache, "a", 100)])])
+    m.startScan()
+    await waitFor { m.phase != .scanning }
+    m.back()
+    #expect(m.phase == .intro)
+    #expect(m.report == nil)
+    m.startScan()
+    await waitFor { m.phase != .scanning }
+    m.rescan()
+    #expect(m.phase == .scanning)
+    await waitFor { m.phase != .scanning }
+    #expect(m.phase == .results)
+}

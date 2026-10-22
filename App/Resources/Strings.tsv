@@ -81,7 +81,7 @@ results.header	Found %@ of junk on your Mac.	Encontramos %@ de detritos no Mac.
 results.reviewAll	Review all junk	Revisar todos os detritos
 results.restart	Start over	Recomeçar
 results.restart.confirm.title	Discard these results and start over?	Descartar estes resultados e recomeçar?
-results.restart.confirm.message	Nothing will be cleaned. You'll need to scan again.	Nada será limpo. Será preciso analisar de novo.
+results.restart.confirm.message	Nothing will be cleaned and a new scan starts.	Nada será limpo e uma nova análise começa.
 results.partial	The scan was stopped, so these results are incomplete.	A análise foi interrompida, então estes resultados estão incompletos.
 results.action.review	Review	Revisar
 results.action.clean	Clean	Limpar

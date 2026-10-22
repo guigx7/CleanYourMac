@@ -289,8 +289,8 @@ struct SpaceEntryRow: View {
     }
 }
 
-/// Mapa de bolhas da pasta atual: raio por potência do tamanho (como o CleanMyMac), clique duplo entra; clique duplo
-/// no fundo sobe um nível.
+/// Mapa de bolhas da pasta atual: raio por potência do tamanho (como o CleanMyMac); um clique numa bolha entra na
+/// pasta (ou abre "Outros itens"); clique duplo no fundo sobe um nível.
 struct BubbleMap: View {
     var model: SpaceLensFlowModel
     @Binding var hovered: String?
@@ -310,7 +310,7 @@ struct BubbleMap: View {
                         BubbleView(entry: entry, circle: c, isHovered: hovered == entry.id, isSelected: isSelected(entry))
                             .position(x: c.x + 10, y: c.y + 10)
                             .onHover { hovered = $0 ? entry.id : (hovered == entry.id ? nil : hovered) }
-                            .onTapGesture(count: 2) { open(entry) }
+                            .onTapGesture { open(entry) }
                     }
                 }
             }

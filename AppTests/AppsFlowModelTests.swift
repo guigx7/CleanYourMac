@@ -127,6 +127,16 @@ struct AppsFlowModelTests {
         #expect(m.phase == .nothingFound)
     }
 
+    /// Voltar (no topo dos Resultados): Intro sem analisar de novo, sem relatório.
+    @Test func backFromResultsGoesToIntro() async {
+        let m = model()
+        m.start()
+        await waitFor(m) { $0.phase != .scanning }
+        m.openManager(.uninstaller)
+        m.back()
+        #expect(m.phase == .intro && m.report == nil && !m.managerOpen)
+    }
+
     @Test func stopReturnsToIntro() async {
         let m = model(delay: .seconds(5))
         m.start()

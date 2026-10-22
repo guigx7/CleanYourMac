@@ -127,6 +127,18 @@ final class AppsFlowModel {
         phase = .intro
     }
 
+    /// Voltar (topo dos Resultados): Intro, sem analisar de novo.
+    func back() {
+        task?.cancel()
+        task = nil
+        managerOpen = false
+        report = nil
+        selection.clear()
+        resetApps = []
+        actionScope = nil
+        phase = .intro
+    }
+
     func restart() {
         managerOpen = false
         start()
