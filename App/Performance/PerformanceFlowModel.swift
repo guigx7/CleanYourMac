@@ -67,6 +67,9 @@ final class PerformanceFlowModel {
     var selectedSnapshots: Set<String> = []
     private(set) var confirmation: Confirmation?
     private(set) var taskStatus: [MaintenanceTaskID: TaskStatus] = [:]
+    /// Parar pedido com o lote de administrador em andamento: ele termina (não dá para interromper o root) e as
+    /// tarefas seguintes não começam.
+    private(set) var stopRequested = false
     /// Itens modernos que só os Ajustes desligam (o guia mostra os nomes).
     private(set) var settingsHint: [String]?
     /// "Abrir no Desinstalador": o RootView troca para o módulo Aplicativos.
@@ -211,6 +214,7 @@ final class PerformanceFlowModel {
         managerOpen = false
         phase = .acting
         taskStatus = Dictionary(uniqueKeysWithValues: tasks.map { ($0.id, .waiting) })
+        stopRequested = false
         let stream = maintenance.run(tasks)
         task = Task {
             for await event in stream {
@@ -220,6 +224,8 @@ final class PerformanceFlowModel {
                     if case .failure(let f) = r { taskStatus[id] = .failed(f.reason) } else { taskStatus[id] = .succeeded }
                 case .completed: break
                 }
+                // O lote de root acabou depois do Parar: para de ler (o executor cancela o que viria).
+                if stopRequested, !taskStatus.values.contains(.running) { break }
             }
             // O que não terminou (Parar no meio) fica como cancelado.
             for (id, s) in taskStatus where s == .waiting || s == .running { taskStatus[id] = .failed("cancelled") }
@@ -233,7 +239,8 @@ final class PerformanceFlowModel {
 
     /// Parar durante a execução: encerra a tarefa em andamento; as restantes ficam canceladas.
     func stopActing() {
-        task?.cancel()
+        let rootRunning = (report?.tasks ?? []).contains { $0.requiresAdmin && taskStatus[$0.id] == .running }
+        if rootRunning { stopRequested = true } else { task?.cancel() }
     }
 
     // MARK: - Itens de início e em segundo plano

@@ -14,6 +14,10 @@ struct PerformanceActingView: View {
         } side: {
             VStack(alignment: .leading, spacing: 16) {
                 Text(LocalizedStringKey(tasks.isEmpty ? "perf.acting.items" : "perf.acting.tasks")).font(Theme.display(34))
+                if model.stopRequested {
+                    Text("perf.acting.waitingAdmin").font(.system(size: 14)).foregroundStyle(Theme.secondaryText)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
                 if tasks.isEmpty {
                     ProgressView().controlSize(.small).tint(.white)
                 } else {
@@ -28,7 +32,7 @@ struct PerformanceActingView: View {
                 }
             }
         } action: {
-            if tasks.isEmpty {
+            if tasks.isEmpty || model.stopRequested {
                 EmptyView()
             } else {
                 PrimaryRoundButton(title: "cleanup.action.stop", module: .performance, action: model.stopActing)

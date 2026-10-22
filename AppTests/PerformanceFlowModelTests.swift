@@ -48,6 +48,46 @@ final class StubMaintenance: MaintenanceRunning, @unchecked Sendable {
     }
 }
 
+/// Lote de root que só termina quando `open()` é chamado; as tarefas sem root levam 50 ms e respeitam o cancelamento.
+final class GatedMaintenance: MaintenanceRunning, @unchecked Sendable {
+    private let lock = NSLock()
+    private var gate: CheckedContinuation<Void, Never>?
+    private var opened = false
+    private var _ran: [MaintenanceTaskID] = []
+    var ran: [MaintenanceTaskID] { lock.withLock { _ran } }
+
+    func open() {
+        let g = lock.withLock { () -> CheckedContinuation<Void, Never>? in opened = true; defer { gate = nil }; return gate }
+        g?.resume()
+    }
+
+    func run(_ tasks: [MaintenanceTask]) -> AsyncStream<MaintenanceEvent> {
+        AsyncStream { cont in
+            let work = Task {
+                let root = tasks.filter(\.requiresAdmin)
+                for t in root { cont.yield(.started(t.id)) }
+                // O lote de root não para no cancelamento (como o osascript/XPC de verdade).
+                await withCheckedContinuation { c in
+                    let now = lock.withLock { () -> Bool in if opened { return true }; gate = c; return false }
+                    if now { c.resume() }
+                }
+                for t in root {
+                    lock.withLock { _ran.append(t.id) }
+                    cont.yield(.finished(t.id, .success(())))
+                }
+                for t in tasks where !t.requiresAdmin {
+                    cont.yield(.started(t.id))
+                    do { try await Task.sleep(for: .milliseconds(50)) } catch { break }
+                    lock.withLock { _ran.append(t.id) }
+                    cont.yield(.finished(t.id, .success(())))
+                }
+                cont.finish()
+            }
+            cont.onTermination = { _ in work.cancel() }
+        }
+    }
+}
+
 final class StubStartup: StartupActing, @unchecked Sendable {
     private(set) var performed: [(StartupAction, [String])] = []
     var ownerWarnings: [String: URL] = [:]
@@ -233,5 +273,26 @@ struct PerfSetup {
         m.cancelConfirmation()
         m.requestStartup(.remove)
         #expect(m.confirmation == .startup(.remove, [google, off], owners: []))
+    }
+
+    @Test func stopWaitsForAdminBatchAndCancelsTheRest() async {
+        let gated = GatedMaintenance()
+        let m = PerformanceFlowModel(scan: StubPerformanceScan(report: perfReport()), maintenance: gated, startup: StubStartup(),
+                                     snapshots: { _ in [:] }, context: ScanContext.current())
+        m.start()
+        while m.phase == .scanning { await Task.yield() }
+        m.runTasks([.flushDNS, .speedUpMail])
+        while m.taskStatus[.flushDNS] != .running { await Task.yield() }
+        m.stopActing()
+        // Com o lote de root em andamento, nada é dado como cancelado ainda.
+        #expect(m.phase == .acting)
+        #expect(m.stopRequested)
+        #expect(m.taskStatus[.flushDNS] == .running)
+        gated.open()
+        while m.phase == .acting { await Task.yield() }
+        #expect(m.taskStatus[.flushDNS] == .succeeded)
+        #expect(m.taskStatus[.speedUpMail] == .failed("cancelled"))
+        try? await Task.sleep(for: .milliseconds(150))
+        #expect(gated.ran == [.flushDNS])
     }
 }

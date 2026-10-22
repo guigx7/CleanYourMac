@@ -4455,6 +4455,23 @@
         }
       }
     },
+    "perf.acting.waitingAdmin": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stopping after the administrator tasks finish — they can't be interrupted. If macOS is asking for your password, click Cancel there to skip them."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Parando quando as tarefas de administrador terminarem — elas não podem ser interrompidas. Se o macOS estiver pedindo a senha, clique em Cancelar lá para pulá-las."
+          }
+        }
+      }
+    },
     "perf.action.deleteSnapshots": {
       "extractionState": "manual",
       "localizations": {
