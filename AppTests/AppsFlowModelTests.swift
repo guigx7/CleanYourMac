@@ -275,6 +275,19 @@ struct AppsFlowModelTests {
         #expect(!ParityExport.isAllowedOutput(logs.appendingPathComponent("../../x.json").path))
     }
 
+    @Test func textsFollowWhatTheActionDoes() {
+        let pref = leaf(.preferences, "com.foo.plist")
+        let dmgURL = URL(fileURLWithPath: "/tmp/cym-stub/x.dmg")
+        let dmg = JunkItem(group: .appInstallers, name: "x.dmg", url: dmgURL, size: 1, removal: .deleteDiskImage(dmgURL))
+        #expect(AppsFlowModel.confirmTitleKey([pref]) == "apps.confirm.title.trash.one")
+        #expect(AppsFlowModel.confirmTitleKey([pref, pref]) == "apps.confirm.title.trash.other")
+        #expect(AppsFlowModel.confirmTitleKey([dmg]) == "apps.confirm.title.delete.one")
+        #expect(AppsFlowModel.confirmTitleKey([pref, dmg]) == "apps.confirm.title.mixed")
+        #expect(AppsFlowModel.doneKeys(trashed: 1, deleted: 0) == ["apps.done.removed.one", "apps.done.trash"])
+        #expect(AppsFlowModel.doneKeys(trashed: 0, deleted: 2) == ["apps.done.removed.other", "apps.done.deleted"])
+        #expect(AppsFlowModel.doneKeys(trashed: 3, deleted: 1) == ["apps.done.removed.other", "apps.done.trash", "apps.done.deleted"])
+    }
+
     @Test func updateActionOpensRightPlace() {
         let opener = StubOpener()
         let m = model(opener: opener)

@@ -150,14 +150,14 @@ struct AppsPrompts: ViewModifier {
         // Apps que serão desinstalados, por nome (a seleção pode vir de outra seção).
         let apps = Set(leaves.filter { AppItemID.isBundle($0.id) && AppItemID.mode(of: $0.id) == .uninstall }.map(\.name)).sorted()
         if !apps.isEmpty { text += "\n\n" + NSLocalizedString("apps.confirm.apps", comment: "") + " " + apps.joined(separator: ", ") }
-        if requirements.contains(.appManagement) { text += "\n\n" + NSLocalizedString("permissions.apps.message", comment: "") }
+        if requirements.contains(.appManagement) { text += "\n\n" + NSLocalizedString("apps.permissions.appManagement", comment: "") }
         if requirements.contains(.admin) { text += "\n\n" + NSLocalizedString("permissions.admin.message", comment: "") }
         return text
     }
 
     func body(content: Content) -> some View {
         content
-            .alert(Text(String(format: NSLocalizedString("apps.confirm.title", comment: ""), model.pendingLeaves.count)),
+            .alert(Text(String(format: NSLocalizedString(AppsFlowModel.confirmTitleKey(model.pendingLeaves), comment: ""), model.pendingLeaves.count)),
                    isPresented: $confirmAct) {
                 Button("common.cancel", role: .cancel) { model.cancelPrepared() }
                 if requirements.contains(.appManagement) {
@@ -206,7 +206,7 @@ struct QuitAppsSheet: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
             Text("apps.quit.title").font(.title3.weight(.semibold))
-            Text("apps.quit.message").foregroundStyle(.secondary)
+            Text(model.quitPrompt?.canContinue == true ? "apps.quit.message.reset" : "apps.quit.message").foregroundStyle(.secondary)
             ForEach(model.quitPrompt?.apps ?? [], id: \.self) { app in
                 Label(app.name, systemImage: "app.fill")
             }

@@ -319,7 +319,6 @@ apps.source.appStore	App Store	App Store
 apps.source.sparkle	The app's update feed	Canal de atualização do app
 apps.source.homebrew	Homebrew	Homebrew
 apps.source.macOS	macOS Software Update	Atualização de Software do macOS
-apps.confirm.title	Move %d items to the Trash?	Mover %d itens para o Lixo?
 apps.confirm.message	%@ will go to the Trash. You can restore them from there until you empty it.	%@ irão para o Lixo. Você pode recuperá-los de lá até esvaziá-lo.
 apps.confirm.message.mixed	%@ will be removed. Files go to the Trash; installer disk images are deleted right away.	%@ serão removidos. Os arquivos vão para o Lixo; as imagens de instalação são apagadas na hora.
 apps.confirm.action	Continue	Continuar
@@ -337,7 +336,6 @@ apps.acting.title	Moving to the Trash…	Movendo para o Lixo…
 apps.acting.progress	%d of %d	%d de %d
 apps.done.title	Done!	Pronto!
 apps.done.partial.title	Some items weren't removed	Alguns itens não foram removidos
-apps.done.message	%d items removed. Apps and files are in the Trash.	%d itens removidos. Apps e arquivos estão no Lixo.
 apps.done.dryRun	Simulation: %d items would be removed. Nothing was touched.	Simulação: %d itens seriam removidos. Nada foi alterado.
 apps.done.openTrash	Open Trash	Abrir Lixo
 apps.done.log	Open Log	Abrir Registro
@@ -352,3 +350,15 @@ a11y.select	Select %@	Marcar %@
 a11y.on	checked	marcado
 a11y.off	not checked	desmarcado
 a11y.mixed	partially checked	parcialmente marcado
+
+apps.confirm.title.trash.one	Move %d item to the Trash?	Mover %d item para o Lixo?
+apps.confirm.title.trash.other	Move %d items to the Trash?	Mover %d itens para o Lixo?
+apps.confirm.title.delete.one	Delete %d installer file?	Apagar %d arquivo de instalação?
+apps.confirm.title.delete.other	Delete %d installer files?	Apagar %d arquivos de instalação?
+apps.confirm.title.mixed	Remove %d items?	Remover %d itens?
+apps.done.removed.one	%d item removed.	%d item removido.
+apps.done.removed.other	%d items removed.	%d itens removidos.
+apps.done.trash	What was moved is in the Trash.	O que foi movido está no Lixo.
+apps.done.deleted	Installer files were deleted.	Os arquivos de instalação foram apagados.
+apps.quit.message.reset	These apps are open. Quit them before resetting, or continue with them open.	Estes apps estão abertos. Feche-os antes de redefinir ou continue com eles abertos.
+apps.permissions.appManagement	Removing apps from Applications may need the App Management permission for CleanYourMac (System Settings › Privacy & Security).	Remover apps de Aplicativos pode exigir a permissão Gerenciamento de Apps para o CleanYourMac (Ajustes › Privacidade e Segurança).

@@ -443,7 +443,75 @@
         }
       }
     },
-    "apps.confirm.title": {
+    "apps.confirm.title.delete.one": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Delete %d installer file?"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Apagar %d arquivo de instalação?"
+          }
+        }
+      }
+    },
+    "apps.confirm.title.delete.other": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Delete %d installer files?"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Apagar %d arquivos de instalação?"
+          }
+        }
+      }
+    },
+    "apps.confirm.title.mixed": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Remove %d items?"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Remover %d itens?"
+          }
+        }
+      }
+    },
+    "apps.confirm.title.trash.one": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Move %d item to the Trash?"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mover %d item para o Lixo?"
+          }
+        }
+      }
+    },
+    "apps.confirm.title.trash.other": {
       "extractionState": "manual",
       "localizations": {
         "en": {
@@ -456,6 +524,23 @@
           "stringUnit": {
             "state": "translated",
             "value": "Mover %d itens para o Lixo?"
+          }
+        }
+      }
+    },
+    "apps.done.deleted": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Installer files were deleted."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Os arquivos de instalação foram apagados."
           }
         }
       }
@@ -494,23 +579,6 @@
         }
       }
     },
-    "apps.done.message": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%d items removed. Apps and files are in the Trash."
-          }
-        },
-        "pt-BR": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%d itens removidos. Apps e arquivos estão no Lixo."
-          }
-        }
-      }
-    },
     "apps.done.openTrash": {
       "extractionState": "manual",
       "localizations": {
@@ -545,6 +613,40 @@
         }
       }
     },
+    "apps.done.removed.one": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%d item removed."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%d item removido."
+          }
+        }
+      }
+    },
+    "apps.done.removed.other": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%d items removed."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%d itens removidos."
+          }
+        }
+      }
+    },
     "apps.done.title": {
       "extractionState": "manual",
       "localizations": {
@@ -558,6 +660,23 @@
           "stringUnit": {
             "state": "translated",
             "value": "Pronto!"
+          }
+        }
+      }
+    },
+    "apps.done.trash": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "What was moved is in the Trash."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "O que foi movido está no Lixo."
           }
         }
       }
@@ -1327,6 +1446,23 @@
         }
       }
     },
+    "apps.permissions.appManagement": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Removing apps from Applications may need the App Management permission for CleanYourMac (System Settings › Privacy & Security)."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Remover apps de Aplicativos pode exigir a permissão Gerenciamento de Apps para o CleanYourMac (Ajustes › Privacidade e Segurança)."
+          }
+        }
+      }
+    },
     "apps.quit.action": {
       "extractionState": "manual",
       "localizations": {
@@ -1425,6 +1561,23 @@
           "stringUnit": {
             "state": "translated",
             "value": "Estes apps estão abertos. Eles precisam ser fechados antes de desinstalar."
+          }
+        }
+      }
+    },
+    "apps.quit.message.reset": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "These apps are open. Quit them before resetting, or continue with them open."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Estes apps estão abertos. Feche-os antes de redefinir ou continue com eles abertos."
           }
         }
       }

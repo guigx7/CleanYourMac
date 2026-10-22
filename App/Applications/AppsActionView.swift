@@ -41,8 +41,9 @@ struct AppsDoneView: View {
         } side: {
             VStack(alignment: .leading, spacing: 14) {
                 Text(LocalizedStringKey(failed ? "apps.done.partial.title" : "apps.done.title")).font(Theme.display(38))
-                Text(String(format: NSLocalizedString(report.dryRun ? "apps.done.dryRun" : "apps.done.message", comment: ""),
-                            report.removed.count))
+                Text(report.dryRun ? String(format: NSLocalizedString("apps.done.dryRun", comment: ""), report.removed.count)
+                     : AppsFlowModel.doneKeys(trashed: model.lastCounts.trashed, deleted: model.lastCounts.deleted)
+                        .map { String(format: NSLocalizedString($0, comment: ""), report.removed.count) }.joined(separator: " "))
                     .font(.system(size: 16))
                     .foregroundStyle(Theme.secondaryText)
                 if failed {

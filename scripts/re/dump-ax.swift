@@ -55,7 +55,9 @@ let forbidden = ["limpar", "clean", "remov", "esvaziar", "empty", "apagar", "del
                  "atualizar", "update", "instalar", "install", "redefinir", "reset"]
 if let i = CommandLine.arguments.firstIndex(of: "--press"), i + 1 < CommandLine.arguments.count {
     let target = CommandLine.arguments[i + 1]
-    guard !forbidden.contains(where: { target.lowercased().contains($0) }) else {
+    // CYM_AX_ALLOW_ACTIONS=1 libera ações só no nosso app (teste real controlado); no CleanMyMac, nunca.
+    let ownApp = app.bundleIdentifier == "io.github.guigx7.CleanYourMac" && ProcessInfo.processInfo.environment["CYM_AX_ALLOW_ACTIONS"] == "1"
+    guard ownApp || !forbidden.contains(where: { target.lowercased().contains($0) }) else {
         FileHandle.standardError.write("Recusado: '\(target)' parece uma ação de limpeza.\n".data(using: .utf8)!)
         exit(2)
     }
@@ -101,7 +103,7 @@ if let i = CommandLine.arguments.firstIndex(of: "--press"), i + 1 < CommandLine.
         }
         let isButton = probe.map { (attr($0, kAXRoleAttribute) as? String) == kAXButtonRole } ?? false
         let underText = isButton ? (probe.map { text($0).lowercased() } ?? "") : ""
-        guard !forbidden.contains(where: { underText.contains($0) }) else {
+        guard ownApp || !forbidden.contains(where: { underText.contains($0) }) else {
             FileHandle.standardError.write("Recusado: sob o ponto está '\(underText)'.\n".data(using: .utf8)!)
             exit(2)
         }

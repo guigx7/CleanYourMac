@@ -273,6 +273,7 @@ final class AppsFlowModel {
         managerOpen = false
         phase = .acting
         processed = 0
+        lastCounts = (0, 0)
         toProcess = leaves.count
         failures = [:]
         let stream = cleaner.clean(leaves)
@@ -285,7 +286,9 @@ final class AppsFlowModel {
                 case .finished(let item, let result):
                     processed += 1
                     switch result {
-                    case .success: removedIDs.insert(item.id)
+                    case .success:
+                        removedIDs.insert(item.id)
+                        if item.removal.isDelete { lastCounts.deleted += 1 } else { lastCounts.trashed += 1 }
                     case .failure(let f): failures[item.id] = f.reason
                     }
                 case .completed(let r):
@@ -297,6 +300,28 @@ final class AppsFlowModel {
             phase = .done(final ?? CleanReport(freedBytes: 0, removed: Array(removedIDs), failed: failures, dryRun: false))
         }
     }
+
+    // MARK: - Textos
+
+    /// Título da confirmação: mover para o Lixo, apagar (instaladores) ou os dois.
+    static func confirmTitleKey(_ leaves: [JunkItem]) -> String {
+        let deleted = leaves.filter { $0.removal.isDelete }.count
+        let plural = leaves.count == 1 ? "one" : "other"
+        if deleted == 0 { return "apps.confirm.title.trash.\(plural)" }
+        if deleted == leaves.count { return "apps.confirm.title.delete.\(plural)" }
+        return "apps.confirm.title.mixed"
+    }
+
+    /// Frases da tela final: quantos itens e para onde foram.
+    static func doneKeys(trashed: Int, deleted: Int) -> [String] {
+        var out = [trashed + deleted == 1 ? "apps.done.removed.one" : "apps.done.removed.other"]
+        if trashed > 0 { out.append("apps.done.trash") }
+        if deleted > 0 { out.append("apps.done.deleted") }
+        return out
+    }
+
+    /// Quantos itens da última ação foram para o Lixo e quantos foram apagados.
+    private(set) var lastCounts = (trashed: 0, deleted: 0)
 
     // MARK: - Atualizador
 
