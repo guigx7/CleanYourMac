@@ -84,6 +84,8 @@ public struct HelperExecutor: Sendable {
             case .forgetPackage(let id, let owner):
                 guard Self.isSafeOwner(owner) else { return .refused }
                 return forget(id, owner: owner)
+            case .maintenance:
+                return .refused
             }
         }
     }

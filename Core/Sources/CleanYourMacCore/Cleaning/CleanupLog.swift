@@ -32,18 +32,27 @@ public struct CleanupLog: Sendable {
 
     @discardableResult
     public func write(_ report: CleanReport) throws -> URL {
+        try write(report, prefix: "cleanup", date: report.date)
+    }
+
+    @discardableResult
+    public func write(_ report: MaintenanceReport) throws -> URL {
+        try write(report, prefix: "maintenance", date: report.date)
+    }
+
+    private func write(_ value: some Encodable, prefix: String, date: Date) throws -> URL {
         try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
-        let stamp = ISO8601DateFormatter().string(from: report.date).replacingOccurrences(of: ":", with: "")
-        var url = directory.appendingPathComponent("cleanup-\(stamp).json")
+        let stamp = ISO8601DateFormatter().string(from: date).replacingOccurrences(of: ":", with: "")
+        var url = directory.appendingPathComponent("\(prefix)-\(stamp).json")
         var n = 1
         while FileManager.default.fileExists(atPath: url.path) {
-            url = directory.appendingPathComponent("cleanup-\(stamp)-\(n).json")
+            url = directory.appendingPathComponent("\(prefix)-\(stamp)-\(n).json")
             n += 1
         }
         let encoder = JSONEncoder()
         encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
         encoder.dateEncodingStrategy = .iso8601
-        try encoder.encode(report).write(to: url)
+        try encoder.encode(value).write(to: url)
         return url
     }
 }

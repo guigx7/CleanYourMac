@@ -23,6 +23,8 @@ public enum PrivilegedCommand: Hashable, Sendable, Codable {
     case launchdBootout(plist: URL, owner: String)
     /// Esquecer o recibo de um pacote (`pkgutil --forget`).
     case forgetPackage(String, owner: String)
+    /// Tarefa de manutenção como root: o executor mapeia o id para comandos fixos (maintenance-tasks.md).
+    case maintenance(MaintenanceTaskID)
 }
 
 public protocol PrivilegedRunner: Sendable {
@@ -143,6 +145,8 @@ public struct AppleScriptPrivilegedRunner: PrivilegedRunner {
             case .forgetPackage(let id, _):
                 body = HelperExecutor.isSafeIdentifier(id) && !id.hasPrefix("com.apple.")
                     ? "\(tools.pkgutil) --forget \(quote(id))" : "false"
+            case .maintenance:
+                body = "false"
             }
             lines.append("if \(body); then echo 'CYM:\(i):ok'; else echo 'CYM:\(i):fail'; fi")
         }
