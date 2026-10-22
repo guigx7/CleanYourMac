@@ -53,7 +53,7 @@ enum AppFixture {
 }
 
 private func catalog(_ t: FixtureTree, query: [URL] = [], usage: FakeUsage = FakeUsage()) -> AppCatalog {
-    AppCatalog(query: FakeAppQuery(results: query), usage: usage)
+    AppCatalog(query: FakeAppQuery(results: query), usage: usage, displayName: { $0.lastPathComponent })
 }
 
 @Suite struct AppCatalogTests {

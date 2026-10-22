@@ -114,7 +114,8 @@ struct AppsResultsView: View {
         case .removeRecommended:
             Button(tile.kind == .bit32 ? "apps.action.uninstall" : "apps.action.remove") {
                 guard let report = model.report else { return }
-                model.prepare(AppsTile.recommendedItems(for: tile.kind, in: report))
+                model.prepare(AppsTile.recommendedItems(for: tile.kind, in: report),
+                              scope: tile.kind == .bit32 ? [.appUninstall] : [.appLeftovers])
                 confirmAct = true
             }
             .buttonStyle(GlassButtonStyle(prominent: true, size: .large))
@@ -133,14 +134,6 @@ struct AppsResultsView: View {
 }
 
 
-extension AppsFlowModel {
-    /// Marca os recomendados dos itens (cartões com ação direta).
-    func prepare(_ items: [JunkItem]) {
-        selection.clear()
-        for item in items { selection.set(AppsSelection.selectable(item).filter(\.isRecommended), on: true) }
-    }
-}
-
 /// Confirmação geral, pedido para fechar apps e confirmação extra do Redefinir (removal.md, reset.md).
 struct AppsPrompts: ViewModifier {
     var model: AppsFlowModel
@@ -148,12 +141,15 @@ struct AppsPrompts: ViewModifier {
     @State private var confirmForce = false
     @Environment(\.locale) private var locale
 
-    private var requirements: Set<CleanupFlowModel.CleanRequirement> { model.requirements(model.selection.selectedLeaves) }
+    private var requirements: Set<CleanupFlowModel.CleanRequirement> { model.requirements(model.pendingLeaves) }
 
     private var confirmMessage: String {
-        let leaves = model.selection.selectedLeaves
+        let leaves = model.pendingLeaves
         var text = String(format: NSLocalizedString(leaves.contains { $0.removal.isDelete } ? "apps.confirm.message.mixed" : "apps.confirm.message",
-                                                    comment: ""), SizeFormatter.string(model.selection.selectedBytes, locale: locale))
+                                                    comment: ""), SizeFormatter.string(leaves.reduce(0) { $0 + $1.size }, locale: locale))
+        // Apps que serão desinstalados, por nome (a seleção pode vir de outra seção).
+        let apps = Set(leaves.filter { AppItemID.isBundle($0.id) && AppItemID.mode(of: $0.id) == .uninstall }.map(\.name)).sorted()
+        if !apps.isEmpty { text += "\n\n" + NSLocalizedString("apps.confirm.apps", comment: "") + " " + apps.joined(separator: ", ") }
         if requirements.contains(.appManagement) { text += "\n\n" + NSLocalizedString("permissions.apps.message", comment: "") }
         if requirements.contains(.admin) { text += "\n\n" + NSLocalizedString("permissions.admin.message", comment: "") }
         return text
@@ -161,9 +157,9 @@ struct AppsPrompts: ViewModifier {
 
     func body(content: Content) -> some View {
         content
-            .alert(Text(String(format: NSLocalizedString("apps.confirm.title", comment: ""), model.selection.selectedLeaves.count)),
+            .alert(Text(String(format: NSLocalizedString("apps.confirm.title", comment: ""), model.pendingLeaves.count)),
                    isPresented: $confirmAct) {
-                Button("common.cancel", role: .cancel) {}
+                Button("common.cancel", role: .cancel) { model.cancelPrepared() }
                 if requirements.contains(.appManagement) {
                     Button("permissions.openSettings") { PermissionsService.openSettings(.appManagement) }
                 }
@@ -217,12 +213,18 @@ struct QuitAppsSheet: View {
             if model.quitPrompt?.offerForce == true {
                 Text("apps.quit.notResponding").foregroundStyle(.orange)
             }
+            if model.quitPrompt?.canContinue == true {
+                Text("apps.quit.resetWarning").font(.callout).foregroundStyle(.secondary)
+            }
             HStack {
                 Spacer()
                 Button("common.cancel", role: .cancel) { model.cancelQuit() }
                     .keyboardShortcut(.cancelAction)
                 if model.quitPrompt?.offerForce == true {
                     Button("apps.quit.force", role: .destructive) { confirmForce = true }
+                }
+                if model.quitPrompt?.canContinue == true {
+                    Button("apps.quit.continue") { model.continueWithoutQuitting() }
                 }
                 Button {
                     quitting = true

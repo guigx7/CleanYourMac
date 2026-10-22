@@ -324,6 +324,23 @@
         }
       }
     },
+    "apps.confirm.apps": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Apps to uninstall:"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Apps a desinstalar:"
+          }
+        }
+      }
+    },
     "apps.confirm.message": {
       "extractionState": "manual",
       "localizations": {
@@ -1259,6 +1276,23 @@
         }
       }
     },
+    "apps.quit.continue": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Continue Without Quitting"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Continuar sem Fechar"
+          }
+        }
+      }
+    },
     "apps.quit.force": {
       "extractionState": "manual",
       "localizations": {
@@ -1340,6 +1374,23 @@
           "stringUnit": {
             "state": "translated",
             "value": "Alguns apps não fecharam. Você pode forçar o encerramento."
+          }
+        }
+      }
+    },
+    "apps.quit.resetWarning": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Resetting an open app works, but the app may recreate some files right away."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dá para redefinir com o app aberto, mas ele pode recriar alguns arquivos na hora."
           }
         }
       }

@@ -23,11 +23,22 @@ struct CleanYourMacApp: App {
     }
 }
 
-/// `CYM_APPS_PARITY=/caminho.json`: roda só a análise do módulo Aplicativos (somente leitura), grava o JSON
-/// de paridade e encerra. Existe também no Release porque só a cópia com Acesso Total ao Disco lê as sobras.
+/// Debug: `CYM_APPS_PARITY=<arquivo>.json` roda só a análise do módulo Aplicativos (somente leitura), grava o JSON de
+/// paridade em ~/Library/Logs/CleanYourMac e encerra. Fica fora do Release: outro processo não pode usar o Acesso Total
+/// ao Disco do app para gravar o resultado onde quiser.
 enum ParityExport {
+    static func isAllowedOutput(_ path: String) -> Bool {
+        let dir = PathPolicy.realPath(CleanupLog.standard.directory.path)
+        let target = PathPolicy.realPath((path as NSString).standardizingPath)
+        return target.hasPrefix(dir + "/") && target.hasSuffix(".json")
+    }
+
     static func runIfRequested() {
-        guard let path = ProcessInfo.processInfo.environment["CYM_APPS_PARITY"] else { return }
+        #if DEBUG
+        guard let name = ProcessInfo.processInfo.environment["CYM_APPS_PARITY"] else { return }
+        try? FileManager.default.createDirectory(at: CleanupLog.standard.directory, withIntermediateDirectories: true)
+        let path = name.hasPrefix("/") ? name : CleanupLog.standard.directory.appendingPathComponent(name).path
+        guard isAllowedOutput(path) else { exit(2) }
         let done = DispatchSemaphore(value: 0)
         Task.detached {
             var report: AppsReport?
@@ -46,5 +57,6 @@ enum ParityExport {
         }
         done.wait()
         exit(0)
+        #endif
     }
 }

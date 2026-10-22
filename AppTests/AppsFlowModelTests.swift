@@ -207,6 +207,74 @@ struct AppsFlowModelTests {
         #expect(m.failures[pref.id] == "denied")
     }
 
+    @Test func resetWithRunningAppOffersContinueWithoutQuitting() async {
+        let running = StubRunning()
+        running.open = [RunningApp(bundleID: "com.foo", name: "Foo", pid: 42)]
+        let cleaner = RecordingCleaner()
+        let m = model(running: running, cleaner: cleaner)
+        m.start()
+        await waitFor(m) { $0.phase == .results }
+        m.selection.toggle(leaf(.preferences, "com.foo.plist", mode: .reset))
+        m.act()
+        #expect(m.quitPrompt?.apps.map(\.bundleID) == ["com.foo"])
+        #expect(m.quitPrompt?.canContinue == true)
+        m.continueWithoutQuitting()
+        await waitFor(m) { if case .done = $0.phase { true } else { false } }
+        #expect(cleaner.requested.count == 1)
+        #expect(running.quitCalls.isEmpty)
+    }
+
+    @Test func uninstallWithRunningAppCannotContinueWithoutQuitting() async {
+        let running = StubRunning()
+        running.open = [RunningApp(bundleID: "com.foo", name: "Foo", pid: 42)]
+        let m = model(running: running)
+        m.start()
+        await waitFor(m) { $0.phase == .results }
+        m.selection.toggle(fooItem())
+        m.act()
+        #expect(m.quitPrompt?.canContinue == false)
+    }
+
+    @Test func actOnlyOnCurrentScope() async {
+        let cleaner = RecordingCleaner()
+        let m = model(cleaner: cleaner)
+        m.start()
+        await waitFor(m) { $0.phase == .results }
+        let app = leaf(.preferences, "com.foo.plist")
+        let leftoverURL = URL(fileURLWithPath: "/tmp/cym-stub/gone")
+        let leftover = JunkItem(id: AppItemID.leftover(bundleID: "com.gone", path: leftoverURL.path), group: .appLeftovers,
+                                name: "gone", url: leftoverURL, size: 1, isRecommended: true, removal: .moveToTrash(leftoverURL))
+        m.selection.toggle(app)
+        m.selection.toggle(leftover)
+        m.actionScope = [.appLeftovers, .appInstallers]
+        #expect(m.pendingLeaves.map(\.id) == [leftover.id])
+        m.act()
+        await waitFor(m) { if case .done = $0.phase { true } else { false } }
+        #expect(cleaner.requested.first?.map(\.id) == [leftover.id])
+    }
+
+    @Test func cancellingCardActionRestoresSelection() async {
+        let m = model()
+        m.start()
+        await waitFor(m) { $0.phase == .results }
+        let mine = leaf(.preferences, "com.foo.plist")
+        m.selection.toggle(mine)
+        let url = URL(fileURLWithPath: "/tmp/cym-stub/gone")
+        let card = JunkItem(id: AppItemID.leftover(bundleID: "com.gone", path: url.path), group: .appLeftovers, name: "gone",
+                            url: url, size: 1, isRecommended: true, removal: .moveToTrash(url))
+        m.prepare([card], scope: [.appLeftovers])
+        #expect(m.selection.selectedLeaves.map(\.id) == [card.id])
+        m.cancelPrepared()
+        #expect(m.selection.selectedLeaves.map(\.id) == [mine.id])
+    }
+
+    @Test func parityExportWritesOnlyInsideLogsFolder() {
+        let logs = CleanupLog.standard.directory
+        #expect(ParityExport.isAllowedOutput(logs.appendingPathComponent("parity.json").path))
+        #expect(!ParityExport.isAllowedOutput("/tmp/x.json"))
+        #expect(!ParityExport.isAllowedOutput(logs.appendingPathComponent("../../x.json").path))
+    }
+
     @Test func updateActionOpensRightPlace() {
         let opener = StubOpener()
         let m = model(opener: opener)

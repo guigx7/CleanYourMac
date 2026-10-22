@@ -3,7 +3,7 @@ import Testing
 @testable import CleanYourMacCore
 
 private func makeScan(_ t: FixtureTree, fetcher: FakeFetcher = FakeFetcher(), slowQuery: Bool = false) -> AppsScan {
-    let catalog = AppCatalog(query: FakeAppQuery(), usage: FakeUsage())
+    let catalog = AppCatalog(query: FakeAppQuery(), usage: FakeUsage(), displayName: { $0.lastPathComponent })
     let finder = RelatedFilesFinder(loginItems: FakeLoginItems(entries: []), receipts: FakeReceipts())
     return AppsScan(catalog: catalog, uninstaller: UninstallerScanner(catalog: catalog, finder: finder),
                     leftovers: LeftoversScanner(catalog: catalog, finder: finder, appExists: { _ in false }),

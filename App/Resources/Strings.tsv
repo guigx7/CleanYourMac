@@ -345,3 +345,6 @@ reason.kept	Kept because an earlier step failed	Mantido porque um passo anterior
 apps.tile.macOSUpdates.title.one	%d macOS update available	%d atualização do macOS disponível
 apps.tile.appUpdates.title.one	%d app update available	%d atualização de app disponível
 helper.update	Update Helper	Atualizar ajudante
+apps.quit.continue	Continue Without Quitting	Continuar sem Fechar
+apps.quit.resetWarning	Resetting an open app works, but the app may recreate some files right away.	Dá para redefinir com o app aberto, mas ele pode recriar alguns arquivos na hora.
+apps.confirm.apps	Apps to uninstall:	Apps a desinstalar:

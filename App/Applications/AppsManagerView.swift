@@ -72,16 +72,23 @@ struct AppsManagerView: View {
         .padding(.leading, 64)
     }
 
+    /// Grupos da seção visível: a ação só leva o que é desta seção.
+    private var scope: Set<GroupID> {
+        model.section == .leftovers ? [.appLeftovers, .appInstallers] : [.appUninstall]
+    }
+
     private var footer: some View {
-        let count = model.selection.selectedLeaves.count
-        let allReset = count > 0 && model.selection.selectedLeaves.allSatisfy { AppItemID.mode(of: $0.id) == .reset }
+        let leaves = model.selection.selectedLeaves.filter { scope.contains($0.group) }
+        let count = leaves.count
+        let allReset = count > 0 && leaves.allSatisfy { AppItemID.mode(of: $0.id) == .reset }
         return HStack(spacing: 14) {
             Spacer()
             Text(String(format: NSLocalizedString(count == 1 ? "review.selection.one" : "review.selection.other", comment: ""), count))
             Divider().frame(height: 16)
-            AnimatedBytes(bytes: model.selection.selectedBytes).foregroundStyle(.secondary)
+            AnimatedBytes(bytes: leaves.reduce(0) { $0 + $1.size }).foregroundStyle(.secondary)
             Spacer()
             Button {
+                model.actionScope = scope
                 confirmAct = true
             } label: {
                 Text(model.section == .leftovers ? "apps.action.remove" : (allReset ? "apps.action.reset" : "apps.action.uninstall"))

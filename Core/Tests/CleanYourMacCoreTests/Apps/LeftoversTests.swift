@@ -14,7 +14,7 @@ private func container(_ t: FixtureTree, _ id: String, bundle: String?, legacy: 
 }
 
 private func scanner(_ t: FixtureTree, registered: Set<String> = []) -> LeftoversScanner {
-    LeftoversScanner(catalog: AppCatalog(query: FakeAppQuery(), usage: FakeUsage()),
+    LeftoversScanner(catalog: AppCatalog(query: FakeAppQuery(), usage: FakeUsage(), displayName: { $0.lastPathComponent }),
                      finder: RelatedFilesFinder(loginItems: FakeLoginItems(entries: []), receipts: FakeReceipts()),
                      appExists: { registered.contains($0) })
 }

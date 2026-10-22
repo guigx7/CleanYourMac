@@ -9,7 +9,7 @@ private struct Env {
     init() { ctx = t.context() }
 
     func scanner(usage: FakeUsage = FakeUsage(), query: [URL] = [], privileged: Bool = false) -> UninstallerScanner {
-        UninstallerScanner(catalog: AppCatalog(query: FakeAppQuery(results: query), usage: usage),
+        UninstallerScanner(catalog: AppCatalog(query: FakeAppQuery(results: query), usage: usage, displayName: { $0.lastPathComponent }),
                            finder: RelatedFilesFinder(loginItems: FakeLoginItems(entries: []), receipts: FakeReceipts(),
                                                       privilegedAvailable: privileged))
     }

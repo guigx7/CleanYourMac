@@ -7,11 +7,16 @@ public struct AppCatalog: Sendable {
 
     private let query: any AppQuery
     private let usage: any UsageDates
+    private let displayName: @Sendable (URL) -> String
     private let sizer = FileSizer()
 
-    public init(query: any AppQuery = SpotlightAppQuery(), usage: any UsageDates = SpotlightUsageDates()) {
+    /// `displayName`: nome do Finder (LaunchServices). Nos testes, o nome do arquivo: o LaunchServices registraria cada
+    /// app falso das pastas temporárias e, com testes em paralelo, trava no banco dele.
+    public init(query: any AppQuery = SpotlightAppQuery(), usage: any UsageDates = SpotlightUsageDates(),
+                displayName: @escaping @Sendable (URL) -> String = { FileManager.default.displayName(atPath: $0.path) }) {
         self.query = query
         self.usage = usage
+        self.displayName = displayName
     }
 
     public func apps(_ context: ScanContext) -> [AppRecord] {
@@ -59,7 +64,7 @@ public struct AppCatalog: Sendable {
         let dates = usage.dates(url)
         let plistDate = (try? url.appendingPathComponent("Contents/Info.plist").resourceValues(forKeys: [.contentModificationDateKey]))?
             .contentModificationDate
-        var name = FileManager.default.displayName(atPath: url.path)
+        var name = displayName(url)
         if !name.hasSuffix(".app") { name += ".app" }
         let size = ([url] + copies).reduce(Int64(0)) { $0 + sizer.allocatedSize(of: $1) }
         return AppRecord(url: url, bundleID: bundleID, name: name,

@@ -36,6 +36,8 @@ final class AppsFlowModel {
         var apps: [RunningApp]
         /// Depois de uma tentativa normal sem sucesso: oferecer forçar (com confirmação).
         var offerForce = false
+        /// Só Redefinir envolve esses apps: dá para seguir sem fechar, com aviso (reset.md, removal.md §Apps abertos).
+        var canContinue = false
     }
 
     struct PendingReset: Equatable { var leaves: [JunkItem] }
@@ -50,6 +52,10 @@ final class AppsFlowModel {
     /// Apps mostrados no modo Redefinir (AppRecord.id).
     var resetApps: Set<String> = []
     let selection = AppsSelection()
+    /// Grupos sobre os quais a próxima ação age (a seção visível ou o cartão); nil = todos.
+    var actionScope: Set<GroupID>?
+    /// Seleção anterior à ação direta de um cartão (devolvida se ela for cancelada).
+    private var preparedBackup: [JunkItem]?
     #if DEBUG
     /// Linhas abertas ao entrar no Gerenciador (capturas).
     var debugExpanded: [String] = []
@@ -167,17 +173,51 @@ final class AppsFlowModel {
         return out
     }
 
+    /// O que a ação vai levar: a seleção, limitada ao escopo atual.
+    var pendingLeaves: [JunkItem] {
+        guard let scope = actionScope else { return selection.selectedLeaves }
+        return selection.selectedLeaves.filter { scope.contains($0.group) }
+    }
+
     func act() {
-        let leaves = selection.selectedLeaves
+        let leaves = pendingLeaves
+        preparedBackup = nil
         guard !leaves.isEmpty else { return }
         pending = leaves
-        let owners = Set(leaves.compactMap { AppItemID.mode(of: $0.id) == .uninstall ? AppItemID.owner(of: $0.id) : nil })
-        let open = owners.isEmpty ? [] : runningApps.running(bundleIDs: owners)
+        func owners(_ mode: AppItemID.Mode) -> Set<String> {
+            Set(leaves.compactMap { AppItemID.mode(of: $0.id) == mode ? AppItemID.owner(of: $0.id) : nil })
+        }
+        let uninstall = owners(.uninstall), reset = owners(.reset)
+        let open = uninstall.union(reset).isEmpty ? [] : runningApps.running(bundleIDs: uninstall.union(reset))
         if !open.isEmpty {
-            quitPrompt = QuitPrompt(apps: open)
+            quitPrompt = QuitPrompt(apps: open, canContinue: open.allSatisfy { !uninstall.contains($0.bundleID) })
             return
         }
         continueAfterQuit()
+    }
+
+    /// Redefinir com o app aberto: segue sem fechar (o app pode recriar arquivos; o aviso está no diálogo).
+    func continueWithoutQuitting() {
+        guard quitPrompt?.canContinue == true else { return }
+        quitPrompt = nil
+        continueAfterQuit()
+    }
+
+    /// Ação direta de um cartão: marca os recomendados dos itens, guardando a seleção anterior.
+    func prepare(_ items: [JunkItem], scope: Set<GroupID>) {
+        preparedBackup = selection.selectedLeaves
+        selection.clear()
+        for item in items { selection.set(AppsSelection.selectable(item).filter(\.isRecommended), on: true) }
+        actionScope = scope
+    }
+
+    /// A confirmação do cartão foi cancelada: volta a seleção de antes.
+    func cancelPrepared() {
+        guard let backup = preparedBackup else { return }
+        selection.clear()
+        selection.set(backup, on: true)
+        preparedBackup = nil
+        actionScope = nil
     }
 
     func quitAndContinue(force: Bool) async {
@@ -197,6 +237,7 @@ final class AppsFlowModel {
     func cancelQuit() {
         quitPrompt = nil
         pending = []
+        actionScope = nil
     }
 
     private func continueAfterQuit() {
@@ -218,10 +259,12 @@ final class AppsFlowModel {
     func cancelReset() {
         resetConfirmation = nil
         pending = []
+        actionScope = nil
     }
 
     private func perform(_ leaves: [JunkItem]) {
         pending = []
+        actionScope = nil
         managerOpen = false
         phase = .acting
         processed = 0
