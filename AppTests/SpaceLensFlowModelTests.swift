@@ -183,4 +183,25 @@ struct LensSetup {
         #expect(!m.selectionTouchesCloud)
         #expect(SpaceLensFlowModel.isCloudPath(NSHomeDirectory() + "/Library/Mobile Documents/com~apple~CloudDocs/x.pdf"))
     }
+
+    /// Depois de remover uma pasta, nada dela (nem descendentes) fica no histórico de navegação.
+    @Test func removedSubtreeLeavesHistory() async {
+        let s = LensSetup()
+        let m = await s.scanned()
+        let root = m.report!.root
+        let big = root.child("big")!, inner = big.child("inner")!
+        m.open(big)
+        m.open(inner)
+        m.jump(to: root)
+        m.toggle(big)
+        m.review()
+        m.confirmRemoval()
+        while m.phase == .removing { await Task.yield() }
+        m.backToResults()
+        // O histórico só pode levar a pastas que ainda estão na árvore.
+        while m.canGoBack {
+            m.goBack()
+            #expect(m.current?.ancestry.first === root)
+        }
+    }
 }

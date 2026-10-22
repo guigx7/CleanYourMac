@@ -83,3 +83,18 @@ import Testing
 @Test func localFilesAreNotCloudOnly() {
     #expect(!SpaceProtection.isCloudOnly(FileManager.default.temporaryDirectory.path))
 }
+
+/// Um nó que já saiu da árvore tem caminho relativo: nunca é removido (o cwd do app resolveria outro item).
+@Test func detachedNodeIsRefused() async throws {
+    let t = FixtureTree()
+    t.file("a/b/c.bin", bytes: 10)
+    let root = try SpaceScanner().scan(t.root)
+    let a = try #require(root.child("a")), b = try #require(a.child("b"))
+    a.detach()
+    let trasher = FixtureTrasher(t.url("trash"))
+    let r = await SpaceRemover(trasher: trasher, protection: SpaceProtection(home: t.url("Users/me")), dryRun: false,
+                               log: CleanupLog(directory: t.url("logs"))).remove([b])
+    // Recusado por estar fora da árvore (não por acaso de o caminho relativo não existir no diretório atual).
+    #expect(r.values.allSatisfy { if case .failure(let f) = $0 { f.reason == "detached" } else { false } })
+    #expect(trasher.trashed.isEmpty)
+}

@@ -74,7 +74,10 @@ public struct SpaceRemover: Sendable {
         for node in nodes {
             let path = node.path
             let result: Result<Void, CleanFailure>
-            if protection.level(path: path) != .none {
+            // Fora da árvore (já removido com um ancestral): o caminho seria relativo ao diretório atual do app.
+            if !path.hasPrefix("/") || node.ancestry.first?.rootPath == nil {
+                result = .failure(CleanFailure(reason: "detached"))
+            } else if protection.level(path: path) != .none {
                 result = .failure(CleanFailure(reason: "kept: protected"))
             } else if !Self.unchanged(node, path) {
                 result = .failure(CleanFailure(reason: "item changed"))

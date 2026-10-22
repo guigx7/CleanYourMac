@@ -239,7 +239,9 @@ final class SpaceLensFlowModel {
                     node.detach()
                 }
             }
-            backStack.removeAll { $0.parent == nil && $0 !== report?.root }
+            // Só fica no histórico o que ainda está na árvore (nada de pastas removidas nem descendentes delas).
+            let root = report?.root
+            backStack.removeAll { $0.ancestry.first !== root }
             forwardStack = []
             selection = []
             phase = .done(Outcome(removed: removed, freed: freed, failed: failed))
