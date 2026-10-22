@@ -1,0 +1,97 @@
+== window: 
+== window: 
+== window: 
+== window: CleanMyMac
+  AXWindow: CleanMyMac
+    AXButton: Pressed | Recomeçar
+        AXImage: back button circle
+        AXStaticText: Recomeçar
+    AXStaticText: Lupa de Espaço
+    AXStaticText: Macintosh HD
+    AXStaticText: 225 GB de 494 GB usados
+    AXStaticText: Macintosh HD
+    AXStaticText: 242 GB
+    AXStaticText: 3M itens
+    AXButton: Nenhum | Selecionar:
+        AXStaticText: Selecionar:
+        AXStaticText: Nenhum
+        AXImage: ir para baixo
+        AXRow [level=0]: 
+                AXImage: Informações
+            AXStaticText: Users
+            AXStaticText: 183 GB
+        AXRow [level=0]: 
+                AXImage: Informações
+            AXStaticText: System
+            AXStaticText: 19,9 GB
+        AXRow [level=0]: 
+                AXImage: Informações
+            AXStaticText: Applications
+            AXStaticText: 15,8 GB
+        AXRow [level=0]: 
+                AXImage: Informações
+            AXStaticText: private
+            AXStaticText: 8,2 GB
+        AXRow [level=0]: 
+                AXImage: Informações
+            AXStaticText: Library
+            AXStaticText: 6,3 GB
+        AXRow [level=0]: 
+                AXImage: Informações
+            AXStaticText: opt
+            AXStaticText: 3,8 GB
+        AXRow [level=0]: 
+                AXImage: Informações
+            AXStaticText: usr
+            AXStaticText: 831 MB
+        AXRow [level=0]: 
+                AXImage: Informações
+            AXStaticText: bin
+            AXStaticText: 4,9 MB
+        AXRow [level=0]: 
+                AXImage: Informações
+            AXStaticText: sbin
+            AXStaticText: 2,5 MB
+        AXRow [level=0]: 
+            AXButton: Outros itens
+            AXStaticText: 0 KB
+        AXRow [level=0]: 
+                AXImage: Informações
+            AXImage: space lens purgeable
+            AXStaticText: Espaço Purgável
+            AXStaticText: 3,9 GB
+    AXList: caminho
+      AXStaticText: Macintosh HD
+    AXButton: Disabled
+        AXImage: navigation button back
+    AXButton: Disabled
+        AXImage: navigation button forward
+        AXImage: Informações
+    AXStaticText: 0 item selecionado
+    AXStaticText: 0 KB
+    AXButton: Disabled | Revisar e Remover
+        AXStaticText: Revisar e Remover
+    AXButton: Users
+    AXButton: System
+    AXButton: Applications
+    AXButton: private
+    AXButton: Library
+    AXButton: opt
+    AXButton: usr
+    AXButton: bin
+    AXButton: sbin
+    AXButton: Outros itens
+          AXStaticText: Cuidados Inteligentes
+          AXStaticText: Limpeza
+          AXStaticText: Proteção
+          AXStaticText: Desempenho
+          AXImage: InfoIndicator
+          AXStaticText: Aplicativos
+          AXStaticText: Acúmulos
+          AXStaticText: Lupa de Espaço
+          AXImage: InfoIndicator
+          AXStaticText: Limpeza de Nuvem
+          AXStaticText: Ferramentas
+          AXStaticText: Atividades
+    AXButton: este botão também possui uma ação para ampliar ou reduzir a janela
+    ?: Parar

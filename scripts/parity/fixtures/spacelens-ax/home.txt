@@ -1,0 +1,82 @@
+== window: 
+== window: 
+== window: 
+== window: CleanMyMac
+  AXWindow: CleanMyMac
+    AXButton: Pressed | Recomeçar
+        AXImage: back button circle
+        AXStaticText: Recomeçar
+    AXStaticText: Lupa de Espaço
+    AXStaticText: Macintosh HD
+    AXStaticText: 225 GB de 494 GB usados
+    AXStaticText: guigx
+    AXStaticText: 183 GB
+    AXStaticText: 2M itens
+    AXButton: Nenhum | Selecionar:
+        AXStaticText: Selecionar:
+        AXStaticText: Nenhum
+        AXImage: ir para baixo
+        AXRow [level=0]: 
+                AXImage: Informações
+            AXStaticText: Library
+            AXStaticText: 69,9 GB
+        AXRow [level=0]: 
+            AXCheckBox [checked=0]: 
+            AXStaticText: Projetos
+            AXStaticText: 65,4 GB
+        AXRow [level=0]: 
+            AXCheckBox [checked=0]: 
+            AXStaticText: .colima
+            AXStaticText: 14,6 GB
+        AXRow [level=0]: 
+            AXCheckBox [checked=0]: 
+            AXStaticText: .npm
+            AXStaticText: 10,1 GB
+        AXRow [level=0]: 
+            AXCheckBox [checked=0]: 
+            AXStaticText: .claude
+            AXStaticText: 8,6 GB
+        AXRow [level=0]: 
+                AXImage: Informações
+            AXStaticText: Downloads
+            AXStaticText: 2,6 GB
+        AXRow [level=0]: 
+            AXCheckBox [checked=0]: 
+            AXStaticText: .cache
+            AXStaticText: 2,4 GB
+        AXRow [level=0]: 
+            AXButton: Outros itens
+            AXStaticText: 9,3 GB
+    AXList: caminho
+      AXStaticText: guigx
+    AXButton: Enabled
+        AXImage: navigation button back
+    AXButton: Disabled
+        AXImage: navigation button forward
+        AXImage: Informações
+    AXStaticText: 0 item selecionado
+    AXStaticText: 0 KB
+    AXButton: Disabled | Revisar e Remover
+        AXStaticText: Revisar e Remover
+    AXButton: Library
+    AXButton: Projetos
+    AXButton: .colima
+    AXButton: .npm
+    AXButton: .claude
+    AXButton: Downloads
+    AXButton: .cache
+    AXButton: Outros itens
+          AXStaticText: Cuidados Inteligentes
+          AXStaticText: Limpeza
+          AXStaticText: Proteção
+          AXStaticText: Desempenho
+          AXImage: InfoIndicator
+          AXStaticText: Aplicativos
+          AXStaticText: Acúmulos
+          AXStaticText: Lupa de Espaço
+          AXImage: InfoIndicator
+          AXStaticText: Limpeza de Nuvem
+          AXStaticText: Ferramentas
+          AXStaticText: Atividades
+    AXButton: este botão também possui uma ação para ampliar ou reduzir a janela
+    ?: Parar

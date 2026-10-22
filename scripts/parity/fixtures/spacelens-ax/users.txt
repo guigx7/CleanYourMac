@@ -1,0 +1,59 @@
+== window: 
+== window: 
+== window: 
+== window: CleanMyMac
+  AXWindow: CleanMyMac
+    AXButton: Pressed | Recomeçar
+        AXImage: back button circle
+        AXStaticText: Recomeçar
+    AXStaticText: Lupa de Espaço
+    AXStaticText: Macintosh HD
+    AXStaticText: 225 GB de 494 GB usados
+    AXStaticText: Users
+    AXStaticText: 183 GB
+    AXStaticText: 2M itens
+    AXButton: Nenhum | Selecionar:
+        AXStaticText: Selecionar:
+        AXStaticText: Nenhum
+        AXImage: ir para baixo
+        AXRow [level=0]: 
+                AXImage: Informações
+            AXStaticText: guigx
+            AXStaticText: 183 GB
+        AXRow [level=0]: 
+                AXImage: Informações
+            AXStaticText: Shared
+            AXStaticText: 123 KB
+        AXRow [level=0]: 
+            AXCheckBox [checked=0]: 
+            AXStaticText: .localized
+            AXStaticText: 0 KB
+    AXList: caminho
+      AXStaticText: Macintosh HD
+      AXStaticText: Usuários
+    AXButton: Enabled
+        AXImage: navigation button back
+    AXButton: Disabled
+        AXImage: navigation button forward
+        AXImage: Informações
+    AXStaticText: 0 item selecionado
+    AXStaticText: 0 KB
+    AXButton: Disabled | Revisar e Remover
+        AXStaticText: Revisar e Remover
+    AXButton: guigx
+    AXButton: Shared
+    AXButton: .localized
+          AXStaticText: Cuidados Inteligentes
+          AXStaticText: Limpeza
+          AXStaticText: Proteção
+          AXStaticText: Desempenho
+          AXImage: InfoIndicator
+          AXStaticText: Aplicativos
+          AXStaticText: Acúmulos
+          AXStaticText: Lupa de Espaço
+          AXImage: InfoIndicator
+          AXStaticText: Limpeza de Nuvem
+          AXStaticText: Ferramentas
+          AXStaticText: Atividades
+    AXButton: este botão também possui uma ação para ampliar ou reduzir a janela
+    ?: Parar
