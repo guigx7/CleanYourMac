@@ -135,6 +135,15 @@ final class PerformanceFlowModel {
         phase = .intro
     }
 
+    /// Voltar dos Resultados para a Intro (antes de Analisar), sem analisar de novo.
+    func back() {
+        task?.cancel()
+        task = nil
+        managerOpen = false
+        clearSelection()
+        phase = .intro
+    }
+
     func restart() {
         managerOpen = false
         start()

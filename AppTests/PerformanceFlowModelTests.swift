@@ -295,4 +295,14 @@ struct PerfSetup {
         try? await Task.sleep(for: .milliseconds(150))
         #expect(gated.ran == [.flushDNS])
     }
+
+    @Test func backReturnsToIntroWithoutScanning() async {
+        let s = PerfSetup()
+        let m = await s.scanned()
+        m.selectedTasks = [.flushDNS]
+        m.back()
+        #expect(m.phase == .intro)
+        #expect(m.selectedTasks.isEmpty)
+        #expect(!m.managerOpen)
+    }
 }

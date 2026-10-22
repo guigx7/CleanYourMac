@@ -39,7 +39,12 @@ struct PerformanceResultsView: View {
             Text("module.performance")
                 .font(.system(size: 13, weight: .semibold))
                 .foregroundStyle(Theme.secondaryText)
-            HStack {
+            HStack(spacing: 18) {
+                Button { model.back() } label: {
+                    Label("review.back", systemImage: "chevron.left").font(.system(size: 13, weight: .medium))
+                }
+                .buttonStyle(.plain)
+                .foregroundStyle(Theme.secondaryText)
                 Button { model.restart() } label: {
                     Label("results.restart", systemImage: "arrow.counterclockwise").font(.system(size: 13, weight: .medium))
                 }
