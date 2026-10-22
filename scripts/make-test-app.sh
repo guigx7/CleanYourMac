@@ -1,7 +1,8 @@
 #!/bin/bash
 # Cria um app de teste mínimo (assinado ad-hoc) para os testes de remoção do módulo Aplicativos.
-# Uso: scripts/make-test-app.sh <pasta> <nome> <bundleID> [--feed URL] [--version V] [--agent]
-#   --agent  também gera <pasta>/<bundleID>.agent.plist (launchd) apontando para o executável.
+# Uso: scripts/make-test-app.sh <pasta> <nome> <bundleID> [--feed URL] [--version V] [--agent] [--stay]
+#   --agent  também gera <pasta>/<bundleID>.plist (launchd, Label = bundleID) apontando para o executável.
+#   --stay   o executável fica rodando (para testar o pedido de fechar o app).
 # Nunca escreve fora de <pasta>.
 set -euo pipefail
 
@@ -9,12 +10,13 @@ dir=${1:?uso: make-test-app.sh <pasta> <nome> <bundleID> [--feed URL] [--version
 name=${2:?nome}
 bundle_id=${3:?bundleID}
 shift 3
-feed="" version="1.0" agent=0
+feed="" version="1.0" agent=0 stay=0
 while [ $# -gt 0 ]; do
   case "$1" in
     --feed) feed=$2; shift 2 ;;
     --version) version=$2; shift 2 ;;
     --agent) agent=1; shift ;;
+    --stay) stay=1; shift ;;
     *) echo "opção desconhecida: $1" >&2; exit 2 ;;
   esac
 done
@@ -25,7 +27,11 @@ exe_name=$(printf '%s' "$name" | tr -cd 'A-Za-z0-9')
 mkdir -p "$app/Contents/MacOS" "$app/Contents/Resources"
 
 src=$(mktemp -t cymtestapp).c
-printf 'int main(void){return 0;}\n' > "$src"
+if [ "$stay" -eq 1 ]; then
+  printf '#include <unistd.h>\nint main(void){for(;;) sleep(60);}\n' > "$src"
+else
+  printf 'int main(void){return 0;}\n' > "$src"
+fi
 clang -o "$app/Contents/MacOS/$exe_name" "$src"
 rm -f "$src"
 
@@ -48,11 +54,11 @@ EOF
 codesign -s - --force "$app" >/dev/null 2>&1
 
 if [ "$agent" -eq 1 ]; then
-  cat > "$dir/$bundle_id.agent.plist" <<EOF
+  cat > "$dir/$bundle_id.plist" <<EOF
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0"><dict>
-<key>Label</key><string>$bundle_id.agent</string>
+<key>Label</key><string>$bundle_id</string>
 <key>ProgramArguments</key><array><string>$app/Contents/MacOS/$exe_name</string></array>
 </dict></plist>
 EOF
