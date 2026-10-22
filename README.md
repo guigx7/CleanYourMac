@@ -6,7 +6,7 @@
 
 <p align="center">
   App macOS open source para encontrar e remover o que o seu Mac guarda sem precisar.<br>
-  Projeto de estudo que reimplementa, com código e arte próprios, os módulos Limpeza e Aplicativos do CleanMyMac.
+  Projeto que reimplementa, com código e arte próprios, funcionalidades do CleanMyMac.
 </p>
 
 > Projeto independente, sem vínculo com a MacPaw. "CleanMyMac" é marca da MacPaw Inc. Nenhum código, texto, ícone ou dado do CleanMyMac foi copiado — o comportamento foi estudado (processo *clean room*, ver [`docs/re/`](docs/re/README.md)) e reescrito do zero.
