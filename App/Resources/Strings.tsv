@@ -373,3 +373,37 @@ guide.done	Done	Pronto
 apps.done.appManagement	macOS blocked moving some apps to the Trash.	O macOS bloqueou mover alguns apps para o Lixo.
 apps.done.allowAppManagement	Allow App Management	Permitir Gerenciamento de Apps
 apps.leftovers.needsFDA	Without Full Disk Access, macOS hides the data CleanYourMac uses to find leftovers of removed apps.	Sem Acesso Total ao Disco, o macOS esconde os dados que o CleanYourMac usa para achar sobras de apps removidos.
+perf.intro.title	Performance	Desempenho
+perf.intro.subtitle	Run the maintenance tasks this Mac can use and decide which apps start with it or keep running in the background.	Rode as tarefas de manutenção que fazem sentido neste Mac e decida quais apps abrem com ele ou ficam rodando em segundo plano.
+perf.category.maintenance	Maintenance tasks	Tarefas de manutenção
+perf.category.loginItems	Login items	Itens de início
+perf.category.backgroundItems	Background items	Itens em segundo plano
+perf.scan.title	Checking this Mac…	Conferindo este Mac…
+perf.scan.phase.maintenance	Picking the maintenance tasks for this Mac	Escolhendo as tarefas de manutenção para este Mac
+perf.scan.phase.loginItems	Reading the apps that open at login	Lendo os apps que abrem ao iniciar a sessão
+perf.scan.phase.backgroundItems	Reading what runs in the background	Lendo o que roda em segundo plano
+perf.scan.phase.timeMachine	Looking for local Time Machine snapshots	Procurando capturas locais do Time Machine
+perf.nothing.title	Nothing to do	Nada a fazer
+perf.nothing.message	No maintenance task applies here and nothing starts with this Mac.	Nenhuma tarefa de manutenção se aplica aqui e nada abre junto com este Mac.
+perf.acting.tasks	Running maintenance…	Rodando a manutenção…
+perf.acting.items	Applying the changes…	Aplicando as mudanças…
+perf.done.count	%d done.	%d concluído(s).
+perf.done.tasks.title	Maintenance done!	Manutenção concluída!
+perf.done.tasks.partial	Some tasks didn't finish	Algumas tarefas não terminaram
+perf.done.disable.title	Items turned off	Itens desativados
+perf.done.disable.partial	Some items weren't turned off	Alguns itens não foram desativados
+perf.done.enable.title	Items turned back on	Itens reativados
+perf.done.enable.partial	Some items weren't turned back on	Alguns itens não foram reativados
+perf.done.remove.title	Items removed	Itens removidos
+perf.done.remove.partial	Some items weren't removed	Alguns itens não foram removidos
+perf.done.snapshots.title	Snapshots deleted	Capturas apagadas
+perf.done.snapshots.partial	Some snapshots weren't deleted	Algumas capturas não foram apagadas
+perf.results.header	Run the suggested maintenance or review what starts with your Mac.	Rode a manutenção sugerida ou revise o que abre junto com o Mac.
+perf.task.speedUpMail.title	Speed Up Mail	Acelerar o Mail
+perf.task.flushDNS.title	Flush DNS Cache	Esvaziar Cache do DNS
+perf.task.freeUpPurgeable.title	Free Up Purgeable Space	Liberar Espaço Purgável
+perf.task.reindexSpotlight.title	Reindex Spotlight	Reindexar o Spotlight
+perf.task.repairPermissions.title	Repair Disk Permissions	Reparar Permissões do Disco
+perf.task.freeUpRAM.title	Free Up RAM	Liberar RAM
+perf.task.periodicScripts.title	Run Periodic Scripts	Executar Scripts Periódicos
+perf.task.thinSnapshots.title	Thin Time Machine Snapshots	Diminuir Capturas do Time Machine

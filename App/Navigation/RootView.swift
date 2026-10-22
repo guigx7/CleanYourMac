@@ -12,10 +12,12 @@ struct RootView: View {
     }
     @State private var cleanup = CleanupEnvironment.makeModel()
     @State private var apps = AppsEnvironment.makeModel()
+    @State private var performance = PerformanceEnvironment.makeModel()
 
-    /// Telas claras em tela cheia: o Gerenciador de Limpeza e o de Aplicativos.
+    /// Telas claras em tela cheia: os Gerenciadores de Limpeza, Aplicativos e Desempenho.
     private var fullScreen: Bool {
         (module == .cleanup && cleanup.phase == .review) || (module == .applications && apps.managerOpen)
+            || (module == .performance && performance.managerOpen)
     }
 
     var body: some View {
@@ -26,12 +28,23 @@ struct RootView: View {
             } else if module == .applications && apps.managerOpen {
                 AppsManagerView(model: apps)
                     .transition(.move(edge: .trailing).combined(with: .opacity))
+            } else if module == .performance && performance.managerOpen {
+                PerformanceManagerView(model: performance)
+                    .transition(.move(edge: .trailing).combined(with: .opacity))
             } else {
                 main.transition(.opacity)
             }
         }
         .animation(.smooth(duration: 0.4), value: fullScreen)
         .task { await HelperManager.shared.checkVersion() }
+        .onAppear {
+            // "Abrir no Desinstalador" a partir de um item de início.
+            performance.onOpenUninstaller = { _ in
+                performance.closeManager()
+                module = .applications
+                apps.openManager(.uninstaller, filter: .all)
+            }
+        }
         .frame(minWidth: 1040, minHeight: 680)
     }
 
@@ -51,7 +64,11 @@ struct RootView: View {
     }
 
     private var atIntro: Bool {
-        module == .applications ? apps.phase == .intro : cleanup.phase == .intro
+        switch module {
+        case .applications: apps.phase == .intro
+        case .performance: performance.phase == .intro
+        default: cleanup.phase == .intro
+        }
     }
 
     @ViewBuilder private var content: some View {
@@ -60,6 +77,8 @@ struct RootView: View {
             CleanupModuleView(model: cleanup)
         case .applications:
             AppsModuleView(model: apps)
+        case .performance:
+            PerformanceModuleView(model: performance)
         default:
             EmptyView()
         }

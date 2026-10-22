@@ -6,7 +6,7 @@ enum AppModule: String, CaseIterable, Identifiable {
     var id: String { rawValue }
 
     /// Módulos já implementados.
-    var isAvailable: Bool { self == .cleanup || self == .applications }
+    var isAvailable: Bool { self != .spaceLens }
 
     var title: LocalizedStringKey {
         switch self {
