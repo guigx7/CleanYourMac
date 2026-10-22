@@ -430,7 +430,7 @@ perf.tile.backgroundItems.title.one	%d background item found	%d item em segundo 
 perf.tile.backgroundItems.title.other	%d background items found	%d itens em segundo plano encontrados
 perf.tile.backgroundItems.description	Agents and helpers that macOS starts on its own. Turn off the ones you don't use.	Agentes e auxiliares que o macOS inicia sozinho. Desative os que você não usa.
 perf.confirm.heavy.title	This may take a while	Isso pode demorar
-perf.confirm.heavy.freeUpPurgeable	Free Up Purgeable Space asks macOS to clear caches it can rebuild. The Mac may feel slower for a few minutes.	Liberar Espaço Purgável pede ao macOS para limpar caches que ele consegue refazer. O Mac pode ficar mais lento por alguns minutos.
+perf.confirm.heavy.freeUpPurgeable	Free Up Purgeable Space asks macOS to clear data it can rebuild, which can include local Time Machine snapshots (your backups on the backup disk aren't affected). The Mac may feel slower for a few minutes.	Liberar Espaço Purgável pede ao macOS para limpar dados que ele consegue refazer, o que pode incluir capturas locais do Time Machine (os backups no disco de backup não são afetados). O Mac pode ficar mais lento por alguns minutos.
 perf.confirm.heavy.reindexSpotlight	Reindex Spotlight rebuilds the search index from scratch. Searches will be incomplete until it finishes, which can take hours.	Reindexar o Spotlight refaz o índice de busca do zero. As buscas ficam incompletas até terminar, o que pode levar horas.
 perf.confirm.disable.title	Turn off %d item(s)?	Desativar %d item(ns)?
 perf.confirm.disable.message	They stay on the Mac and won't start anymore. You can turn them back on here.	Eles continuam no Mac e deixam de iniciar. Você pode reativá-los aqui.
@@ -460,7 +460,7 @@ perf.task.speedUpMail.fda	Needs Full Disk Access to read the Mail folder.	Precis
 perf.task.speedUpMail.grant	Grant Access	Conceder Acesso
 perf.task.speedUpMail.description	Asks Spotlight to index your Mail messages again, which helps when search in Mail misses messages.	Pede ao Spotlight para indexar de novo as mensagens do Mail, o que ajuda quando a busca do Mail não encontra mensagens.
 perf.task.flushDNS.description	Clears the list of website addresses macOS remembers. Useful when a site moved or won't load.	Limpa a lista de endereços de sites que o macOS guarda. Útil quando um site mudou de lugar ou não abre.
-perf.task.freeUpPurgeable.description	Asks macOS to clear caches and other data it can download or rebuild later, freeing that space now.	Pede ao macOS para limpar caches e outros dados que ele consegue baixar ou refazer depois, liberando esse espaço agora.
+perf.task.freeUpPurgeable.description	Asks macOS to clear caches, local Time Machine snapshots and other data it can download or rebuild later.	Pede ao macOS para limpar caches, capturas locais do Time Machine e outros dados que ele consegue baixar ou refazer depois.
 perf.task.reindexSpotlight.description	Rebuilds the Spotlight index from scratch. Only worth it when search results are wrong or missing.	Refaz o índice do Spotlight do zero. Só vale a pena quando a busca dá resultados errados ou incompletos.
 perf.task.repairPermissions.description	Resets the permissions of the folders in your home folder to the macOS defaults.	Volta as permissões das pastas da sua pasta pessoal ao padrão do macOS.
 perf.task.freeUpRAM.description	Asks macOS to drop cached memory so open apps have more room.	Pede ao macOS para descartar a memória em cache e dar mais espaço aos apps abertos.

@@ -72,3 +72,13 @@ import CleanYourMacCore
     let missing = used.filter { known[$0] == nil || known[$0]!.contains(where: \.isEmpty) }.sorted()
     #expect(missing.isEmpty, "sem tradução: \(missing)")
 }
+
+/// Liberar Espaço Purgável pode apagar capturas locais do Time Machine: a confirmação precisa dizer isso.
+@Test func purgeableConfirmationMentionsSnapshots() throws {
+    let repo = URL(fileURLWithPath: #filePath).deletingLastPathComponent().deletingLastPathComponent()
+    let tsv = try String(contentsOf: repo.appendingPathComponent("App/Resources/Strings.tsv"), encoding: .utf8)
+    let line = try #require(tsv.split(separator: "\n").first { $0.hasPrefix("perf.confirm.heavy.freeUpPurgeable\t") })
+    let parts = line.split(separator: "\t").map(String.init)
+    #expect(parts[1].contains("Time Machine snapshots"))
+    #expect(parts[2].contains("capturas locais do Time Machine"))
+}

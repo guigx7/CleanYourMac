@@ -4716,13 +4716,13 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Free Up Purgeable Space asks macOS to clear caches it can rebuild. The Mac may feel slower for a few minutes."
+            "value": "Free Up Purgeable Space asks macOS to clear data it can rebuild, which can include local Time Machine snapshots (your backups on the backup disk aren't affected). The Mac may feel slower for a few minutes."
           }
         },
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "Liberar Espaço Purgável pede ao macOS para limpar caches que ele consegue refazer. O Mac pode ficar mais lento por alguns minutos."
+            "value": "Liberar Espaço Purgável pede ao macOS para limpar dados que ele consegue refazer, o que pode incluir capturas locais do Time Machine (os backups no disco de backup não são afetados). O Mac pode ficar mais lento por alguns minutos."
           }
         }
       }
@@ -5685,13 +5685,13 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Asks macOS to clear caches and other data it can download or rebuild later, freeing that space now."
+            "value": "Asks macOS to clear caches, local Time Machine snapshots and other data it can download or rebuild later."
           }
         },
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "Pede ao macOS para limpar caches e outros dados que ele consegue baixar ou refazer depois, liberando esse espaço agora."
+            "value": "Pede ao macOS para limpar caches, capturas locais do Time Machine e outros dados que ele consegue baixar ou refazer depois."
           }
         }
       }
