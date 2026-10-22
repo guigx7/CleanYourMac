@@ -108,3 +108,30 @@ import Testing
         #expect(root.items == rootItems - bItems - 1)
     }
 }
+
+/// Um volume montado dentro da pasta analisada (imagem de disco, SMB, AppTranslocation) não entra na conta.
+@Suite(.serialized) struct SpaceScannerMountTests {
+    func hdiutil(_ args: [String]) -> Int32 {
+        let p = Process()
+        p.executableURL = URL(fileURLWithPath: "/usr/bin/hdiutil")
+        p.arguments = args
+        p.standardOutput = FileHandle.nullDevice
+        p.standardError = FileHandle.nullDevice
+        try? p.run()
+        p.waitUntilExit()
+        return p.terminationStatus
+    }
+
+    @Test func mountPointsAreSkipped() throws {
+        let t = FixtureTree()
+        t.file("outer/own.bin", bytes: 100_000)
+        let image = t.url("img.dmg"), mountPoint = t.dir("outer/mp")
+        try #require(hdiutil(["create", "-size", "20m", "-fs", "HFS+", "-volname", "cymtest", image.path]) == 0)
+        try #require(hdiutil(["attach", "-nobrowse", "-mountpoint", mountPoint.path, image.path]) == 0)
+        defer { _ = hdiutil(["detach", mountPoint.path, "-force"]) }
+        try Data(count: 5_000_000).write(to: mountPoint.appendingPathComponent("inside.bin"))
+        let root = try SpaceScanner().scan(t.url("outer"))
+        #expect(root.child("mp") == nil)
+        #expect(root.size < 1_000_000)
+    }
+}

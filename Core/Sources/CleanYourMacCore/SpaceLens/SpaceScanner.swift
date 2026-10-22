@@ -110,6 +110,7 @@ public struct SpaceScanner: Sendable {
         attrs.bitmapcount = u_short(ATTR_BIT_MAP_COUNT)
         attrs.commonattr = attrgroup_t(ATTR_CMN_RETURNED_ATTRS) | attrgroup_t(ATTR_CMN_NAME) | attrgroup_t(ATTR_CMN_DEVID)
             | attrgroup_t(ATTR_CMN_OBJTYPE) | attrgroup_t(ATTR_CMN_FILEID) | attrgroup_t(ATTR_CMN_ERROR)
+        attrs.dirattr = attrgroup_t(ATTR_DIR_MOUNTSTATUS)
         attrs.fileattr = attrgroup_t(ATTR_FILE_ALLOCSIZE)
         let buffer = UnsafeMutableRawPointer.allocate(byteCount: Self.bufferSize, alignment: 8)
         defer { buffer.deallocate() }
@@ -156,6 +157,12 @@ public struct SpaceScanner: Sendable {
                     error = p.loadUnaligned(as: UInt32.self)
                     p += MemoryLayout<UInt32>.size
                 }
+                // Atributos de pasta vêm antes dos de arquivo.
+                var mountStatus: UInt32 = 0
+                if returned.dirattr & attrgroup_t(ATTR_DIR_MOUNTSTATUS) != 0 {
+                    mountStatus = p.loadUnaligned(as: UInt32.self)
+                    p += MemoryLayout<UInt32>.size
+                }
                 var alloc: Int64 = 0
                 if returned.fileattr & attrgroup_t(ATTR_FILE_ALLOCSIZE) != 0 {
                     alloc = p.loadUnaligned(as: off_t.self)
@@ -164,7 +171,9 @@ public struct SpaceScanner: Sendable {
                 items += 1
                 let childPath = path == "/" ? "/" + name : path + "/" + name
                 if type == fsobj_type_t(VDIR.rawValue) {
-                    if options.isExcluded(childPath, dev) {
+                    // Ponto de montagem (outro volume, imagem, rede, AppTranslocation): fica de fora. O DEVID aqui é o
+                    // da pasta por baixo, então só o estado de montagem identifica.
+                    if mountStatus & UInt32(DIR_MNTSTATUS_MNTPOINT) != 0 || options.isExcluded(childPath, dev) {
                         items -= 1
                         continue
                     }
