@@ -8,6 +8,9 @@ enum FailureText {
         let r = reason.lowercased()
         if r == "cancelled" { return "reason.cancelled" }
         if r == "in use" { return "reason.inUse" }
+        if r == "timed out" { return "reason.timedOut" }
+        if r == "item changed" { return "reason.changed" }
+        if r == "open settings" { return "reason.openSettings" }
         if r.hasPrefix("kept:") { return "reason.kept" }
         if r.hasPrefix("signature") { return "reason.signature" }
         if r.contains("operation not permitted") && r.contains(".app") { return "reason.appManagement" }

@@ -78,12 +78,15 @@ final class PerformanceFlowModel {
     private let deleteSnapshots: @Sendable ([LocalSnapshot]) -> [String: Result<Void, CleanFailure>]
     private let opener: any URLOpening
     let context: ScanContext
+    /// Debug simula por padrão: a conclusão avisa que nada foi alterado.
+    let dryRun: Bool
     private var task: Task<Void, Never>?
     private var pendingTasks: [MaintenanceTaskID] = []
 
     init(scan: any PerformanceScanning, maintenance: any MaintenanceRunning, startup: any StartupActing,
          snapshots: @escaping @Sendable ([LocalSnapshot]) -> [String: Result<Void, CleanFailure>], context: ScanContext,
-         opener: any URLOpening = WorkspaceOpener()) {
+         opener: any URLOpening = WorkspaceOpener(), dryRun: Bool = false) {
+        self.dryRun = dryRun
         self.scan = scan
         self.maintenance = maintenance
         self.startup = startup
@@ -330,6 +333,6 @@ enum PerformanceEnvironment {
             scan: Registry.performanceScan(),
             maintenance: MaintenanceRunner(privileged: privileged, dryRun: dryRun, log: .standard),
             startup: StartupItemsActions(privileged: privileged, context: context, dryRun: dryRun),
-            snapshots: { snapshots.delete($0, dryRun: dryRun) }, context: context)
+            snapshots: { snapshots.delete($0, dryRun: dryRun) }, context: context, dryRun: dryRun)
     }
 }

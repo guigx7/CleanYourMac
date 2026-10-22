@@ -4897,6 +4897,23 @@
         }
       }
     },
+    "perf.done.dryRun": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Simulation: nothing was changed on this Mac."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Simulação: nada foi alterado neste Mac."
+          }
+        }
+      }
+    },
     "perf.done.enable.partial": {
       "extractionState": "manual",
       "localizations": {
@@ -6359,6 +6376,23 @@
         }
       }
     },
+    "reason.changed": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Changed since the scan; nothing was touched. Scan again."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mudou desde a análise; nada foi alterado. Analise de novo."
+          }
+        }
+      }
+    },
     "reason.inUse": {
       "extractionState": "manual",
       "localizations": {
@@ -6393,6 +6427,23 @@
         }
       }
     },
+    "reason.openSettings": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "macOS only allows this in System Settings › General › Login Items."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "O macOS só permite isso em Ajustes do Sistema › Geral › Itens de Início."
+          }
+        }
+      }
+    },
     "reason.permission": {
       "extractionState": "manual",
       "localizations": {
@@ -6423,6 +6474,23 @@
           "stringUnit": {
             "state": "translated",
             "value": "A remoção quebraria a assinatura do app, então ele foi restaurado."
+          }
+        }
+      }
+    },
+    "reason.timedOut": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Took too long and was stopped."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Demorou demais e foi interrompida."
           }
         }
       }

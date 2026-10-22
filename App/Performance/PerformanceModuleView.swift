@@ -30,7 +30,7 @@ struct PerformanceModuleView: View {
 }
 
 #if DEBUG
-/// `CYM_PERF_AUTO=scan|results|maintenance|loginItems|backgroundItems|snapshots` leva o fluxo até a tela pedida (capturas).
+/// `CYM_PERF_AUTO=scan|results|maintenance|loginItems|backgroundItems|snapshots|done` leva o fluxo até a tela pedida (capturas).
 @MainActor
 enum PerformanceDebugAutomation {
     static func run(_ model: PerformanceFlowModel) async {
@@ -39,6 +39,8 @@ enum PerformanceDebugAutomation {
         guard target != "scan" else { return }
         while model.phase == .scanning { try? await Task.sleep(for: .milliseconds(50)) }
         if let section = PerformanceFlowModel.Section(rawValue: target) { model.openManager(section) }
+        // "done": roda Esvaziar Cache do DNS e Reparar Permissões (simulado no Debug) até a conclusão.
+        if target == "done" { model.runTasks([.flushDNS, .repairPermissions]) }
     }
 }
 #endif

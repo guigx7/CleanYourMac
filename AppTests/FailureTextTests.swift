@@ -8,6 +8,9 @@ import Testing
     #expect(FailureText.key(for: "path not allowed: /x") == "reason.permission")
     #expect(FailureText.key(for: "Operation not permitted") == "reason.permission")
     #expect(FailureText.key(for: "something odd") == "reason.unknown")
+    #expect(FailureText.key(for: "timed out") == "reason.timedOut")
+    #expect(FailureText.key(for: "item changed") == "reason.changed")
+    #expect(FailureText.key(for: "open settings") == "reason.openSettings")
 }
 
 @MainActor @Test func failedItemsListed() async {

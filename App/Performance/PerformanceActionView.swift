@@ -76,6 +76,9 @@ struct PerformanceDoneView: View {
                 Text(String(format: NSLocalizedString("perf.done.count", comment: ""), outcome.succeeded))
                     .font(.system(size: 16))
                     .foregroundStyle(Theme.secondaryText)
+                if model.dryRun {
+                    Label("perf.done.dryRun", systemImage: "info.circle").font(.system(size: 14)).foregroundStyle(Theme.secondaryText)
+                }
                 if failed {
                     ScrollView {
                         VStack(alignment: .leading, spacing: 6) {
