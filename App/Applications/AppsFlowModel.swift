@@ -32,6 +32,9 @@ final class AppsFlowModel {
 
     enum Section: String, CaseIterable, Hashable { case uninstaller, updater, leftovers }
 
+    /// Onde abrir dentro da seção (cartões dos Resultados).
+    enum Focus: Hashable { case systemUpdates, installers }
+
     struct QuitPrompt: Equatable {
         var apps: [RunningApp]
         /// Depois de uma tentativa normal sem sucesso: oferecer forçar (com confirmação).
@@ -49,6 +52,7 @@ final class AppsFlowModel {
     var managerOpen = false
     var section: Section = .uninstaller
     var filter: AppFilter = .all
+    var focus: Focus?
     /// Apps mostrados no modo Redefinir (AppRecord.id).
     var resetApps: Set<String> = []
     let selection = AppsSelection()
@@ -130,8 +134,9 @@ final class AppsFlowModel {
 
     // MARK: - Gerenciador
 
-    func openManager(_ section: Section, filter: AppFilter? = nil) {
+    func openManager(_ section: Section, filter: AppFilter? = nil, focus: Focus? = nil) {
         self.section = section
+        self.focus = focus
         if let filter { self.filter = filter }
         managerOpen = true
     }

@@ -64,5 +64,6 @@ struct CategoryBadge: View {
             .overlay(Circle().strokeBorder(LinearGradient(colors: [.white.opacity(0.55), .white.opacity(0.05)],
                                                           startPoint: .top, endPoint: .bottom), lineWidth: max(1, size * 0.02)))
             .shadow(color: .black.opacity(0.2), radius: size * 0.08, y: size * 0.05)
+            .accessibilityHidden(true)
     }
 }

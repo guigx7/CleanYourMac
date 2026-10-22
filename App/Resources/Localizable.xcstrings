@@ -1,6 +1,74 @@
 {
   "sourceLanguage": "en",
   "strings": {
+    "a11y.mixed": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "partially checked"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "parcialmente marcado"
+          }
+        }
+      }
+    },
+    "a11y.off": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "not checked"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "desmarcado"
+          }
+        }
+      }
+    },
+    "a11y.on": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "checked"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "marcado"
+          }
+        }
+      }
+    },
+    "a11y.select": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Select %@"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Marcar %@"
+          }
+        }
+      }
+    },
     "aiKind.caches": {
       "extractionState": "manual",
       "localizations": {
@@ -687,13 +755,13 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Hide items"
+            "value": "Hide items of %@"
           }
         },
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "Ocultar itens"
+            "value": "Ocultar os itens de %@"
           }
         }
       }
@@ -1707,13 +1775,13 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Show items"
+            "value": "Show items of %@"
           }
         },
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "Mostrar itens"
+            "value": "Mostrar os itens de %@"
           }
         }
       }

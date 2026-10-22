@@ -33,6 +33,7 @@ struct LeftoversView: View {
             }
             .listStyle(.sidebar)
             .frame(width: 260)
+            .onAppear { if model.focus == .installers { group = .installers } }
             Divider()
             let list = items(group)
             if list.isEmpty {

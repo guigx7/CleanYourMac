@@ -27,8 +27,9 @@ struct AppsTilesTests {
         #expect(tiles.map(\.kind) == [.macOSUpdates, .appUpdates, .uninstaller, .bit32, .leftovers, .installers])
         #expect(tiles.first { $0.kind == .macOSUpdates }?.count == 1) // a versão principal fica fora do cartão
         #expect(tiles.first { $0.kind == .leftovers }?.size == 4096)
-        #expect(tiles.first { $0.kind == .installers }?.actions == [.review(.leftovers)])
-        #expect(tiles.first { $0.kind == .leftovers }?.actions == [.review(.leftovers), .removeRecommended])
+        #expect(tiles.first { $0.kind == .installers }?.actions == [.review(.leftovers, focus: .installers)])
+        #expect(tiles.first { $0.kind == .macOSUpdates }?.actions.first == .review(.updater, focus: .systemUpdates))
+        #expect(tiles.first { $0.kind == .leftovers }?.actions == [.review(.leftovers, focus: nil), .removeRecommended])
     }
 
     @Test func nothingFoundHasNoTiles() {

@@ -90,7 +90,7 @@ struct AppsResultsView: View {
                             .lineLimit(3)
                     }
                     Spacer(minLength: 0)
-                    CategoryBadge(symbol: tile.symbol, size: 40, module: .applications)
+                    CategoryBadge(symbol: tile.symbol, size: 40, module: .applications).accessibilityHidden(true)
                 }
                 Spacer(minLength: 16)
                 HStack(spacing: 10) {
@@ -105,8 +105,8 @@ struct AppsResultsView: View {
 
     @ViewBuilder private func button(_ action: AppsTile.Action, tile: AppsTile) -> some View {
         switch action {
-        case .review(let section):
-            Button("results.action.review") { model.openManager(section, filter: .all) }
+        case .review(let section, let focus):
+            Button("results.action.review") { model.openManager(section, filter: .all, focus: focus) }
                 .buttonStyle(GlassButtonStyle(size: .large))
         case .openSoftwareUpdate:
             Button("apps.tile.macOSUpdates.open") { model.perform(.openSoftwareUpdate) }

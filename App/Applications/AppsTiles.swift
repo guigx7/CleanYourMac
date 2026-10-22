@@ -14,7 +14,7 @@ struct AppsTile: Identifiable, Equatable {
 
     enum Action: Hashable {
         /// Abre o Gerenciador numa seção (e filtro).
-        case review(AppsFlowModel.Section)
+        case review(AppsFlowModel.Section, focus: AppsFlowModel.Focus?)
         case openSoftwareUpdate
         /// Marca os recomendados do cartão e segue para a ação (com as confirmações de sempre).
         case removeRecommended
@@ -28,12 +28,12 @@ struct AppsTile: Identifiable, Equatable {
 
     var actions: [Action] {
         switch kind {
-        case .macOSUpdates: [.review(.updater), .openSoftwareUpdate]
-        case .appUpdates: [.review(.updater)]
-        case .uninstaller: [.review(.uninstaller)]
-        case .bit32: [.review(.uninstaller), .removeRecommended]
-        case .leftovers: [.review(.leftovers), .removeRecommended]
-        case .installers: [.review(.leftovers)]
+        case .macOSUpdates: [.review(.updater, focus: .systemUpdates), .openSoftwareUpdate]
+        case .appUpdates: [.review(.updater, focus: nil)]
+        case .uninstaller: [.review(.uninstaller, focus: nil)]
+        case .bit32: [.review(.uninstaller, focus: nil), .removeRecommended]
+        case .leftovers: [.review(.leftovers, focus: nil), .removeRecommended]
+        case .installers: [.review(.leftovers, focus: .installers)]
         }
     }
 

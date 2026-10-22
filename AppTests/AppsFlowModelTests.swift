@@ -289,6 +289,16 @@ struct AppsFlowModelTests {
         #expect(opener.copied == ["brew upgrade --cask foo"])
     }
 
+    @Test func tileReviewOpensTheRightPlaceInsideTheSection() {
+        let m = model()
+        m.openManager(.updater, focus: .systemUpdates)
+        #expect(m.section == .updater && m.focus == .systemUpdates)
+        m.openManager(.leftovers, focus: .installers)
+        #expect(m.section == .leftovers && m.focus == .installers)
+        m.openManager(.uninstaller, filter: .all)
+        #expect(m.focus == nil)
+    }
+
     @Test func openManagerKeepsSectionAndFilter() {
         let m = model()
         m.openManager(.leftovers)

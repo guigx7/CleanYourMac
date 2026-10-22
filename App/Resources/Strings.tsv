@@ -294,8 +294,8 @@ apps.mode.self	CleanYourMac can't remove or reset itself.	O CleanYourMac não re
 apps.locked.help	Shown for reference only; this item can't be removed here.	Mostrado só como referência; este item não pode ser removido aqui.
 apps.locked.mounted	This disk image is in use. Eject it first.	Esta imagem de disco está em uso. Ejete-a antes.
 apps.reveal	Show in Finder	Mostrar no Finder
-apps.show	Show items	Mostrar itens
-apps.hide	Hide items	Ocultar itens
+apps.show	Show items of %@	Mostrar os itens de %@
+apps.hide	Hide items of %@	Ocultar os itens de %@
 apps.leftovers.files	Leftover Files	Arquivos de Sobras
 apps.leftovers.installers	Installers	Instaladores
 apps.leftovers.empty	No leftovers found.	Nenhuma sobra encontrada.
@@ -348,3 +348,7 @@ helper.update	Update Helper	Atualizar ajudante
 apps.quit.continue	Continue Without Quitting	Continuar sem Fechar
 apps.quit.resetWarning	Resetting an open app works, but the app may recreate some files right away.	Dá para redefinir com o app aberto, mas ele pode recriar alguns arquivos na hora.
 apps.confirm.apps	Apps to uninstall:	Apps a desinstalar:
+a11y.select	Select %@	Marcar %@
+a11y.on	checked	marcado
+a11y.off	not checked	desmarcado
+a11y.mixed	partially checked	parcialmente marcado

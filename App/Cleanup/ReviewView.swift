@@ -315,7 +315,7 @@ private struct ItemRow: View {
 
     var body: some View {
         HStack(spacing: 12) {
-            TriStateCheckbox(state: state, action: onToggle)
+            TriStateCheckbox(state: state, label: item.name, action: onToggle)
             ItemIcon(source: item.icon).frame(width: 30, height: 30)
             VStack(alignment: .leading, spacing: 1) {
                 Group {
@@ -362,6 +362,8 @@ private struct ItemRow: View {
 struct TriStateCheckbox: View {
     var state: SelectionModel.State
     var tint: Color = Theme.reviewTint
+    /// Nome do item, para o leitor de tela ("Marcar Foo.app").
+    var label: String = ""
     var action: () -> Void
 
     var body: some View {
@@ -371,7 +373,8 @@ struct TriStateCheckbox: View {
                 .foregroundStyle(state == .off ? Color.secondary : tint)
         }
         .buttonStyle(.plain)
-        .accessibilityValue(Text(verbatim: "\(state)"))
+        .accessibilityLabel(Text(String(format: NSLocalizedString("a11y.select", comment: ""), label)))
+        .accessibilityValue(Text(LocalizedStringKey(state == .on ? "a11y.on" : state == .mixed ? "a11y.mixed" : "a11y.off")))
     }
 
     private var symbol: String {

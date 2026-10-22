@@ -132,7 +132,7 @@ struct AppsItemRow: View {
     var body: some View {
         HStack(spacing: 10) {
             if selectable {
-                TriStateCheckbox(state: selection.state(of: item), tint: Theme.appsTint) { selection.toggle(item) }
+                TriStateCheckbox(state: selection.state(of: item), tint: Theme.appsTint, label: title) { selection.toggle(item) }
             } else {
                 Image(systemName: "lock.fill").foregroundStyle(.secondary).frame(width: 16)
                     .help(Text(item.badge == .mounted ? "apps.locked.mounted" : "apps.locked.help"))
@@ -159,7 +159,7 @@ struct AppsItemRow: View {
                     Image(systemName: expanded.contains(item.id) ? "chevron.down" : "chevron.right").frame(width: 16)
                 }
                 .buttonStyle(.borderless)
-                .accessibilityLabel(Text(expanded.contains(item.id) ? "apps.hide" : "apps.show"))
+                .accessibilityLabel(Text(String(format: NSLocalizedString(expanded.contains(item.id) ? "apps.hide" : "apps.show", comment: ""), title)))
             }
         }
         .padding(.leading, CGFloat(depth) * 26)

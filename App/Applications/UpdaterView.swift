@@ -54,6 +54,10 @@ struct UpdaterView: View {
             .frame(width: 320)
             Divider()
             detail(list.first { $0.id == selected } ?? list.first)
+                .onAppear {
+                    // Vindo do cartão do macOS: já mostra a atualização do sistema.
+                    if model.focus == .systemUpdates, selected == nil { selected = list.first { $0.source == .macOS && !$0.isMajor }?.id }
+                }
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
         }
     }
