@@ -33,8 +33,14 @@ enum ParityExport {
         return target.hasPrefix(dir + "/") && target.hasSuffix(".json")
     }
 
+    /// Pastas da paridade da Lupa de Espaço (chaves da baseline) relativas a "/".
+    static var lensFolders: [String: String] {
+        ["root": "", "users": "Users", "home": "Users/" + NSUserName()]
+    }
+
     static func runIfRequested() {
         #if DEBUG
+        if let name = ProcessInfo.processInfo.environment["CYM_LENS_PARITY"] { runLens(name) }
         guard let name = ProcessInfo.processInfo.environment["CYM_APPS_PARITY"] else { return }
         try? FileManager.default.createDirectory(at: CleanupLog.standard.directory, withIntermediateDirectories: true)
         let path = name.hasPrefix("/") ? name : CleanupLog.standard.directory.appendingPathComponent(name).path
@@ -52,6 +58,34 @@ enum ParityExport {
             json["fullDiskAccess"] = PermissionsService.hasFullDiskAccess()
             if report != nil, let data = try? JSONSerialization.data(withJSONObject: json, options: [.prettyPrinted, .sortedKeys]) {
                 try? data.write(to: URL(fileURLWithPath: path))
+            }
+            done.signal()
+        }
+        done.wait()
+        exit(0)
+        #endif
+    }
+
+    /// `CYM_LENS_PARITY=<arquivo>.json`: análise do disco da Lupa de Espaço (somente leitura), JSON de paridade e sai.
+    static func runLens(_ name: String) {
+        #if DEBUG
+        try? FileManager.default.createDirectory(at: CleanupLog.standard.directory, withIntermediateDirectories: true)
+        let path = name.hasPrefix("/") ? name : CleanupLog.standard.directory.appendingPathComponent(name).path
+        guard isAllowedOutput(path) else { exit(2) }
+        let done = DispatchSemaphore(value: 0)
+        Task.detached {
+            var report: SpaceLensReport?
+            do {
+                for try await event in Registry.spaceLensScan().run(.disk) { if case .finished(let r) = event { report = r } }
+            } catch {
+                report = nil
+            }
+            if let report {
+                var json = report.parityJSON(folders: lensFolders)
+                json["fullDiskAccess"] = PermissionsService.hasFullDiskAccess()
+                if let data = try? JSONSerialization.data(withJSONObject: json, options: [.prettyPrinted, .sortedKeys]) {
+                    try? data.write(to: URL(fileURLWithPath: path))
+                }
             }
             done.signal()
         }

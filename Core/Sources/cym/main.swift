@@ -7,7 +7,7 @@ import CleanYourMacCore
 //   cym clean --dry-run [--groups a,b] [--recommended]
 //   cym apps [--json] [--no-network]   (módulo Aplicativos; só leitura)
 //   cym performance [--json]           (módulo Desempenho; só leitura)
-//   cym spacelens [caminho]            (Lupa de Espaço; só leitura: tempo, total e os maiores filhos)
+//   cym spacelens [caminho] [--json]   (Lupa de Espaço; só leitura: tempo, total e os maiores filhos)
 //
 // Não existe limpeza de verdade pelo CLI: `clean` exige --dry-run.
 
@@ -84,6 +84,12 @@ case "spacelens":
         if case .finished(let r) = event { lensReport = r }
     }
     guard let lensReport else { fail("análise não terminou") }
+    if has("--json") {
+        let folders = path == nil ? ["root": "", "users": "Users", "home": "Users/" + NSUserName()] : ["root": ""]
+        let data = try JSONSerialization.data(withJSONObject: lensReport.parityJSON(folders: folders), options: [.prettyPrinted, .sortedKeys])
+        print(String(decoding: data, as: UTF8.self))
+        exit(0)
+    }
     let ptBR = Locale(identifier: "pt-BR")
     let node = lensReport.root
     print(String(format: "%.1f s · %d itens · %@ · %@ de %@ usados%@", Date().timeIntervalSince(start), node.items,

@@ -83,7 +83,9 @@ if let i = CommandLine.arguments.firstIndex(of: "--press"), i + 1 < CommandLine.
     }
     var actions: CFArray?
     AXUIElementCopyActionNames(hit, &actions)
-    if ((actions as? [String]) ?? []).contains(kAXPressAction) {
+    // --double: clique duplo com o mouse (ex.: entrar numa pasta da Lupa de Espaço), mesmo se o elemento aceitar AXPress.
+    let double = CommandLine.arguments.contains("--double")
+    if !double && ((actions as? [String]) ?? []).contains(kAXPressAction) {
         AXUIElementPerformAction(hit, kAXPressAction as CFString)
     } else {
         // Texto dentro de uma linha: clica com o mouse no centro dele, como uma pessoa faria.
@@ -111,9 +113,12 @@ if let i = CommandLine.arguments.firstIndex(of: "--press"), i + 1 < CommandLine.
         }
         app.activate()
         Thread.sleep(forTimeInterval: 0.3)
-        for type in [CGEventType.leftMouseDown, .leftMouseUp] {
-            CGEvent(mouseEventSource: nil, mouseType: type, mouseCursorPosition: center, mouseButton: .left)?
-                .post(tap: .cghidEventTap)
+        for click in 1...(double ? 2 : 1) {
+            for type in [CGEventType.leftMouseDown, .leftMouseUp] {
+                let e = CGEvent(mouseEventSource: nil, mouseType: type, mouseCursorPosition: center, mouseButton: .left)
+                e?.setIntegerValueField(.mouseEventClickState, value: Int64(click))
+                e?.post(tap: .cghidEventTap)
+            }
         }
     }
     Thread.sleep(forTimeInterval: 1.5)

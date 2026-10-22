@@ -67,3 +67,25 @@ struct FakeVolume: SpaceVolumeInfo {
         #expect(exclude("/Users/me/montado", st.st_dev &+ 12345))
     }
 }
+
+@Test func parityJSONMatchesBaselineShape() throws {
+    let t = FixtureTree()
+    t.file("Users/me/big/a", bytes: 300_000)
+    t.file("Users/me/b", bytes: 10_000)
+    t.file("Users/Shared/c", bytes: 1_000)
+    let root = try SpaceScanner().scan(t.root)
+    let report = SpaceLensReport(root: root, isDisk: true, volumeName: "Macintosh HD", used: 225, capacity: 494, purgeable: 39)
+    let json = report.parityJSON(folders: ["root": "", "users": "Users", "home": "Users/me"])
+    let baseline = try JSONSerialization.jsonObject(with: Data(contentsOf: URL(fileURLWithPath: #filePath)
+        .deletingLastPathComponent().deletingLastPathComponent().deletingLastPathComponent().deletingLastPathComponent()
+        .deletingLastPathComponent().appendingPathComponent("docs/re/parity/spacelens-baseline-2026-10-22.json"))) as! [String: Any]
+    #expect(Set(json.keys) == Set(baseline.keys))
+    let folders = json["folders"] as! [String: [String: Any]]
+    #expect(Set(folders.keys) == ["root", "users", "home"])
+    #expect(Set(folders["root"]!.keys) == Set((baseline["folders"] as! [String: [String: Any]])["root"]!.keys))
+    // A raiz do disco soma o purgável, como na tela.
+    #expect(folders["root"]!["size"] as? Int64 == root.size + 39)
+    #expect(folders["root"]!["purgeable"] as? Int64 == 39)
+    #expect((folders["users"]!["children"] as! [[Any]]).map { $0[0] as! String } == ["me", "Shared"])
+    #expect(folders["home"]!["purgeable"] is NSNull)
+}

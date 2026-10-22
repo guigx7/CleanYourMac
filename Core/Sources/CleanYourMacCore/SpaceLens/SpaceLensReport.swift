@@ -115,3 +115,25 @@ public final class SpaceLensScan: Sendable {
         var isSet: Bool { lock.withLock { value } }
     }
 }
+
+extension SpaceLensReport {
+    /// Mesmo formato de docs/re/parity/spacelens-baseline-*.json. `folders`: chave → caminho relativo à raiz analisada.
+    public func parityJSON(folders: [String: String]) -> [String: Any] {
+        var out: [String: Any] = [:]
+        for (key, rel) in folders {
+            var node: SpaceNode? = root
+            for part in rel.split(separator: "/") { node = node?.child(String(part)) }
+            guard let node else { continue }
+            let split = SpaceGrouping.split(node.children.map(\.size), total: node.size)
+            let isRoot = node === root
+            out[key] = [
+                "size": node.size + (isRoot && isDisk ? (purgeable ?? 0) : 0),
+                "items": node.items,
+                "children": node.children.prefix(split.visible).map { [$0.name, $0.size] as [Any] },
+                "others": split.visible < node.children.count ? split.others as Any : NSNull(),
+                "purgeable": isRoot && isDisk ? (purgeable ?? 0) as Any : NSNull(),
+            ] as [String: Any]
+        }
+        return ["volume": ["used": used, "capacity": capacity], "folders": out]
+    }
+}

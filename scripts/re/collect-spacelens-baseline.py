@@ -4,7 +4,7 @@
 Uso: python3 -I scripts/re/collect-spacelens-baseline.py
 Saída: re-notes/ax/spacelens-<data>/{root,users,home}.txt
 
-Só analisa e navega (clicar numa bolha entra na pasta); o dump-ax recusa remover e afins.
+Só analisa e navega (clique duplo no nome entra na pasta); o dump-ax recusa remover e afins.
 """
 import getpass, os, re, sys, time
 from datetime import datetime
@@ -43,7 +43,7 @@ def main():
         sys.exit("a análise não terminou")
     apps.save(out_dir, "root", root)
     for target, name in [("Users", "users"), (getpass.getuser(), "home")]:
-        apps.dump("b", "--press", target, "--last")
+        apps.dump("b", "--press", target, "--double")
         time.sleep(3)
         apps.save(out_dir, name, apps.dump("b"))
     print(out_dir)
