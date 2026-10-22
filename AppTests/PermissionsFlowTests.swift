@@ -77,3 +77,27 @@ struct SizingRunner: PrivilegedRunner {
                                    context: ctx, helperActive: { true })
     #expect(withHelper.requirements([system]) == [])
 }
+
+@MainActor @Test func helperV2AsksUpdate() {
+    #expect(HelperManager.state(for: .enabled, version: 2) == .outdated)
+}
+
+@MainActor @Test func performanceRequirements() async {
+    let s = PerfSetup()
+    let m = await s.scanned()
+    let google = m.report!.backgroundItems[0], user = m.report!.backgroundItems[1], warp = m.report!.loginItems[0]
+    // Sem o ajudante: tarefas de root e itens do sistema pedem a senha.
+    #expect(m.requirements(tasks: [.flushDNS, .speedUpMail]) == [.admin])
+    #expect(m.requirements(tasks: [.speedUpMail, .freeUpPurgeable]).isEmpty)
+    #expect(m.requirements(items: [google], action: .disable) == [.admin])
+    #expect(m.requirements(items: [user, warp], action: .remove).isEmpty)
+    // Agente de /Library/LaunchAgents: desativar sem root, remover com root.
+    let agent = StartupItem(kind: .systemAgent, name: "a", label: "a", plist: URL(fileURLWithPath: "/Library/LaunchAgents/a.plist"))
+    #expect(m.requirements(items: [agent], action: .disable).isEmpty)
+    #expect(m.requirements(items: [agent], action: .remove) == [.admin])
+    // Com o ajudante ativo, nada pede senha.
+    let withHelper = PerformanceFlowModel(scan: StubPerformanceScan(report: perfReport()), maintenance: s.maintenance, startup: s.startup,
+                                          snapshots: { _ in [:] }, context: ScanContext.current(), helperActive: { true })
+    #expect(withHelper.requirements(tasks: [.flushDNS]).isEmpty)
+    #expect(withHelper.requirements(items: [google], action: .disable).isEmpty)
+}

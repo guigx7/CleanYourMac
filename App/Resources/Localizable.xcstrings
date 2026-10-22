@@ -4625,6 +4625,23 @@
         }
       }
     },
+    "perf.confirm.admin": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "macOS will ask for an administrator password (or install the helper to skip this)."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "O macOS vai pedir a senha de administrador (ou instale o ajudante para não precisar)."
+          }
+        }
+      }
+    },
     "perf.confirm.disable.message": {
       "extractionState": "manual",
       "localizations": {

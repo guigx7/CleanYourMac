@@ -481,3 +481,4 @@ reason.timedOut	Took too long and was stopped.	Demorou demais e foi interrompida
 reason.changed	Changed since the scan; nothing was touched. Scan again.	Mudou desde a análise; nada foi alterado. Analise de novo.
 reason.openSettings	macOS only allows this in System Settings › General › Login Items.	O macOS só permite isso em Ajustes do Sistema › Geral › Itens de Início.
 perf.done.dryRun	Simulation: nothing was changed on this Mac.	Simulação: nada foi alterado neste Mac.
+perf.confirm.admin	macOS will ask for an administrator password (or install the helper to skip this).	O macOS vai pedir a senha de administrador (ou instale o ajudante para não precisar).

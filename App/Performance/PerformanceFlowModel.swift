@@ -80,13 +80,18 @@ final class PerformanceFlowModel {
     let context: ScanContext
     /// Debug simula por padrão: a conclusão avisa que nada foi alterado.
     let dryRun: Bool
+    private let helperActive: @MainActor () -> Bool
     private var task: Task<Void, Never>?
     private var pendingTasks: [MaintenanceTaskID] = []
+    /// Tarefas à espera da confirmação (a mensagem diz se vai pedir a senha).
+    var pendingTaskIDs: [MaintenanceTaskID] { pendingTasks }
 
     init(scan: any PerformanceScanning, maintenance: any MaintenanceRunning, startup: any StartupActing,
          snapshots: @escaping @Sendable ([LocalSnapshot]) -> [String: Result<Void, CleanFailure>], context: ScanContext,
-         opener: any URLOpening = WorkspaceOpener(), dryRun: Bool = false) {
+         opener: any URLOpening = WorkspaceOpener(), dryRun: Bool = false,
+         helperActive: @escaping @MainActor () -> Bool = { false }) {
         self.dryRun = dryRun
+        self.helperActive = helperActive
         self.scan = scan
         self.maintenance = maintenance
         self.startup = startup
@@ -168,6 +173,20 @@ final class PerformanceFlowModel {
     /// Data da última execução bem-sucedida (gravada pelo MaintenanceRunner).
     func lastRun(_ id: MaintenanceTaskID) -> Date? {
         UserDefaults.standard.object(forKey: UserDefaultsMaintenanceHistory.key(id)) as? Date
+    }
+
+    // MARK: - Permissões
+
+    /// Sem o ajudante, as tarefas de root pedem a senha de administrador.
+    func requirements(tasks: [MaintenanceTaskID]) -> Set<CleanupFlowModel.CleanRequirement> {
+        !helperActive() && tasks.contains(where: MaintenanceCatalog.adminTasks.contains) ? [.admin] : []
+    }
+
+    /// Daemons sempre precisam de root; agentes de /Library só para remover (o plist é do root).
+    func requirements(items: [StartupItem], action: StartupAction) -> Set<CleanupFlowModel.CleanRequirement> {
+        guard !helperActive() else { return [] }
+        let root = items.contains { $0.kind == .systemDaemon || ($0.kind == .systemAgent && action == .remove) }
+        return root ? [.admin] : []
     }
 
     // MARK: - Tarefas
@@ -333,6 +352,7 @@ enum PerformanceEnvironment {
             scan: Registry.performanceScan(),
             maintenance: MaintenanceRunner(privileged: privileged, dryRun: dryRun, log: .standard),
             startup: StartupItemsActions(privileged: privileged, context: context, dryRun: dryRun),
-            snapshots: { snapshots.delete($0, dryRun: dryRun) }, context: context, dryRun: dryRun)
+            snapshots: { snapshots.delete($0, dryRun: dryRun) }, context: context, dryRun: dryRun,
+            helperActive: { HelperManager.shared.state == .active })
     }
 }

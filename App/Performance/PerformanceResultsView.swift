@@ -176,13 +176,16 @@ struct PerformancePrompts: ViewModifier {
     private var message: String {
         switch model.confirmation {
         case .heavyTasks(let ids):
-            return ids.map { NSLocalizedString("perf.confirm.heavy.\($0.rawValue)", comment: "") }.joined(separator: "\n\n")
+            var parts = ids.map { NSLocalizedString("perf.confirm.heavy.\($0.rawValue)", comment: "") }
+            if !model.requirements(tasks: model.pendingTaskIDs).isEmpty { parts.append(NSLocalizedString("perf.confirm.admin", comment: "")) }
+            return parts.joined(separator: "\n\n")
         case .startup(let action, let items, let owners):
             var parts = [items.map(\.name).joined(separator: ", "), NSLocalizedString("perf.confirm.\(Self.key(action)).message", comment: "")]
             if !owners.isEmpty {
                 let names = owners.map { $0.deletingPathExtension().lastPathComponent }.joined(separator: ", ")
                 parts.append(String(format: NSLocalizedString("perf.confirm.owner", comment: ""), names))
             }
+            if !model.requirements(items: items, action: action).isEmpty { parts.append(NSLocalizedString("perf.confirm.admin", comment: "")) }
             return parts.joined(separator: "\n\n")
         case .snapshots: return NSLocalizedString("perf.confirm.snapshots.message", comment: "")
         case nil: return ""
