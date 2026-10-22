@@ -216,8 +216,29 @@ final class PerformanceFlowModel {
 
     // MARK: - Itens de início e em segundo plano
 
+    var enabledVisibleItems: [StartupItem] { visibleItems.filter { $0.state == .enabled } }
+    /// Grupo "Desativados", com Reativar.
+    var disabledVisibleItems: [StartupItem] { visibleItems.filter { $0.state == .disabled } }
+
+    /// Botões do rodapé conforme o que está marcado: Desativar (ativos), Reativar (desativados) e Remover.
+    var footerActions: [StartupAction] {
+        let marked = visibleItems.filter { selectedItems.contains($0.id) }
+        var out: [StartupAction] = []
+        if marked.isEmpty || marked.contains(where: { $0.state == .enabled }) { out.append(.disable) }
+        if marked.contains(where: { $0.state == .disabled }) { out.append(.enable) }
+        out.append(.remove)
+        return out
+    }
+
     func requestStartup(_ action: StartupAction) {
-        let items = visibleItems.filter { selectedItems.contains($0.id) }
+        let items = visibleItems.filter { item in
+            guard selectedItems.contains(item.id) else { return false }
+            switch action {
+            case .disable: return item.state == .enabled
+            case .enable: return item.state == .disabled
+            case .remove: return true
+            }
+        }
         guard !items.isEmpty else { return }
         let modern = items.filter { $0.kind == .modern }
         if !modern.isEmpty {

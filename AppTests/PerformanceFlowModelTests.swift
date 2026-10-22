@@ -187,4 +187,51 @@ struct PerfSetup {
         #expect(s.maintenance.requested == [[.flushDNS, .repairPermissions]])
         #expect(s.startup.performed.isEmpty)
     }
+
+    @Test func modernItemsOpenSettings() async {
+        let modern = StartupItem(kind: .modern, name: "Helper", label: "com.example.helper")
+        let s = PerfSetup(report: perfReport(login: [modern]))
+        let m = await s.scanned()
+        m.openManager(.loginItems)
+        m.selectedItems = [modern.id]
+        for action in [StartupAction.disable, .remove] {
+            m.requestStartup(action)
+            #expect(m.confirmation == nil)
+            #expect(m.settingsHint == ["Helper"])
+            m.dismissSettingsHint()
+        }
+        #expect(s.opener.opened == [PerformanceFlowModel.settingsURL, PerformanceFlowModel.settingsURL])
+        #expect(s.startup.performed.isEmpty)
+    }
+
+    @Test func disabledListShowsReactivate() async {
+        let s = PerfSetup()
+        let m = await s.scanned()
+        m.openManager(.backgroundItems)
+        let google = m.report!.backgroundItems[0], off = m.report!.backgroundItems[1]
+        #expect(m.enabledVisibleItems.map(\.id) == [google.id])
+        #expect(m.disabledVisibleItems.map(\.id) == [off.id])
+        m.selectedItems = [off.id]
+        #expect(m.footerActions == [.enable, .remove])
+        m.requestStartup(.enable)
+        #expect(m.confirmation == .startup(.enable, [off], owners: []))
+    }
+
+    @Test func footerOffersDisableAndRemove() async {
+        let s = PerfSetup()
+        let m = await s.scanned()
+        m.openManager(.backgroundItems)
+        #expect(m.footerActions == [.disable, .remove])
+        let google = m.report!.backgroundItems[0], off = m.report!.backgroundItems[1]
+        m.selectedItems = [google.id]
+        #expect(m.footerActions == [.disable, .remove])
+        // Desativar só leva os ativos; Remover leva todos os marcados.
+        m.selectedItems = [google.id, off.id]
+        #expect(m.footerActions == [.disable, .enable, .remove])
+        m.requestStartup(.disable)
+        #expect(m.confirmation == .startup(.disable, [google], owners: []))
+        m.cancelConfirmation()
+        m.requestStartup(.remove)
+        #expect(m.confirmation == .startup(.remove, [google, off], owners: []))
+    }
 }

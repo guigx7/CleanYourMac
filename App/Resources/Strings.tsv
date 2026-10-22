@@ -466,3 +466,14 @@ perf.task.repairPermissions.description	Resets the permissions of the folders in
 perf.task.freeUpRAM.description	Asks macOS to drop cached memory so open apps have more room.	Pede ao macOS para descartar a memória em cache e dar mais espaço aos apps abertos.
 perf.task.periodicScripts.description	Runs the daily, weekly and monthly macOS housekeeping scripts.	Roda os scripts de arrumação diária, semanal e mensal do macOS.
 perf.task.thinSnapshots.description	Asks macOS to free about 1 GB by removing the oldest local Time Machine snapshots.	Pede ao macOS para liberar cerca de 1 GB apagando as capturas locais mais antigas do Time Machine.
+perf.select	Select	Selecionar
+perf.select.all	All	Todos
+perf.select.none	None	Nenhum
+perf.items.empty	Nothing here.	Nada por aqui.
+perf.items.disabled	Turned off	Desativados
+perf.items.state.disabled	Off	Desativado
+perf.kind.sessionLoginItem	Opens at login	Abre ao iniciar a sessão
+perf.kind.userAgent	Agent for your user	Agente do seu usuário
+perf.kind.systemAgent	Agent for all users	Agente de todos os usuários
+perf.kind.systemDaemon	System daemon	Daemon do sistema
+perf.kind.modern	Managed in System Settings	Gerenciado nos Ajustes do Sistema
