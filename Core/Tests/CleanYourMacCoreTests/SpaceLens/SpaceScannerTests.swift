@@ -135,3 +135,20 @@ import Testing
         #expect(root.size < 1_000_000)
     }
 }
+
+/// Sem Acesso Total ao Disco, pastas que fazem o macOS pedir permissão não são abertas: ficam "sem acesso".
+@Test func privacyFoldersSkippedWhenBlocked() throws {
+    let t = FixtureTree()
+    t.file("home/Desktop/a.bin", bytes: 300_000)
+    t.file("home/Projetos/b.bin", bytes: 10_000)
+    let blocked = t.url("home/Desktop").path
+    let root = try SpaceScanner(options: .init(isBlocked: { $0 == blocked })).scan(t.url("home"))
+    let desktop = try #require(root.child("Desktop"))
+    #expect(desktop.isUnreadable && desktop.children.isEmpty && desktop.size == 0)
+    #expect(root.child("Projetos")?.size ?? 0 > 0)
+}
+
+@Test func privacyFolderListCoversPromptingFolders() {
+    let list = SpaceLensScan.privacyFolders(home: URL(fileURLWithPath: "/Users/me"))
+    for rel in ["Desktop", "Documents", "Downloads", "Library/Mobile Documents"] { #expect(list.contains("/Users/me/" + rel)) }
+}

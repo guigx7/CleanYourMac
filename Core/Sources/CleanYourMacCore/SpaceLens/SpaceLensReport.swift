@@ -59,10 +59,21 @@ public final class SpaceLensScan: Sendable {
     private let diskRoot: URL
     private let diskExclusion: @Sendable (String, dev_t) -> Bool
     private let workers: Int
+    private let blocked: @Sendable () -> Set<String>
 
+    /// Pastas em que o macOS pede permissão (Arquivos e Pastas) a um app sem Acesso Total ao Disco.
+    public static func privacyFolders(home: URL = FileManager.default.homeDirectoryForCurrentUser) -> Set<String> {
+        let h = PathPolicy.lexicalPath(home.path)
+        return Set(["Desktop", "Documents", "Downloads", "Library/Mobile Documents"].map { h + "/" + $0 })
+    }
+
+    /// `blocked`: pastas que não são abertas, avaliado a cada análise (o app devolve `privacyFolders()` quando não tem
+    /// Acesso Total ao Disco).
     public init(volume: any SpaceVolumeInfo = SystemVolumeInfo(), diskRoot: URL = URL(fileURLWithPath: "/"),
                 diskExclusion: @escaping @Sendable (String, dev_t) -> Bool = SpaceLensScan.defaultDiskExclusion(),
-                workers: Int = max(2, ProcessInfo.processInfo.activeProcessorCount)) {
+                workers: Int = max(2, ProcessInfo.processInfo.activeProcessorCount),
+                blocked: @escaping @Sendable () -> Set<String> = { [] }) {
+        self.blocked = blocked
         self.volume = volume
         self.diskRoot = diskRoot
         self.diskExclusion = diskExclusion
@@ -84,14 +95,15 @@ public final class SpaceLensScan: Sendable {
     public func run(_ target: SpaceLensTarget) -> AsyncThrowingStream<SpaceLensScanEvent, Error> {
         AsyncThrowingStream { continuation in
             let flag = CancelFlag()
-            let thread = Thread { [volume, diskRoot, diskExclusion, workers] in
+            let thread = Thread { [volume, diskRoot, diskExclusion, workers, blocked] in
                 do {
                     let url: URL, exclusion: @Sendable (String, dev_t) -> Bool
                     switch target {
                     case .disk: (url, exclusion) = (diskRoot, diskExclusion)
                     case .folder(let u): (url, exclusion) = (u, { _, _ in false })
                     }
-                    let scanner = SpaceScanner(options: .init(workers: workers, isExcluded: exclusion))
+                    let skip = blocked()
+                    let scanner = SpaceScanner(options: .init(workers: workers, isExcluded: exclusion, isBlocked: { skip.contains($0) }))
                     let root = try scanner.scan(url, isCancelled: { flag.isSet }) { continuation.yield(.progress($0)) }
                     let usage = volume.usage(of: url)
                     let isDisk = target == .disk

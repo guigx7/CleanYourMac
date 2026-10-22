@@ -44,7 +44,9 @@ public enum Registry {
     /// Onde a remoção do módulo Aplicativos pode tocar.
     public static func performanceScan() -> PerformanceScan { PerformanceScan() }
 
-    public static func spaceLensScan() -> SpaceLensScan { SpaceLensScan() }
+    public static func spaceLensScan(blocked: @escaping @Sendable () -> Set<String> = { [] }) -> SpaceLensScan {
+        SpaceLensScan(blocked: blocked)
+    }
 
     public static func appsPolicies(context: ScanContext) -> [GroupID: PathPolicy] {
         let scanners: [any ScopedScanner] = [UninstallerScanner(), LeftoversScanner(), InstallersScanner()]

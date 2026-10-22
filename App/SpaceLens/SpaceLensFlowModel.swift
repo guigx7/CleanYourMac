@@ -272,7 +272,10 @@ enum SpaceLensEnvironment {
         let dryRun = false
         #endif
         let protection = SpaceProtection()
-        return SpaceLensFlowModel(scan: Registry.spaceLensScan(), remover: SpaceRemover(protection: protection, dryRun: dryRun, log: .standard),
+        // Sem Acesso Total ao Disco, não abrir Mesa/Documentos/Transferências/iCloud Drive (o macOS pediria permissão
+        // no meio da análise e a leitura ficaria parada esperando).
+        let blocked: @Sendable () -> Set<String> = { PermissionsService.hasFullDiskAccess() ? [] : SpaceLensScan.privacyFolders() }
+        return SpaceLensFlowModel(scan: Registry.spaceLensScan(blocked: blocked), remover: SpaceRemover(protection: protection, dryRun: dryRun, log: .standard),
                                   isProtected: { protection.level($0) != .none }, dryRun: dryRun)
     }
 }

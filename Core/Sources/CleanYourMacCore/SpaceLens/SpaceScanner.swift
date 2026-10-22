@@ -9,11 +9,16 @@ public struct SpaceScanner: Sendable {
         public var workers: Int
         /// (caminho, dispositivo) → a pasta não entra na análise.
         public var isExcluded: @Sendable (String, dev_t) -> Bool
+        /// Pasta que aparece, mas não é aberta (marcada "sem acesso"): ex.: sem Acesso Total ao Disco, as que fariam o
+        /// macOS pedir permissão no meio da análise.
+        public var isBlocked: @Sendable (String) -> Bool
 
         public init(workers: Int = max(2, ProcessInfo.processInfo.activeProcessorCount),
-                    isExcluded: @escaping @Sendable (String, dev_t) -> Bool = { _, _ in false }) {
+                    isExcluded: @escaping @Sendable (String, dev_t) -> Bool = { _, _ in false },
+                    isBlocked: @escaping @Sendable (String) -> Bool = { _ in false }) {
             self.workers = workers
             self.isExcluded = isExcluded
+            self.isBlocked = isBlocked
         }
     }
 
@@ -181,7 +186,7 @@ public struct SpaceScanner: Sendable {
                     child.device = dev
                     child.fileID = fileID
                     node.append(child)
-                    subdirs.append((child, childPath))
+                    if options.isBlocked(childPath) { child.isUnreadable = true } else { subdirs.append((child, childPath)) }
                 } else {
                     let file = SpaceNode(name: name, isDirectory: false, size: alloc)
                     file.device = dev
