@@ -2,5 +2,5 @@ import Testing
 @testable import CleanYourMacCore
 
 @Test func coreVersion() {
-    #expect(CleanYourMacCore.version == "0.2.0")
+    #expect(CleanYourMacCore.version == "0.3.0")
 }
