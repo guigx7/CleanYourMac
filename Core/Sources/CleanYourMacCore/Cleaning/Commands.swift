@@ -82,10 +82,13 @@ public struct LoginItemEntry: Sendable, Hashable {
 public protocol LoginItemsSource: Sendable {
     func entries(_ context: ScanContext) -> [LoginItemEntry]
     func remove(_ entry: LoginItemEntry) -> Bool
+    /// Põe um app no fim da lista (reativar um item desativado por nós).
+    func add(_ app: URL) -> Bool
 }
 
 extension LoginItemsSource {
     public func remove(_ entry: LoginItemEntry) -> Bool { false }
+    public func add(_ app: URL) -> Bool { false }
 }
 
 /// `LSSharedFileList` (obsoleta, mas é a que o CleanMyMac usa; não enxerga itens de SMAppService).
@@ -117,5 +120,10 @@ public struct SystemLoginItems: LoginItemsSource {
         guard let list = list(),
               let item = snapshot(list).first(where: { self.entry($0) == entry }) else { return false }
         return LSSharedFileListItemRemove(list, item) == noErr
+    }
+
+    public func add(_ app: URL) -> Bool {
+        guard let list = list() else { return false }
+        return LSSharedFileListInsertItemURL(list, kLSSharedFileListItemLast.takeUnretainedValue(), nil, nil, app as CFURL, nil, nil) != nil
     }
 }
