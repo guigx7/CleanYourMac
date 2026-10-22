@@ -519,3 +519,34 @@ lens.review.cloud	Some items are in iCloud: moving them to the Trash also remove
 lens.others.expand	Show all items	Mostrar todos os itens
 lens.others.collapse	Group small items	Agrupar itens pequenos
 lens.items	%@ items	%@ itens
+sidebar.settings	Settings	Configurações
+sidebar.about	About	Sobre
+settings.section.permissions	Permissions	Permissões
+settings.section.logs	Logs	Registros
+settings.section.language	Language	Idioma
+settings.status.granted	Granted	Concedido
+settings.status.missing	Not granted	Não concedido
+settings.fda.title	Full Disk Access	Acesso Total ao Disco
+settings.fda.detail	Lets CleanYourMac see Mail, Safari and other app data and measure every folder.	Deixa o CleanYourMac ver os dados do Mail, do Safari e de outros apps e medir todas as pastas.
+settings.apps.title	App Management	Gerenciamento de Apps
+settings.apps.detail	Needed to uninstall apps and remove extra code or languages from other apps. macOS asks the first time.	Necessário para desinstalar apps e tirar código extra ou idiomas de outros apps. O macOS pede na primeira vez.
+settings.helper.title	Helper	Ajudante
+settings.helper.status.none	Not installed	Não instalado
+settings.helper.status.approval	Waiting for approval	Esperando aprovação
+settings.helper.status.active	Active	Ativo
+settings.helper.status.outdated	Needs update	Precisa atualizar
+settings.helper.status.unavailable	Unavailable	Indisponível
+settings.helper.remove	Remove Helper	Remover Ajudante
+settings.helper.remove.confirm	Remove the helper?	Remover o ajudante?
+settings.helper.remove.message	CleanYourMac will ask for your password whenever it needs to change system items. You can install it again here.	O CleanYourMac vai pedir sua senha sempre que precisar mexer em itens do sistema. Dá para instalar de novo aqui.
+settings.logs.title	Activity log	Registro de atividades
+settings.logs.detail	Every cleanup, removal and maintenance run is recorded in ~/Library/Logs/CleanYourMac.	Cada limpeza, remoção e manutenção fica registrada em ~/Library/Logs/CleanYourMac.
+settings.logs.open	Open Folder	Abrir Pasta
+settings.language.title	Language	Idioma
+settings.language.detail	CleanYourMac follows the macOS language (English or Portuguese). You can choose a language just for it in System Settings.	O CleanYourMac segue o idioma do macOS (português ou inglês). Dá para escolher um idioma só para ele nos Ajustes do Sistema.
+about.version	Version %@ (%@)	Versão %@ (%@)
+about.description	An open-source Mac cleaner made for study: Cleanup, Performance, Applications and Space Lens, with nothing removed before you review it.	Um limpador de Mac de código aberto feito para estudo: Limpeza, Desempenho, Aplicativos e Lupa de Espaço, sem remover nada antes de você revisar.
+about.github	Source Code	Código-fonte
+about.releases	Releases	Versões
+about.license	MIT License	Licença MIT
+about.disclaimer	Independent study project. Not affiliated with, endorsed by or connected to MacPaw or CleanMyMac. Provided "as is", without warranty.	Projeto independente de estudo. Sem relação, apoio ou vínculo com a MacPaw ou o CleanMyMac. Fornecido "como está", sem garantias.

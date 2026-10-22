@@ -14,6 +14,15 @@ struct RootView: View {
     @State private var apps = AppsEnvironment.makeModel()
     @State private var performance = PerformanceEnvironment.makeModel()
     @State private var lens = SpaceLensEnvironment.makeModel()
+    @State private var page: SidebarPage? = RootView.initialPage
+
+    /// Debug: `CYM_PAGE=settings|about` abre a aba direto (capturas).
+    private static var initialPage: SidebarPage? {
+        #if DEBUG
+        if let raw = ProcessInfo.processInfo.environment["CYM_PAGE"] { return SidebarPage(rawValue: raw) }
+        #endif
+        return nil
+    }
 
     /// Telas claras em tela cheia: os Gerenciadores de Limpeza, Aplicativos e Desempenho.
     private var fullScreen: Bool {
@@ -51,7 +60,7 @@ struct RootView: View {
 
     private var main: some View {
         HStack(spacing: 0) {
-            SidebarView(selection: $module, compact: atIntro == false)
+            SidebarView(selection: $module, page: $page, compact: page == nil && atIntro == false)
                 .animation(.smooth(duration: 0.35), value: atIntro)
             content
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -74,6 +83,17 @@ struct RootView: View {
     }
 
     @ViewBuilder private var content: some View {
+        if let page {
+            switch page {
+            case .settings: SettingsView()
+            case .about: AboutView()
+            }
+        } else {
+            moduleContent
+        }
+    }
+
+    @ViewBuilder private var moduleContent: some View {
         switch module {
         case .cleanup:
             CleanupModuleView(model: cleanup)
