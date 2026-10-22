@@ -65,12 +65,15 @@ public struct SpaceScanner: Sendable {
     /// `progress` recebe quantos itens já foram lidos (de tempos em tempos, de qualquer thread).
     public func scan(_ url: URL, isCancelled: @escaping @Sendable () -> Bool = { Task.isCancelled },
                      progress: (@Sendable (Int) -> Void)? = nil) throws -> SpaceNode {
-        let path = PathPolicy.lexicalPath(url.path)
+        // Caminho real da raiz (ex.: /tmp → /private/tmp): os caminhos da árvore não passam por links.
+        let path = PathPolicy.realPath(PathPolicy.lexicalPath(url.path))
         var st = stat()
         guard lstat(path, &st) == 0 else { throw CocoaError(.fileNoSuchFile) }
         let isDir = (st.st_mode & S_IFMT) == S_IFDIR
         let root = SpaceNode(name: (path as NSString).lastPathComponent, isDirectory: isDir, size: isDir ? 0 : Int64(st.st_blocks) * 512,
                              rootPath: path)
+        root.device = st.st_dev
+        root.fileID = st.st_ino
         guard isDir else { return root }
         let queue = WorkQueue((root, path))
         let workers = max(1, options.workers)
@@ -106,7 +109,7 @@ public struct SpaceScanner: Sendable {
         var attrs = attrlist()
         attrs.bitmapcount = u_short(ATTR_BIT_MAP_COUNT)
         attrs.commonattr = attrgroup_t(ATTR_CMN_RETURNED_ATTRS) | attrgroup_t(ATTR_CMN_NAME) | attrgroup_t(ATTR_CMN_DEVID)
-            | attrgroup_t(ATTR_CMN_OBJTYPE) | attrgroup_t(ATTR_CMN_ERROR)
+            | attrgroup_t(ATTR_CMN_OBJTYPE) | attrgroup_t(ATTR_CMN_FILEID) | attrgroup_t(ATTR_CMN_ERROR)
         attrs.fileattr = attrgroup_t(ATTR_FILE_ALLOCSIZE)
         let buffer = UnsafeMutableRawPointer.allocate(byteCount: Self.bufferSize, alignment: 8)
         defer { buffer.deallocate() }
@@ -126,7 +129,7 @@ public struct SpaceScanner: Sendable {
                 var p = entry + 4
                 let returned = p.loadUnaligned(as: attribute_set_t.self)
                 p += MemoryLayout<attribute_set_t>.size
-                // Na ordem dos bits: nome, dispositivo, tipo, erro; depois o tamanho alocado (arquivos).
+                // Na ordem dos bits: nome, dispositivo, tipo, número do arquivo, erro; depois o tamanho alocado (arquivos).
                 var name = ""
                 if returned.commonattr & attrgroup_t(ATTR_CMN_NAME) != 0 {
                     let ref = p.loadUnaligned(as: attrreference_t.self)
@@ -142,6 +145,11 @@ public struct SpaceScanner: Sendable {
                 if returned.commonattr & attrgroup_t(ATTR_CMN_OBJTYPE) != 0 {
                     type = p.loadUnaligned(as: fsobj_type_t.self)
                     p += MemoryLayout<fsobj_type_t>.size
+                }
+                var fileID: UInt64 = 0
+                if returned.commonattr & attrgroup_t(ATTR_CMN_FILEID) != 0 {
+                    fileID = p.loadUnaligned(as: UInt64.self)
+                    p += MemoryLayout<UInt64>.size
                 }
                 var error: UInt32 = 0
                 if returned.commonattr & attrgroup_t(ATTR_CMN_ERROR) != 0 {
@@ -161,10 +169,15 @@ public struct SpaceScanner: Sendable {
                         continue
                     }
                     let child = SpaceNode(name: name, isDirectory: true, size: 0)
+                    child.device = dev
+                    child.fileID = fileID
                     node.append(child)
                     subdirs.append((child, childPath))
                 } else {
-                    node.append(SpaceNode(name: name, isDirectory: false, size: alloc))
+                    let file = SpaceNode(name: name, isDirectory: false, size: alloc)
+                    file.device = dev
+                    file.fileID = fileID
+                    node.append(file)
                 }
             }
         }

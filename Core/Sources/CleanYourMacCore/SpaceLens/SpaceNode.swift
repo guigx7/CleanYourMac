@@ -13,6 +13,9 @@ public final class SpaceNode: @unchecked Sendable, Identifiable {
     /// A pasta (ou algo abaixo dela) não pôde ser lida.
     public internal(set) var isUnreadable = false
     public internal(set) weak var parent: SpaceNode?
+    /// Identidade no disco (dispositivo + número do arquivo) vista na análise: a remoção confere que ainda é o mesmo item.
+    public internal(set) var device: Int32 = 0
+    public internal(set) var fileID: UInt64 = 0
     /// Caminho absoluto, só na raiz da análise.
     let rootPath: String?
 

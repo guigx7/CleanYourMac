@@ -108,10 +108,14 @@ public struct SpaceRemover: Sendable {
         return out
     }
 
-    /// O caminho ainda é o que a análise viu: existe, mesmo tipo e não é um link no lugar de uma pasta ou arquivo.
+    /// O caminho ainda é o que a análise viu: mesmo item (dispositivo + número do arquivo), mesmo tipo, sem link no
+    /// lugar dele nem em nenhuma pasta do caminho.
     static func unchanged(_ node: SpaceNode, _ path: String) -> Bool {
         var st = stat()
         guard lstat(path, &st) == 0 else { return false }
+        if node.fileID != 0, st.st_ino != node.fileID || st.st_dev != node.device { return false }
+        let parent = (path as NSString).deletingLastPathComponent
+        guard PathPolicy.realPath(parent) == parent else { return false }
         let type = st.st_mode & S_IFMT
         if node.isDirectory { return type == S_IFDIR }
         return type != S_IFDIR && type != S_IFLNK

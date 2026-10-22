@@ -109,3 +109,39 @@ import Testing
     // O conteúdo de pastas comuns continua marcável.
     #expect(p.level(path: "/Users/me/Library/Caches/com.example") == .none)
 }
+
+/// Trocado por outro com o mesmo nome, ou com um link no meio do caminho: recusado sem tocar em nada.
+@Test func removalChecksIdentityAndParentPath() async throws {
+    let t = FixtureTree()
+    t.file("p/same.bin", bytes: 1000)
+    t.file("q/inner/big.bin", bytes: 1000)
+    t.file("elsewhere/inner/big.bin", bytes: 1000)
+    let root = try SpaceScanner().scan(t.root)
+    let same = try #require(root.child("p")?.child("same.bin"))
+    let big = try #require(root.child("q")?.child("inner")?.child("big.bin"))
+    // Mesmo nome, outro arquivo.
+    try FileManager.default.removeItem(at: t.url("p/same.bin"))
+    t.file("p/same.bin", bytes: 1000)
+    // "q" vira um link para outra pasta com o mesmo conteúdo.
+    try FileManager.default.moveItem(at: t.url("q"), to: t.url("q-old"))
+    _ = t.symlink("q", to: t.url("elsewhere"))
+    let trasher = FixtureTrasher(t.url("trash"))
+    let r = await SpaceRemover(trasher: trasher, protection: SpaceProtection(home: t.url("Users/me")), dryRun: false,
+                               log: CleanupLog(directory: t.url("logs"))).remove([same, big])
+    #expect(r.values.allSatisfy { if case .failure(let f) = $0 { f.reason == "item changed" } else { false } })
+    #expect(trasher.trashed.isEmpty)
+}
+
+/// Pasta analisada por um caminho com link (ex.: /tmp → /private/tmp): a remoção funciona pelo caminho real.
+@Test func scanThroughSymlinkedRootStillRemoves() async throws {
+    let t = FixtureTree()
+    t.file("real/x.bin", bytes: 1000)
+    let alias = t.symlink("alias", to: t.url("real"))
+    let root = try SpaceScanner().scan(alias)
+    let x = try #require(root.child("x.bin"))
+    let trasher = FixtureTrasher(t.url("trash"))
+    let r = await SpaceRemover(trasher: trasher, protection: SpaceProtection(home: t.url("Users/me")), dryRun: false,
+                               log: CleanupLog(directory: t.url("logs"))).remove([x])
+    #expect(r.values.allSatisfy { (try? $0.get()) != nil })
+    #expect(trasher.trashed.map(\.lastPathComponent) == ["x.bin"])
+}
