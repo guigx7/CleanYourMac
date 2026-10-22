@@ -52,7 +52,9 @@ AXUIElementSetMessagingTimeout(root, 60)
 // --press "<título exato>": clica num elemento de navegação antes do dump.
 // Nunca clica em nada que limpe/remova (regra de ouro: só análise no CleanMyMac).
 let forbidden = ["limpar", "clean", "remov", "esvaziar", "empty", "apagar", "delete", "desinstalar", "uninstall",
-                 "atualizar", "update", "instalar", "install", "redefinir", "reset"]
+                 "atualizar", "update", "instalar", "install", "redefinir", "reset",
+                 "executar", "run", "liberar", "free up", "diminuir", "thin", "reindexar", "reindex", "acelerar", "speed up",
+                 "reparar", "repair", "desativar", "disable", "esvaziar cache", "flush"]
 if let i = CommandLine.arguments.firstIndex(of: "--press"), i + 1 < CommandLine.arguments.count {
     let target = CommandLine.arguments[i + 1]
     // CYM_AX_ALLOW_ACTIONS=1 libera ações só no nosso app (teste real controlado); no CleanMyMac, nunca.
