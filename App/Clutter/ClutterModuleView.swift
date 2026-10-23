@@ -181,7 +181,9 @@ struct ClutterDoneView: View {
                         VStack(alignment: .leading, spacing: 6) {
                             ForEach(outcome.failed.sorted { $0.key < $1.key }, id: \.key) { name, reason in
                                 VStack(alignment: .leading, spacing: 1) {
-                                    Text(verbatim: name).font(.system(size: 12, design: .monospaced)).lineLimit(1).truncationMode(.middle)
+                                    Text(verbatim: name.hasPrefix("/") ? (name as NSString).abbreviatingWithTildeInPath
+                                         : NSLocalizedString("clutter.similar.photo", comment: ""))
+                                        .font(.system(size: 12, design: .monospaced)).lineLimit(1).truncationMode(.head)
                                     Text(FailureText.describe(reason)).font(.system(size: 12)).foregroundStyle(Theme.secondaryText)
                                 }
                             }

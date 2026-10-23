@@ -81,30 +81,36 @@ public struct ClutterWalker: Sendable {
                                                      errorHandler: { _, _ in true }) else { return [] }
         var out: [ClutterFile] = []
         var n = 0
-        while let url = e.nextObject() as? URL {
-            n += 1
-            if n & 0x3FF == 0, isCancelled() { throw CancellationError() }
-            guard let v = try? url.resourceValues(forKeys: Set(Self.keys)) else { continue }
-            if rules.isIgnored(path: url.path, name: url.lastPathComponent, isHidden: v.isHidden ?? false) {
-                if v.isDirectory == true { e.skipDescendants() }
-                continue
+        // Um pool por item: a thread da análise só esvaziaria o pool no fim (GBs em pastas com centenas de milhares de itens).
+        while true {
+            let done: Bool = try autoreleasepool {
+                guard let url = e.nextObject() as? URL else { return true }
+                n += 1
+                if n & 0x3FF == 0, isCancelled() { throw CancellationError() }
+                guard let v = try? url.resourceValues(forKeys: Set(Self.keys)) else { return false }
+                if rules.isIgnored(path: url.path, name: url.lastPathComponent, isHidden: v.isHidden ?? false) {
+                    if v.isDirectory == true { e.skipDescendants() }
+                    return false
+                }
+                if v.isSymbolicLink == true { return false }
+                // Só na nuvem: não ocupa espaço aqui e ler o conteúdo baixaria o arquivo.
+                if v.isUbiquitousItem == true, v.ubiquitousItemDownloadingStatus != .current { return false }
+                if v.isDirectory == true {
+                    guard v.isPackage == true else { return false }
+                    e.skipDescendants()
+                    // Tipo do pacote pela extensão: pedir o tipo ao sistema registraria o app no LaunchServices.
+                    out.append(ClutterFile(url: url, size: Self.packageSize(url), modified: v.contentModificationDate, created: v.creationDate,
+                                           accessed: v.contentAccessDate, contentType: UTType(filenameExtension: url.pathExtension)?.identifier,
+                                           isPackage: true))
+                    return false
+                }
+                guard v.isRegularFile == true else { return false }
+                let type = (try? url.resourceValues(forKeys: [.contentTypeKey]))?.contentType
+                out.append(ClutterFile(url: url, size: Int64(v.fileSize ?? 0), modified: v.contentModificationDate, created: v.creationDate,
+                                       accessed: v.contentAccessDate, contentType: type?.identifier))
+                return false
             }
-            if v.isSymbolicLink == true { continue }
-            // Só na nuvem: não ocupa espaço aqui e ler o conteúdo baixaria o arquivo.
-            if v.isUbiquitousItem == true, v.ubiquitousItemDownloadingStatus != .current { continue }
-            if v.isDirectory == true {
-                guard v.isPackage == true else { continue }
-                e.skipDescendants()
-                // Tipo do pacote pela extensão: pedir o tipo ao sistema registraria o app no LaunchServices.
-                out.append(ClutterFile(url: url, size: Self.packageSize(url), modified: v.contentModificationDate, created: v.creationDate,
-                                       accessed: v.contentAccessDate, contentType: UTType(filenameExtension: url.pathExtension)?.identifier,
-                                       isPackage: true))
-                continue
-            }
-            guard v.isRegularFile == true else { continue }
-            let type = (try? url.resourceValues(forKeys: [.contentTypeKey]))?.contentType
-            out.append(ClutterFile(url: url, size: Int64(v.fileSize ?? 0), modified: v.contentModificationDate, created: v.creationDate,
-                                   accessed: v.contentAccessDate, contentType: type?.identifier))
+            if done { break }
         }
         if isCancelled() { throw CancellationError() }
         return out
@@ -115,7 +121,9 @@ public struct ClutterWalker: Sendable {
         guard let e = FileManager.default.enumerator(at: url, includingPropertiesForKeys: [.fileSizeKey, .isRegularFileKey]) else { return 0 }
         var total: Int64 = 0
         while let u = e.nextObject() as? URL {
-            if let v = try? u.resourceValues(forKeys: [.fileSizeKey, .isRegularFileKey]), v.isRegularFile == true { total += Int64(v.fileSize ?? 0) }
+            autoreleasepool {
+                if let v = try? u.resourceValues(forKeys: [.fileSizeKey, .isRegularFileKey]), v.isRegularFile == true { total += Int64(v.fileSize ?? 0) }
+            }
         }
         return total
     }

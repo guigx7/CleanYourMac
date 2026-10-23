@@ -18,17 +18,19 @@ struct FakeClutterScan: ClutterScanning {
 final class RecordingClutterRemover: ClutterRemoving, @unchecked Sendable {
     private(set) var removed: [[String]] = []
     var failing: Set<String> = []
-    func remove(_ files: [ClutterFile]) async -> [String: Result<Void, CleanFailure>] {
+    private(set) var kept: [[[String]]] = []
+    func remove(_ files: [ClutterFile], keeping groups: [[ClutterFile]]) async -> [String: Result<Void, CleanFailure>] {
         removed.append(files.map(\.url.path))
+        kept.append(groups.map { $0.map(\.url.path) })
         return Dictionary(uniqueKeysWithValues: files.map { ($0.url.path, failing.contains($0.url.path) ? .failure(CleanFailure(reason: "denied")) : .success(())) })
     }
 }
 
 final class RecordingPhotos: PhotoRemoving, @unchecked Sendable {
     private(set) var removed: [[String]] = []
-    func remove(_ ids: [String]) async -> Result<Void, CleanFailure> {
+    func remove(_ ids: [String]) async -> [String: Result<Void, CleanFailure>] {
         removed.append(ids)
-        return .success(())
+        return Dictionary(uniqueKeysWithValues: ids.map { ($0, .success(())) })
     }
 }
 
@@ -99,17 +101,17 @@ struct ClutterSetup {
     @Test func markingLastCopyAsksAndBlocksRemoval() async {
         let m = await ClutterSetup().scanned()
         let ids = ["/u/Downloads/a.png", "/u/Documents/a.png"]
-        m.toggle(ids[0], group: ("d1", ids))
-        m.toggle(ids[1], group: ("d1", ids))
-        #expect(m.pendingFull?.group == "d1" && m.selection == [ids[0]])
+        m.toggle(ids[0])
+        m.toggle(ids[1])
+        #expect(m.pendingFull?.groups == ["d1"] && m.selection == [ids[0]])
         m.cancelSelectAll()
         #expect(m.selection == [ids[0]] && m.canRemove)
-        m.toggle(ids[1], group: ("d1", ids))
+        m.toggle(ids[1])
         m.confirmSelectAll()
         #expect(m.selection == Set(ids) && m.canRemove)
         // Desmarcar uma cópia tira a confirmação: marcar de novo pede outra vez.
-        m.toggle(ids[1], group: ("d1", ids))
-        m.toggle(ids[1], group: ("d1", ids))
+        m.toggle(ids[1])
+        m.toggle(ids[1])
         #expect(m.pendingFull != nil)
     }
 
@@ -128,7 +130,7 @@ struct ClutterSetup {
         let s = ClutterSetup()
         let m = await s.scanned()
         m.toggle("/u/Movies/big.mov")
-        m.toggle("photo-1", group: ("sim", ["/u/Pictures/p1.jpg", "photo-1"]))
+        m.toggle("photo-1")
         m.toggle("/u/Downloads/z.dmg")
         #expect(m.selectedCount == 3 && m.selectedSize == 60_000_000 + 1000 + 9_000)
         m.requestRemoval()
@@ -154,14 +156,14 @@ struct ClutterSetup {
         m.confirmRemoval()
         while m.phase == .removing { await Task.yield() }
         guard case .done(let o) = m.phase else { Issue.record("deveria concluir"); return }
-        #expect(o.failed == ["big.mov": "denied"] && o.removed == 0)
+        #expect(o.failed == ["/u/Movies/big.mov": "denied"] && o.removed == 0)
         #expect(m.report?.largeOld.count == 1)
     }
 
     @Test func dryRunSkipsPhotoKit() async {
         let s = ClutterSetup(dryRun: true)
         let m = await s.scanned()
-        m.toggle("photo-1", group: ("sim", ["/u/Pictures/p1.jpg", "photo-1"]))
+        m.toggle("photo-1")
         m.requestRemoval()
         m.confirmRemoval()
         while m.phase == .removing { await Task.yield() }
@@ -177,6 +179,32 @@ struct ClutterSetup {
         #expect(m.target == .folder(URL(fileURLWithPath: "/tmp/x")))
         m.choose(folder: nil)
         #expect(m.target == .home)
+    }
+
+    /// A cópia que fica marcada por outra seção (Fundo do Baú) também pede o alerta.
+    @Test func fullGroupFromAnotherSectionAsks() async {
+        let m = await ClutterSetup().scanned()
+        m.toggle("/u/Downloads/a.png")
+        m.setAll(["/u/Documents/a.png"], selected: true)
+        #expect(m.pendingFull?.groups == ["d1"] && !m.selection.contains("/u/Documents/a.png"))
+    }
+
+    @Test func removalGuardsTheKeeperOfPartialGroups() async {
+        let s = ClutterSetup()
+        let m = await s.scanned()
+        m.toggle("/u/Downloads/a.png")
+        m.requestRemoval()
+        m.confirmRemoval()
+        while m.phase == .removing { await Task.yield() }
+        #expect(s.remover.kept == [[["/u/Downloads/a.png", "/u/Documents/a.png"]]])
+    }
+
+    @Test func stopIgnoresQueuedResult() async {
+        let s = ClutterSetup()
+        s.model.start()
+        s.model.stop()
+        for _ in 0..<20 { await Task.yield() }
+        #expect(s.model.phase == .intro && s.model.report == nil)
     }
 
     @Test func largeOldFilterTotals() {

@@ -62,6 +62,25 @@ import Testing
         #expect(groups[0].files.map(\.url.lastPathComponent) == ["s.pdf"])
     }
 
+    /// Baixado de novo no mesmo caminho: vale a data mais recente. Caminhos em ~/Library ficam de fora; arquivo editado
+    /// depois de baixado continua (como no CleanMyMac).
+    @Test func latestDateSameSizeAndNoLibrary() throws {
+        let t = FixtureTree()
+        let r = t.file("Users/me/Downloads/relatorio.pdf", bytes: 200_000)
+        let swapped = t.file("Users/me/Downloads/outro.pdf", bytes: 123)
+        let lib = t.file("Users/me/Library/Caches/x.zip", bytes: 1000)
+        chromeHistory(t, profile: "Default", rows: [
+            (r.path, 200_000, 200_000, now.addingTimeInterval(-400 * 86_400)),
+            (r.path, 200_000, 200_000, now.addingTimeInterval(-1 * 86_400)),
+            (swapped.path, 999, 999, now.addingTimeInterval(-50 * 86_400)),
+            (lib.path, 1000, 1000, now.addingTimeInterval(-50 * 86_400)),
+        ])
+        let groups = DownloadsFinder(home: t.url("Users/me")).groups(now: now)
+        try #require(groups.count == 1)
+        #expect(groups[0].files.map(\.url.lastPathComponent) == ["relatorio.pdf", "outro.pdf"])
+        #expect(groups[0].autoselected.map(\.url.lastPathComponent) == ["outro.pdf"])
+    }
+
     /// Sem leitor do histórico do Slack (formato não confirmado), a marca de quarentena não vira grupo do Slack.
     @Test func quarantineAloneIsNotADownloadGroup() throws {
         let t = FixtureTree()

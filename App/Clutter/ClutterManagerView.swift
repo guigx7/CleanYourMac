@@ -366,7 +366,7 @@ struct DuplicatesSectionView: View {
                         ForEach(g.files, id: \.url) { f in
                             ClutterFileRow(url: f.url, size: f.size, date: f.created, dateHelp: "clutter.date.created",
                                            selected: model.isSelected(f.url.path)) {
-                                model.toggle(f.url.path, group: (g.id, ids))
+                                model.toggle(f.url.path)
                             }
                             .padding(.leading, 34)
                         }
@@ -434,7 +434,7 @@ struct SimilarSectionView: View {
                         LazyVGrid(columns: [GridItem(.adaptive(minimum: 150), spacing: 14)], spacing: 14) {
                             ForEach(g.images) { image in
                                 SimilarTile(image: image, selected: model.isSelected(image.id)) {
-                                    model.toggle(image.id, group: (g.id, ids))
+                                    model.toggle(image.id)
                                 }
                             }
                         }

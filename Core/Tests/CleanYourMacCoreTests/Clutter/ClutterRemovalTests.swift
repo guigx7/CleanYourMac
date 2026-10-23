@@ -33,6 +33,31 @@ import Testing
         #expect(logs.count == 1 && logs[0].hasPrefix("clutter-"))
     }
 
+    @Test func sameSizeEditIsRefused() async throws {
+        let t = FixtureTree()
+        let f = file(t, "Users/me/Documents/a.bin")
+        try Data(repeating: 7, count: 1000).write(to: f.url)
+        try FileManager.default.setAttributes([.modificationDate: Date(timeIntervalSince1970: 1_900_000_000)], ofItemAtPath: f.url.path)
+        let trasher = FixtureTrasher(t.url("trash"))
+        let r = await ClutterRemover(trasher: trasher, home: t.url("Users/me"), dryRun: false, log: CleanupLog(directory: t.url("logs")))
+            .remove([f])
+        if case .failure(let e) = r[f.url.path] { #expect(e.reason == "item changed") } else { Issue.record("deveria recusar") }
+    }
+
+    /// A cópia que fica sumiu ou mudou depois da análise: as marcadas do grupo não saem (seria a última cópia).
+    @Test func keeperMustStillExist() async throws {
+        let t = FixtureTree()
+        let go = file(t, "Users/me/Downloads/a.png"), keep = file(t, "Users/me/Documents/a.png")
+        let other = file(t, "Users/me/Movies/b.mov"), otherKeep = file(t, "Users/me/Pictures/b.mov")
+        try FileManager.default.removeItem(at: keep.url)
+        let trasher = FixtureTrasher(t.url("trash"))
+        let r = await ClutterRemover(trasher: trasher, home: t.url("Users/me"), dryRun: false, log: CleanupLog(directory: t.url("logs")))
+            .remove([go, other], keeping: [[go, keep], [other, otherKeep]])
+        if case .failure(let e) = r[go.url.path] { #expect(e.reason == "item changed") } else { Issue.record("deveria recusar") }
+        #expect((try? r[other.url.path]?.get()) != nil)
+        #expect(trasher.trashed.map(\.lastPathComponent) == ["b.mov"])
+    }
+
     @Test func dryRunTouchesNothing() async throws {
         let t = FixtureTree()
         let f = file(t, "Users/me/Downloads/x.zip")

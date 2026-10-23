@@ -116,7 +116,9 @@ public struct DuplicateFinder: Sendable {
             var parts: [String] = []
             let base = file.url.path.count + 1
             while let u = e.nextObject() as? URL {
-                guard (try? u.resourceValues(forKeys: [.isRegularFileKey]))?.isRegularFile == true, let h = hashFile(u) else { continue }
+                guard (try? u.resourceValues(forKeys: [.isRegularFileKey]))?.isRegularFile == true else { continue }
+                // Arquivo ilegível: sem hash do pacote (dois pacotes com partes ilegíveis não viram "iguais").
+                guard let h = hashFile(u) else { return nil }
                 parts.append(String(u.path.dropFirst(base)) + ":" + h)
             }
             return hex(SHA256.hash(data: Data(parts.sorted().joined(separator: "\n").utf8)))
@@ -129,11 +131,16 @@ public struct DuplicateFinder: Sendable {
         defer { try? handle.close() }
         var sha = SHA256()
         while true {
-            // `nil` ou vazio = fim do arquivo; erro de leitura = sem hash.
-            let chunk: Data?
-            do { chunk = try handle.read(upToCount: 1 << 20) } catch { return nil }
-            guard let chunk, !chunk.isEmpty else { break }
-            sha.update(data: chunk)
+            // `nil` ou vazio = fim do arquivo; erro de leitura = sem hash. Um pool por bloco (senão arquivos de GBs ficam na memória).
+            let more: Bool? = autoreleasepool {
+                let chunk: Data?
+                do { chunk = try handle.read(upToCount: 1 << 20) } catch { return nil }
+                guard let chunk, !chunk.isEmpty else { return false }
+                sha.update(data: chunk)
+                return true
+            }
+            guard let more else { return nil }
+            if !more { break }
         }
         return hex(sha.finalize())
     }

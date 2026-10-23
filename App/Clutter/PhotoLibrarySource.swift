@@ -42,15 +42,21 @@ final class PhotoLibrarySource: PhotoRemoving, @unchecked Sendable {
         return result
     }
 
-    func remove(_ ids: [String]) async -> Result<Void, CleanFailure> {
+    func remove(_ ids: [String]) async -> [String: Result<Void, CleanFailure>] {
         let assets = PHAsset.fetchAssets(withLocalIdentifiers: ids, options: nil)
-        guard assets.count > 0 else { return .failure(CleanFailure(reason: "item changed")) }
+        var found: [PHAsset] = []
+        assets.enumerateObjects { a, _, _ in found.append(a) }
+        let present = Set(found.map(\.localIdentifier))
+        // Foto que já não existe: não conta como removida.
+        var out = Dictionary(uniqueKeysWithValues: ids.map { ($0, Result<Void, CleanFailure>.failure(CleanFailure(reason: "item changed"))) })
+        guard !found.isEmpty else { return out }
         do {
             // O macOS pede a confirmação; as fotos vão para Apagados Recentemente.
-            try await PHPhotoLibrary.shared().performChanges { PHAssetChangeRequest.deleteAssets(assets) }
-            return .success(())
+            try await PHPhotoLibrary.shared().performChanges { PHAssetChangeRequest.deleteAssets(found as NSArray) }
+            for id in present { out[id] = .success(()) }
         } catch {
-            return .failure(CleanFailure(reason: error.localizedDescription))
+            for id in present { out[id] = .failure(CleanFailure(reason: error.localizedDescription)) }
         }
+        return out
     }
 }

@@ -10,21 +10,24 @@ public struct SimilarCandidate: Sendable {
     public let url: URL?
     public let date: Date?
     public let size: Int64
+    /// Modificação do arquivo (revalidação antes do Lixo).
+    public let modified: Date?
     /// Imagem (ou miniatura) para o hash e a nitidez.
     public let load: @Sendable () -> CGImage?
 
-    public init(id: String, url: URL?, date: Date?, size: Int64, load: @escaping @Sendable () -> CGImage?) {
+    public init(id: String, url: URL?, date: Date?, size: Int64, modified: Date? = nil, load: @escaping @Sendable () -> CGImage?) {
         self.id = id
         self.url = url
         self.date = date
         self.size = size
+        self.modified = modified
         self.load = load
     }
 
     /// Arquivo de imagem: miniatura de até 256 px pelo ImageIO.
     public static func file(_ file: ClutterFile) -> SimilarCandidate {
         let url = file.url
-        return SimilarCandidate(id: url.path, url: url, date: file.created ?? file.modified, size: file.size) {
+        return SimilarCandidate(id: url.path, url: url, date: file.created ?? file.modified, size: file.size, modified: file.modified) {
             guard let src = CGImageSourceCreateWithURL(url as CFURL, nil) else { return nil }
             let opts: [CFString: Any] = [kCGImageSourceCreateThumbnailFromImageAlways: true, kCGImageSourceThumbnailMaxPixelSize: 256,
                                          kCGImageSourceCreateThumbnailWithTransform: true]
@@ -44,8 +47,12 @@ public struct SimilarImage: Hashable, Sendable, Identifiable {
     /// "Uma das melhores para manter".
     public let isBest: Bool
     public let flaws: Set<Flaw>
+    public let modified: Date?
+    /// Pontuação de qualidade no grupo (recalcula as melhores se elas saírem).
+    public let score: Double
 
-    public init(id: String, url: URL?, date: Date?, size: Int64, pixels: Int, sharpness: Double, isBest: Bool, flaws: Set<Flaw>) {
+    public init(id: String, url: URL?, date: Date?, size: Int64, pixels: Int, sharpness: Double, isBest: Bool, flaws: Set<Flaw>,
+                modified: Date? = nil, score: Double = 0) {
         self.id = id
         self.url = url
         self.date = date
@@ -54,6 +61,13 @@ public struct SimilarImage: Hashable, Sendable, Identifiable {
         self.sharpness = sharpness
         self.isBest = isBest
         self.flaws = flaws
+        self.modified = modified
+        self.score = score
+    }
+
+    func with(best: Bool) -> SimilarImage {
+        SimilarImage(id: id, url: url, date: date, size: size, pixels: pixels, sharpness: sharpness, isBest: best, flaws: flaws,
+                     modified: modified, score: score)
     }
 }
 
@@ -68,6 +82,14 @@ public struct SimilarGroup: Hashable, Sendable, Identifiable {
     public var totalSize: Int64 { images.reduce(0) { $0 + $1.size } }
     /// Marcação automática: todas menos a melhor.
     public var autoselected: [SimilarImage] { images.filter { !$0.isBest } }
+
+    /// O grupo depois que algumas imagens saíram: se nenhuma das melhores ficou, as de maior pontuação ganham o selo.
+    func keeping(_ remaining: [SimilarImage]) -> SimilarGroup {
+        guard !remaining.contains(where: \.isBest) else { return SimilarGroup(images: remaining) }
+        let order = remaining.indices.sorted { remaining[$0].score != remaining[$1].score ? remaining[$0].score > remaining[$1].score : $0 < $1 }
+        let best = Set(order.prefix(SimilarImageFinder.bestCount(remaining.count)))
+        return SimilarGroup(images: remaining.enumerated().map { $1.with(best: best.contains($0)) })
+    }
 }
 
 /// Imagens similares (docs/re/specs/clutter/similar-images.md §2–3): hash de gradientes em 4 orientações (4 × 64 bits),
@@ -106,40 +128,58 @@ public struct SimilarImageFinder: Sendable {
     }
 
     public func groups(from input: [SimilarCandidate], isCancelled: @Sendable () -> Bool = { Task.isCancelled }) throws -> [SimilarGroup] {
+        try analyze(input, isCancelled: isCancelled).groups
+    }
+
+    /// Grupos e quantas imagens não abriram (foto só no iCloud, arquivo corrompido): a análise fica "parcial".
+    public func analyze(_ input: [SimilarCandidate], isCancelled: @Sendable () -> Bool = { Task.isCancelled }) throws
+        -> (groups: [SimilarGroup], unreadable: Int) {
         let candidates = Self.ordered(input)
         let n = candidates.count
         let results = ConcurrentResults<Analysis>(count: n)
+        let unreadable = ConcurrentResults<Bool>(count: n)
         let cancelled = Flag()
         DispatchQueue.concurrentPerform(iterations: n) { i in
             guard !cancelled.isSet else { return }
             if isCancelled() { cancelled.set(); return }
-            // Sem hash ou sem métricas, a imagem sai da análise.
-            guard let image = candidates[i].load(), let hash = ImageHasher.hash(image), let q = ImageQuality.measure(image) else { return }
-            results[i] = Analysis(hash: hash, quality: q)
+            autoreleasepool {
+                // Sem hash ou sem métricas, a imagem sai da análise.
+                guard let image = candidates[i].load() else { unreadable[i] = true; return }
+                guard let hash = ImageHasher.hash(image), let q = ImageQuality.measure(image) else { return }
+                results[i] = Analysis(hash: hash, quality: q)
+            }
         }
         if cancelled.isSet || isCancelled() { throw CancellationError() }
         let analyses = (0..<n).map { results[$0] }
-        return Self.greedyGroups(analyses.map { $0?.hash }, threshold: threshold).map { idx in
+        let failed = (0..<n).filter { unreadable[$0] == true }.count
+        let indices = try Self.greedyGroups(analyses.map { $0?.hash }, threshold: threshold, isCancelled: isCancelled)
+        let groups = indices.map { idx -> SimilarGroup in
             let qualities = idx.map { analyses[$0]!.quality }
-            let best = Set(ImageQuality.best(qualities))
+            let (bestIdx, scores) = ImageQuality.best(qualities)
+            let best = Set(bestIdx)
             let maxBlur = qualities.compactMap(\.blur).max() ?? 0
-            let images = idx.enumerated().map { k, i -> SimilarImage in
+            var images: [SimilarImage] = []
+            for (k, i) in idx.enumerated() {
                 let c = candidates[i], q = qualities[k]
+                let sharp = q.blur ?? 0
                 // Selo de desfoque: regra nossa provisória (o critério do CleanMyMac não foi lido).
-                return SimilarImage(id: c.id, url: c.url, date: c.date, size: c.size, pixels: q.width * q.height, sharpness: q.blur ?? 0,
-                                    isBest: best.contains(k), flaws: maxBlur > 0 && (q.blur ?? 0) < 0.25 * maxBlur ? [.blur] : [])
+                let flaws: Set<SimilarImage.Flaw> = maxBlur > 0 && sharp < 0.25 * maxBlur ? [.blur] : []
+                images.append(SimilarImage(id: c.id, url: c.url, date: c.date, size: c.size, pixels: q.width * q.height, sharpness: sharp,
+                                           isBest: best.contains(k), flaws: flaws, modified: c.modified, score: scores[k]))
             }
             return SimilarGroup(images: images.sorted { $0.size != $1.size ? $0.size > $1.size : $0.id < $1.id })
         }
         .sorted { $0.totalSize != $1.totalSize ? $0.totalSize > $1.totalSize : $0.id < $1.id }
+        return (groups, failed)
     }
 
     /// Cada imagem entra no primeiro grupo (na ordem de criação) que tem algum membro parecido; senão abre um grupo.
     /// Grupos não se juntam. Saem os grupos de um só.
-    static func greedyGroups(_ hashes: [[UInt64]?], threshold: Int) -> [[Int]] {
+    static func greedyGroups(_ hashes: [[UInt64]?], threshold: Int, isCancelled: () -> Bool = { false }) throws -> [[Int]] {
         var groups: [[Int]] = []
         for (i, h) in hashes.enumerated() {
             guard let h else { continue }
+            if i & 0xFF == 0, isCancelled() { throw CancellationError() }
             if let g = groups.firstIndex(where: { $0.contains { ImageHasher.distance(hashes[$0]!, h) <= threshold } }) {
                 groups[g].append(i)
             } else {
@@ -178,7 +218,9 @@ public enum ImageHasher {
     }
 
     public static func distance(_ a: [UInt64], _ b: [UInt64]) -> Int {
-        zip(a, b).reduce(0) { $0 + ($1.0 ^ $1.1).nonzeroBitCount }
+        var d = 0
+        for i in 0..<min(a.count, b.count) { d &+= (a[i] ^ b[i]).nonzeroBitCount }
+        return d
     }
 
     /// Luminância (709 em ponto fixo), gradiente horizontal 3×3 saturado, ×√2, em float de 0 a 1, reduzido para 32×32.
@@ -382,7 +424,7 @@ struct ImageQuality: Sendable {
 
     /// Índices das melhores: pontuação √((ruído−1)² + nitidez²) + 0,3·faixa + 0,1·largura + 0,1·altura, com cada valor
     /// normalizado no grupo (ausentes: ruído 1, nitidez 0, faixa 0).
-    static func best(_ q: [ImageQuality]) -> [Int] {
+    static func best(_ q: [ImageQuality]) -> (best: [Int], scores: [Double]) {
         func norm(_ values: [Double]) -> [Double] {
             let lo = values.min() ?? 0, hi = values.max() ?? 0
             return values.map { hi > lo ? ($0 - lo) / (hi - lo) : $0 }
@@ -393,6 +435,6 @@ struct ImageQuality: Sendable {
             ((noise[i] - 1) * (noise[i] - 1) + blur[i] * blur[i]).squareRoot() + 0.3 * dr[i] + 0.1 * w[i] + 0.1 * h[i]
         }
         let order = q.indices.sorted { scores[$0] != scores[$1] ? scores[$0] > scores[$1] : $0 < $1 }
-        return Array(order.prefix(SimilarImageFinder.bestCount(q.count)))
+        return (Array(order.prefix(SimilarImageFinder.bestCount(q.count))), scores)
     }
 }

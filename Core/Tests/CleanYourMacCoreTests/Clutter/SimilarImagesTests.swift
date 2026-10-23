@@ -78,12 +78,27 @@ func candidate(_ id: String, _ image: CGImage, size: Int64 = 200_000, date: Date
     }
 
     /// Guloso: cada imagem entra no primeiro grupo com um membro parecido; grupos já abertos não se juntam.
-    @Test func greedyGroupingNeverMerges() {
+    @Test func greedyGroupingNeverMerges() throws {
         let a: [UInt64] = [0, 0, 0, 0]
         let c: [UInt64] = [0xFFFF_FFFF, 0, 0, 0]        // 32 bits de a
         let b: [UInt64] = [0xFFFF, 0, 0, 0]             // 16 bits de a e de c: só com limiar 16
-        #expect(SimilarImageFinder.greedyGroups([a, c, b], threshold: 16) == [[0, 2]])  // c abre o próprio grupo e fica só
-        #expect(SimilarImageFinder.greedyGroups([a, nil, a], threshold: 15) == [[0, 2]])
+        #expect(try SimilarImageFinder.greedyGroups([a, c, b], threshold: 16) == [[0, 2]])  // c abre o próprio grupo e fica só
+        #expect(try SimilarImageFinder.greedyGroups([a, nil, a], threshold: 15) == [[0, 2]])
+    }
+
+    @Test func unreadableImagesMakeAnalysisPartial() throws {
+        let broken = SimilarCandidate(id: "x", url: nil, date: nil, size: 1) { nil }
+        let r = try SimilarImageFinder().analyze([broken, candidate("a", makeImage(pattern: 1))])
+        #expect(r.unreadable == 1 && r.groups.isEmpty)
+    }
+
+    @Test func bestIsReassignedWhenTheBestLeaves() {
+        func img(_ id: String, _ score: Double, best: Bool) -> SimilarImage {
+            SimilarImage(id: id, url: nil, date: nil, size: 1, pixels: 1, sharpness: 0, isBest: best, flaws: [], score: score)
+        }
+        let g = SimilarGroup(images: [img("a", 3, best: true), img("b", 1, best: false), img("c", 2, best: false)])
+        let after = g.keeping(g.images.filter { $0.id != "a" })
+        #expect(after.images.filter(\.isBest).map(\.id) == ["c"])
     }
 
     @Test func bestCountGrowsWithGroupSize() {

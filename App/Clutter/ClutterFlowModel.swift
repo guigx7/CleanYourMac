@@ -9,14 +9,16 @@ protocol ClutterScanning: Sendable {
 extension ClutterScan: ClutterScanning {}
 
 protocol ClutterRemoving: Sendable {
-    func remove(_ files: [ClutterFile]) async -> [String: Result<Void, CleanFailure>]
+    /// `keeping`: grupos de cópias; se a que fica sumiu ou mudou, as do grupo não saem.
+    func remove(_ files: [ClutterFile], keeping groups: [[ClutterFile]]) async -> [String: Result<Void, CleanFailure>]
 }
 
 extension ClutterRemover: ClutterRemoving {}
 
 /// Fotos da fototeca: só pelo PhotoKit (vão para Apagados Recentemente, com a confirmação do sistema).
 protocol PhotoRemoving: Sendable {
-    func remove(_ ids: [String]) async -> Result<Void, CleanFailure>
+    /// Resultado por id de foto.
+    func remove(_ ids: [String]) async -> [String: Result<Void, CleanFailure>]
 }
 
 /// Máquina de estados do Acúmulos: Intro → Análise → Resultados ⇄ Gerenciador → Remoção → Concluído.
@@ -32,12 +34,12 @@ final class ClutterFlowModel {
     struct Outcome: Equatable {
         var removed: Int
         var freed: Int64
-        /// nome → motivo
+        /// caminho (ou id de foto) → motivo
         var failed: [String: String]
     }
 
     private(set) var phase: Phase = .intro
-    private(set) var report: ClutterReport?
+    private(set) var report: ClutterReport? { didSet { index() } }
     private(set) var scanStep: String?
     var target: ClutterTarget = .home
     var managerOpen = false
@@ -45,8 +47,11 @@ final class ClutterFlowModel {
     private(set) var selection: Set<String> = []
     /// Grupos em que o usuário confirmou marcar todas as cópias.
     private(set) var confirmedFull: Set<String> = []
-    /// Grupo à espera do alerta de "Selecionar Tudo" e o que ficaria marcado.
-    private(set) var pendingFull: (group: String, ids: Set<String>)?
+    /// À espera do alerta de "Selecionar Tudo": os grupos que ficariam inteiros e a seleção que valeria.
+    private(set) var pendingFull: (groups: Set<String>, selection: Set<String>)?
+    /// Arquivo de cada id marcável (na ordem das seções) e tamanho das fotos: o rodapé não percorre o relatório a cada desenho.
+    @ObservationIgnored private var fileByID: [String: (order: Int, file: ClutterFile)] = [:]
+    @ObservationIgnored private var photoSize: [String: Int64] = [:]
     var confirmingRemoval = false
 
     private let scan: any ClutterScanning
@@ -77,6 +82,8 @@ final class ClutterFlowModel {
         task = Task {
             do {
                 for try await event in stream {
+                    // Parar (ou outra análise) cancela esta: evento que já estava na fila não vale mais.
+                    guard !Task.isCancelled else { break }
                     switch event {
                     case .progress(let step): scanStep = step
                     case .finished(let r):
@@ -118,6 +125,28 @@ final class ClutterFlowModel {
         pendingFull = nil
     }
 
+    private func index() {
+        fileByID = [:]
+        photoSize = [:]
+        guard let report else { return }
+        var n = 0
+        func add(_ f: ClutterFile) {
+            guard fileByID[f.url.path] == nil else { return }
+            fileByID[f.url.path] = (n, f)
+            n += 1
+        }
+        report.largeOld.forEach(add)
+        report.duplicates.flatMap(\.files).forEach(add)
+        report.downloads.flatMap(\.files).map(\.file).forEach(add)
+        for image in report.similar.flatMap(\.images) {
+            if let url = image.url {
+                add(ClutterFile(url: url, size: image.size, modified: image.modified))
+            } else {
+                photoSize[image.id] = image.size
+            }
+        }
+    }
+
     // MARK: - Gerenciador
 
     /// "Revisar Todos os Arquivos": seleção vazia. Cartão "Revisar": abre a categoria com a marcação automática dela.
@@ -143,45 +172,46 @@ final class ClutterFlowModel {
 
     func isSelected(_ id: String) -> Bool { selection.contains(id) }
 
-    /// Marca ou desmarca um item. Num grupo de cópias, marcar a última que faltava pede o alerta de "Selecionar Tudo".
-    func toggle(_ id: String, group: (id: String, items: [String])? = nil) {
-        if selection.contains(id) {
-            selection.remove(id)
-            if let group { confirmedFull.remove(group.id) }
-            return
-        }
-        if let group, !confirmedFull.contains(group.id), Set(group.items).subtracting(selection) == [id] {
-            pendingFull = (group.id, Set(group.items))
-            return
-        }
-        selection.insert(id)
+    /// Marca ou desmarca um item. Se a marcação deixar um grupo de cópias ou de similares inteiro (por esta ou por outra
+    /// seção), pede antes o alerta de "Selecionar Tudo".
+    func toggle(_ id: String) {
+        if selection.contains(id) { apply(selection.subtracting([id])) } else { apply(selection.union([id])) }
     }
 
-    /// Menu "Selecionar:" de um grupo de cópias.
+    /// Menu "Selecionar:" de um grupo.
     func pick(_ pick: ClutterPick, group id: String, items: [ClutterPick.Item]) {
         setGroup(items.map(\.id), chosen: pick.select(items), group: id)
     }
 
-    /// Troca a marcação de um grupo de cópias pelos `chosen` (todos = alerta de "Selecionar Tudo").
+    /// Troca a marcação de um grupo pelos `chosen`.
     func setGroup(_ all: [String], chosen: Set<String>, group id: String) {
-        if chosen == Set(all), !confirmedFull.contains(id) {
-            pendingFull = (id, chosen)
-            return
-        }
-        selection.subtract(all)
-        selection.formUnion(chosen)
-        if chosen != Set(all) { confirmedFull.remove(id) }
+        apply(selection.subtracting(all).union(chosen))
     }
 
     /// Itens soltos (Fundo do Baú, Downloads): marca ou desmarca todos de uma vez.
     func setAll(_ ids: [String], selected: Bool) {
-        if selected { selection.formUnion(ids) } else { selection.subtract(ids) }
+        apply(selected ? selection.union(ids) : selection.subtracting(ids))
+    }
+
+    private func fullGroups(_ s: Set<String>) -> Set<String> { Set(report?.fullySelectedGroups(in: s) ?? []) }
+
+    /// Troca a seleção; grupo que ficaria inteiro sem ter sido confirmado espera o alerta.
+    private func apply(_ next: Set<String>) {
+        let newlyFull = fullGroups(next).subtracting(fullGroups(selection)).subtracting(confirmedFull)
+        if !newlyFull.isEmpty {
+            pendingFull = (newlyFull, next)
+            return
+        }
+        selection = next
+        // Grupo que deixou de estar inteiro perde a confirmação.
+        confirmedFull.formIntersection(fullGroups(next))
     }
 
     func confirmSelectAll() {
         guard let p = pendingFull else { return }
-        confirmedFull.insert(p.group)
-        selection.formUnion(p.ids)
+        confirmedFull.formUnion(p.groups)
+        selection = p.selection
+        confirmedFull.formIntersection(fullGroups(selection))
         pendingFull = nil
     }
 
@@ -192,30 +222,17 @@ final class ClutterFlowModel {
         confirmedFull = []
     }
 
-    /// Arquivos marcados (sem repetir caminhos) e fotos da fototeca marcadas.
+    /// Arquivos marcados (sem repetir caminhos, na ordem das seções) e fotos da fototeca marcadas.
     var selectedFiles: [ClutterFile] {
-        guard let report else { return [] }
-        var seen = Set<String>(), out: [ClutterFile] = []
-        func add(_ f: ClutterFile) { if selection.contains(f.url.path), seen.insert(f.url.path).inserted { out.append(f) } }
-        report.largeOld.forEach(add)
-        report.duplicates.flatMap(\.files).forEach(add)
-        report.downloads.flatMap(\.files).map(\.file).forEach(add)
-        for image in report.similar.flatMap(\.images) {
-            guard let url = image.url, selection.contains(image.id), seen.insert(url.path).inserted else { continue }
-            out.append(ClutterFile(url: url, size: image.size, modified: nil))
-        }
-        return out
+        selection.compactMap { fileByID[$0] }.sorted { $0.order < $1.order }.map(\.file)
     }
 
-    var selectedPhotoIDs: [String] {
-        (report?.similar.flatMap(\.images) ?? []).filter { $0.url == nil && selection.contains($0.id) }.map(\.id)
-    }
+    var selectedPhotoIDs: [String] { selection.filter { photoSize[$0] != nil }.sorted() }
 
-    var selectedCount: Int { selectedFiles.count + selectedPhotoIDs.count }
+    var selectedCount: Int { selection.filter { fileByID[$0] != nil || photoSize[$0] != nil }.count }
 
     var selectedSize: Int64 {
-        let photos = (report?.similar.flatMap(\.images) ?? []).filter { $0.url == nil && selection.contains($0.id) }
-        return selectedFiles.reduce(0) { $0 + $1.size } + photos.reduce(0) { $0 + $1.size }
+        selection.reduce(0) { $0 + (fileByID[$1]?.file.size ?? photoSize[$1] ?? 0) }
     }
 
     /// Remover só com algo marcado e sem grupo inteiro marcado sem a confirmação.
@@ -234,26 +251,30 @@ final class ClutterFlowModel {
     func confirmRemoval() {
         confirmingRemoval = false
         guard canRemove, let report else { return }
-        let files = selectedFiles, photoIDs = selectedPhotoIDs
-        let photoSizes = Dictionary(report.similar.flatMap(\.images).map { ($0.id, $0.size) }, uniquingKeysWith: { a, _ in a })
+        let files = selectedFiles, photoIDs = selectedPhotoIDs, photoSizes = photoSize
+        // Grupos de cópias com algo saindo e não confirmados por inteiro: a cópia que fica precisa continuar lá.
+        let leaving = Set(files.map(\.url.path))
+        let keeping = report.duplicates.filter { g in !confirmedFull.contains(g.id) && g.files.contains { leaving.contains($0.url.path) } }
+            .map(\.files)
         managerOpen = false
         phase = .removing
         task = Task {
             var removed = Set<String>(), failed: [String: String] = [:], freed: Int64 = 0
-            let results = await remover.remove(files)
+            let results = await remover.remove(files, keeping: keeping)
             for f in files {
                 switch results[f.url.path] ?? .failure(.cancelled) {
                 case .success: removed.insert(f.url.path); freed += f.size
-                case .failure(let e): failed[f.url.lastPathComponent] = e.reason
+                case .failure(let e): failed[f.url.path] = e.reason
                 }
             }
             if !photoIDs.isEmpty {
-                switch dryRun ? .success(()) : await photos.remove(photoIDs) {
-                case .success:
-                    removed.formUnion(photoIDs)
-                    freed += photoIDs.reduce(0) { $0 + (photoSizes[$1] ?? 0) }
-                case .failure(let e):
-                    for id in photoIDs { failed[id] = e.reason }
+                let photoResults = dryRun ? Dictionary(uniqueKeysWithValues: photoIDs.map { ($0, Result<Void, CleanFailure>.success(())) })
+                    : await photos.remove(photoIDs)
+                for id in photoIDs {
+                    switch photoResults[id] ?? .failure(.cancelled) {
+                    case .success: removed.insert(id); freed += photoSizes[id] ?? 0
+                    case .failure(let e): failed[id] = e.reason
+                    }
                 }
             }
             // Fora da lista o que saiu (na simulação também, para o fluxo seguir igual).

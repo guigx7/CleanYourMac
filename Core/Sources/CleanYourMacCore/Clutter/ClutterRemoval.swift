@@ -63,14 +63,23 @@ public struct ClutterRemover: Sendable {
         self.log = log
     }
 
-    /// Resultado por caminho.
-    public func remove(_ files: [ClutterFile]) async -> [String: Result<Void, CleanFailure>] {
+    /// Resultado por caminho. `keeping`: grupos de cópias; se nenhuma cópia que não está em `files` continua igual à da
+    /// análise, as do grupo não saem (seriam a última cópia).
+    public func remove(_ files: [ClutterFile], keeping groups: [[ClutterFile]] = []) async -> [String: Result<Void, CleanFailure>] {
         var out: [String: Result<Void, CleanFailure>] = [:]
         var removed: [String] = [], failed: [String: String] = [:], freed: Int64 = 0
+        let leaving = Set(files.map(\.url.path))
+        var orphaned = Set<String>()
+        for group in groups {
+            let stays = group.filter { !leaving.contains($0.url.path) }
+            if !stays.isEmpty, !stays.contains(where: Self.unchanged) { orphaned.formUnion(group.map(\.url.path)) }
+        }
         for file in files {
             let path = file.url.path
             let result: Result<Void, CleanFailure>
-            if protection.level(path: path) != .none || path.hasPrefix(library) {
+            if orphaned.contains(path) {
+                result = .failure(CleanFailure(reason: "item changed"))
+            } else if protection.level(path: path) != .none || path.hasPrefix(library) {
                 result = .failure(CleanFailure(reason: "kept: protected"))
             } else if !Self.unchanged(file) {
                 result = .failure(CleanFailure(reason: "item changed"))
@@ -94,16 +103,20 @@ public struct ClutterRemover: Sendable {
         return out
     }
 
-    /// O caminho ainda é o que a análise viu: sem link no lugar dele nem nas pastas do caminho; arquivo com o mesmo tamanho,
-    /// pacote ainda pasta.
+    /// O caminho ainda é o que a análise viu: sem link no lugar dele nem nas pastas do caminho; mesma data de modificação;
+    /// arquivo com o mesmo tamanho, pacote ainda pasta com o mesmo conteúdo somado.
     static func unchanged(_ file: ClutterFile) -> Bool {
         let path = file.url.path
         var st = stat()
         guard lstat(path, &st) == 0 else { return false }
         let parent = (path as NSString).deletingLastPathComponent
         guard PathPolicy.realPath(parent) == parent else { return false }
+        if let modified = file.modified {
+            let now = Double(st.st_mtimespec.tv_sec) + Double(st.st_mtimespec.tv_nsec) / 1e9
+            guard abs(now - modified.timeIntervalSince1970) < 0.001 else { return false }
+        }
         let type = st.st_mode & S_IFMT
-        if file.isPackage { return type == S_IFDIR }
+        if file.isPackage { return type == S_IFDIR && ClutterWalker.packageSize(file.url) == file.size }
         return type == S_IFREG && Int64(st.st_size) == file.size
     }
 }
@@ -119,7 +132,7 @@ extension ClutterReport {
         }
         let similar = similar.compactMap { g -> SimilarGroup? in
             let images = g.images.filter { !ids.contains($0.id) }
-            return images.count > 1 ? SimilarGroup(images: images) : nil
+            return images.count > 1 ? g.keeping(images) : nil
         }
         let downloads = downloads.compactMap { g -> DownloadsFinder.Group? in
             let files = g.files.filter { !ids.contains($0.url.path) }

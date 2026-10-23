@@ -177,13 +177,13 @@ public final class ClutterScan: Sendable {
                     continuation.yield(.progress("similar"))
                     var candidates = Self.similarFiles(files, duplicates: duplicates).map(SimilarCandidate.file)
                     if target == .home, let photoCandidates { candidates += photoCandidates() }
-                    let similar = try SimilarImageFinder(threshold: similarThreshold).groups(from: candidates, isCancelled: cancelled)
+                    let (similar, unreadable) = try SimilarImageFinder(threshold: similarThreshold).analyze(candidates, isCancelled: cancelled)
                     continuation.yield(.progress("downloads"))
                     let downloads = target == .home ? DownloadsFinder(home: home).groups(now: now()) : []
                     let tiles = ClutterTiles.make(home: home, now: now(), largeOld: largeOld, duplicates: duplicates, similar: similar,
                                                   downloads: downloads)
                     continuation.yield(.finished(ClutterReport(home: home, largeOld: largeOld, duplicates: duplicates, similar: similar,
-                                                               downloads: downloads, tiles: tiles)))
+                                                               downloads: downloads, tiles: tiles, isPartial: unreadable > 0)))
                     continuation.finish()
                 } catch {
                     continuation.finish(throwing: error)

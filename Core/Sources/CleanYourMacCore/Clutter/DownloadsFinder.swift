@@ -50,15 +50,22 @@ public struct DownloadsFinder: Sendable {
 
     public init(home: URL) { self.home = home }
 
+    /// Uma linha do histórico: caminho, data e o tamanho que o download teve (quando o histórico diz).
+    typealias Entry = (path: String, date: Date?, size: Int64?)
+
     public func groups(now: Date = Date()) -> [Group] {
         // Slack: o formato do histórico dele não foi confirmado; sem leitor, o grupo não aparece.
-        let sources: [(App, [(String, Date?)])] = [(.chrome, chrome()), (.safari, safari())]
+        let sources: [(App, [Entry])] = [(.chrome, chrome()), (.safari, safari())]
         let monthAgo = now.addingTimeInterval(-30 * 86_400)
+        let library = PathPolicy.lexicalPath(home.appendingPathComponent("Library").path) + "/"
         return sources.compactMap { app, entries -> Group? in
             var seen = Set<String>()
-            let items = entries.compactMap { path, date -> Item? in
-                guard seen.insert(path).inserted, let file = Self.file(path) else { return nil }
-                return Item(file: file, downloaded: date)
+            // Baixado de novo no mesmo caminho: vale o download mais recente.
+            let latest = entries.sorted { ($0.date ?? .distantPast) > ($1.date ?? .distantPast) }
+            let items = latest.compactMap { e -> Item? in
+                guard seen.insert(e.path).inserted, !PathPolicy.lexicalPath(e.path).hasPrefix(library), let file = Self.file(e.path) else { return nil }
+                // O tamanho do histórico não é conferido: o CleanMyMac lista arquivos editados depois de baixados (paridade).
+                return Item(file: file, downloaded: e.date)
             }
             guard !items.isEmpty else { return nil }
             let sorted = items.sorted { $0.size != $1.size ? $0.size > $1.size : $0.url.path < $1.url.path }
@@ -84,7 +91,7 @@ public struct DownloadsFinder: Sendable {
         value > 0 ? Date(timeIntervalSince1970: Double(value) / 1_000_000 - 11_644_473_600) : nil
     }
 
-    func chrome() -> [(String, Date?)] {
+    func chrome() -> [Entry] {
         let base = home.appendingPathComponent("Library/Application Support/Google/Chrome")
         var profiles = ["Default"]
         if let data = try? Data(contentsOf: base.appendingPathComponent("Local State")),
@@ -96,41 +103,44 @@ public struct DownloadsFinder: Sendable {
     }
 
     /// Lê uma cópia do banco (o Chrome aberto trava o original), só os downloads concluídos.
-    static func chromeHistory(_ db: URL) -> [(String, Date?)] {
+    static func chromeHistory(_ db: URL) -> [Entry] {
         guard FileManager.default.fileExists(atPath: db.path) else { return [] }
         let copy = FileManager.default.temporaryDirectory.appendingPathComponent("cym-chrome-\(UUID().uuidString).db")
         guard (try? FileManager.default.copyItem(at: db, to: copy)) != nil else { return [] }
         defer { try? FileManager.default.removeItem(at: copy) }
         var handle: OpaquePointer?
-        guard sqlite3_open_v2(copy.path, &handle, SQLITE_OPEN_READONLY, nil) == SQLITE_OK else { return [] }
+        guard sqlite3_open_v2(copy.path, &handle, SQLITE_OPEN_READONLY, nil) == SQLITE_OK else {
+            sqlite3_close(handle)
+            return []
+        }
         defer { sqlite3_close(handle) }
         var stmt: OpaquePointer?
         let sql = "SELECT current_path, start_time, received_bytes, total_bytes FROM downloads"
         guard sqlite3_prepare_v2(handle, sql, -1, &stmt, nil) == SQLITE_OK else { return [] }
         defer { sqlite3_finalize(stmt) }
-        var out: [(String, Date?)] = []
+        var out: [Entry] = []
         while sqlite3_step(stmt) == SQLITE_ROW {
             guard let text = sqlite3_column_text(stmt, 0) else { continue }
             let received = sqlite3_column_int64(stmt, 2), total = sqlite3_column_int64(stmt, 3)
             guard total > 0, received == total else { continue }
-            out.append((String(cString: text), chromeDate(sqlite3_column_int64(stmt, 1))))
+            out.append((String(cString: text), chromeDate(sqlite3_column_int64(stmt, 1)), total))
         }
         return out
     }
 
     // MARK: - Safari
 
-    func safari() -> [(String, Date?)] {
+    func safari() -> [Entry] {
         let url = home.appendingPathComponent("Library/Safari/Downloads.plist")
         guard let data = try? Data(contentsOf: url),
               let plist = try? PropertyListSerialization.propertyList(from: data, format: nil) as? [String: Any],
               let history = plist["DownloadHistory"] as? [[String: Any]] else { return [] }
-        return history.compactMap { e in
+        return history.compactMap { e -> Entry? in
             guard let path = e["DownloadEntryPath"] as? String else { return nil }
             let done = (e["DownloadEntryProgressBytesSoFar"] as? NSNumber)?.int64Value
             let total = (e["DownloadEntryProgressTotalToLoad"] as? NSNumber)?.int64Value
             if let done, let total, total > 0, done < total { return nil }
-            return (path, e["DownloadEntryDateAddedKey"] as? Date)
+            return (path, e["DownloadEntryDateAddedKey"] as? Date, total.flatMap { $0 > 0 ? $0 : nil })
         }
     }
 
