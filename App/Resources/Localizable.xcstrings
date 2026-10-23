@@ -262,13 +262,13 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Codex may keep listing these conversations."
+            "value": "Codex stops listing these conversations; its own index keeps a summary of them."
           }
         },
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "O Codex pode continuar listando essas conversas."
+            "value": "O Codex deixa de listar essas conversas; o índice dele guarda só um resumo delas."
           }
         }
       }

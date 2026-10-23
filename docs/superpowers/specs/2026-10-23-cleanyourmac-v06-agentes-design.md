@@ -128,9 +128,11 @@ Valem as regras de sempre do projeto: TDD, teste real só com itens criados por 
    - **Conferência do Codex (2026-10-23, só leitura, numa cópia):** `~/.codex/state_5.sqlite` tem a tabela `threads`, com 171
      conversas. Cada uma guarda o `rollout_path` do seu `.jsonl` em `~/.codex/sessions`, e hoje todos os arquivos existem.
      Também há um `session_index.jsonl`. Apagar o `.jsonl`, portanto, deixa a conversa listada no Codex sem o conteúdo.
-     Ainda não sabemos se o Codex mostra um erro, esconde a conversa ou quebra a lista. Isso exige um teste com uma sessão
-     falsa nossa, com o ok do usuário. Até lá o Codex fica, e a confirmação avisa que "o Codex pode continuar listando
-     essas conversas".
+   - **Teste (2026-10-23, com o ok do usuário):** feito numa cópia isolada do `~/.codex` (`CODEX_HOME`, sem credencial, com os
+     caminhos do banco apontando para a própria cópia), pelo `codex app-server` 0.163.0. Com o `.jsonl` apagado, o
+     `thread/list` esconde a conversa (8 → 7), sem erro, e o `thread/read` ainda devolve os metadados do banco. Nada
+     quebra, e o Codex fica. A confirmação diz que "o Codex deixa de listar essas conversas". O Codex também tem um
+     `thread/delete` próprio, que pode ser usado no futuro para apagar pelo app dele.
 5. **Catálogo em Swift**, no padrão do `AICatalog` que já existe (`Core/Sources/CleanYourMacCore/Scanners/AIToolsScanner.swift`),
    e não em JSON: o mesmo tipo de regra fica no mesmo tipo de lugar. Ele guarda os caminhos de sessões, os marcadores de
    estado e as raízes de worktrees de cada agente.
