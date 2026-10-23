@@ -117,7 +117,8 @@ public struct ClutterReport: Sendable {
             },
             "duplicates": duplicates.map { ["name": $0.name, "size": $0.totalSize, "count": $0.files.count,
                                              "paths": $0.files.map(\.url.path)] as [String: Any] },
-            "similar": similar.map { ["date": day($0.date), "size": $0.totalSize, "count": $0.images.count] as [String: Any] },
+            "similar": similar.map { ["date": day($0.date), "size": $0.totalSize, "count": $0.images.count,
+                                       "paths": $0.images.map(\.id)] as [String: Any] },
             "downloads": ["groups": Dictionary(uniqueKeysWithValues: downloads.map { ($0.app.title, $0.totalSize) }),
                           "files": downloads.flatMap(\.files).map { ["name": $0.url.lastPathComponent, "size": $0.size] as [String: Any] }],
         ]
