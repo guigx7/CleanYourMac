@@ -80,22 +80,24 @@ public struct SessionFinder: Sendable {
                 if isNeverTouch(p) || isSymlink(p) { continue }
                 if name.hasSuffix(".jsonl"), !isDirectory(p) {
                     let id = String(name.dropLast(".jsonl".count))
-                    guard !id.isEmpty else { continue }
+                    guard Self.isUUID(id) else { continue }
                     projectOf[id] = proj
                     urlsOf[id, default: []].append(p)
-                } else if isRealDirectory(p) {
+                } else if Self.isUUID(name), isRealDirectory(p) {
                     urlsOf[name, default: []].append(p)
                 }
             }
         }
         let withTranscript = Set(projectOf.keys)
 
-        // Restos de mesmo id.
-        for (dirName, isPrefixed) in [("file-history", false), ("session-env", false), ("todos", true)] {
+        // Restos de mesmo id: só nomes em formato de UUID (em `todos`, o UUID do começo do nome).
+        for dirName in ["file-history", "session-env", "todos"] {
             for name in entries(base + "/" + dirName) {
                 let p = base + "/" + dirName + "/" + name
                 if isNeverTouch(p) || isSymlink(p) { continue }
-                let id = isPrefixed ? ownerID(of: name, known: withTranscript) : ownerID(of: name, known: withTranscript, plainName: true)
+                let id = dirName == "todos" ? String(name.prefix(36)) : name
+                guard Self.isUUID(id), dirName != "todos" || name.count == 36 || "-.".contains(name[name.index(name.startIndex, offsetBy: 36)])
+                else { continue }
                 urlsOf[id, default: []].append(p)
             }
         }
@@ -117,16 +119,9 @@ public struct SessionFinder: Sendable {
         return out
     }
 
-    /// Id da sessão dona de um resto: o id conhecido que é prefixo do nome (seguido de fim, `-` ou `.`),
-    /// senão o nome sem extensão e sem o sufixo `-agent-...`.
-    private func ownerID(of name: String, known: Set<String>, plainName: Bool = false) -> String {
-        if let hit = known.filter({ name == $0 || name.hasPrefix($0 + "-") || name.hasPrefix($0 + ".") }).max(by: { $0.count < $1.count }) {
-            return hit
-        }
-        if plainName { return name }
-        let stem = (name as NSString).deletingPathExtension
-        if let r = stem.range(of: "-agent-") { return String(stem[..<r.lowerBound]) }
-        return stem
+    /// Nome de sessão do Claude Code: UUID.
+    static func isUUID(_ s: String) -> Bool {
+        s.range(of: "^[0-9a-fA-F]{8}(-[0-9a-fA-F]{4}){3}-[0-9a-fA-F]{12}$", options: .regularExpression) != nil
     }
 
     private func isJobReleasable(_ job: String) -> Bool {
@@ -137,9 +132,15 @@ public struct SessionFinder: Sendable {
         // Worktree dentro: conjunto recebido ou `.git` no job, em `tmp` ou em `tmp/*`.
         let realJob = PathPolicy.realPath(job)
         if worktrees.contains(where: { let w = PathPolicy.realPath($0.path); return w == realJob || w.hasPrefix(realJob + "/") }) { return false }
-        var spots = [job, job + "/tmp"]
-        for child in entries(job + "/tmp") { spots.append(job + "/tmp/" + child) }
-        return !spots.contains { exists($0 + "/.git") }
+        // `.git` (arquivo ou pasta) em qualquer nível do job; estourou o limite de entradas, o job fica de fora.
+        let e = FileManager.default.enumerator(at: URL(fileURLWithPath: job, isDirectory: true), includingPropertiesForKeys: nil,
+                                               options: [], errorHandler: { _, _ in true })
+        var n = 0
+        while let u = e?.nextObject() as? URL {
+            n += 1
+            if n > Self.maxWalkEntries || u.lastPathComponent == ".git" { return false }
+        }
+        return true
     }
 
     // MARK: - Codex

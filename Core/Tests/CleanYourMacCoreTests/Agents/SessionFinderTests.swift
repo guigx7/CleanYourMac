@@ -34,10 +34,10 @@ import Testing
 
     @Test func claudeSessionIsOneItem() {
         let fx = FixtureTree()
-        claudeSession(fx, id: "aaa", days: 10)
+        claudeSession(fx, id: "11111111-1111-4111-8111-111111111111", days: 10)
         let s = finder(fx).sessions()
         #expect(s.count == 1)
-        #expect(s.first?.id == "claude-code:aaa")
+        #expect(s.first?.id == "claude-code:11111111-1111-4111-8111-111111111111")
         #expect(s.first?.project == "-p")
         #expect(s.first?.urls.count == 5)
         #expect(s.first?.isOrphanRemains == false)
@@ -47,15 +47,15 @@ import Testing
 
     @Test func touchedRemainKeepsSessionOut() {
         let fx = FixtureTree()
-        claudeSession(fx, id: "aaa", days: 10)
-        touch(fx, "home/.claude/session-env/aaa/e", days: 2)
+        claudeSession(fx, id: "11111111-1111-4111-8111-111111111111", days: 10)
+        touch(fx, "home/.claude/session-env/11111111-1111-4111-8111-111111111111/e", days: 2)
         #expect(finder(fx).sessions().isEmpty)
     }
 
     @Test func claudeOrphanRemains() {
         let fx = FixtureTree()
-        make(fx, "home/.claude/file-history/id2/f@v1", days: 9)
-        touch(fx, "home/.claude/file-history/id2", days: 9)
+        make(fx, "home/.claude/file-history/22222222-2222-4222-8222-222222222222/f@v1", days: 9)
+        touch(fx, "home/.claude/file-history/22222222-2222-4222-8222-222222222222", days: 9)
         let s = finder(fx).sessions()
         #expect(s.count == 1)
         #expect(s.first?.isOrphanRemains == true)
@@ -64,7 +64,7 @@ import Testing
 
     @Test func recentAndMemoryNeverListed() {
         let fx = FixtureTree()
-        claudeSession(fx, id: "new", days: 3)
+        claudeSession(fx, id: "33333333-3333-4333-8333-333333333333", days: 3)
         make(fx, "home/.claude/projects/-p/memory/m.md", days: 30)
         make(fx, "home/.claude/history.jsonl", days: 30)
         make(fx, "home/.claude/settings.json", days: 30)
@@ -132,8 +132,29 @@ import Testing
         let fx = FixtureTree()
         make(fx, "home/.gemini/tmp/h1/chats/c.json", days: 20)
         make(fx, "home/.codex/sessions/2026/09/01/rollout-x.jsonl", days: 20)
-        make(fx, "home/.claude/projects/-p/b.jsonl", days: 10)
-        make(fx, "home/.claude/projects/-p/a.jsonl", days: 15)
-        #expect(finder(fx).sessions().map(\.id) == ["claude-code:a", "claude-code:b", "codex:rollout-x", "gemini:h1/c"])
+        make(fx, "home/.claude/projects/-p/55555555-5555-4555-8555-555555555555.jsonl", days: 10)
+        make(fx, "home/.claude/projects/-p/44444444-4444-4444-8444-444444444444.jsonl", days: 15)
+        #expect(finder(fx).sessions().map(\.id) == ["claude-code:44444444-4444-4444-8444-444444444444", "claude-code:55555555-5555-4555-8555-555555555555", "codex:rollout-x", "gemini:h1/c"])
+    }
+
+    @Test func nonUUIDNamesAreIgnored() {
+        let fx = FixtureTree()
+        make(fx, "home/.claude/projects/-p/foo/x", days: 30)
+        make(fx, "home/.claude/projects/-p/.DS_Store", days: 30)
+        make(fx, "home/.claude/file-history/notes/n", days: 30)
+        make(fx, "home/.claude/todos/x.json", days: 30)
+        for d in ["projects/-p/foo", "file-history/notes"] { touch(fx, "home/.claude/" + d, days: 30) }
+        #expect(finder(fx).sessions().isEmpty)
+    }
+
+    @Test func deepWorktreeInJobKeepsJobOut() {
+        let fx = FixtureTree()
+        make(fx, "home/.claude/jobs/j5/state.json", days: 20)
+        try! "{\"state\":\"done\"}".write(to: fx.url("home/.claude/jobs/j5/state.json"), atomically: true, encoding: .utf8)
+        touch(fx, "home/.claude/jobs/j5/state.json", days: 20)
+        make(fx, "home/.claude/jobs/j5/tmp/a/b/wt/.git", days: 20)
+        try! "gitdir: /x/.git/worktrees/wt".write(to: fx.url("home/.claude/jobs/j5/tmp/a/b/wt/.git"), atomically: true, encoding: .utf8)
+        touch(fx, "home/.claude/jobs/j5/tmp/a/b/wt/.git", days: 20)
+        #expect(finder(fx).sessions().isEmpty)
     }
 }
