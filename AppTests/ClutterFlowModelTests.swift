@@ -91,7 +91,7 @@ struct ClutterSetup {
         m.openManager(.largeOld)
         #expect(m.managerOpen && m.selection.isEmpty)
         m.openManager(.duplicates, autoselect: true)
-        #expect(m.selection == ["/u/Downloads/a.png"])
+        #expect(m.selection == ["/u/Downloads/a.png"] && m.canRemove)
         m.openManager(.similar, autoselect: true)
         #expect(m.selection.contains("photo-1") && !m.selection.contains("/u/Pictures/p1.jpg"))
     }

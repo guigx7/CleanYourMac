@@ -117,6 +117,7 @@ struct ClutterResultsView: View {
                         .font(.system(size: 14))
                         .foregroundStyle(Theme.secondaryText)
                         .lineLimit(3)
+                        .fixedSize(horizontal: false, vertical: true)
                 }
                 Spacer(minLength: 16)
                 HStack {
