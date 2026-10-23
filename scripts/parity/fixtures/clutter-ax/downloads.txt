@@ -1,0 +1,1807 @@
+== window: 
+== window: 
+== window: 
+== window: CleanMyMac
+  AXWindow: CleanMyMac
+    AXButton: Enabled | Recomeçar
+        AXImage: back button circle
+        AXStaticText: Recomeçar
+    AXStaticText: Acúmulos
+              AXStaticText: Fundo do Baú
+              AXStaticText: Duplicatas
+              AXStaticText: Imagens Similares
+              AXStaticText: Downloads
+              AXStaticText: Downloads
+              AXStaticText: Arquivos que você usa apenas uma vez podem se acumular nos downloads. Limpe essas pastas de vez em quando para economizar espaço.
+              AXStaticText: Google Chrome | Google Chrome
+              AXStaticText: 591 MB | Tamanho total dos itens no grupo
+              AXImage: slack fallback
+              AXStaticText: Slack | Slack
+              AXStaticText: 0 KB | Tamanho total dos itens no grupo
+              AXStaticText: Safari | Safari
+              AXStaticText: 0 KB | Tamanho total dos itens no grupo
+          AXRow [level=0]: 
+              AXStaticText: Google Chrome
+              AXStaticText: Revise os arquivos que você baixou com o Google Chrome.
+                AXButton: Nenhum | Selecionar:
+                    AXStaticText: Selecionar:
+                    AXStaticText: Nenhum
+                    AXImage: ir para baixo
+          AXRow [level=0]: 
+            AXCell: Godot_v4.7.2-stable_macos.universal.zip
+              AXCheckBox [checked=0]: 
+              AXStaticText: Godot_v4.7.2-stable_macos.universal.zip | Godot_v4.7.2-stable_macos.universal.zip
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 185 MB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: mj.mp4
+              AXCheckBox [checked=0]: 
+              AXStaticText: mj.mp4 | mj.mp4
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 42,9 MB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: logioptionsplus_installer.zip
+              AXCheckBox [checked=0]: 
+              AXStaticText: logioptionsplus_installer.zip | logioptionsplus_installer.zip
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 20,3 MB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: BlissEveningiMac6K+Display.png
+              AXCheckBox [checked=0]: 
+              AXStaticText: BlissEveningiMac6K+Display.png | BlissEveningiMac6K+Display.png
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 17,2 MB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: Cópia de IMG_7575.JPG
+              AXCheckBox [checked=0]: 
+              AXStaticText: Cópia de IMG_7575.JPG | Cópia de IMG_7575.JPG
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 15,9 MB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: Cópia de IMG_7577.JPG
+              AXCheckBox [checked=0]: 
+              AXStaticText: Cópia de IMG_7577.JPG | Cópia de IMG_7577.JPG
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 14,8 MB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: Cópia de IMG_7710 (1).JPG
+              AXCheckBox [checked=0]: 
+              AXStaticText: Cópia de IMG_7710 (1).JPG | Cópia de IMG_7710 (1).JPG
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 14,8 MB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: Cópia de IMG_7576.JPG
+              AXCheckBox [checked=0]: 
+              AXStaticText: Cópia de IMG_7576.JPG | Cópia de IMG_7576.JPG
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 14,4 MB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: Cópia de IMG_7574.JPG
+              AXCheckBox [checked=0]: 
+              AXStaticText: Cópia de IMG_7574.JPG | Cópia de IMG_7574.JPG
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 14,4 MB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: Cópia de IMG_7709.JPG
+              AXCheckBox [checked=0]: 
+              AXStaticText: Cópia de IMG_7709.JPG | Cópia de IMG_7709.JPG
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 14,3 MB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: Cópia de IMG_8856.JPG
+              AXCheckBox [checked=0]: 
+              AXStaticText: Cópia de IMG_8856.JPG | Cópia de IMG_8856.JPG
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 13,6 MB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: Cópia de IMG_8857.JPG
+              AXCheckBox [checked=0]: 
+              AXStaticText: Cópia de IMG_8857.JPG | Cópia de IMG_8857.JPG
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 13,5 MB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: Cópia de IMG_7705.JPG
+              AXCheckBox [checked=0]: 
+              AXStaticText: Cópia de IMG_7705.JPG | Cópia de IMG_7705.JPG
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 12,7 MB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: Hard_drive_disk_rotating_20261020185726.gif
+              AXCheckBox [checked=0]: 
+              AXStaticText: Hard_drive_disk_rotating_20261020185726.gif | Hard_drive_disk_rotating_20261020185726.gif
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 9,5 MB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: image.png
+              AXCheckBox [checked=0]: 
+              AXStaticText: image.png | image.png
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 7,4 MB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: forno.pdf
+              AXCheckBox [checked=0]: 
+              AXStaticText: forno.pdf | forno.pdf
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 4,2 MB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: Edição de Vídeos Virais.png
+              AXCheckBox [checked=0]: 
+              AXStaticText: Edição de Vídeos Virais.png | Edição de Vídeos Virais.png
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 3 MB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: ulpcapa.png
+              AXCheckBox [checked=0]: 
+              AXStaticText: ulpcapa.png | ulpcapa.png
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 2,8 MB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: Folder_-_Code__Terminal__WVVRY5OINy_icns-6732f687dc.icns
+              AXCheckBox [checked=0]: 
+              AXStaticText: Folder_-_Code__Terminal__WVVRY5OINy_icns-6732f687dc.icns | Folder_-_Code__Terminal__WVVRY5OINy_icns-6732f687dc.icns
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 2,8 MB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: 10 Técnicas para Cobrar Mais Caro.png
+              AXCheckBox [checked=0]: 
+              AXStaticText: 10 Técnicas para Cobrar Mais Caro.png | 10 Técnicas para Cobrar Mais Caro.png
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 2,8 MB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: 3EB019B9C53E3295FD3EE6-relatorio_contato.xlsx
+              AXCheckBox [checked=0]: 
+              AXStaticText: 3EB019B9C53E3295FD3EE6-relatorio_contato.xlsx | 3EB019B9C53E3295FD3EE6-relatorio_contato.xlsx
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 2,7 MB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: e60dc480-5298-4b7e-9b6b-512424f42338.png
+              AXCheckBox [checked=0]: 
+              AXStaticText: e60dc480-5298-4b7e-9b6b-512424f42338.png | e60dc480-5298-4b7e-9b6b-512424f42338.png
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 2,5 MB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: Comprovante pix Global 1.pdf
+              AXCheckBox [checked=0]: 
+              AXStaticText: Comprovante pix Global 1.pdf | Comprovante pix Global 1.pdf
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 2,5 MB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: openapi.json
+              AXCheckBox [checked=0]: 
+              AXStaticText: openapi.json | openapi.json
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 2,5 MB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: posibp2729.png
+              AXCheckBox [checked=0]: 
+              AXStaticText: posibp2729.png | posibp2729.png
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 2,4 MB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: Pré Uploader_ Interface Holográfica Azul.png
+              AXCheckBox [checked=0]: 
+              AXStaticText: Pré Uploader_ Interface Holográfica Azul.png | Pré Uploader_ Interface Holográfica Azul.png
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 2,4 MB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: 18ab9d9c-b542-4b4b-81b1-eac1e1e29e8b.png
+              AXCheckBox [checked=0]: 
+              AXStaticText: 18ab9d9c-b542-4b4b-81b1-eac1e1e29e8b.png | 18ab9d9c-b542-4b4b-81b1-eac1e1e29e8b.png
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 2,4 MB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: Treinamento Físico em Neon Futurista.png
+              AXCheckBox [checked=0]: 
+              AXStaticText: Treinamento Físico em Neon Futurista.png | Treinamento Físico em Neon Futurista.png
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 2,3 MB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: nutricao43.png
+              AXCheckBox [checked=0]: 
+              AXStaticText: nutricao43.png | nutricao43.png
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 2,3 MB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: metodos43.png
+              AXCheckBox [checked=0]: 
+              AXStaticText: metodos43.png | metodos43.png
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 2,3 MB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: ChatGPT Image 23 de ago. de 2026, 22_21_19.png
+              AXCheckBox [checked=0]: 
+              AXStaticText: ChatGPT Image 23 de ago. de 2026, 22_21_19.png | ChatGPT Image 23 de ago. de 2026, 22_21_19.png
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 2,3 MB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: biomecanica43.png
+              AXCheckBox [checked=0]: 
+              AXStaticText: biomecanica43.png | biomecanica43.png
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 2,2 MB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: viivrais.png
+              AXCheckBox [checked=0]: 
+              AXStaticText: viivrais.png | viivrais.png
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 2,2 MB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: 6d87f71e-d59b-4438-b8c4-df816a2946d0.png
+              AXCheckBox [checked=0]: 
+              AXStaticText: 6d87f71e-d59b-4438-b8c4-df816a2946d0.png | 6d87f71e-d59b-4438-b8c4-df816a2946d0.png
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 2,2 MB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: fisiologia43.png
+              AXCheckBox [checked=0]: 
+              AXStaticText: fisiologia43.png | fisiologia43.png
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 2,2 MB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: musculacao 43.png
+              AXCheckBox [checked=0]: 
+              AXStaticText: musculacao 43.png | musculacao 43.png
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 2,2 MB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: findmy.icns
+              AXCheckBox [checked=0]: 
+              AXStaticText: findmy.icns | findmy.icns
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 2,2 MB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: posibp2.png
+              AXCheckBox [checked=0]: 
+              AXStaticText: posibp2.png | posibp2.png
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 2,1 MB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: Instagram__Liguid_Glass__yryloHJCrd_icns-92d0868d97.icns
+              AXCheckBox [checked=0]: 
+              AXStaticText: Instagram__Liguid_Glass__yryloHJCrd_icns-92d0868d97.icns | Instagram__Liguid_Glass__yryloHJCrd_icns-92d0868d97.icns
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 2,1 MB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: ig.zip
+              AXCheckBox [checked=0]: 
+              AXStaticText: ig.zip | ig.zip
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 2,1 MB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: mex_novo.png
+              AXCheckBox [checked=0]: 
+              AXStaticText: mex_novo.png | mex_novo.png
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 2 MB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: revsexta.png
+              AXCheckBox [checked=0]: 
+              AXStaticText: revsexta.png | revsexta.png
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 2 MB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: Banner futurista Mentoria Uploader Pro.png
+              AXCheckBox [checked=0]: 
+              AXStaticText: Banner futurista Mentoria Uploader Pro.png | Banner futurista Mentoria Uploader Pro.png
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 2 MB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: posibp.png
+              AXCheckBox [checked=0]: 
+              AXStaticText: posibp.png | posibp.png
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 2 MB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: Revolution 2026_ Sábado no Palco.png
+              AXCheckBox [checked=0]: 
+              AXStaticText: Revolution 2026_ Sábado no Palco.png | Revolution 2026_ Sábado no Palco.png
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 2 MB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: Revolution 2026_ Domingo de Transformação.png
+              AXCheckBox [checked=0]: 
+              AXStaticText: Revolution 2026_ Domingo de Transformação.png | Revolution 2026_ Domingo de Transformação.png
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 1,9 MB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: posglobal.png
+              AXCheckBox [checked=0]: 
+              AXStaticText: posglobal.png | posglobal.png
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 1,9 MB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: amphetamine.icns
+              AXCheckBox [checked=0]: 
+              AXStaticText: amphetamine.icns | amphetamine.icns
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 1,7 MB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: asciidragon2.png
+              AXCheckBox [checked=0]: 
+              AXStaticText: asciidragon2.png | asciidragon2.png
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 1,6 MB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: ChatGPT Image 13 de set. de 2026, 05_55_07.png
+              AXCheckBox [checked=0]: 
+              AXStaticText: ChatGPT Image 13 de set. de 2026, 05_55_07.png | ChatGPT Image 13 de set. de 2026, 05_55_07.png
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 1,6 MB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: ChatGPT Image 13 de set. de 2026, 06_15_05.png
+              AXCheckBox [checked=0]: 
+              AXStaticText: ChatGPT Image 13 de set. de 2026, 06_15_05.png | ChatGPT Image 13 de set. de 2026, 06_15_05.png
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 1,6 MB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: 555ca9d4-de5d-4579-92be-457de00e3298.png
+              AXCheckBox [checked=0]: 
+              AXStaticText: 555ca9d4-de5d-4579-92be-457de00e3298.png | 555ca9d4-de5d-4579-92be-457de00e3298.png
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 1,6 MB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: ChatGPT Image 13 de set. de 2026, 05_53_59.png
+              AXCheckBox [checked=0]: 
+              AXStaticText: ChatGPT Image 13 de set. de 2026, 05_53_59.png | ChatGPT Image 13 de set. de 2026, 05_53_59.png
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 1,6 MB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: ChatGPT Image 12 de ago. de 2026, 20_15_25.png
+              AXCheckBox [checked=0]: 
+              AXStaticText: ChatGPT Image 12 de ago. de 2026, 20_15_25.png | ChatGPT Image 12 de ago. de 2026, 20_15_25.png
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 1,6 MB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: Atualizacoes GW Marketing.zip
+              AXCheckBox [checked=0]: 
+              AXStaticText: Atualizacoes GW Marketing.zip | Atualizacoes GW Marketing.zip
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 1,5 MB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: macicnslogo.png
+              AXCheckBox [checked=0]: 
+              AXStaticText: macicnslogo.png | macicnslogo.png
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 1,5 MB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: ChatGPT Image 12 de ago. de 2026, 19_59_18.png
+              AXCheckBox [checked=0]: 
+              AXStaticText: ChatGPT Image 12 de ago. de 2026, 19_59_18.png | ChatGPT Image 12 de ago. de 2026, 19_59_18.png
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 1,5 MB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: cleanyourmacicon.png
+              AXCheckBox [checked=0]: 
+              AXStaticText: cleanyourmacicon.png | cleanyourmacicon.png
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 1,5 MB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: patock.png
+              AXCheckBox [checked=0]: 
+              AXStaticText: patock.png | patock.png
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 1,4 MB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: ChatGPT Image 12 de ago. de 2026, 19_57_31.png
+              AXCheckBox [checked=0]: 
+              AXStaticText: ChatGPT Image 12 de ago. de 2026, 19_57_31.png | ChatGPT Image 12 de ago. de 2026, 19_57_31.png
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 1,4 MB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: ChatGPT Image 13 de set. de 2026, 05_52_18.png
+              AXCheckBox [checked=0]: 
+              AXStaticText: ChatGPT Image 13 de set. de 2026, 05_52_18.png | ChatGPT Image 13 de set. de 2026, 05_52_18.png
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 1,4 MB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: patititio.png
+              AXCheckBox [checked=0]: 
+              AXStaticText: patititio.png | patititio.png
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 1,4 MB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: paspdaps.png
+              AXCheckBox [checked=0]: 
+              AXStaticText: paspdaps.png | paspdaps.png
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 1,4 MB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: cymlogo2.png
+              AXCheckBox [checked=0]: 
+              AXStaticText: cymlogo2.png | cymlogo2.png
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 1,4 MB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: ChatGPT Image 13 de set. de 2026, 05_54_17.png
+              AXCheckBox [checked=0]: 
+              AXStaticText: ChatGPT Image 13 de set. de 2026, 05_54_17.png | ChatGPT Image 13 de set. de 2026, 05_54_17.png
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 1,4 MB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: ChatGPT Image 13 de set. de 2026, 05_54_10.png
+              AXCheckBox [checked=0]: 
+              AXStaticText: ChatGPT Image 13 de set. de 2026, 05_54_10.png | ChatGPT Image 13 de set. de 2026, 05_54_10.png
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 1,3 MB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: 8dbbd900-a4c5-41e6-a3f6-093376af8cdc.png
+              AXCheckBox [checked=0]: 
+              AXStaticText: 8dbbd900-a4c5-41e6-a3f6-093376af8cdc.png | 8dbbd900-a4c5-41e6-a3f6-093376af8cdc.png
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 1,3 MB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: dlpasdfoiasn.png
+              AXCheckBox [checked=0]: 
+              AXStaticText: dlpasdfoiasn.png | dlpasdfoiasn.png
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 1,3 MB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: asciidragon.png
+              AXCheckBox [checked=0]: 
+              AXStaticText: asciidragon.png | asciidragon.png
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 1,3 MB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: fosijndfs.png
+              AXCheckBox [checked=0]: 
+              AXStaticText: fosijndfs.png | fosijndfs.png
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 1,3 MB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: pato grafico.png
+              AXCheckBox [checked=0]: 
+              AXStaticText: pato grafico.png | pato grafico.png
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 1,3 MB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: ChatGPT Image 13 de set. de 2026, 06_14_40.png
+              AXCheckBox [checked=0]: 
+              AXStaticText: ChatGPT Image 13 de set. de 2026, 06_14_40.png | ChatGPT Image 13 de set. de 2026, 06_14_40.png
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 1,3 MB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: ChatGPT Image 13 de set. de 2026, 05_52_05.png
+              AXCheckBox [checked=0]: 
+              AXStaticText: ChatGPT Image 13 de set. de 2026, 05_52_05.png | ChatGPT Image 13 de set. de 2026, 05_52_05.png
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 1,2 MB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: ChatGPT Image 13 de set. de 2026, 06_39_56.png
+              AXCheckBox [checked=0]: 
+              AXStaticText: ChatGPT Image 13 de set. de 2026, 06_39_56.png | ChatGPT Image 13 de set. de 2026, 06_39_56.png
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 1,2 MB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: faviconsinalizadora.png
+              AXCheckBox [checked=0]: 
+              AXStaticText: faviconsinalizadora.png | faviconsinalizadora.png
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 1,2 MB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: patomedico.png
+              AXCheckBox [checked=0]: 
+              AXStaticText: patomedico.png | patomedico.png
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 1,2 MB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: pato pijama.png
+              AXCheckBox [checked=0]: 
+              AXStaticText: pato pijama.png | pato pijama.png
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 1,2 MB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: ChatGPT Image 12 de ago. de 2026, 19_52_36.png
+              AXCheckBox [checked=0]: 
+              AXStaticText: ChatGPT Image 12 de ago. de 2026, 19_52_36.png | ChatGPT Image 12 de ago. de 2026, 19_52_36.png
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 1,2 MB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: patoiconeee.png
+              AXCheckBox [checked=0]: 
+              AXStaticText: patoiconeee.png | patoiconeee.png
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 1,2 MB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: ChatGPT Image 27 de ago. de 2026, 00_37_41.png
+              AXCheckBox [checked=0]: 
+              AXStaticText: ChatGPT Image 27 de ago. de 2026, 00_37_41.png | ChatGPT Image 27 de ago. de 2026, 00_37_41.png
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 1,1 MB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: ChatGPT Image 12 de ago. de 2026, 03_01_56.png
+              AXCheckBox [checked=0]: 
+              AXStaticText: ChatGPT Image 12 de ago. de 2026, 03_01_56.png | ChatGPT Image 12 de ago. de 2026, 03_01_56.png
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 1,1 MB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: affinity.icns
+              AXCheckBox [checked=0]: 
+              AXStaticText: affinity.icns | affinity.icns
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 1,1 MB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: pato calendario remedio.png
+              AXCheckBox [checked=0]: 
+              AXStaticText: pato calendario remedio.png | pato calendario remedio.png
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 1,1 MB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: ChatGPT Image 23 de ago. de 2026, 21_49_00.png
+              AXCheckBox [checked=0]: 
+              AXStaticText: ChatGPT Image 23 de ago. de 2026, 21_49_00.png | ChatGPT Image 23 de ago. de 2026, 21_49_00.png
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 1,1 MB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: ChatGPT Image 13 de set. de 2026, 05_36_06.png
+              AXCheckBox [checked=0]: 
+              AXStaticText: ChatGPT Image 13 de set. de 2026, 05_36_06.png | ChatGPT Image 13 de set. de 2026, 05_36_06.png
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 1,1 MB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: ChatGPT Image 12 de ago. de 2026, 19_52_31.png
+              AXCheckBox [checked=0]: 
+              AXStaticText: ChatGPT Image 12 de ago. de 2026, 19_52_31.png | ChatGPT Image 12 de ago. de 2026, 19_52_31.png
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 1,1 MB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: gw001.png
+              AXCheckBox [checked=0]: 
+              AXStaticText: gw001.png | gw001.png
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 1,1 MB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: ChatGPT Image 12 de ago. de 2026, 03_01_50.png
+              AXCheckBox [checked=0]: 
+              AXStaticText: ChatGPT Image 12 de ago. de 2026, 03_01_50.png | ChatGPT Image 12 de ago. de 2026, 03_01_50.png
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 1,1 MB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: fejwifvhnwei.png
+              AXCheckBox [checked=0]: 
+              AXStaticText: fejwifvhnwei.png | fejwifvhnwei.png
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 1,1 MB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: ChatGPT Image 12 de ago. de 2026, 19_52_25.png
+              AXCheckBox [checked=0]: 
+              AXStaticText: ChatGPT Image 12 de ago. de 2026, 19_52_25.png | ChatGPT Image 12 de ago. de 2026, 19_52_25.png
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 1,1 MB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: pato chave.png
+              AXCheckBox [checked=0]: 
+              AXStaticText: pato chave.png | pato chave.png
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 1,1 MB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: ChatGPT Image 14 de ago. de 2026, 11_26_17.png
+              AXCheckBox [checked=0]: 
+              AXStaticText: ChatGPT Image 14 de ago. de 2026, 11_26_17.png | ChatGPT Image 14 de ago. de 2026, 11_26_17.png
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 1,1 MB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: pandavideo.png
+              AXCheckBox [checked=0]: 
+              AXStaticText: pandavideo.png | pandavideo.png
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 1 MB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: cleanmymac.icns
+              AXCheckBox [checked=0]: 
+              AXStaticText: cleanmymac.icns | cleanmymac.icns
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 1 MB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: sgtkigi.png
+              AXCheckBox [checked=0]: 
+              AXStaticText: sgtkigi.png | sgtkigi.png
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 991 KB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: loom.png
+              AXCheckBox [checked=0]: 
+              AXStaticText: loom.png | loom.png
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 983 KB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: greenn.png
+              AXCheckBox [checked=0]: 
+              AXStaticText: greenn.png | greenn.png
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 983 KB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: guru.png
+              AXCheckBox [checked=0]: 
+              AXStaticText: guru.png | guru.png
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 979 KB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: ChatGPT Image 21 de ago. de 2026, 19_27_55.png
+              AXCheckBox [checked=0]: 
+              AXStaticText: ChatGPT Image 21 de ago. de 2026, 19_27_55.png | ChatGPT Image 21 de ago. de 2026, 19_27_55.png
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 979 KB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: ChatGPT Image 13 de set. de 2026, 05_36_16.png
+              AXCheckBox [checked=0]: 
+              AXStaticText: ChatGPT Image 13 de set. de 2026, 05_36_16.png | ChatGPT Image 13 de set. de 2026, 05_36_16.png
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 971 KB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: patocalendario.png
+              AXCheckBox [checked=0]: 
+              AXStaticText: patocalendario.png | patocalendario.png
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 967 KB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: pato nerd.png
+              AXCheckBox [checked=0]: 
+              AXStaticText: pato nerd.png | pato nerd.png
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 950 KB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: ChatGPT Image 13 de set. de 2026, 05_35_57.png
+              AXCheckBox [checked=0]: 
+              AXStaticText: ChatGPT Image 13 de set. de 2026, 05_35_57.png | ChatGPT Image 13 de set. de 2026, 05_35_57.png
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 942 KB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: Warp_ntHfTPnLpx_icns-6ef368707c.icns
+              AXCheckBox [checked=0]: 
+              AXStaticText: Warp_ntHfTPnLpx_icns-6ef368707c.icns | Warp_ntHfTPnLpx_icns-6ef368707c.icns
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 938 KB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: hotmart.png
+              AXCheckBox [checked=0]: 
+              AXStaticText: hotmart.png | hotmart.png
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 930 KB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: warp.png
+              AXCheckBox [checked=0]: 
+              AXStaticText: warp.png | warp.png
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 926 KB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: vimeo.png
+              AXCheckBox [checked=0]: 
+              AXStaticText: vimeo.png | vimeo.png
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 918 KB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: youtube.png
+              AXCheckBox [checked=0]: 
+              AXStaticText: youtube.png | youtube.png
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 889 KB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: eduzz.png
+              AXCheckBox [checked=0]: 
+              AXStaticText: eduzz.png | eduzz.png
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 885 KB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: sm10x.png
+              AXCheckBox [checked=0]: 
+              AXStaticText: sm10x.png | sm10x.png
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 872 KB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: gestao10zx.png
+              AXCheckBox [checked=0]: 
+              AXStaticText: gestao10zx.png | gestao10zx.png
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 864 KB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: gpt.icns
+              AXCheckBox [checked=0]: 
+              AXStaticText: gpt.icns | gpt.icns
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 848 KB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: zed2.png
+              AXCheckBox [checked=0]: 
+              AXStaticText: zed2.png | zed2.png
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 831 KB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: ChatGPT Image 31 de ago. de 2026, 20_56_10.png
+              AXCheckBox [checked=0]: 
+              AXStaticText: ChatGPT Image 31 de ago. de 2026, 20_56_10.png | ChatGPT Image 31 de ago. de 2026, 20_56_10.png
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 827 KB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: crm10x.png
+              AXCheckBox [checked=0]: 
+              AXStaticText: crm10x.png | crm10x.png
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 819 KB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: ChatGPT Image 31 de ago. de 2026, 20_59_55.png
+              AXCheckBox [checked=0]: 
+              AXStaticText: ChatGPT Image 31 de ago. de 2026, 20_59_55.png | ChatGPT Image 31 de ago. de 2026, 20_59_55.png
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 811 KB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: pato bolsa.png
+              AXCheckBox [checked=0]: 
+              AXStaticText: pato bolsa.png | pato bolsa.png
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 799 KB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: ChatGPT Image 31 de ago. de 2026, 20_57_57.png
+              AXCheckBox [checked=0]: 
+              AXStaticText: ChatGPT Image 31 de ago. de 2026, 20_57_57.png | ChatGPT Image 31 de ago. de 2026, 20_57_57.png
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 799 KB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: Hidden-Bar-v1.11.1-macos.zip
+              AXCheckBox [checked=0]: 
+              AXStaticText: Hidden-Bar-v1.11.1-macos.zip | Hidden-Bar-v1.11.1-macos.zip
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 782 KB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: posicionamento para reconheccido nas RS.png
+              AXCheckBox [checked=0]: 
+              AXStaticText: posicionamento para reconheccido nas RS.png | posicionamento para reconheccido nas RS.png
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 745 KB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: 16.png
+              AXCheckBox [checked=0]: 
+              AXStaticText: 16.png | 16.png
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 737 KB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: ChatGPT Image 27 de ago. de 2026, 00_42_27.png
+              AXCheckBox [checked=0]: 
+              AXStaticText: ChatGPT Image 27 de ago. de 2026, 00_42_27.png | ChatGPT Image 27 de ago. de 2026, 00_42_27.png
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 725 KB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: ChatGPT Image 27 de ago. de 2026, 01_56_25.png
+              AXCheckBox [checked=0]: 
+              AXStaticText: ChatGPT Image 27 de ago. de 2026, 01_56_25.png | ChatGPT Image 27 de ago. de 2026, 01_56_25.png
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 717 KB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: ChatGPT Image 27 de ago. de 2026, 00_45_33.png
+              AXCheckBox [checked=0]: 
+              AXStaticText: ChatGPT Image 27 de ago. de 2026, 00_45_33.png | ChatGPT Image 27 de ago. de 2026, 00_45_33.png
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 700 KB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: discordsunrise.icns
+              AXCheckBox [checked=0]: 
+              AXStaticText: discordsunrise.icns | discordsunrise.icns
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 692 KB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: patotimido.png
+              AXCheckBox [checked=0]: 
+              AXStaticText: patotimido.png | patotimido.png
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 668 KB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: match result.json
+              AXCheckBox [checked=0]: 
+              AXStaticText: match result.json | match result.json
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 610 KB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: dia2.csv
+              AXCheckBox [checked=0]: 
+              AXStaticText: dia2.csv | dia2.csv
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 598 KB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: devfolder.icns
+              AXCheckBox [checked=0]: 
+              AXStaticText: devfolder.icns | devfolder.icns
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 598 KB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: dia1.csv
+              AXCheckBox [checked=0]: 
+              AXStaticText: dia1.csv | dia1.csv
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 594 KB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: Documento Astra.pdf
+              AXCheckBox [checked=0]: 
+              AXStaticText: Documento Astra.pdf | Documento Astra.pdf
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 569 KB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: crmorg10x.png
+              AXCheckBox [checked=0]: 
+              AXStaticText: crmorg10x.png | crmorg10x.png
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 569 KB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: obsidian.icns
+              AXCheckBox [checked=0]: 
+              AXStaticText: obsidian.icns | obsidian.icns
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 557 KB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: ChatGPT Image 10 de ago. de 2026, 13_19_07.png
+              AXCheckBox [checked=0]: 
+              AXStaticText: ChatGPT Image 10 de ago. de 2026, 13_19_07.png | ChatGPT Image 10 de ago. de 2026, 13_19_07.png
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 557 KB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: xcodee.icns
+              AXCheckBox [checked=0]: 
+              AXStaticText: xcodee.icns | xcodee.icns
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 532 KB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: Teampeak__Redesign__qWR6DvsAoV_icns-c38fdac78a.icns
+              AXCheckBox [checked=0]: 
+              AXStaticText: Teampeak__Redesign__qWR6DvsAoV_icns-c38fdac78a.icns | Teampeak__Redesign__qWR6DvsAoV_icns-c38fdac78a.icns
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 520 KB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: proton-recovery-phrase(globaltechdevs).pdf
+              AXCheckBox [checked=0]: 
+              AXStaticText: proton-recovery-phrase(globaltechdevs).pdf | proton-recovery-phrase(globaltechdevs).pdf
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 487 KB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: 10 tecnicas para cobrar mais caro.png
+              AXCheckBox [checked=0]: 
+              AXStaticText: 10 tecnicas para cobrar mais caro.png | 10 tecnicas para cobrar mais caro.png
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 471 KB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: vscodepink.icns
+              AXCheckBox [checked=0]: 
+              AXStaticText: vscodepink.icns | vscodepink.icns
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 459 KB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: steam.icns
+              AXCheckBox [checked=0]: 
+              AXStaticText: steam.icns | steam.icns
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 438 KB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: smartplayer.png
+              AXCheckBox [checked=0]: 
+              AXStaticText: smartplayer.png | smartplayer.png
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 438 KB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: ChatGPT Image 4 de set. de 2026, 13_18_57.png
+              AXCheckBox [checked=0]: 
+              AXStaticText: ChatGPT Image 4 de set. de 2026, 13_18_57.png | ChatGPT Image 4 de set. de 2026, 13_18_57.png
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 434 KB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: 1779305723717.png
+              AXCheckBox [checked=0]: 
+              AXStaticText: 1779305723717.png | 1779305723717.png
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 434 KB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: Imagem do ChatGPT 25 de set. de 2026, 12_40_42.png
+              AXCheckBox [checked=0]: 
+              AXStaticText: Imagem do ChatGPT 25 de set. de 2026, 12_40_42.png | Imagem do ChatGPT 25 de set. de 2026, 12_40_42.png
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 410 KB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: chatgpt2.icns
+              AXCheckBox [checked=0]: 
+              AXStaticText: chatgpt2.icns | chatgpt2.icns
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 406 KB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: ChatGPT Image 18 de ago. de 2026, 14_59_04.png
+              AXCheckBox [checked=0]: 
+              AXStaticText: ChatGPT Image 18 de ago. de 2026, 14_59_04.png | ChatGPT Image 18 de ago. de 2026, 14_59_04.png
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 406 KB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: vscodesimple.icns
+              AXCheckBox [checked=0]: 
+              AXStaticText: vscodesimple.icns | vscodesimple.icns
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 356 KB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: gemini.icns
+              AXCheckBox [checked=0]: 
+              AXStaticText: gemini.icns | gemini.icns
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 340 KB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: Novo Board GW.html
+              AXCheckBox [checked=0]: 
+              AXStaticText: Novo Board GW.html | Novo Board GW.html
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 221 KB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: uazapi-logo.png
+              AXCheckBox [checked=0]: 
+              AXStaticText: uazapi-logo.png | uazapi-logo.png
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 217 KB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: GlobalWORKS.html
+              AXCheckBox [checked=0]: 
+              AXStaticText: GlobalWORKS.html | GlobalWORKS.html
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 213 KB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: GlobalWORKS (2).html
+              AXCheckBox [checked=0]: 
+              AXStaticText: GlobalWORKS (2).html | GlobalWORKS (2).html
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 213 KB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: GlobalWORKS (1).html
+              AXCheckBox [checked=0]: 
+              AXStaticText: GlobalWORKS (1).html | GlobalWORKS (1).html
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 213 KB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: discordpink.icns
+              AXCheckBox [checked=0]: 
+              AXStaticText: discordpink.icns | discordpink.icns
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 197 KB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: dgrm_logo.png
+              AXCheckBox [checked=0]: 
+              AXStaticText: dgrm_logo.png | dgrm_logo.png
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 188 KB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: Affinity_8TirWESN4a_icns-49211b6473.icns
+              AXCheckBox [checked=0]: 
+              AXStaticText: Affinity_8TirWESN4a_icns-49211b6473.icns | Affinity_8TirWESN4a_icns-49211b6473.icns
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 180 KB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: Zed_c6L4BDC72x_icns-f923282015.icns
+              AXCheckBox [checked=0]: 
+              AXStaticText: Zed_c6L4BDC72x_icns-f923282015.icns | Zed_c6L4BDC72x_icns-f923282015.icns
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 172 KB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: globalworks_web-log-export-2026-08-17T18-27-15.json
+              AXCheckBox [checked=0]: 
+              AXStaticText: globalworks_web-log-export-2026-08-17T18-27-15.json | globalworks_web-log-export-2026-08-17T18-27-15.json
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 135 KB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: 13.png
+              AXCheckBox [checked=0]: 
+              AXStaticText: 13.png | 13.png
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 131 KB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: 2.png
+              AXCheckBox [checked=0]: 
+              AXStaticText: 2.png | 2.png
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 127 KB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: 15.png
+              AXCheckBox [checked=0]: 
+              AXStaticText: 15.png | 15.png
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 127 KB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: 14.png
+              AXCheckBox [checked=0]: 
+              AXStaticText: 14.png | 14.png
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 127 KB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: 10.png
+              AXCheckBox [checked=0]: 
+              AXStaticText: 10.png | 10.png
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 127 KB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: calculadora-organizacao10x.html
+              AXCheckBox [checked=0]: 
+              AXStaticText: calculadora-organizacao10x.html | calculadora-organizacao10x.html
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 123 KB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: 4.png
+              AXCheckBox [checked=0]: 
+              AXStaticText: 4.png | 4.png
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 123 KB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: 1.png
+              AXCheckBox [checked=0]: 
+              AXStaticText: 1.png | 1.png
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 123 KB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: 8.png
+              AXCheckBox [checked=0]: 
+              AXStaticText: 8.png | 8.png
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 119 KB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: 5.png
+              AXCheckBox [checked=0]: 
+              AXStaticText: 5.png | 5.png
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 119 KB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: 12.png
+              AXCheckBox [checked=0]: 
+              AXStaticText: 12.png | 12.png
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 119 KB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: 9.png
+              AXCheckBox [checked=0]: 
+              AXStaticText: 9.png | 9.png
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 115 KB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: 7.png
+              AXCheckBox [checked=0]: 
+              AXStaticText: 7.png | 7.png
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 115 KB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: 3.png
+              AXCheckBox [checked=0]: 
+              AXStaticText: 3.png | 3.png
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 111 KB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: 11.png
+              AXCheckBox [checked=0]: 
+              AXStaticText: 11.png | 11.png
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 106 KB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: BeatrizOliveira.pdf
+              AXCheckBox [checked=0]: 
+              AXStaticText: BeatrizOliveira.pdf | BeatrizOliveira.pdf
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 86 KB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: CRLV - Palio - 2026.pdf
+              AXCheckBox [checked=0]: 
+              AXStaticText: CRLV - Palio - 2026.pdf | CRLV - Palio - 2026.pdf
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 81,9 KB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: CRLV - Palio - 2026 (1).pdf
+              AXCheckBox [checked=0]: 
+              AXStaticText: CRLV - Palio - 2026 (1).pdf | CRLV - Palio - 2026 (1).pdf
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 81,9 KB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: supabase-sgt-restore-forms-21-09.zip
+              AXCheckBox [checked=0]: 
+              AXStaticText: supabase-sgt-restore-forms-21-09.zip | supabase-sgt-restore-forms-21-09.zip
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 77,8 KB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: index.html
+              AXCheckBox [checked=0]: 
+              AXStaticText: index.html | index.html
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 77,8 KB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: Untitled mind map.png
+              AXCheckBox [checked=0]: 
+              AXStaticText: Untitled mind map.png | Untitled mind map.png
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 73,7 KB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: NFSe_18539157_8.pdf
+              AXCheckBox [checked=0]: 
+              AXStaticText: NFSe_18539157_8.pdf | NFSe_18539157_8.pdf
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 65,5 KB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: nfe_set.pdf
+              AXCheckBox [checked=0]: 
+              AXStaticText: nfe_set.pdf | nfe_set.pdf
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 65,5 KB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: nfe_globaltech_julho.pdf
+              AXCheckBox [checked=0]: 
+              AXStaticText: nfe_globaltech_julho.pdf | nfe_globaltech_julho.pdf
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 65,5 KB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: implement-skills.zip
+              AXCheckBox [checked=0]: 
+              AXStaticText: implement-skills.zip | implement-skills.zip
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 65,5 KB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: globalworks_api-log-export-2026-08-17T18-27-08.json
+              AXCheckBox [checked=0]: 
+              AXStaticText: globalworks_api-log-export-2026-08-17T18-27-08.json | globalworks_api-log-export-2026-08-17T18-27-08.json
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 65,5 KB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: Untitled mind map (1).png
+              AXCheckBox [checked=0]: 
+              AXStaticText: Untitled mind map (1).png | Untitled mind map (1).png
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 61,4 KB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: der_fam.pdf
+              AXCheckBox [checked=0]: 
+              AXStaticText: der_fam.pdf | der_fam.pdf
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 57,3 KB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: Invoice-KHTMEW0W-0013.pdf
+              AXCheckBox [checked=0]: 
+              AXStaticText: Invoice-KHTMEW0W-0013.pdf | Invoice-KHTMEW0W-0013.pdf
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 49,2 KB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: Untitled mind map (2).png
+              AXCheckBox [checked=0]: 
+              AXStaticText: Untitled mind map (2).png | Untitled mind map (2).png
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 45,1 KB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: GlobalWorks — Master Prompt para Claude Code.md
+              AXCheckBox [checked=0]: 
+              AXStaticText: GlobalWorks — Master Prompt para Claude Code.md | GlobalWorks — Master Prompt para Claude Code.md
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 45,1 KB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: claude-code-whimsical-mindmap-clone.md
+              AXCheckBox [checked=0]: 
+              AXStaticText: claude-code-whimsical-mindmap-clone.md | claude-code-whimsical-mindmap-clone.md
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 45,1 KB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: plano-mvp-lol-builds-claude-code.md
+              AXCheckBox [checked=0]: 
+              AXStaticText: plano-mvp-lol-builds-claude-code.md | plano-mvp-lol-builds-claude-code.md
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 41 KB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: acessos-2026-08-26.csv
+              AXCheckBox [checked=0]: 
+              AXStaticText: acessos-2026-08-26.csv | acessos-2026-08-26.csv
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 36,9 KB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: ETIQUETAS MODELO.docx
+              AXCheckBox [checked=0]: 
+              AXStaticText: ETIQUETAS MODELO.docx | ETIQUETAS MODELO.docx
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 32,8 KB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: rev26-ingressos-a-indicar-2026-08-11.csv
+              AXCheckBox [checked=0]: 
+              AXStaticText: rev26-ingressos-a-indicar-2026-08-11.csv | rev26-ingressos-a-indicar-2026-08-11.csv
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 28,7 KB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: os8_digital_v1_1.wsz
+              AXCheckBox [checked=0]: 
+              AXStaticText: os8_digital_v1_1.wsz | os8_digital_v1_1.wsz
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 28,7 KB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: koda.md
+              AXCheckBox [checked=0]: 
+              AXStaticText: koda.md | koda.md
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 28,7 KB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: GUIA-VIDEOTECA-STANDALONE (1).md
+              AXCheckBox [checked=0]: 
+              AXStaticText: GUIA-VIDEOTECA-STANDALONE (1).md | GUIA-VIDEOTECA-STANDALONE (1).md
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 28,7 KB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: Estrutura e modelagem de dados - Aula 1.dgrm.json
+              AXCheckBox [checked=0]: 
+              AXStaticText: Estrutura e modelagem de dados - Aula 1.dgrm.json | Estrutura e modelagem de dados - Aula 1.dgrm.json
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 20,5 KB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: wpp1.png
+              AXCheckBox [checked=0]: 
+              AXStaticText: wpp1.png | wpp1.png
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 16,4 KB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: prompt-redesign-hub-organizacao10x.md
+              AXCheckBox [checked=0]: 
+              AXStaticText: prompt-redesign-hub-organizacao10x.md | prompt-redesign-hub-organizacao10x.md
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 16,4 KB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: handoff-qa-mcp-crm10x_2.md
+              AXCheckBox [checked=0]: 
+              AXStaticText: handoff-qa-mcp-crm10x_2.md | handoff-qa-mcp-crm10x_2.md
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 16,4 KB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: global-drive-log-export-2026-09-10T20-55-59.csv
+              AXCheckBox [checked=0]: 
+              AXStaticText: global-drive-log-export-2026-09-10T20-55-59.csv | global-drive-log-export-2026-09-10T20-55-59.csv
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 16,4 KB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: prompt-migracao-nextjs-tailwind.md
+              AXCheckBox [checked=0]: 
+              AXStaticText: prompt-migracao-nextjs-tailwind.md | prompt-migracao-nextjs-tailwind.md
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 12,3 KB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: images.jpeg
+              AXCheckBox [checked=0]: 
+              AXStaticText: images.jpeg | images.jpeg
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 12,3 KB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: handoff-qa-mcp-crm10x.md
+              AXCheckBox [checked=0]: 
+              AXStaticText: handoff-qa-mcp-crm10x.md | handoff-qa-mcp-crm10x.md
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 12,3 KB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: defaultuser.jpeg
+              AXCheckBox [checked=0]: 
+              AXStaticText: defaultuser.jpeg | defaultuser.jpeg
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 12,3 KB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: CHANGELOG-2026-09-03.md
+              AXCheckBox [checked=0]: 
+              AXStaticText: CHANGELOG-2026-09-03.md | CHANGELOG-2026-09-03.md
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 12,3 KB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: webhook-teste-hotmart.json
+              AXCheckBox [checked=0]: 
+              AXStaticText: webhook-teste-hotmart.json | webhook-teste-hotmart.json
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 8,2 KB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: revolution-resposta-gap-ingressos-app-2026-08-20.md
+              AXCheckBox [checked=0]: 
+              AXStaticText: revolution-resposta-gap-ingressos-app-2026-08-20.md | revolution-resposta-gap-ingressos-app-2026-08-20.md
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 8,2 KB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: json-erro-guru.json
+              AXCheckBox [checked=0]: 
+              AXStaticText: json-erro-guru.json | json-erro-guru.json
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 8,2 KB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: HANDOFF-pasta-mover-raiz.md
+              AXCheckBox [checked=0]: 
+              AXStaticText: HANDOFF-pasta-mover-raiz.md | HANDOFF-pasta-mover-raiz.md
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 8,2 KB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: HANDOFF-disparos-presos.md
+              AXCheckBox [checked=0]: 
+              AXStaticText: HANDOFF-disparos-presos.md | HANDOFF-disparos-presos.md
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 8,2 KB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: 20260913100000_wacrm_dashboard_metricas_funil.sql
+              AXCheckBox [checked=0]: 
+              AXStaticText: 20260913100000_wacrm_dashboard_metricas_funil.sql | 20260913100000_wacrm_dashboard_metricas_funil.sql
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 8,2 KB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: 20260913090000_wacrm_inbox_filtro_atendente.sql
+              AXCheckBox [checked=0]: 
+              AXStaticText: 20260913090000_wacrm_inbox_filtro_atendente.sql | 20260913090000_wacrm_inbox_filtro_atendente.sql
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 8,2 KB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: transcrever_linux.py
+              AXCheckBox [checked=0]: 
+              AXStaticText: transcrever_linux.py | transcrever_linux.py
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 4,1 KB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: hub.organizacao10x.com.br-1790623583183.log
+              AXCheckBox [checked=0]: 
+              AXStaticText: hub.organizacao10x.com.br-1790623583183.log | hub.organizacao10x.com.br-1790623583183.log
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 4,1 KB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: env cbem
+              AXCheckBox [checked=0]: 
+              AXStaticText: env cbem | env cbem
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 4,1 KB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: Apresentacao_Trabalho_BD.pdf
+              AXCheckBox [checked=0]: 
+              AXStaticText: Apresentacao_Trabalho_BD.pdf | Apresentacao_Trabalho_BD.pdf
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 4,1 KB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: 4516869_1514209_digbystuff_128x128-minecraft-pig.b9f35e2bca978bdd0be87415b9fde10a.webp
+              AXCheckBox [checked=0]: 
+              AXStaticText: 4516869_1514209_digbystuff_128x128-minecraft-pig.b9f35e2bca978bdd0be87415b9fde10a.webp | 4516869_1514209_digbystuff_128x128-minecraft-pig.b9f35e2bca978bdd0be87415b9fde10a.webp
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 4,1 KB | Tamanho total ou contagem dos itens incluídos
+    AXButton: Enabled | Voltar
+        AXImage: back button pink
+        AXStaticText: Voltar
+    AXStaticText: Gerenciador de Acúmulos
+      AXTextField: Busque nos itens encontrados
+    AXButton: Tamanho | Ordenar por:
+        AXStaticText: Ordenar por:
+        AXStaticText: Tamanho
+        AXImage: ir para baixo
+    AXStaticText: 0 Item Selecionado
+    AXStaticText: 0 KB
+    AXButton: Disabled | Remover
+        AXStaticText: Remover
+          AXStaticText: Cuidados Inteligentes
+          AXStaticText: Limpeza
+          AXStaticText: Proteção
+          AXStaticText: Desempenho
+          AXStaticText: Aplicativos
+          AXStaticText: Acúmulos
+          AXImage: InfoIndicator
+          AXStaticText: Lupa de Espaço
+          AXStaticText: Limpeza de Nuvem
+          AXStaticText: Ferramentas
+          AXStaticText: Atividades
+    AXButton: este botão também possui uma ação para ampliar ou reduzir a janela
+    ?: Parar

@@ -1,0 +1,38 @@
+== window: 
+== window: 
+== window: 
+== window: CleanMyMac
+  AXWindow: CleanMyMac
+    AXButton: Enabled | Recomeçar
+        AXImage: back button circle
+        AXStaticText: Recomeçar
+    AXStaticText: Acúmulos
+    AXStaticText: Você tem 885 arquivos para revisar.
+Use as recomendações rápidas ou revise‑os manualmente.
+    AXButton: Enabled | Revisar Todos os Arquivos
+        AXStaticText: Revisar Todos os Arquivos
+            AXStaticText: 13 Imagens Similares Novas Encontradas
+            AXStaticText: 15,9 MB de fotos praticamente idênticas apareceram no Mac nos últimos 30 dias. Dê uma olhada!
+            AXButton: Enabled | Revisar
+                AXStaticText: Revisar
+            AXStaticText: 45 Arquivos Duplicados Encontrados em Documentos
+            AXStaticText: Remova 35,6 MB de cópias desnecessárias para economizar espaço.
+            AXButton: Enabled | Revisar
+                AXStaticText: Revisar
+            AXStaticText: 591 MB de Downloads do Google Chrome Encontrados
+            AXStaticText: Revise e remova os downloads desnecessários para recuperar um espaço significativo.
+            AXButton: Enabled | Revisar
+                AXStaticText: Revisar
+          AXStaticText: Cuidados Inteligentes
+          AXStaticText: Limpeza
+          AXStaticText: Proteção
+          AXStaticText: Desempenho
+          AXStaticText: Aplicativos
+          AXStaticText: Acúmulos
+          AXImage: InfoIndicator
+          AXStaticText: Lupa de Espaço
+          AXStaticText: Limpeza de Nuvem
+          AXStaticText: Ferramentas
+          AXStaticText: Atividades
+    AXButton: este botão também possui uma ação para ampliar ou reduzir a janela
+    ?: Parar

@@ -1,0 +1,109 @@
+== window: 
+== window: 
+== window: 
+== window: CleanMyMac
+  AXWindow: CleanMyMac
+    AXButton: Enabled | Recomeçar
+        AXImage: back button circle
+        AXStaticText: Recomeçar
+    AXStaticText: Acúmulos
+              AXStaticText: Fundo do Baú
+              AXStaticText: Duplicatas
+              AXStaticText: Imagens Similares
+              AXStaticText: Downloads
+              AXStaticText: Fundo do Baú
+              AXStaticText: Esta categoria contém seus arquivos, cuja maioria é grande e potencialmente desnecessária por não ser aberta há tempos.
+              AXStaticText: Todos os Arquivos
+              AXStaticText: 1,7 GB
+              AXStaticText: Selecionados
+              AXStaticText: 0 KB
+              AXStaticText: Por Tipo
+              AXStaticText: Arq. Comp.
+              AXStaticText: 350 MB
+              AXStaticText: Vídeos
+              AXStaticText: 1,3 GB
+              AXStaticText: Outro
+              AXStaticText: 60,8 MB
+              AXStaticText: Por Tamanho
+              AXStaticText: Imenso
+              AXStaticText: 1 GB
+              AXStaticText: Pequeno
+              AXStaticText: 678 MB
+              AXStaticText: Por Data de Acesso
+              AXStaticText: Há Um Mês
+              AXStaticText: 1,5 GB
+              AXStaticText: Há Uma Semana
+              AXStaticText: 171 MB
+              AXStaticText: Semana Passada
+              AXStaticText: 60,8 MB
+          AXRow [level=0]: 
+            AXCell: Vídeo HG - Volume +.mov
+              AXCheckBox [checked=0]: 
+              AXStaticText: Vídeo HG - Volume +.mov | Vídeo HG - Volume +.mov
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 6 de ago. de 2026 | A última vez que você abriu o arquivo.
+              AXStaticText: 1 GB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: HG Vídeo Final -.MOV
+              AXCheckBox [checked=0]: 
+              AXStaticText: HG Vídeo Final -.MOV | HG Vídeo Final -.MOV
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 6 de ago. de 2026 | A última vez que você abriu o arquivo.
+              AXStaticText: 267 MB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: Cyberduck-9.5.2.45323.zip
+              AXCheckBox [checked=0]: 
+              AXStaticText: Cyberduck-9.5.2.45323.zip | Cyberduck-9.5.2.45323.zip
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 6 de ago. de 2026 | A última vez que você abriu o arquivo.
+              AXStaticText: 179 MB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: Godot_v4.7.2-stable_macos.universal.zip
+              AXCheckBox [checked=0]: 
+              AXStaticText: Godot_v4.7.2-stable_macos.universal.zip | Godot_v4.7.2-stable_macos.universal.zip
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 6 de out. de 2026 | A última vez que você abriu o arquivo.
+              AXStaticText: 171 MB | Tamanho total ou contagem dos itens incluídos
+          AXRow [level=0]: 
+            AXCell: Livro_GUIA PRATICO CONSULTORIA ONLINE_VERSÃO DIGITAL.pdf
+              AXCheckBox [checked=0]: 
+              AXStaticText: Livro_GUIA PRATICO CONSULTORIA ONLINE_VERSÃO DIGITAL.pdf | Livro_GUIA PRATICO CONSULTORIA ONLINE_VERSÃO DIGITAL.pdf
+              AXList: caminho
+                AXStaticText: guigx
+                AXStaticText: Downloads
+              AXStaticText: 22 de out. de 2026 | A última vez que você abriu o arquivo.
+              AXStaticText: 60,8 MB | Tamanho total ou contagem dos itens incluídos
+    AXButton: Enabled | Voltar
+        AXImage: back button pink
+        AXStaticText: Voltar
+    AXStaticText: Gerenciador de Acúmulos
+      AXTextField: Busque nos itens encontrados
+    AXButton: Tamanho | Ordenar por:
+        AXStaticText: Ordenar por:
+        AXStaticText: Tamanho
+        AXImage: ir para baixo
+    AXStaticText: 0 Item Selecionado
+    AXStaticText: 0 KB
+    AXButton: Disabled | Remover
+        AXStaticText: Remover
+          AXStaticText: Cuidados Inteligentes
+          AXStaticText: Limpeza
+          AXStaticText: Proteção
+          AXStaticText: Desempenho
+          AXStaticText: Aplicativos
+          AXStaticText: Acúmulos
+          AXImage: InfoIndicator
+          AXStaticText: Lupa de Espaço
+          AXStaticText: Limpeza de Nuvem
+          AXStaticText: Ferramentas
+          AXStaticText: Atividades
+    AXButton: este botão também possui uma ação para ampliar ou reduzir a janela
+    ?: Parar

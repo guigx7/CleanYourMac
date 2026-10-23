@@ -1,0 +1,275 @@
+== window: 
+== window: 
+== window: 
+== window: CleanMyMac
+  AXWindow: CleanMyMac
+    AXButton: Enabled | Recomeçar
+        AXImage: back button circle
+        AXStaticText: Recomeçar
+    AXStaticText: Acúmulos
+              AXStaticText: Fundo do Baú
+              AXStaticText: Duplicatas
+              AXStaticText: Imagens Similares
+              AXStaticText: Downloads
+              AXStaticText: Imagens Similares
+              AXStaticText: Por ter capturado imagens praticamente idênticas, talvez você queira manter apenas a melhor foto e remover o resto.
+              AXStaticText: 4 de set. de 2024 | 4 de set. de 2024
+              AXStaticText: 8,2 MB | Tamanho total dos itens no grupo
+                AXStaticText: 6 | O total de instâncias similares da foto.
+              AXStaticText: 4 de set. de 2024 | 4 de set. de 2024
+              AXStaticText: 7,5 MB | Tamanho total dos itens no grupo
+                AXStaticText: 4 | O total de instâncias similares da foto.
+              AXStaticText: 4 de set. de 2024 | 4 de set. de 2024
+              AXStaticText: 7,4 MB | Tamanho total dos itens no grupo
+                AXStaticText: 12 | O total de instâncias similares da foto.
+              AXStaticText: 22 de out. de 2026 | 22 de out. de 2026
+              AXStaticText: 6 MB | Tamanho total dos itens no grupo
+                AXStaticText: 3 | O total de instâncias similares da foto.
+              AXStaticText: 4 de set. de 2024 | 4 de set. de 2024
+              AXStaticText: 5,8 MB | Tamanho total dos itens no grupo
+                AXStaticText: 12 | O total de instâncias similares da foto.
+              AXStaticText: 4 de set. de 2024 | 4 de set. de 2024
+              AXStaticText: 4,6 MB | Tamanho total dos itens no grupo
+                AXStaticText: 2 | O total de instâncias similares da foto.
+              AXStaticText: 4 de set. de 2024 | 4 de set. de 2024
+              AXStaticText: 4,6 MB | Tamanho total dos itens no grupo
+                AXStaticText: 2 | O total de instâncias similares da foto.
+              AXStaticText: 4 de set. de 2024 | 4 de set. de 2024
+              AXStaticText: 4,6 MB | Tamanho total dos itens no grupo
+                AXStaticText: 2 | O total de instâncias similares da foto.
+              AXStaticText: 4 de set. de 2024 | 4 de set. de 2024
+              AXStaticText: 4,6 MB | Tamanho total dos itens no grupo
+                AXStaticText: 2 | O total de instâncias similares da foto.
+              AXStaticText: 4 de set. de 2024 | 4 de set. de 2024
+              AXStaticText: 4,4 MB | Tamanho total dos itens no grupo
+                AXStaticText: 12 | O total de instâncias similares da foto.
+              AXStaticText: 24 de ago. de 2026 | 24 de ago. de 2026
+              AXStaticText: 4,3 MB | Tamanho total dos itens no grupo
+                AXStaticText: 4 | O total de instâncias similares da foto.
+              AXStaticText: 4 de set. de 2024 | 4 de set. de 2024
+              AXStaticText: 4,2 MB | Tamanho total dos itens no grupo
+                AXStaticText: 6 | O total de instâncias similares da foto.
+              AXStaticText: 4 de set. de 2024 | 4 de set. de 2024
+              AXStaticText: 4,1 MB | Tamanho total dos itens no grupo
+                AXStaticText: 12 | O total de instâncias similares da foto.
+              AXStaticText: 4 de set. de 2024 | 4 de set. de 2024
+              AXStaticText: 4,1 MB | Tamanho total dos itens no grupo
+                AXStaticText: 12 | O total de instâncias similares da foto.
+              AXStaticText: 4 de set. de 2024 | 4 de set. de 2024
+              AXStaticText: 4,1 MB | Tamanho total dos itens no grupo
+                AXStaticText: 10 | O total de instâncias similares da foto.
+              AXStaticText: 4 de set. de 2024 | 4 de set. de 2024
+              AXStaticText: 4,1 MB | Tamanho total dos itens no grupo
+                AXStaticText: 3 | O total de instâncias similares da foto.
+              AXStaticText: macicnslogo.png | macicnslogo.png
+              AXStaticText: 3,9 MB | Tamanho total dos itens no grupo
+                AXStaticText: 4 | O total de instâncias similares da foto.
+              AXStaticText: 4 de set. de 2024 | 4 de set. de 2024
+              AXStaticText: 3,2 MB | Tamanho total dos itens no grupo
+                AXStaticText: 12 | O total de instâncias similares da foto.
+              AXStaticText: 4 de set. de 2024 | 4 de set. de 2024
+              AXStaticText: 3,1 MB | Tamanho total dos itens no grupo
+                AXStaticText: 9 | O total de instâncias similares da foto.
+              AXStaticText: ChatGPT Image 12 de ago. de 2026, 19_59_18.png | ChatGPT Image 12 de ago. de 2026, 19_59_18.png
+              AXStaticText: 3,1 MB | Tamanho total dos itens no grupo
+                AXStaticText: 2 | O total de instâncias similares da foto.
+              AXStaticText: 21 de ago. de 2026 | 21 de ago. de 2026
+              AXStaticText: 2,9 MB | Tamanho total dos itens no grupo
+                AXStaticText: 3 | O total de instâncias similares da foto.
+              AXStaticText: 4 de set. de 2024 | 4 de set. de 2024
+              AXStaticText: 2,9 MB | Tamanho total dos itens no grupo
+                AXStaticText: 6 | O total de instâncias similares da foto.
+              AXStaticText: 4 de set. de 2024 | 4 de set. de 2024
+              AXStaticText: 2,9 MB | Tamanho total dos itens no grupo
+                AXStaticText: 2 | O total de instâncias similares da foto.
+              AXStaticText: 4 de set. de 2024 | 4 de set. de 2024
+              AXStaticText: 2,9 MB | Tamanho total dos itens no grupo
+                AXStaticText: 2 | O total de instâncias similares da foto.
+              AXStaticText: 4 de set. de 2024 | 4 de set. de 2024
+              AXStaticText: 2,8 MB | Tamanho total dos itens no grupo
+                AXStaticText: 2 | O total de instâncias similares da foto.
+              AXStaticText: 4 de set. de 2024 | 4 de set. de 2024
+              AXStaticText: 2,8 MB | Tamanho total dos itens no grupo
+                AXStaticText: 2 | O total de instâncias similares da foto.
+              AXStaticText: 4 de set. de 2024 | 4 de set. de 2024
+              AXStaticText: 2,8 MB | Tamanho total dos itens no grupo
+                AXStaticText: 6 | O total de instâncias similares da foto.
+              AXStaticText: 4 de set. de 2024 | 4 de set. de 2024
+              AXStaticText: 2,7 MB | Tamanho total dos itens no grupo
+                AXStaticText: 6 | O total de instâncias similares da foto.
+              AXStaticText: 15 de set. de 2026 | 15 de set. de 2026
+              AXStaticText: 2,5 MB | Tamanho total dos itens no grupo
+                AXStaticText: 2 | O total de instâncias similares da foto.
+              AXStaticText: 22 de out. de 2026 | 22 de out. de 2026
+              AXStaticText: 2,5 MB | Tamanho total dos itens no grupo
+                AXStaticText: 2 | O total de instâncias similares da foto.
+              AXImage: file fallback
+              AXStaticText: 26 de set. de 2026 | 26 de set. de 2026
+              AXStaticText: 2,3 MB | Tamanho total dos itens no grupo
+                AXStaticText: 2 | O total de instâncias similares da foto.
+              AXStaticText: 4 de set. de 2024 | 4 de set. de 2024
+              AXStaticText: 2,2 MB | Tamanho total dos itens no grupo
+                AXStaticText: 6 | O total de instâncias similares da foto.
+              AXStaticText: 21 de ago. de 2026 | 21 de ago. de 2026
+              AXStaticText: 2,1 MB | Tamanho total dos itens no grupo
+                AXStaticText: 2 | O total de instâncias similares da foto.
+              AXStaticText: 27 de ago. de 2026 | 27 de ago. de 2026
+              AXStaticText: 1,9 MB | Tamanho total dos itens no grupo
+                AXStaticText: 2 | O total de instâncias similares da foto.
+              AXStaticText: 11 de fev. de 2026 | 11 de fev. de 2026
+              AXStaticText: 1,8 MB | Tamanho total dos itens no grupo
+                AXStaticText: 2 | O total de instâncias similares da foto.
+              AXStaticText: 21 de set. de 2026 | 21 de set. de 2026
+              AXStaticText: 1,7 MB | Tamanho total dos itens no grupo
+                AXStaticText: 2 | O total de instâncias similares da foto.
+              AXStaticText: 4 de set. de 2024 | 4 de set. de 2024
+              AXStaticText: 1,7 MB | Tamanho total dos itens no grupo
+                AXStaticText: 6 | O total de instâncias similares da foto.
+              AXStaticText: 4 de set. de 2024 | 4 de set. de 2024
+              AXStaticText: 1,6 MB | Tamanho total dos itens no grupo
+                AXStaticText: 6 | O total de instâncias similares da foto.
+              AXStaticText: 4 de set. de 2024 | 4 de set. de 2024
+              AXStaticText: 1,5 MB | Tamanho total dos itens no grupo
+                AXStaticText: 2 | O total de instâncias similares da foto.
+              AXStaticText: 4 de set. de 2024 | 4 de set. de 2024
+              AXStaticText: 1,5 MB | Tamanho total dos itens no grupo
+                AXStaticText: 2 | O total de instâncias similares da foto.
+              AXStaticText: 4 de set. de 2024 | 4 de set. de 2024
+              AXStaticText: 1,5 MB | Tamanho total dos itens no grupo
+                AXStaticText: 2 | O total de instâncias similares da foto.
+              AXStaticText: 4 de set. de 2024 | 4 de set. de 2024
+              AXStaticText: 1,4 MB | Tamanho total dos itens no grupo
+                AXStaticText: 2 | O total de instâncias similares da foto.
+              AXStaticText: 4 de set. de 2024 | 4 de set. de 2024
+              AXStaticText: 1,4 MB | Tamanho total dos itens no grupo
+                AXStaticText: 2 | O total de instâncias similares da foto.
+              AXStaticText: Capa - Pós 2 IBP.png | Capa - Pós 2 IBP.png
+              AXStaticText: 1,3 MB | Tamanho total dos itens no grupo
+                AXStaticText: 2 | O total de instâncias similares da foto.
+              AXStaticText: 4 de set. de 2024 | 4 de set. de 2024
+              AXStaticText: 1,3 MB | Tamanho total dos itens no grupo
+                AXStaticText: 6 | O total de instâncias similares da foto.
+              AXStaticText: 4 de set. de 2024 | 4 de set. de 2024
+              AXStaticText: 1,2 MB | Tamanho total dos itens no grupo
+                AXStaticText: 2 | O total de instâncias similares da foto.
+              AXStaticText: 4 de set. de 2024 | 4 de set. de 2024
+              AXStaticText: 1,2 MB | Tamanho total dos itens no grupo
+                AXStaticText: 2 | O total de instâncias similares da foto.
+              AXStaticText: 4 de set. de 2024 | 4 de set. de 2024
+              AXStaticText: 1,2 MB | Tamanho total dos itens no grupo
+                AXStaticText: 2 | O total de instâncias similares da foto.
+              AXStaticText: 4 de set. de 2024 | 4 de set. de 2024
+              AXStaticText: 1,2 MB | Tamanho total dos itens no grupo
+                AXStaticText: 2 | O total de instâncias similares da foto.
+              AXStaticText: 4 de set. de 2024 | 4 de set. de 2024
+              AXStaticText: 1,2 MB | Tamanho total dos itens no grupo
+                AXStaticText: 2 | O total de instâncias similares da foto.
+              AXStaticText: 10 de ago. de 2026 | 10 de ago. de 2026
+              AXStaticText: 1,1 MB | Tamanho total dos itens no grupo
+                AXStaticText: 2 | O total de instâncias similares da foto.
+              AXStaticText: 4 de set. de 2024 | 4 de set. de 2024
+              AXStaticText: 1 MB | Tamanho total dos itens no grupo
+                AXStaticText: 2 | O total de instâncias similares da foto.
+              AXStaticText: 4 de set. de 2024 | 4 de set. de 2024
+              AXStaticText: 965 KB | Tamanho total dos itens no grupo
+                AXStaticText: 6 | O total de instâncias similares da foto.
+              AXStaticText: 4 de set. de 2024 | 4 de set. de 2024
+              AXStaticText: 957 KB | Tamanho total dos itens no grupo
+                AXStaticText: 5 | O total de instâncias similares da foto.
+              AXStaticText: 4 de set. de 2024 | 4 de set. de 2024
+              AXStaticText: 804 KB | Tamanho total dos itens no grupo
+                AXStaticText: 2 | O total de instâncias similares da foto.
+              AXStaticText: 4 de set. de 2024 | 4 de set. de 2024
+              AXStaticText: 704 KB | Tamanho total dos itens no grupo
+                AXStaticText: 6 | O total de instâncias similares da foto.
+              AXStaticText: 9 de abr. de 2026 | 9 de abr. de 2026
+              AXStaticText: 600 KB | Tamanho total dos itens no grupo
+                AXStaticText: 2 | O total de instâncias similares da foto.
+              AXStaticText: 4 de set. de 2024 | 4 de set. de 2024
+              AXStaticText: 484 KB | Tamanho total dos itens no grupo
+                AXStaticText: 2 | O total de instâncias similares da foto.
+              AXStaticText: 4 de set. de 2024 | 4 de set. de 2024
+              AXStaticText: 406 KB | Tamanho total dos itens no grupo
+                AXStaticText: 3 | O total de instâncias similares da foto.
+              AXStaticText: 4 de set. de 2024 | 4 de set. de 2024
+              AXStaticText: 404 KB | Tamanho total dos itens no grupo
+                AXStaticText: 3 | O total de instâncias similares da foto.
+              AXStaticText: 4 de set. de 2024 | 4 de set. de 2024
+              AXStaticText: 350 KB | Tamanho total dos itens no grupo
+                AXStaticText: 3 | O total de instâncias similares da foto.
+              AXStaticText: 4 de set. de 2024 | 4 de set. de 2024
+              AXStaticText: 287 KB | Tamanho total dos itens no grupo
+                AXStaticText: 2 | O total de instâncias similares da foto.
+              AXStaticText: 4 de set. de 2024 | 4 de set. de 2024
+              AXStaticText: 285 KB | Tamanho total dos itens no grupo
+                AXStaticText: 2 | O total de instâncias similares da foto.
+              AXStaticText: 4 de set. de 2024 | 4 de set. de 2024
+              AXStaticText: 283 KB | Tamanho total dos itens no grupo
+                AXStaticText: 2 | O total de instâncias similares da foto.
+              AXStaticText: Captura de Tela 2026-03-03 às 21.42.24.jpg | Captura de Tela 2026-03-03 às 21.42.24.jpg
+              AXStaticText: 246 KB | Tamanho total dos itens no grupo
+                AXStaticText: 2 | O total de instâncias similares da foto.
+      AXButton: Nenhum | Selecionar:
+          AXStaticText: Selecionar:
+          AXStaticText: Nenhum
+          AXImage: ir para baixo
+              AXCheckBox [checked=0]: 
+              AXImage: best in group | Uma das melhores para manter
+              AXCheckBox [checked=0]: 
+              AXImage: best in group | Uma das melhores para manter
+              AXCheckBox [checked=0]: 
+              AXCheckBox [checked=0]: 
+              AXCheckBox [checked=0]: 
+              AXCheckBox [checked=0]: 
+        AXStaticText: dracula-pro-buffy.icns
+        AXList: caminho
+          AXStaticText: guigx
+          AXStaticText: Documentos
+          AXStaticText: Dracula PRO
+          AXStaticText: icons
+          AXStaticText: xcode
+          AXStaticText: mac
+        AXStaticText: Modificação:
+        AXStaticText: 04 set. 2024
+        AXStaticText: Criação:
+        AXStaticText: 04 set. 2024
+        AXStaticText: Tamanho:
+        AXStaticText: 1,4 MB
+        AXStaticText: Tipo do arquivo:
+        AXStaticText: ICNS
+        AXStaticText: Captura:
+        AXStaticText: 04 set. 2024
+        AXStaticText: Dimensões:
+        AXStaticText: 1024x1024
+        AXStaticText: Resolução:
+        AXStaticText: 144x144
+        AXStaticText: Espaço de cores:
+        AXStaticText: RGB
+        AXStaticText: Perfil de cores:
+        AXStaticText: sRGB IEC61966-2.1
+    AXButton: Enabled | Voltar
+        AXImage: back button pink
+        AXStaticText: Voltar
+    AXStaticText: Gerenciador de Acúmulos
+      AXTextField: Busque nos itens encontrados
+    AXButton: Tamanho | Ordenar por:
+        AXStaticText: Ordenar por:
+        AXStaticText: Tamanho
+        AXImage: ir para baixo
+    AXStaticText: 0 Item Selecionado
+    AXStaticText: 0 KB
+    AXButton: Disabled | Remover
+        AXStaticText: Remover
+          AXStaticText: Cuidados Inteligentes
+          AXStaticText: Limpeza
+          AXStaticText: Proteção
+          AXStaticText: Desempenho
+          AXStaticText: Aplicativos
+          AXStaticText: Acúmulos
+          AXImage: InfoIndicator
+          AXStaticText: Lupa de Espaço
+          AXStaticText: Limpeza de Nuvem
+          AXStaticText: Ferramentas
+          AXStaticText: Atividades
+    AXButton: este botão também possui uma ação para ampliar ou reduzir a janela
+    ?: Parar

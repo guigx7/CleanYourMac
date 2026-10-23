@@ -1,0 +1,2008 @@
+{
+  "total": 885,
+  "tiles": [
+    {
+      "text": "13 Imagens Similares Novas Encontradas",
+      "detail": "15,9 MB de fotos praticamente idênticas apareceram no Mac nos últimos 30 dias. Dê uma olhada!"
+    },
+    {
+      "text": "45 Arquivos Duplicados Encontrados em Documentos",
+      "detail": "Remova 35,6 MB de cópias desnecessárias para economizar espaço."
+    },
+    {
+      "text": "591 MB de Downloads do Google Chrome Encontrados",
+      "detail": "Revise e remova os downloads desnecessários para recuperar um espaço significativo."
+    }
+  ],
+  "largeOld": [
+    {
+      "name": "Vídeo HG - Volume +.mov",
+      "folder": "guigx/Downloads",
+      "lastOpened": "2026-08-06",
+      "size": 1000000000
+    },
+    {
+      "name": "HG Vídeo Final -.MOV",
+      "folder": "guigx/Downloads",
+      "lastOpened": "2026-08-06",
+      "size": 267000000
+    },
+    {
+      "name": "Cyberduck-9.5.2.45323.zip",
+      "folder": "guigx/Downloads",
+      "lastOpened": "2026-08-06",
+      "size": 179000000
+    },
+    {
+      "name": "Godot_v4.7.2-stable_macos.universal.zip",
+      "folder": "guigx/Downloads",
+      "lastOpened": "2026-10-06",
+      "size": 171000000
+    },
+    {
+      "name": "Livro_GUIA PRATICO CONSULTORIA ONLINE_VERSÃO DIGITAL.pdf",
+      "folder": "guigx/Downloads",
+      "lastOpened": "2026-10-22",
+      "size": 60800000
+    }
+  ],
+  "duplicates": [
+    {
+      "name": "SwiftUICore-3GNUPH84KUW7I.swiftmodule",
+      "size": 13000000,
+      "count": 3
+    },
+    {
+      "name": "logistica.png",
+      "size": 8200000,
+      "count": 3
+    },
+    {
+      "name": "org10xlogo.png",
+      "size": 6100000,
+      "count": 11
+    },
+    {
+      "name": "envazamento.png",
+      "size": 5100000,
+      "count": 2
+    },
+    {
+      "name": "arm64e-apple-macos.swiftinterface-3FHWUD754JMRL",
+      "size": 4600000,
+      "count": 3
+    },
+    {
+      "name": "segmento.png",
+      "size": 4600000,
+      "count": 2
+    },
+    {
+      "name": "responsabilidade.png",
+      "size": 4400000,
+      "count": 2
+    },
+    {
+      "name": "tragetoria.png",
+      "size": 4400000,
+      "count": 2
+    },
+    {
+      "name": "arm64e-apple-macos.swiftinterface-28T5GGX6STDO1",
+      "size": 4300000,
+      "count": 3
+    },
+    {
+      "name": "findmy.icns",
+      "size": 4300000,
+      "count": 2
+    },
+    {
+      "name": "whatsapp-logo.png",
+      "size": 4300000,
+      "count": 6
+    },
+    {
+      "name": "doom.jsdos",
+      "size": 4300000,
+      "count": 2
+    },
+    {
+      "name": "instagram-logo.png",
+      "size": 4200000,
+      "count": 5
+    },
+    {
+      "name": "herobanner.png",
+      "size": 4100000,
+      "count": 2
+    },
+    {
+      "name": "transporte.png",
+      "size": 4000000,
+      "count": 2
+    },
+    {
+      "name": "excelencia.png",
+      "size": 3900000,
+      "count": 2
+    },
+    {
+      "name": "parceria.png",
+      "size": 3900000,
+      "count": 2
+    },
+    {
+      "name": "dcoz-combolivros.png",
+      "size": 3800000,
+      "count": 3
+    },
+    {
+      "name": "operacao.png",
+      "size": 3800000,
+      "count": 2
+    },
+    {
+      "name": "og-image-global.png",
+      "size": 3700000,
+      "count": 3
+    },
+    {
+      "name": "arm64e-apple-macos.swiftinterface-3F88DEQ6SIOJ2",
+      "size": 3600000,
+      "count": 3
+    },
+    {
+      "name": "financeiro10x.png",
+      "size": 3400000,
+      "count": 9
+    },
+    {
+      "name": "arm64e-apple-macos.swiftinterface-3EM75ANM9EYMQ",
+      "size": 3400000,
+      "count": 3
+    },
+    {
+      "name": "arm64e-apple-macos.swiftinterface-3DCP6T5P4NSQL",
+      "size": 3400000,
+      "count": 3
+    },
+    {
+      "name": "arm64e-apple-macos.swiftinterface-370VHHUEZBWKT",
+      "size": 3400000,
+      "count": 3
+    },
+    {
+      "name": "amphetamine.icns",
+      "size": 3300000,
+      "count": 2
+    },
+    {
+      "name": "warpicon.icns",
+      "size": 3300000,
+      "count": 2
+    },
+    {
+      "name": "especializado.png",
+      "size": 3300000,
+      "count": 2
+    },
+    {
+      "name": "wdosbox.wasm",
+      "size": 2900000,
+      "count": 2
+    },
+    {
+      "name": "AppIcon-source.png",
+      "size": 2700000,
+      "count": 2
+    },
+    {
+      "name": "social10x.png",
+      "size": 2700000,
+      "count": 9
+    },
+    {
+      "name": "zed.icns",
+      "size": 2700000,
+      "count": 2
+    },
+    {
+      "name": "arm64e-apple-macos.swiftinterface-27PBSZSXPXMJ2",
+      "size": 2600000,
+      "count": 3
+    },
+    {
+      "name": "affinity3.icns",
+      "size": 2500000,
+      "count": 2
+    },
+    {
+      "name": "faviconsinalizadora.png",
+      "size": 2500000,
+      "count": 2
+    },
+    {
+      "name": "crm10xblue.png",
+      "size": 2400000,
+      "count": 10
+    },
+    {
+      "name": "zed3.icns",
+      "size": 2300000,
+      "count": 2
+    },
+    {
+      "name": "affinity.icns",
+      "size": 2300000,
+      "count": 2
+    },
+    {
+      "name": "members10x.png",
+      "size": 2200000,
+      "count": 10
+    },
+    {
+      "name": "arm64e-apple-macos.swiftinterface-1RVTM3BYP4DXZ",
+      "size": 2200000,
+      "count": 2
+    },
+    {
+      "name": "favicon.png",
+      "size": 2200000,
+      "count": 2
+    },
+    {
+      "name": "FISIOLOGIA (2).png",
+      "size": 2100000,
+      "count": 3
+    },
+    {
+      "name": "cleanmymac.icns",
+      "size": 2000000,
+      "count": 2
+    },
+    {
+      "name": "GreatVibes-Regular.ttf",
+      "size": 1800000,
+      "count": 4
+    },
+    {
+      "name": "logo.png",
+      "size": 1800000,
+      "count": 2
+    },
+    {
+      "name": "gpt.icns",
+      "size": 1700000,
+      "count": 2
+    },
+    {
+      "name": "BIOMECÂNICA (1).png",
+      "size": 1500000,
+      "count": 2
+    },
+    {
+      "name": "logo-gestao.png",
+      "size": 1500000,
+      "count": 4
+    },
+    {
+      "name": "sinalizadoralogo.png",
+      "size": 1400000,
+      "count": 2
+    },
+    {
+      "name": "b9fac961320b5a4b75f5321c6d10b473",
+      "size": 1400000,
+      "count": 4
+    },
+    {
+      "name": "discordsunrise.icns",
+      "size": 1400000,
+      "count": 2
+    },
+    {
+      "name": "tenex10x.png",
+      "size": 1400000,
+      "count": 5
+    },
+    {
+      "name": "MUSCULAÇÃO (1).png",
+      "size": 1400000,
+      "count": 2
+    },
+    {
+      "name": "NUTRIÇÃO (1).png",
+      "size": 1300000,
+      "count": 2
+    },
+    {
+      "name": "arm64e-apple-macos.swiftinterface-18YNGB3E440JG",
+      "size": 1300000,
+      "count": 3
+    },
+    {
+      "name": "SISTEMAS HIPERTROFIA (1).png",
+      "size": 1300000,
+      "count": 2
+    },
+    {
+      "name": "siteicon.png",
+      "size": 1300000,
+      "count": 2
+    },
+    {
+      "name": "fitcore10x.png",
+      "size": 1300000,
+      "count": 5
+    },
+    {
+      "name": "crmlogo.png",
+      "size": 1300000,
+      "count": 3
+    },
+    {
+      "name": "_AvailabilityInternal-6K898VYVVTSPTFNZXTM3PB50U.pcm",
+      "size": 1300000,
+      "count": 3
+    },
+    {
+      "name": "_AvailabilityInternal-16LXENSNKUE2GSTH7DCKKLXYK.pcm",
+      "size": 1300000,
+      "count": 3
+    },
+    {
+      "name": "uazapi-logo.png",
+      "size": 1300000,
+      "count": 6
+    },
+    {
+      "name": "eduzz-logo.png",
+      "size": 1300000,
+      "count": 6
+    },
+    {
+      "name": "arm64e-apple-macos.swiftinterface-1JYD2CCLM24TW",
+      "size": 1300000,
+      "count": 3
+    },
+    {
+      "name": "devfolder.icns",
+      "size": 1200000,
+      "count": 2
+    },
+    {
+      "name": "icon.svg",
+      "size": 1100000,
+      "count": 3
+    },
+    {
+      "name": "vscodesimple 2.icns",
+      "size": 1100000,
+      "count": 3
+    },
+    {
+      "name": "obsidian.icns",
+      "size": 1100000,
+      "count": 2
+    },
+    {
+      "name": "xcodee.icns",
+      "size": 1100000,
+      "count": 2
+    },
+    {
+      "name": "10xreduzida.png",
+      "size": 1000000,
+      "count": 7
+    },
+    {
+      "name": "ts.icns",
+      "size": 1000000,
+      "count": 2
+    },
+    {
+      "name": "dcoz-rev26ingresso.png",
+      "size": 976000,
+      "count": 3
+    },
+    {
+      "name": "sinalizadoralogo2.png",
+      "size": 966000,
+      "count": 2
+    },
+    {
+      "name": "vscodepink.icns",
+      "size": 915000,
+      "count": 2
+    },
+    {
+      "name": "desafiobg.jpg",
+      "size": 890000,
+      "count": 3
+    },
+    {
+      "name": "IOHIDUsageTables.h-1WUG6U8GHLVWV",
+      "size": 890000,
+      "count": 3
+    },
+    {
+      "name": "4249548df728688ef4ccbb199fa77cc0",
+      "size": 879000,
+      "count": 4
+    },
+    {
+      "name": "EditorDeAutomacao.test.tsx",
+      "size": 877000,
+      "count": 4
+    },
+    {
+      "name": "d034025686403f847f01f17c553bc4b5",
+      "size": 876000,
+      "count": 4
+    },
+    {
+      "name": "steam.icns",
+      "size": 872000,
+      "count": 2
+    },
+    {
+      "name": "_AvailabilityInternal-C6SCO69U3CM7A1MIIE9XROGKN.pcm",
+      "size": 867000,
+      "count": 2
+    },
+    {
+      "name": "f8d91b2f81bfe53d84072dba1250ec9e",
+      "size": 865000,
+      "count": 4
+    },
+    {
+      "name": "3c25464e0db0c1159e27b976bccb88d6",
+      "size": 862000,
+      "count": 4
+    },
+    {
+      "name": "arm_neon.h-16Y44C35F9K6X",
+      "size": 844000,
+      "count": 3
+    },
+    {
+      "name": "chatgpt2.icns",
+      "size": 808000,
+      "count": 2
+    },
+    {
+      "name": "Testing-3ACI9UTYAD7Z6.swiftmodule",
+      "size": 794000,
+      "count": 3
+    },
+    {
+      "name": "arm64e-apple-macos.swiftinterface-2M7LBZC5SO4RO",
+      "size": 781000,
+      "count": 3
+    },
+    {
+      "name": "arm64e-apple-macos.swiftinterface-28KSWJHPEBT42",
+      "size": 772000,
+      "count": 3
+    },
+    {
+      "name": "globalworkslogo.png",
+      "size": 750000,
+      "count": 3
+    },
+    {
+      "name": "arm64e-apple-macos.swiftinterface-2ERNL5MCXKW3Z",
+      "size": 706000,
+      "count": 3
+    },
+    {
+      "name": "e587d7c38132397d61c4fea5a617693e",
+      "size": 704000,
+      "count": 2
+    },
+    {
+      "name": "livro-07-posts-virais.png",
+      "size": 697000,
+      "count": 2
+    },
+    {
+      "name": "gemini.icns",
+      "size": 679000,
+      "count": 2
+    },
+    {
+      "name": "b43241b4026c93e1dcea1e71e83fd2fc",
+      "size": 668000,
+      "count": 3
+    },
+    {
+      "name": "57ee8e765d4abc6671d9a564c50c6bd8",
+      "size": 666000,
+      "count": 3
+    },
+    {
+      "name": "og-global-v2.png",
+      "size": 659000,
+      "count": 2
+    },
+    {
+      "name": "CIFilterBuiltins.h-32R4VU9FF93KG",
+      "size": 638000,
+      "count": 3
+    },
+    {
+      "name": "MacErrors.h-2XMDYVLCLQTEW",
+      "size": 628000,
+      "count": 3
+    },
+    {
+      "name": "gestao10xlogox.png",
+      "size": 614000,
+      "count": 2
+    },
+    {
+      "name": "SwiftShims-4AQE1RZD0SZP88C4XLX40CPPQ.pcm",
+      "size": 530000,
+      "count": 3
+    },
+    {
+      "name": "SwiftShims-2RD7126T3S88TZOUF4PDIF152.pcm",
+      "size": 530000,
+      "count": 3
+    },
+    {
+      "name": "arm64e-apple-macos.swiftinterface-2LEDIS6ADIC7A",
+      "size": 521000,
+      "count": 3
+    },
+    {
+      "name": "hero-combo-6-livros.png",
+      "size": 513000,
+      "count": 2
+    },
+    {
+      "name": "livro-04-vendas-online.png",
+      "size": 504000,
+      "count": 2
+    },
+    {
+      "name": "IOUSBLib.h-2IQBH4EWBLUT0",
+      "size": 472000,
+      "count": 3
+    },
+    {
+      "name": "PainelEdicaoNo.tsx",
+      "size": 471000,
+      "count": 3
+    },
+    {
+      "name": "cssmtype.h-P99HR65TP2QM",
+      "size": 463000,
+      "count": 3
+    },
+    {
+      "name": "arm64e-apple-macos.swiftinterface-1K9F4HHZ1G99A",
+      "size": 455000,
+      "count": 3
+    },
+    {
+      "name": "1773952496762.png",
+      "size": 439000,
+      "count": 4
+    },
+    {
+      "name": "arm64e-apple-macos.swiftinterface-241DYFM0F9XH7",
+      "size": 433000,
+      "count": 3
+    },
+    {
+      "name": "dc7fb7a7ec07c2b7e808dbe1a9886d23",
+      "size": 433000,
+      "count": 2
+    },
+    {
+      "name": "00951c120a7b7b80b2a2915ce2728407",
+      "size": 432000,
+      "count": 2
+    },
+    {
+      "name": "arm64e-apple-macos.swiftinterface-2716KADVDKN0I",
+      "size": 422000,
+      "count": 3
+    },
+    {
+      "name": "arm64e-apple-macos.swiftinterface-R0KJCBPKWRUK",
+      "size": 419000,
+      "count": 3
+    },
+    {
+      "name": "LiveGlucoseStoreTests.swift-SZMWOEX7W5C7",
+      "size": 407000,
+      "count": 2
+    },
+    {
+      "name": "livro-02-agenda-cheia-ano-inteiro.png",
+      "size": 407000,
+      "count": 2
+    },
+    {
+      "name": "spotify-white.icns",
+      "size": 393000,
+      "count": 2
+    },
+    {
+      "name": "discordpink.icns",
+      "size": 389000,
+      "count": 2
+    },
+    {
+      "name": "1768487203679.png",
+      "size": 376000,
+      "count": 2
+    },
+    {
+      "name": "arm64e-apple-macos.swiftinterface-12G6EF1H9PQIF",
+      "size": 376000,
+      "count": 3
+    },
+    {
+      "name": "livro-05-instagram-lucrativo.png",
+      "size": 371000,
+      "count": 2
+    },
+    {
+      "name": "glext.h-2Z9W8HC6G9RTU",
+      "size": 371000,
+      "count": 3
+    },
+    {
+      "name": "Gestalt.h-NQVDGMX192Q3",
+      "size": 364000,
+      "count": 3
+    },
+    {
+      "name": "LiveGlucoseStoreTests.swift-35PCXCNNY1STS",
+      "size": 361000,
+      "count": 2
+    },
+    {
+      "name": "SwiftShims-8P7TIKVTLNJQNI07V5IP6AQ6S.pcm",
+      "size": 353000,
+      "count": 2
+    },
+    {
+      "name": "Arquivos de Cache do Usuário.txt",
+      "size": 337000,
+      "count": 3
+    },
+    {
+      "name": "arm64e-apple-macos.swiftinterface-3V2X65VHK7Z6M",
+      "size": 327000,
+      "count": 3
+    },
+    {
+      "name": "LiveGlucoseStore.swift-72ZF4EVJF93K",
+      "size": 326000,
+      "count": 2
+    },
+    {
+      "name": "HistoricalBackfillServiceTests.swift-9C3PXCI8LWNN",
+      "size": 325000,
+      "count": 3
+    },
+    {
+      "name": "arm64e-apple-macos.swiftinterface-1B7N1KP4ZC0U",
+      "size": 324000,
+      "count": 3
+    },
+    {
+      "name": "livro-03-consultoria-online-mina-de-ouro.png",
+      "size": 321000,
+      "count": 2
+    },
+    {
+      "name": "CarbonEvents.h-1L0VID632MB7L",
+      "size": 321000,
+      "count": 3
+    },
+    {
+      "name": "LiveGlucoseStore.swift-15CKHCBBO6Y4I",
+      "size": 320000,
+      "count": 2
+    },
+    {
+      "name": "Arquivos de Cache do Usuário.txt",
+      "size": 317000,
+      "count": 3
+    },
+    {
+      "name": "gl3.h-2UNSPQB1OG1US",
+      "size": 316000,
+      "count": 3
+    },
+    {
+      "name": "LiveGlucoseStore.swift-24DILGRRVKRN8",
+      "size": 314000,
+      "count": 2
+    },
+    {
+      "name": "gl.h-3UN5HVYR93VLG",
+      "size": 310000,
+      "count": 3
+    },
+    {
+      "name": "spotify.icns",
+      "size": 305000,
+      "count": 2
+    },
+    {
+      "name": "livro-06-scripts-vendas.png",
+      "size": 297000,
+      "count": 2
+    },
+    {
+      "name": "globalworkswin.png",
+      "size": 285000,
+      "count": 2
+    },
+    {
+      "name": "HistoryView.swift-3NKFMKXM7GA1L",
+      "size": 283000,
+      "count": 2
+    },
+    {
+      "name": "consultoria-online-boas-vindas-poster.png",
+      "size": 281000,
+      "count": 2
+    },
+    {
+      "name": "1768487219762.png",
+      "size": 276000,
+      "count": 2
+    },
+    {
+      "name": "TodayView.swift-O2FY50USRA36",
+      "size": 251000,
+      "count": 2
+    },
+    {
+      "name": "HistoryView.swift-1FZWR7EFML7DT",
+      "size": 236000,
+      "count": 2
+    },
+    {
+      "name": "wlibzip.wasm",
+      "size": 225000,
+      "count": 2
+    },
+    {
+      "name": "webrtcnet.wasm",
+      "size": 221000,
+      "count": 2
+    },
+    {
+      "name": "AlertEngineTests.swift-KEXSTMEOMPZW",
+      "size": 217000,
+      "count": 2
+    },
+    {
+      "name": "TodayView.swift-1I33NKV95FYVF",
+      "size": 205000,
+      "count": 2
+    }
+  ],
+  "similar": [
+    {
+      "date": "2024-09-04",
+      "size": 8200000,
+      "count": 6
+    },
+    {
+      "date": "2024-09-04",
+      "size": 7500000,
+      "count": 4
+    },
+    {
+      "date": "2024-09-04",
+      "size": 7400000,
+      "count": 12
+    },
+    {
+      "date": "2026-10-22",
+      "size": 6000000,
+      "count": 3
+    },
+    {
+      "date": "2024-09-04",
+      "size": 5800000,
+      "count": 12
+    },
+    {
+      "date": "2024-09-04",
+      "size": 4600000,
+      "count": 2
+    },
+    {
+      "date": "2024-09-04",
+      "size": 4600000,
+      "count": 2
+    },
+    {
+      "date": "2024-09-04",
+      "size": 4600000,
+      "count": 2
+    },
+    {
+      "date": "2024-09-04",
+      "size": 4600000,
+      "count": 2
+    },
+    {
+      "date": "2024-09-04",
+      "size": 4400000,
+      "count": 12
+    },
+    {
+      "date": "2026-08-24",
+      "size": 4300000,
+      "count": 4
+    },
+    {
+      "date": "2024-09-04",
+      "size": 4200000,
+      "count": 6
+    },
+    {
+      "date": "2024-09-04",
+      "size": 4100000,
+      "count": 12
+    },
+    {
+      "date": "2024-09-04",
+      "size": 4100000,
+      "count": 12
+    },
+    {
+      "date": "2024-09-04",
+      "size": 4100000,
+      "count": 10
+    },
+    {
+      "date": "2024-09-04",
+      "size": 4100000,
+      "count": 3
+    },
+    {
+      "date": null,
+      "size": 3900000,
+      "count": 4
+    },
+    {
+      "date": "2024-09-04",
+      "size": 3200000,
+      "count": 12
+    },
+    {
+      "date": "2024-09-04",
+      "size": 3100000,
+      "count": 9
+    },
+    {
+      "date": null,
+      "size": 3100000,
+      "count": 2
+    },
+    {
+      "date": "2026-08-21",
+      "size": 2900000,
+      "count": 3
+    },
+    {
+      "date": "2024-09-04",
+      "size": 2900000,
+      "count": 6
+    },
+    {
+      "date": "2024-09-04",
+      "size": 2900000,
+      "count": 2
+    },
+    {
+      "date": "2024-09-04",
+      "size": 2900000,
+      "count": 2
+    },
+    {
+      "date": "2024-09-04",
+      "size": 2800000,
+      "count": 2
+    },
+    {
+      "date": "2024-09-04",
+      "size": 2800000,
+      "count": 2
+    },
+    {
+      "date": "2024-09-04",
+      "size": 2800000,
+      "count": 6
+    },
+    {
+      "date": "2024-09-04",
+      "size": 2700000,
+      "count": 6
+    },
+    {
+      "date": "2026-09-15",
+      "size": 2500000,
+      "count": 2
+    },
+    {
+      "date": "2026-10-22",
+      "size": 2500000,
+      "count": 2
+    },
+    {
+      "date": "2026-09-26",
+      "size": 2300000,
+      "count": 2
+    },
+    {
+      "date": "2024-09-04",
+      "size": 2200000,
+      "count": 6
+    },
+    {
+      "date": "2026-08-21",
+      "size": 2100000,
+      "count": 2
+    },
+    {
+      "date": "2026-08-27",
+      "size": 1900000,
+      "count": 2
+    },
+    {
+      "date": "2026-02-11",
+      "size": 1800000,
+      "count": 2
+    },
+    {
+      "date": "2026-09-21",
+      "size": 1700000,
+      "count": 2
+    },
+    {
+      "date": "2024-09-04",
+      "size": 1700000,
+      "count": 6
+    },
+    {
+      "date": "2024-09-04",
+      "size": 1600000,
+      "count": 6
+    },
+    {
+      "date": "2024-09-04",
+      "size": 1500000,
+      "count": 2
+    },
+    {
+      "date": "2024-09-04",
+      "size": 1500000,
+      "count": 2
+    },
+    {
+      "date": "2024-09-04",
+      "size": 1500000,
+      "count": 2
+    },
+    {
+      "date": "2024-09-04",
+      "size": 1400000,
+      "count": 2
+    },
+    {
+      "date": "2024-09-04",
+      "size": 1400000,
+      "count": 2
+    },
+    {
+      "date": null,
+      "size": 1300000,
+      "count": 2
+    },
+    {
+      "date": "2024-09-04",
+      "size": 1300000,
+      "count": 6
+    },
+    {
+      "date": "2024-09-04",
+      "size": 1200000,
+      "count": 2
+    },
+    {
+      "date": "2024-09-04",
+      "size": 1200000,
+      "count": 2
+    },
+    {
+      "date": "2024-09-04",
+      "size": 1200000,
+      "count": 2
+    },
+    {
+      "date": "2024-09-04",
+      "size": 1200000,
+      "count": 2
+    },
+    {
+      "date": "2024-09-04",
+      "size": 1200000,
+      "count": 2
+    },
+    {
+      "date": "2026-08-10",
+      "size": 1100000,
+      "count": 2
+    },
+    {
+      "date": "2024-09-04",
+      "size": 1000000,
+      "count": 2
+    },
+    {
+      "date": "2024-09-04",
+      "size": 965000,
+      "count": 6
+    },
+    {
+      "date": "2024-09-04",
+      "size": 957000,
+      "count": 5
+    },
+    {
+      "date": "2024-09-04",
+      "size": 804000,
+      "count": 2
+    },
+    {
+      "date": "2024-09-04",
+      "size": 704000,
+      "count": 6
+    },
+    {
+      "date": "2026-04-09",
+      "size": 600000,
+      "count": 2
+    },
+    {
+      "date": "2024-09-04",
+      "size": 484000,
+      "count": 2
+    },
+    {
+      "date": "2024-09-04",
+      "size": 406000,
+      "count": 3
+    },
+    {
+      "date": "2024-09-04",
+      "size": 404000,
+      "count": 3
+    },
+    {
+      "date": "2024-09-04",
+      "size": 350000,
+      "count": 3
+    },
+    {
+      "date": "2024-09-04",
+      "size": 287000,
+      "count": 2
+    },
+    {
+      "date": "2024-09-04",
+      "size": 285000,
+      "count": 2
+    },
+    {
+      "date": "2024-09-04",
+      "size": 283000,
+      "count": 2
+    },
+    {
+      "date": null,
+      "size": 246000,
+      "count": 2
+    }
+  ],
+  "downloads": {
+    "groups": {
+      "Google Chrome": 591000000,
+      "Slack": 0,
+      "Safari": 0
+    },
+    "files": [
+      {
+        "name": "Godot_v4.7.2-stable_macos.universal.zip",
+        "size": 185000000
+      },
+      {
+        "name": "mj.mp4",
+        "size": 42900000
+      },
+      {
+        "name": "logioptionsplus_installer.zip",
+        "size": 20300000
+      },
+      {
+        "name": "BlissEveningiMac6K+Display.png",
+        "size": 17200000
+      },
+      {
+        "name": "Cópia de IMG_7575.JPG",
+        "size": 15900000
+      },
+      {
+        "name": "Cópia de IMG_7577.JPG",
+        "size": 14800000
+      },
+      {
+        "name": "Cópia de IMG_7710 (1).JPG",
+        "size": 14800000
+      },
+      {
+        "name": "Cópia de IMG_7576.JPG",
+        "size": 14400000
+      },
+      {
+        "name": "Cópia de IMG_7574.JPG",
+        "size": 14400000
+      },
+      {
+        "name": "Cópia de IMG_7709.JPG",
+        "size": 14300000
+      },
+      {
+        "name": "Cópia de IMG_8856.JPG",
+        "size": 13600000
+      },
+      {
+        "name": "Cópia de IMG_8857.JPG",
+        "size": 13500000
+      },
+      {
+        "name": "Cópia de IMG_7705.JPG",
+        "size": 12700000
+      },
+      {
+        "name": "Hard_drive_disk_rotating_20261020185726.gif",
+        "size": 9500000
+      },
+      {
+        "name": "image.png",
+        "size": 7400000
+      },
+      {
+        "name": "forno.pdf",
+        "size": 4200000
+      },
+      {
+        "name": "Edição de Vídeos Virais.png",
+        "size": 3000000
+      },
+      {
+        "name": "ulpcapa.png",
+        "size": 2800000
+      },
+      {
+        "name": "Folder_-_Code__Terminal__WVVRY5OINy_icns-6732f687dc.icns",
+        "size": 2800000
+      },
+      {
+        "name": "10 Técnicas para Cobrar Mais Caro.png",
+        "size": 2800000
+      },
+      {
+        "name": "3EB019B9C53E3295FD3EE6-relatorio_contato.xlsx",
+        "size": 2700000
+      },
+      {
+        "name": "e60dc480-5298-4b7e-9b6b-512424f42338.png",
+        "size": 2500000
+      },
+      {
+        "name": "Comprovante pix Global 1.pdf",
+        "size": 2500000
+      },
+      {
+        "name": "openapi.json",
+        "size": 2500000
+      },
+      {
+        "name": "posibp2729.png",
+        "size": 2400000
+      },
+      {
+        "name": "Pré Uploader_ Interface Holográfica Azul.png",
+        "size": 2400000
+      },
+      {
+        "name": "18ab9d9c-b542-4b4b-81b1-eac1e1e29e8b.png",
+        "size": 2400000
+      },
+      {
+        "name": "Treinamento Físico em Neon Futurista.png",
+        "size": 2300000
+      },
+      {
+        "name": "nutricao43.png",
+        "size": 2300000
+      },
+      {
+        "name": "metodos43.png",
+        "size": 2300000
+      },
+      {
+        "name": "ChatGPT Image 23 de ago. de 2026, 22_21_19.png",
+        "size": 2300000
+      },
+      {
+        "name": "biomecanica43.png",
+        "size": 2200000
+      },
+      {
+        "name": "viivrais.png",
+        "size": 2200000
+      },
+      {
+        "name": "6d87f71e-d59b-4438-b8c4-df816a2946d0.png",
+        "size": 2200000
+      },
+      {
+        "name": "fisiologia43.png",
+        "size": 2200000
+      },
+      {
+        "name": "musculacao 43.png",
+        "size": 2200000
+      },
+      {
+        "name": "findmy.icns",
+        "size": 2200000
+      },
+      {
+        "name": "posibp2.png",
+        "size": 2100000
+      },
+      {
+        "name": "Instagram__Liguid_Glass__yryloHJCrd_icns-92d0868d97.icns",
+        "size": 2100000
+      },
+      {
+        "name": "ig.zip",
+        "size": 2100000
+      },
+      {
+        "name": "mex_novo.png",
+        "size": 2000000
+      },
+      {
+        "name": "revsexta.png",
+        "size": 2000000
+      },
+      {
+        "name": "Banner futurista Mentoria Uploader Pro.png",
+        "size": 2000000
+      },
+      {
+        "name": "posibp.png",
+        "size": 2000000
+      },
+      {
+        "name": "Revolution 2026_ Sábado no Palco.png",
+        "size": 2000000
+      },
+      {
+        "name": "Revolution 2026_ Domingo de Transformação.png",
+        "size": 1900000
+      },
+      {
+        "name": "posglobal.png",
+        "size": 1900000
+      },
+      {
+        "name": "amphetamine.icns",
+        "size": 1700000
+      },
+      {
+        "name": "asciidragon2.png",
+        "size": 1600000
+      },
+      {
+        "name": "ChatGPT Image 13 de set. de 2026, 05_55_07.png",
+        "size": 1600000
+      },
+      {
+        "name": "ChatGPT Image 13 de set. de 2026, 06_15_05.png",
+        "size": 1600000
+      },
+      {
+        "name": "555ca9d4-de5d-4579-92be-457de00e3298.png",
+        "size": 1600000
+      },
+      {
+        "name": "ChatGPT Image 13 de set. de 2026, 05_53_59.png",
+        "size": 1600000
+      },
+      {
+        "name": "ChatGPT Image 12 de ago. de 2026, 20_15_25.png",
+        "size": 1600000
+      },
+      {
+        "name": "Atualizacoes GW Marketing.zip",
+        "size": 1500000
+      },
+      {
+        "name": "macicnslogo.png",
+        "size": 1500000
+      },
+      {
+        "name": "ChatGPT Image 12 de ago. de 2026, 19_59_18.png",
+        "size": 1500000
+      },
+      {
+        "name": "cleanyourmacicon.png",
+        "size": 1500000
+      },
+      {
+        "name": "patock.png",
+        "size": 1400000
+      },
+      {
+        "name": "ChatGPT Image 12 de ago. de 2026, 19_57_31.png",
+        "size": 1400000
+      },
+      {
+        "name": "ChatGPT Image 13 de set. de 2026, 05_52_18.png",
+        "size": 1400000
+      },
+      {
+        "name": "patititio.png",
+        "size": 1400000
+      },
+      {
+        "name": "paspdaps.png",
+        "size": 1400000
+      },
+      {
+        "name": "cymlogo2.png",
+        "size": 1400000
+      },
+      {
+        "name": "ChatGPT Image 13 de set. de 2026, 05_54_17.png",
+        "size": 1400000
+      },
+      {
+        "name": "ChatGPT Image 13 de set. de 2026, 05_54_10.png",
+        "size": 1300000
+      },
+      {
+        "name": "8dbbd900-a4c5-41e6-a3f6-093376af8cdc.png",
+        "size": 1300000
+      },
+      {
+        "name": "dlpasdfoiasn.png",
+        "size": 1300000
+      },
+      {
+        "name": "asciidragon.png",
+        "size": 1300000
+      },
+      {
+        "name": "fosijndfs.png",
+        "size": 1300000
+      },
+      {
+        "name": "pato grafico.png",
+        "size": 1300000
+      },
+      {
+        "name": "ChatGPT Image 13 de set. de 2026, 06_14_40.png",
+        "size": 1300000
+      },
+      {
+        "name": "ChatGPT Image 13 de set. de 2026, 05_52_05.png",
+        "size": 1200000
+      },
+      {
+        "name": "ChatGPT Image 13 de set. de 2026, 06_39_56.png",
+        "size": 1200000
+      },
+      {
+        "name": "faviconsinalizadora.png",
+        "size": 1200000
+      },
+      {
+        "name": "patomedico.png",
+        "size": 1200000
+      },
+      {
+        "name": "pato pijama.png",
+        "size": 1200000
+      },
+      {
+        "name": "ChatGPT Image 12 de ago. de 2026, 19_52_36.png",
+        "size": 1200000
+      },
+      {
+        "name": "patoiconeee.png",
+        "size": 1200000
+      },
+      {
+        "name": "ChatGPT Image 27 de ago. de 2026, 00_37_41.png",
+        "size": 1100000
+      },
+      {
+        "name": "ChatGPT Image 12 de ago. de 2026, 03_01_56.png",
+        "size": 1100000
+      },
+      {
+        "name": "affinity.icns",
+        "size": 1100000
+      },
+      {
+        "name": "pato calendario remedio.png",
+        "size": 1100000
+      },
+      {
+        "name": "ChatGPT Image 23 de ago. de 2026, 21_49_00.png",
+        "size": 1100000
+      },
+      {
+        "name": "ChatGPT Image 13 de set. de 2026, 05_36_06.png",
+        "size": 1100000
+      },
+      {
+        "name": "ChatGPT Image 12 de ago. de 2026, 19_52_31.png",
+        "size": 1100000
+      },
+      {
+        "name": "gw001.png",
+        "size": 1100000
+      },
+      {
+        "name": "ChatGPT Image 12 de ago. de 2026, 03_01_50.png",
+        "size": 1100000
+      },
+      {
+        "name": "fejwifvhnwei.png",
+        "size": 1100000
+      },
+      {
+        "name": "ChatGPT Image 12 de ago. de 2026, 19_52_25.png",
+        "size": 1100000
+      },
+      {
+        "name": "pato chave.png",
+        "size": 1100000
+      },
+      {
+        "name": "ChatGPT Image 14 de ago. de 2026, 11_26_17.png",
+        "size": 1100000
+      },
+      {
+        "name": "pandavideo.png",
+        "size": 1000000
+      },
+      {
+        "name": "cleanmymac.icns",
+        "size": 1000000
+      },
+      {
+        "name": "sgtkigi.png",
+        "size": 991000
+      },
+      {
+        "name": "loom.png",
+        "size": 983000
+      },
+      {
+        "name": "greenn.png",
+        "size": 983000
+      },
+      {
+        "name": "guru.png",
+        "size": 979000
+      },
+      {
+        "name": "ChatGPT Image 21 de ago. de 2026, 19_27_55.png",
+        "size": 979000
+      },
+      {
+        "name": "ChatGPT Image 13 de set. de 2026, 05_36_16.png",
+        "size": 971000
+      },
+      {
+        "name": "patocalendario.png",
+        "size": 967000
+      },
+      {
+        "name": "pato nerd.png",
+        "size": 950000
+      },
+      {
+        "name": "ChatGPT Image 13 de set. de 2026, 05_35_57.png",
+        "size": 942000
+      },
+      {
+        "name": "Warp_ntHfTPnLpx_icns-6ef368707c.icns",
+        "size": 938000
+      },
+      {
+        "name": "hotmart.png",
+        "size": 930000
+      },
+      {
+        "name": "warp.png",
+        "size": 926000
+      },
+      {
+        "name": "vimeo.png",
+        "size": 918000
+      },
+      {
+        "name": "youtube.png",
+        "size": 889000
+      },
+      {
+        "name": "eduzz.png",
+        "size": 885000
+      },
+      {
+        "name": "sm10x.png",
+        "size": 872000
+      },
+      {
+        "name": "gestao10zx.png",
+        "size": 864000
+      },
+      {
+        "name": "gpt.icns",
+        "size": 848000
+      },
+      {
+        "name": "zed2.png",
+        "size": 831000
+      },
+      {
+        "name": "ChatGPT Image 31 de ago. de 2026, 20_56_10.png",
+        "size": 827000
+      },
+      {
+        "name": "crm10x.png",
+        "size": 819000
+      },
+      {
+        "name": "ChatGPT Image 31 de ago. de 2026, 20_59_55.png",
+        "size": 811000
+      },
+      {
+        "name": "pato bolsa.png",
+        "size": 799000
+      },
+      {
+        "name": "ChatGPT Image 31 de ago. de 2026, 20_57_57.png",
+        "size": 799000
+      },
+      {
+        "name": "Hidden-Bar-v1.11.1-macos.zip",
+        "size": 782000
+      },
+      {
+        "name": "posicionamento para reconheccido nas RS.png",
+        "size": 745000
+      },
+      {
+        "name": "16.png",
+        "size": 737000
+      },
+      {
+        "name": "ChatGPT Image 27 de ago. de 2026, 00_42_27.png",
+        "size": 725000
+      },
+      {
+        "name": "ChatGPT Image 27 de ago. de 2026, 01_56_25.png",
+        "size": 717000
+      },
+      {
+        "name": "ChatGPT Image 27 de ago. de 2026, 00_45_33.png",
+        "size": 700000
+      },
+      {
+        "name": "discordsunrise.icns",
+        "size": 692000
+      },
+      {
+        "name": "patotimido.png",
+        "size": 668000
+      },
+      {
+        "name": "match result.json",
+        "size": 610000
+      },
+      {
+        "name": "dia2.csv",
+        "size": 598000
+      },
+      {
+        "name": "devfolder.icns",
+        "size": 598000
+      },
+      {
+        "name": "dia1.csv",
+        "size": 594000
+      },
+      {
+        "name": "Documento Astra.pdf",
+        "size": 569000
+      },
+      {
+        "name": "crmorg10x.png",
+        "size": 569000
+      },
+      {
+        "name": "obsidian.icns",
+        "size": 557000
+      },
+      {
+        "name": "ChatGPT Image 10 de ago. de 2026, 13_19_07.png",
+        "size": 557000
+      },
+      {
+        "name": "xcodee.icns",
+        "size": 532000
+      },
+      {
+        "name": "Teampeak__Redesign__qWR6DvsAoV_icns-c38fdac78a.icns",
+        "size": 520000
+      },
+      {
+        "name": "proton-recovery-phrase(globaltechdevs).pdf",
+        "size": 487000
+      },
+      {
+        "name": "10 tecnicas para cobrar mais caro.png",
+        "size": 471000
+      },
+      {
+        "name": "vscodepink.icns",
+        "size": 459000
+      },
+      {
+        "name": "steam.icns",
+        "size": 438000
+      },
+      {
+        "name": "smartplayer.png",
+        "size": 438000
+      },
+      {
+        "name": "ChatGPT Image 4 de set. de 2026, 13_18_57.png",
+        "size": 434000
+      },
+      {
+        "name": "1779305723717.png",
+        "size": 434000
+      },
+      {
+        "name": "Imagem do ChatGPT 25 de set. de 2026, 12_40_42.png",
+        "size": 410000
+      },
+      {
+        "name": "chatgpt2.icns",
+        "size": 406000
+      },
+      {
+        "name": "ChatGPT Image 18 de ago. de 2026, 14_59_04.png",
+        "size": 406000
+      },
+      {
+        "name": "vscodesimple.icns",
+        "size": 356000
+      },
+      {
+        "name": "gemini.icns",
+        "size": 340000
+      },
+      {
+        "name": "Novo Board GW.html",
+        "size": 221000
+      },
+      {
+        "name": "uazapi-logo.png",
+        "size": 217000
+      },
+      {
+        "name": "GlobalWORKS.html",
+        "size": 213000
+      },
+      {
+        "name": "GlobalWORKS (2).html",
+        "size": 213000
+      },
+      {
+        "name": "GlobalWORKS (1).html",
+        "size": 213000
+      },
+      {
+        "name": "discordpink.icns",
+        "size": 197000
+      },
+      {
+        "name": "dgrm_logo.png",
+        "size": 188000
+      },
+      {
+        "name": "Affinity_8TirWESN4a_icns-49211b6473.icns",
+        "size": 180000
+      },
+      {
+        "name": "Zed_c6L4BDC72x_icns-f923282015.icns",
+        "size": 172000
+      },
+      {
+        "name": "globalworks_web-log-export-2026-08-17T18-27-15.json",
+        "size": 135000
+      },
+      {
+        "name": "13.png",
+        "size": 131000
+      },
+      {
+        "name": "2.png",
+        "size": 127000
+      },
+      {
+        "name": "15.png",
+        "size": 127000
+      },
+      {
+        "name": "14.png",
+        "size": 127000
+      },
+      {
+        "name": "10.png",
+        "size": 127000
+      },
+      {
+        "name": "calculadora-organizacao10x.html",
+        "size": 123000
+      },
+      {
+        "name": "4.png",
+        "size": 123000
+      },
+      {
+        "name": "1.png",
+        "size": 123000
+      },
+      {
+        "name": "8.png",
+        "size": 119000
+      },
+      {
+        "name": "5.png",
+        "size": 119000
+      },
+      {
+        "name": "12.png",
+        "size": 119000
+      },
+      {
+        "name": "9.png",
+        "size": 115000
+      },
+      {
+        "name": "7.png",
+        "size": 115000
+      },
+      {
+        "name": "3.png",
+        "size": 111000
+      },
+      {
+        "name": "11.png",
+        "size": 106000
+      },
+      {
+        "name": "BeatrizOliveira.pdf",
+        "size": 86000
+      },
+      {
+        "name": "CRLV - Palio - 2026.pdf",
+        "size": 81900
+      },
+      {
+        "name": "CRLV - Palio - 2026 (1).pdf",
+        "size": 81900
+      },
+      {
+        "name": "supabase-sgt-restore-forms-21-09.zip",
+        "size": 77800
+      },
+      {
+        "name": "index.html",
+        "size": 77800
+      },
+      {
+        "name": "Untitled mind map.png",
+        "size": 73700
+      },
+      {
+        "name": "NFSe_18539157_8.pdf",
+        "size": 65500
+      },
+      {
+        "name": "nfe_set.pdf",
+        "size": 65500
+      },
+      {
+        "name": "nfe_globaltech_julho.pdf",
+        "size": 65500
+      },
+      {
+        "name": "implement-skills.zip",
+        "size": 65500
+      },
+      {
+        "name": "globalworks_api-log-export-2026-08-17T18-27-08.json",
+        "size": 65500
+      },
+      {
+        "name": "Untitled mind map (1).png",
+        "size": 61400
+      },
+      {
+        "name": "der_fam.pdf",
+        "size": 57300
+      },
+      {
+        "name": "Invoice-KHTMEW0W-0013.pdf",
+        "size": 49200
+      },
+      {
+        "name": "Untitled mind map (2).png",
+        "size": 45100
+      },
+      {
+        "name": "GlobalWorks — Master Prompt para Claude Code.md",
+        "size": 45100
+      },
+      {
+        "name": "claude-code-whimsical-mindmap-clone.md",
+        "size": 45100
+      },
+      {
+        "name": "plano-mvp-lol-builds-claude-code.md",
+        "size": 41000
+      },
+      {
+        "name": "acessos-2026-08-26.csv",
+        "size": 36900
+      },
+      {
+        "name": "ETIQUETAS MODELO.docx",
+        "size": 32800
+      },
+      {
+        "name": "rev26-ingressos-a-indicar-2026-08-11.csv",
+        "size": 28700
+      },
+      {
+        "name": "os8_digital_v1_1.wsz",
+        "size": 28700
+      },
+      {
+        "name": "koda.md",
+        "size": 28700
+      },
+      {
+        "name": "GUIA-VIDEOTECA-STANDALONE (1).md",
+        "size": 28700
+      },
+      {
+        "name": "Estrutura e modelagem de dados - Aula 1.dgrm.json",
+        "size": 20500
+      },
+      {
+        "name": "wpp1.png",
+        "size": 16400
+      },
+      {
+        "name": "prompt-redesign-hub-organizacao10x.md",
+        "size": 16400
+      },
+      {
+        "name": "handoff-qa-mcp-crm10x_2.md",
+        "size": 16400
+      },
+      {
+        "name": "global-drive-log-export-2026-09-10T20-55-59.csv",
+        "size": 16400
+      },
+      {
+        "name": "prompt-migracao-nextjs-tailwind.md",
+        "size": 12300
+      },
+      {
+        "name": "images.jpeg",
+        "size": 12300
+      },
+      {
+        "name": "handoff-qa-mcp-crm10x.md",
+        "size": 12300
+      },
+      {
+        "name": "defaultuser.jpeg",
+        "size": 12300
+      },
+      {
+        "name": "CHANGELOG-2026-09-03.md",
+        "size": 12300
+      },
+      {
+        "name": "webhook-teste-hotmart.json",
+        "size": 8200
+      },
+      {
+        "name": "revolution-resposta-gap-ingressos-app-2026-08-20.md",
+        "size": 8200
+      },
+      {
+        "name": "json-erro-guru.json",
+        "size": 8200
+      },
+      {
+        "name": "HANDOFF-pasta-mover-raiz.md",
+        "size": 8200
+      },
+      {
+        "name": "HANDOFF-disparos-presos.md",
+        "size": 8200
+      },
+      {
+        "name": "20260913100000_wacrm_dashboard_metricas_funil.sql",
+        "size": 8200
+      },
+      {
+        "name": "20260913090000_wacrm_inbox_filtro_atendente.sql",
+        "size": 8200
+      },
+      {
+        "name": "transcrever_linux.py",
+        "size": 4100
+      },
+      {
+        "name": "hub.organizacao10x.com.br-1790623583183.log",
+        "size": 4100
+      },
+      {
+        "name": "env cbem",
+        "size": 4100
+      },
+      {
+        "name": "Apresentacao_Trabalho_BD.pdf",
+        "size": 4100
+      },
+      {
+        "name": "4516869_1514209_digbystuff_128x128-minecraft-pig.b9f35e2bca978bdd0be87415b9fde10a.webp",
+        "size": 4100
+      }
+    ]
+  }
+}
