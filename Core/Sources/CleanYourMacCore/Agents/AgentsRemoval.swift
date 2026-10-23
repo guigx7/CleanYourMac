@@ -6,8 +6,8 @@ import Foundation
 /// - o caminho fica dentro da worktree (`root`) e termina num nome de `AgentsCatalog.rebuildable`; em worktree órfã, só
 ///   `node_modules` → senão `kept: protected`;
 /// - cada parte do nome aparece com a grafia exata na listagem da pasta-mãe, a pasta é diretório de verdade (não link) e
-///   não há link no caminho até ela; a data da pasta é a da análise; a atividade da worktree não ficou mais nova que a da
-///   análise (o agente voltou a mexer); o produtor da pasta continua lá (`RebuildableFinder.hasProducer`); com git e worktree ligada, nada rastreado dentro e a pasta de build ainda
+///   não há link no caminho até ela; a data da pasta é a da análise; a atividade da worktree (`RebuildableFinder.activity`,
+///   a mesma medida da análise) não ficou mais nova que a da análise e não há sessão viva do agente nela; o produtor da pasta continua lá (`RebuildableFinder.hasProducer`); com git e worktree ligada, nada rastreado dentro e a pasta de build ainda
 ///   ignorada → senão `item changed`.
 ///
 /// Sessão (uma unidade: todas as urls são revalidadas antes de mover qualquer uma; se uma falha, nenhuma vai):
@@ -40,9 +40,12 @@ public struct AgentsRemover: Sendable {
     public func remove(_ targets: [AgentsTarget]) async -> [String: Result<Void, CleanFailure>] {
         var out: [String: Result<Void, CleanFailure>] = [:]
         var removed: [String] = [], failed: [String: String] = [:], freed: Int64 = 0
+        // Atividade de cada worktree medida uma vez, antes de mover qualquer pasta dela: mover a 1ª muda a data da
+        // pasta-mãe, e a 2ª pareceria "mexida depois da análise".
+        var activities: [String: RebuildableFinder.Activity] = [:]
         for target in targets {
             let result: Result<Void, CleanFailure>
-            if let refusal = validate(target) {
+            if let refusal = validate(target, activities: &activities) {
                 result = .failure(refusal)
             } else if dryRun {
                 result = .success(())
@@ -75,10 +78,11 @@ public struct AgentsRemover: Sendable {
     }
 
     /// `nil` quando o alvo ainda é o que a análise viu.
-    func validate(_ target: AgentsTarget) -> CleanFailure? {
+    func validate(_ target: AgentsTarget, activities: inout [String: RebuildableFinder.Activity]) -> CleanFailure? {
         guard !target.urls.isEmpty else { return Self.protected }
         switch target.kind {
-        case .rebuildable(let name, let isOrphan): return validateRebuildable(target, name: name, isOrphanWorktree: isOrphan)
+        case .rebuildable(let name, let isOrphan):
+            return validateRebuildable(target, name: name, isOrphanWorktree: isOrphan, activities: &activities)
         case .session:
             // Primeiro as recusas por proteção de todas as urls, depois as mudanças: nada sai se uma falhar.
             for url in target.urls { if let f = sessionProtection(url, root: target.root) { return f } }
@@ -89,7 +93,8 @@ public struct AgentsRemover: Sendable {
 
     // MARK: - Recriável
 
-    private func validateRebuildable(_ target: AgentsTarget, name: String, isOrphanWorktree: Bool) -> CleanFailure? {
+    private func validateRebuildable(_ target: AgentsTarget, name: String, isOrphanWorktree: Bool,
+                                     activities: inout [String: RebuildableFinder.Activity]) -> CleanFailure? {
         guard target.urls.count == 1, let url = target.urls.first else { return Self.protected }
         let root = target.root.path, path = url.path
         guard PathPolicy.lexicalPath(root) == root, PathPolicy.lexicalPath(path) == path, root != "/",
@@ -113,8 +118,18 @@ public struct AgentsRemover: Sendable {
         guard let modified = target.modified, Self.same(Self.mtime(st), modified) else { return Self.changed }
         // O produtor (o `package.json` ao lado, o `pyvenv.cfg` dentro...) ainda está lá: a mesma regra da análise.
         guard RebuildableFinder.hasProducer(name: name, path: path) else { return Self.changed }
-        // O agente voltou a mexer na worktree depois da análise.
-        if let now = RebuildableFinder(git: nil, now: Date()).lastActivity(root: root) {
+        // O agente voltou a mexer na worktree depois da análise (a mesma medida da análise), ou há uma sessão dele aberta
+        // lá dentro, ou não deu para medir.
+        let activity: RebuildableFinder.Activity
+        if let cached = activities[root] {
+            activity = cached
+        } else {
+            let wt = Worktree(url: URL(fileURLWithPath: root, isDirectory: true), repo: nil, branch: nil, isOrphan: isOrphanWorktree)
+            activity = RebuildableFinder(git: git, now: Date(), home: home).activity(of: wt)
+            activities[root] = activity
+        }
+        if activity.forced { return Self.changed }
+        if let now = activity.latest {
             guard let before = target.activity, now.timeIntervalSince(before) <= Self.dateTolerance else { return Self.changed }
         }
         // Com git (e worktree ligada), o git confirma de novo: nada rastreado dentro e, nas pastas de build, ainda ignorada.

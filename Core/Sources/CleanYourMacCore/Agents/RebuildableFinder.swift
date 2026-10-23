@@ -16,9 +16,9 @@ public struct WorktreeEntry: Hashable, Sendable {
     public let worktree: Worktree
     /// `node_modules` primeiro, na ordem do catálogo; depois pelo caminho.
     public let items: [RebuildableItem]
-    /// Data mais nova entre os arquivos de fora das recriáveis (o índice do git não conta).
+    /// Data mais nova vista fora das recriáveis (arquivos mudados, pastas, `logs/HEAD`; o índice do git não conta).
     public let lastActivity: Date?
-    /// Modificação nas últimas 24 h: a worktree está em uso.
+    /// Em uso: modificação nas últimas 24 h, sessão viva de um agente dentro dela, ou atividade que não deu para medir.
     public let isRecent: Bool
 }
 
@@ -34,18 +34,23 @@ public struct WorktreeEntry: Hashable, Sendable {
 public struct RebuildableFinder: Sendable {
     public let git: GitTool?
     public let now: Date
+    /// Pasta pessoal: de onde vêm as sessões vivas do Claude Code (`~/.claude/sessions`).
+    public let home: URL
+    /// Teto de entradas olhadas para medir a atividade; passou dele, a worktree conta como em uso.
+    let activityEntryLimit: Int
 
     /// Janela de "em uso": 24 h.
     static let recentWindow: TimeInterval = 86_400
     /// Nível máximo da pasta-mãe de uma recriável.
     static let maxSearchDepth = 4
-    /// Nível máximo das pastas olhadas para medir a atividade.
-    static let maxActivityDepth = 3
     static let nodeModules = "node_modules"
 
-    public init(git: GitTool?, now: Date) {
+    public init(git: GitTool?, now: Date, home: URL = FileManager.default.homeDirectoryForCurrentUser,
+                activityEntryLimit: Int = 200_000) {
         self.git = git
         self.now = now
+        self.home = home
+        self.activityEntryLimit = activityEntryLimit
     }
 
     /// Verdadeiro quando não há git: as pastas de build ficam de fora em todas as worktrees.
@@ -54,6 +59,27 @@ public struct RebuildableFinder: Sendable {
 
     /// `nil` quando a worktree não tem nenhuma pasta recriável.
     public func entry(for worktree: Worktree) -> WorktreeEntry? {
+        let root = worktree.url.path
+        guard let candidates = candidates(for: worktree), !candidates.isEmpty else { return nil }
+
+        let sizer = FileSizer(mode: .allocated)
+        // Pastas com 0 byte alocado (por exemplo `node_modules` só com links do workspace) não liberam nada: ficam de fora.
+        let items = candidates.compactMap { c -> RebuildableItem? in
+            let path = root + "/" + c.rel
+            let size = sizer.allocatedSize(of: URL(fileURLWithPath: path, isDirectory: true))
+            guard size > 0 else { return nil }
+            return RebuildableItem(url: URL(fileURLWithPath: path, isDirectory: true), worktree: worktree.url, name: c.name,
+                                   size: size, modified: lstatInfo(path).map(Self.mtime))
+        }
+        guard !items.isEmpty else { return nil }
+
+        let a = activity(of: worktree, skipping: Set(candidates.map(\.rel)))
+        return WorktreeEntry(worktree: worktree, items: items, lastActivity: a.latest, isRecent: a.isRecent(now: now))
+    }
+
+    /// As recriáveis que podem sair (antes do filtro de 0 byte), na ordem do catálogo; `nil` quando a worktree não é
+    /// um caminho real.
+    private func candidates(for worktree: Worktree) -> [Candidate]? {
         let root = worktree.url.path
         // A própria worktree precisa ser um caminho real, sem link em nenhum nível.
         guard !root.isEmpty, root != "/", PathPolicy.realPath(root) == root, isRealDirectory(root) else { return nil }
@@ -68,25 +94,9 @@ public struct RebuildableFinder: Sendable {
             candidates = candidates.filter { $0.name == Self.nodeModules || ignored.contains($0.rel) }
             candidates = candidates.filter { !git.hasTracked($0.rel, in: worktree.url) }
         }
-        guard !candidates.isEmpty else { return nil }
-
         let order = Dictionary(uniqueKeysWithValues: AgentsCatalog.rebuildable.enumerated().map { ($1, $0) })
         candidates.sort { (order[$0.name] ?? .max, $0.rel) < (order[$1.name] ?? .max, $1.rel) }
-
-        let sizer = FileSizer(mode: .allocated)
-        // Pastas com 0 byte alocado (por exemplo `node_modules` só com links do workspace) não liberam nada: ficam de fora.
-        let items = candidates.compactMap { c -> RebuildableItem? in
-            let path = root + "/" + c.rel
-            let size = sizer.allocatedSize(of: URL(fileURLWithPath: path, isDirectory: true))
-            guard size > 0 else { return nil }
-            return RebuildableItem(url: URL(fileURLWithPath: path, isDirectory: true), worktree: worktree.url, name: c.name,
-                                   size: size, modified: lstatInfo(path).map(Self.mtime))
-        }
-        guard !items.isEmpty else { return nil }
-
-        let last = lastActivity(root: root)
-        let isRecent = last.map { now.timeIntervalSince($0) <= Self.recentWindow } ?? false
-        return WorktreeEntry(worktree: worktree, items: items, lastActivity: last, isRecent: isRecent)
+        return candidates
     }
 
     // MARK: - Busca
@@ -194,35 +204,116 @@ public struct RebuildableFinder: Sendable {
 
     // MARK: - Atividade
 
-    /// Atividade da worktree: a data mais nova entre os arquivos de fora das recriáveis. O índice do registro
-    /// (`.git/worktrees/<n>/index`) não conta: qualquer `git status` (IDE, prompt do terminal) o regrava sem que ninguém
-    /// tenha mexido na worktree. O removedor recalcula com esta mesma função para saber se o agente voltou a mexer.
-    func lastActivity(root: String) -> Date? { latestActivity(root: root) }
-
-    /// Data mais nova dos arquivos até o nível 3. Não desce em `.git` nem em pastas com nome do catálogo
-    /// (grafia exata), listadas ou não. Não segue links.
-    private func latestActivity(root: String) -> Date? {
+    /// O que diz se a worktree está em uso.
+    struct Activity: Sendable {
+        /// Data mais nova vista (arquivos, pastas, `logs/HEAD`).
         var latest: Date?
-        var stack: [(rel: String, depth: Int)] = [("", 0)]
-        while let (rel, depth) = stack.popLast() {
-            autoreleasepool {
-                let dir = rel.isEmpty ? root : root + "/" + rel
-                for child in listDir(dir) where child != ".git" {
-                    let childRel = rel.isEmpty ? child : rel + "/" + child
-                    guard let st = lstatInfo(root + "/" + childRel) else { continue }
-                    switch st.st_mode & S_IFMT {
-                    case S_IFREG:
-                        let d = Self.mtime(st)
-                        latest = max(latest ?? d, d)
-                    case S_IFDIR:
-                        if depth < Self.maxActivityDepth, !isRebuildablePath(childRel) { stack.append((childRel, depth + 1)) }
-                    default:
-                        continue
+        /// Em uso sem depender da data: sessão viva do agente na worktree ou teto de entradas estourado.
+        var forced = false
+
+        func isRecent(now: Date) -> Bool {
+            forced || latest.map { now.timeIntervalSince($0) <= RebuildableFinder.recentWindow } ?? false
+        }
+
+        mutating func see(_ date: Date) { latest = max(latest ?? date, date) }
+    }
+
+    /// Atividade da worktree, recalculada do zero (as recriáveis puladas são as mesmas da análise). O removedor usa esta
+    /// função para saber se o agente voltou a mexer.
+    func activity(of worktree: Worktree) -> Activity {
+        activity(of: worktree, skipping: Set((candidates(for: worktree) ?? []).map(\.rel)))
+    }
+
+    /// Regras (na dúvida, "em uso"):
+    /// - sessão do Claude Code viva com o `cwd` dentro da worktree → em uso;
+    /// - com git e worktree ligada: os caminhos do `git status --no-optional-locks` (que não regrava o índice), a data
+    ///   de `<registro>/logs/HEAD` (commits e checkouts) e, nas pastas novas, tudo o que há dentro; caminho apagado conta
+    ///   pela data da pasta que sobrou;
+    /// - sem git, em órfã ou se o status falhar: tudo, sem limite de nível;
+    /// - em todos os casos, as datas das pastas visitadas contam (um arquivo apagado só muda a pasta);
+    /// - só as recriáveis que podem sair (`skipping`) e `.git` ficam de fora; nada de seguir links;
+    /// - mais de `activityEntryLimit` entradas → em uso.
+    /// O índice do registro (`.git/worktrees/<n>/index`) não conta: qualquer `git status` comum o regrava.
+    private func activity(of worktree: Worktree, skipping: Set<String>) -> Activity {
+        let root = worktree.url.path
+        var a = Activity()
+        if LiveAgentSessions.anyInside(root, sessions: LiveAgentSessions.current(home: home)) { a.forced = true }
+        var budget = activityEntryLimit
+
+        if let git, !worktree.isOrphan, let changed = git.changedPaths(in: worktree.url) {
+            for raw in changed {
+                let rel = raw.hasSuffix("/") ? String(raw.dropLast()) : raw
+                guard !rel.isEmpty, !rel.hasPrefix("/"), !rel.split(separator: "/").contains(".."),
+                      !isInsideSkipped(rel, skipping) else { continue }
+                let path = root + "/" + rel
+                if let st = lstatInfo(path) {
+                    a.see(Self.mtime(st))
+                    if st.st_mode & S_IFMT == S_IFDIR, !walk(root: root, from: rel, skipping: skipping, into: &a, budget: &budget) {
+                        a.forced = true
+                        return a
+                    }
+                } else {
+                    // Apagado: a data da pasta mais próxima que ainda existe.
+                    var dir = (rel as NSString).deletingLastPathComponent
+                    while true {
+                        let p = dir.isEmpty ? root : root + "/" + dir
+                        if let st = lstatInfo(p) { a.see(Self.mtime(st)); break }
+                        if dir.isEmpty { break }
+                        dir = (dir as NSString).deletingLastPathComponent
                     }
                 }
             }
+            if let registry = registry(of: root), let st = lstatInfo(registry + "/logs/HEAD") { a.see(Self.mtime(st)) }
+            return a
         }
-        return latest
+
+        if let st = lstatInfo(root) { a.see(Self.mtime(st)) }
+        if !walk(root: root, from: "", skipping: skipping, into: &a, budget: &budget) { a.forced = true }
+        return a
+    }
+
+    /// Desce a partir de `from` (relativo à worktree), somando as datas de arquivos e pastas. Não desce em `.git` nem nas
+    /// recriáveis de `skipping`; não segue links. Devolve `false` quando o teto de entradas estourou.
+    private func walk(root: String, from: String, skipping: Set<String>, into a: inout Activity, budget: inout Int) -> Bool {
+        var stack = [from]
+        var ok = true
+        while ok, let rel = stack.popLast() {
+            autoreleasepool {
+                let dir = rel.isEmpty ? root : root + "/" + rel
+                for child in listDir(dir) where child != ".git" {
+                    budget -= 1
+                    if budget < 0 { ok = false; return }
+                    let childRel = rel.isEmpty ? child : rel + "/" + child
+                    guard !skipping.contains(childRel), let st = lstatInfo(root + "/" + childRel) else { continue }
+                    a.see(Self.mtime(st))
+                    if st.st_mode & S_IFMT == S_IFDIR { stack.append(childRel) }
+                }
+            }
+        }
+        return ok
+    }
+
+    private func isInsideSkipped(_ rel: String, _ skipping: Set<String>) -> Bool {
+        if skipping.contains(rel) { return true }
+        var prefix = ""
+        for part in rel.split(separator: "/") {
+            prefix += prefix.isEmpty ? String(part) : "/" + part
+            if skipping.contains(prefix) { return true }
+        }
+        return false
+    }
+
+    /// Registro da worktree (`<repo>/.git/worktrees/<n>`), lido do arquivo `.git` dela (`gitdir: …`).
+    private func registry(of root: String) -> String? {
+        guard let st = lstatInfo(root + "/.git"), st.st_mode & S_IFMT == S_IFREG,
+              let data = FileManager.default.contents(atPath: root + "/.git"), data.count < 64 * 1024,
+              let text = String(data: data, encoding: .utf8) else { return nil }
+        for line in text.split(whereSeparator: \.isNewline) where line.hasPrefix("gitdir:") {
+            let p = line.dropFirst("gitdir:".count).trimmingCharacters(in: .whitespaces)
+            guard !p.isEmpty else { return nil }
+            return PathPolicy.lexicalPath(p.hasPrefix("/") ? p : root + "/" + p)
+        }
+        return nil
     }
 
     // MARK: - Utilitários

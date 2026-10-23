@@ -2,6 +2,21 @@ import Foundation
 import Testing
 @testable import CleanYourMacCore
 
+extension FixtureTree {
+    /// Põe a data em tudo sob `rel` (arquivos e pastas, inclusive a própria), sem seguir links.
+    func age(_ rel: String, _ date: Date) {
+        var paths = [url(rel).path]
+        if let e = FileManager.default.enumerator(atPath: url(rel).path) {
+            for case let child as String in e { paths.append(url(rel).path + "/" + child) }
+        }
+        let t = timespec(tv_sec: Int(date.timeIntervalSince1970), tv_nsec: 0)
+        for p in paths.reversed() {
+            var times = [t, t]
+            _ = utimensat(AT_FDCWD, p, &times, AT_SYMLINK_NOFOLLOW)
+        }
+    }
+}
+
 /// Git falso: responde `check-ignore` e `ls-files` a partir de conjuntos fixos.
 private final class FakeGitRunner: CommandRunner, @unchecked Sendable {
     let ignored: Set<String>
@@ -144,17 +159,26 @@ private final class FakeGitRunner: CommandRunner, @unchecked Sendable {
         #expect(finder(FakeGitRunner(), now: Date()).entry(for: worktree(fx, orphan: true)) == nil)
     }
 
-    @Test func activityIgnoresUnlistedRebuildableFolders() {
-        // `build` não ignorada (não listada) também não conta como atividade: o brief diz "sem descer em recriáveis".
+    /// C2: a atividade só pula as candidatas de verdade. `build` não ignorada (ou sem produtor) pode ser código: conta.
+    @Test func activitySkipsOnlyRealCandidates() {
         let now = Date()
+        let old = now.addingTimeInterval(-48 * 3600)
         let fx = FixtureTree()
         let wt = worktree(fx)
-        fx.file("wt/src/x.ts", bytes: 10, modified: now.addingTimeInterval(-48 * 3600))
-        fx.file("wt/build/out.js", bytes: 10, modified: now)
-        fx.file("wt/node_modules/a.js", bytes: 10, modified: now)
-        let entry = finder(FakeGitRunner(), now: now).entry(for: wt)
-        #expect(relPaths(entry, wt) == ["node_modules"])
-        #expect(entry?.isRecent == false)
+        fx.file("wt/src/x.ts", bytes: 10)
+        fx.file("wt/build/out.js", bytes: 10)
+        fx.file("wt/node_modules/a.js", bytes: 10)
+        fx.age("wt", old)
+        fx.age("wt/node_modules", now)
+        let quiet = finder(FakeGitRunner(), now: now).entry(for: wt)
+        #expect(relPaths(quiet, wt) == ["node_modules"])
+        #expect(quiet?.isRecent == false)
+
+        fx.age("wt/build", now)
+        try! FileManager.default.setAttributes([.modificationDate: old], ofItemAtPath: fx.url("wt").path)
+        let busy = finder(FakeGitRunner(), now: now).entry(for: wt)
+        #expect(relPaths(busy, wt) == ["node_modules"])
+        #expect(busy?.isRecent == true)
     }
 
     @Test func nestedRepoSkipped() {
@@ -173,6 +197,9 @@ private final class FakeGitRunner: CommandRunner, @unchecked Sendable {
         fx.file("wt/package.json", bytes: 10, modified: now.addingTimeInterval(-48 * 3600))
         fx.file("wt/src/x.ts", bytes: 10, modified: now.addingTimeInterval(-3 * 3600))
         fx.file("wt/node_modules/a.js", bytes: 10, modified: now)
+        fx.age("wt", now.addingTimeInterval(-48 * 3600))
+        fx.age("wt/node_modules", now)
+        try! FileManager.default.setAttributes([.modificationDate: now.addingTimeInterval(-3 * 3600)], ofItemAtPath: fx.url("wt/src/x.ts").path)
         let entry = finder(FakeGitRunner(), now: now).entry(for: wt)
         #expect(entry?.isRecent == true)
         #expect(abs((entry?.lastActivity?.timeIntervalSince1970 ?? 0) - now.addingTimeInterval(-3 * 3600).timeIntervalSince1970) < 1)
@@ -194,6 +221,8 @@ private final class FakeGitRunner: CommandRunner, @unchecked Sendable {
         try! FileManager.default.setAttributes([.modificationDate: now.addingTimeInterval(-72 * 3600)], ofItemAtPath: fx.url("wt/.git").path)
         fx.file("wt/src/x.ts", bytes: 10, modified: now.addingTimeInterval(-48 * 3600))
         fx.file("wt/node_modules/a.js", bytes: 10, modified: now)
+        fx.age("wt/src", now.addingTimeInterval(-48 * 3600))
+        try! FileManager.default.setAttributes([.modificationDate: now.addingTimeInterval(-48 * 3600)], ofItemAtPath: fx.url("wt").path)
 
         for wt in [worktree(fx), worktree(fx, orphan: true)] {
             let entry = finder(FakeGitRunner(), now: now).entry(for: wt)
@@ -252,6 +281,139 @@ private final class FakeGitRunner: CommandRunner, @unchecked Sendable {
 
         let entry = RebuildableFinder(git: git, now: Date()).entry(for: wt)
         #expect(relPaths(entry, wt) == ["node_modules", "dist", "São Paulo/dist"])
+    }
+
+    // MARK: - C2: "em uso" em monorepo
+
+    private func home(_ fx: FixtureTree) -> URL { fx.dir("home") }
+
+    /// Worktree sem git (ou órfã): arquivo 5 níveis abaixo mexido agora conta, sem limite de nível.
+    @Test func deepChangeIsRecentWithoutGit() {
+        let now = Date()
+        let old = now.addingTimeInterval(-48 * 3600)
+        for orphan in [false, true] {
+            let fx = FixtureTree()
+            let wt = worktree(fx, orphan: orphan)
+            fx.file("wt/apps/web/src/app/page.tsx", bytes: 10)
+            fx.file("wt/node_modules/a.js", bytes: 10)
+            fx.age("wt", old)
+            let f = RebuildableFinder(git: orphan ? GitTool(executable: clt, runner: FakeGitRunner()) : nil, now: now, home: home(fx))
+            #expect(f.entry(for: wt)?.isRecent == false)
+            try! FileManager.default.setAttributes([.modificationDate: now.addingTimeInterval(-300)],
+                                                   ofItemAtPath: fx.url("wt/apps/web/src/app/page.tsx").path)
+            let e = f.entry(for: wt)
+            #expect(e?.isRecent == true, "órfã: \(orphan)")
+            #expect(abs((e?.lastActivity?.timeIntervalSince1970 ?? 0) - now.addingTimeInterval(-300).timeIntervalSince1970) < 1)
+        }
+    }
+
+    /// Arquivo apagado: só a data da pasta mostra a mudança.
+    @Test func deletedFileCountsByFolderDate() throws {
+        let now = Date()
+        let fx = FixtureTree()
+        let wt = worktree(fx, orphan: true)
+        fx.file("wt/a/b/c/d/gone.ts", bytes: 10)
+        fx.file("wt/node_modules/a.js", bytes: 10)
+        fx.age("wt", now.addingTimeInterval(-48 * 3600))
+        let f = RebuildableFinder(git: nil, now: now, home: home(fx))
+        #expect(f.entry(for: wt)?.isRecent == false)
+        try FileManager.default.removeItem(at: fx.url("wt/a/b/c/d/gone.ts"))
+        #expect(f.entry(for: wt)?.isRecent == true)
+    }
+
+    /// Passou do teto de entradas sem git: "em uso" (lado seguro).
+    @Test func entryLimitMeansInUse() {
+        let now = Date()
+        let fx = FixtureTree()
+        let wt = worktree(fx, orphan: true)
+        for i in 0..<10 { fx.file("wt/src/f\(i).ts", bytes: 10) }
+        fx.file("wt/node_modules/a.js", bytes: 10)
+        fx.age("wt", now.addingTimeInterval(-48 * 3600))
+        #expect(RebuildableFinder(git: nil, now: now, home: home(fx)).entry(for: wt)?.isRecent == false)
+        #expect(RebuildableFinder(git: nil, now: now, home: home(fx), activityEntryLimit: 5).entry(for: wt)?.isRecent == true)
+    }
+
+    /// Sessão do Claude Code aberta (pid vivo) com o `cwd` dentro da worktree: em uso, mesmo sem nada mudado.
+    @Test func liveAgentSessionMeansInUse() throws {
+        let now = Date()
+        let fx = FixtureTree()
+        let wt = worktree(fx, orphan: true)
+        fx.file("wt/src/x.ts", bytes: 10)
+        fx.file("wt/node_modules/a.js", bytes: 10)
+        fx.age("wt", now.addingTimeInterval(-48 * 3600))
+        let h = home(fx)
+        func session(_ pid: Int32, cwd: String) throws {
+            try Data("{\"pid\":\(pid),\"sessionId\":\"79d527e8-7405-4796-b500-efd974f99154\",\"cwd\":\"\(cwd)\",\"status\":\"idle\"}".utf8)
+                .write(to: fx.dir("home/.claude/sessions").appendingPathComponent("\(pid).json"))
+        }
+        // Processo morto, pasta vizinha com o mesmo começo de nome e pid inválido não contam.
+        try session(Int32.max, cwd: fx.url("wt/src").path)
+        try session(getpid(), cwd: fx.url("wt-outra").path)
+        try session(0, cwd: fx.url("wt").path)
+        #expect(RebuildableFinder(git: nil, now: now, home: h).entry(for: wt)?.isRecent == false)
+        try session(getpid(), cwd: fx.url("wt/src").path)
+        #expect(RebuildableFinder(git: nil, now: now, home: h).entry(for: wt)?.isRecent == true)
+    }
+
+    /// Git de verdade, worktree ligada de verdade (`git worktree add`): monorepo com mudança a 5 níveis, commit novo
+    /// (`logs/HEAD`) e arquivo apagado. O `git status` não pode regravar o índice.
+    @Test func integrationActivityWithRealGit() throws {
+        let runner = SystemCommandRunner()
+        guard let git = GitTool.locate(runner: runner, fileExists: { FileManager.default.fileExists(atPath: $0) }) else { return }
+        let now = Date()
+        let old = now.addingTimeInterval(-48 * 3600)
+        let fx = FixtureTree()
+        func g(_ dir: String, _ args: [String]) -> Int32 {
+            runner.run(git.executable, ["-C", fx.url(dir).path, "-c", "user.name=t", "-c", "user.email=t@t", "-c", "commit.gpgsign=false"] + args).status
+        }
+        fx.dir("repo")
+        #expect(g("repo", ["init", "-q"]) == 0)
+        try "node_modules/\n".write(to: fx.url("repo/.gitignore"), atomically: true, encoding: .utf8)
+        fx.file("repo/apps/web/src/app/page.tsx", bytes: 10)
+        fx.file("repo/apps/web/src/app/gone.tsx", bytes: 10)
+        fx.file("repo/package.json", bytes: 10)
+        #expect(g("repo", ["add", "-A"]) == 0)
+        #expect(g("repo", ["commit", "-q", "-m", "init"]) == 0)
+        #expect(g("repo", ["worktree", "add", "-q", "-b", "feat", fx.url("wt").path]) == 0)
+        fx.file("wt/node_modules/a.js", bytes: 10)
+        let registry = fx.url("repo/.git/worktrees/wt")
+        let wt = Worktree(url: fx.url("wt"), repo: fx.url("repo"), branch: "feat", isOrphan: false)
+        func ageAll() {
+            fx.age("wt", old)
+            fx.age("repo/.git/worktrees/wt", old)
+        }
+        let f = RebuildableFinder(git: git, now: now, home: home(fx))
+        let indexBefore = try FileManager.default.attributesOfItem(atPath: registry.appendingPathComponent("index").path)[.modificationDate] as? Date
+        ageAll()
+        let indexAged = try FileManager.default.attributesOfItem(atPath: registry.appendingPathComponent("index").path)[.modificationDate] as? Date
+        #expect(indexBefore != nil)
+        #expect(f.entry(for: wt)?.isRecent == false)
+        // `--no-optional-locks`: o índice continua com a mesma data.
+        let indexAfter = try FileManager.default.attributesOfItem(atPath: registry.appendingPathComponent("index").path)[.modificationDate] as? Date
+        #expect(indexAfter == indexAged)
+
+        // Mudança a 5 níveis (o conteúdo muda, como faz um agente).
+        try "export default 1\n".write(to: fx.url("wt/apps/web/src/app/page.tsx"), atomically: false, encoding: .utf8)
+        try FileManager.default.setAttributes([.modificationDate: now.addingTimeInterval(-300)], ofItemAtPath: fx.url("wt/apps/web/src/app/page.tsx").path)
+        fx.age("wt/apps/web/src/app", old)
+        try FileManager.default.setAttributes([.modificationDate: now.addingTimeInterval(-300)], ofItemAtPath: fx.url("wt/apps/web/src/app/page.tsx").path)
+        let changed = f.entry(for: wt)
+        #expect(changed?.isRecent == true)
+        #expect(abs((changed?.lastActivity?.timeIntervalSince1970 ?? 0) - now.addingTimeInterval(-300).timeIntervalSince1970) < 1)
+
+        // Volta ao conteúdo commitado: limpo de novo.
+        #expect(g("wt", ["checkout", "-q", "--", "apps/web/src/app/page.tsx"]) == 0)
+        ageAll()
+        #expect(f.entry(for: wt)?.isRecent == false)
+
+        // Commit ou checkout novo: `logs/HEAD` do registro.
+        try FileManager.default.setAttributes([.modificationDate: now.addingTimeInterval(-60)], ofItemAtPath: registry.appendingPathComponent("logs/HEAD").path)
+        #expect(f.entry(for: wt)?.isRecent == true)
+        ageAll()
+
+        // Arquivo rastreado apagado: a data da pasta-mãe.
+        try FileManager.default.removeItem(at: fx.url("wt/apps/web/src/app/gone.tsx"))
+        #expect(f.entry(for: wt)?.isRecent == true)
     }
 
     // MARK: - C1: produtor da pasta

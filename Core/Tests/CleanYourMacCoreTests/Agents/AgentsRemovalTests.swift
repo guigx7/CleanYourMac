@@ -24,8 +24,9 @@ import Testing
     private func worktreeReport(_ fx: FixtureTree, home: URL, nodeModules: [String] = ["node_modules"]) -> AgentsReport {
         fx.file("home/wt/src/a.js", bytes: 100, modified: ago(3))
         for rel in nodeModules { fx.file("home/wt/\(rel)/pkg/index.js", bytes: 500, modified: ago(3)) }
+        fx.age("home/wt", ago(3))
         let wt = Worktree(url: fx.url("home/wt"), repo: nil, branch: nil, isOrphan: true)
-        let entry = RebuildableFinder(git: nil, now: now).entry(for: wt)
+        let entry = RebuildableFinder(git: nil, now: now, home: home).entry(for: wt)
         return AgentsReport(home: home, worktrees: entry.map { [$0] } ?? [], sessions: [], buildFoldersSkipped: true)
     }
 
@@ -42,8 +43,9 @@ import Testing
         fx.file("home/wt/src/a.js", bytes: 100, modified: ago(3))
         fx.file("home/wt/package.json", bytes: 10, modified: ago(3))
         for rel in ["node_modules"] + build { fx.file("home/wt/\(rel)/pkg/index.js", bytes: 500, modified: ago(3)) }
+        fx.age("home/wt", ago(3))
         let wt = Worktree(url: fx.url("home/wt"), repo: fx.url("home/repo"), branch: "b", isOrphan: false)
-        let entry = RebuildableFinder(git: git(runner), now: now).entry(for: wt)
+        let entry = RebuildableFinder(git: git(runner), now: now, home: fx.url("home")).entry(for: wt)
         return AgentsReport(home: fx.url("home"), worktrees: entry.map { [$0] } ?? [], sessions: [], buildFoldersSkipped: false)
     }
 
@@ -353,6 +355,44 @@ import Testing
                                   kind: .rebuildable(name: "coverage", isOrphanWorktree: false))
         let r2 = await remover(fx2, FixtureTrasher(fx2.url("trash")), git: git(GitRunnerStub(ignored: ["src/services/coverage"]))).remove([manual])
         #expect(reason(r2, manual.id) == "item changed")
+    }
+
+    /// C2: a remoção usa a mesma atividade da análise: mudança a 5 níveis ou sessão viva do agente na worktree recusam.
+    @Test func refusesDeepChangeAndLiveAgent() async throws {
+        let fx = FixtureTree()
+        fx.file("home/wt/apps/web/src/app/page.tsx", bytes: 10)
+        let report = worktreeReport(fx, home: fx.dir("home"))
+        let nm = fx.url("home/wt/node_modules").path
+        let targets = report.targets(for: [nm])
+        #expect(targets.count == 1)
+        #expect(succeeded(await remover(fx, FixtureTrasher(fx.url("trash")), dryRun: true).remove(targets), nm))
+        try FileManager.default.setAttributes([.modificationDate: Date()], ofItemAtPath: fx.url("home/wt/apps/web/src/app/page.tsx").path)
+        let r = await remover(fx, FixtureTrasher(fx.url("trash")), dryRun: true).remove(targets)
+        #expect(reason(r, nm) == "item changed")
+
+        let fx2 = FixtureTree()
+        let report2 = worktreeReport(fx2, home: fx2.dir("home"))
+        let nm2 = fx2.url("home/wt/node_modules").path
+        let targets2 = report2.targets(for: [nm2])
+        try Data("{\"pid\":\(getpid()),\"sessionId\":\"x\",\"cwd\":\"\(fx2.url("home/wt").path)\"}".utf8)
+            .write(to: fx2.dir("home/.claude/sessions").appendingPathComponent("\(getpid()).json"))
+        let trasher2 = FixtureTrasher(fx2.url("trash"))
+        let r2 = await remover(fx2, trasher2).remove(targets2)
+        #expect(reason(r2, nm2) == "item changed")
+        #expect(trasher2.trashed.isEmpty)
+    }
+
+    /// Duas pastas da mesma worktree: mover a 1ª muda a data da pasta-mãe, e a 2ª não pode ser recusada por isso.
+    @Test func secondItemOfSameWorktreeStillLeaves() async throws {
+        let fx = FixtureTree()
+        let stub = GitRunnerStub(ignored: ["dist"])
+        let report = linkedReport(fx, build: ["dist"], runner: stub)
+        let nm = fx.url("home/wt/node_modules").path, dist = fx.url("home/wt/dist").path
+        let trasher = FixtureTrasher(fx.url("trash"))
+        let r = await remover(fx, trasher, git: git(stub)).remove(report.targets(for: [nm, dist]))
+        #expect(succeeded(r, nm), "\(reason(r, nm) ?? "")")
+        #expect(succeeded(r, dist), "\(reason(r, dist) ?? "")")
+        #expect(trasher.trashed.count == 2)
     }
 
     /// M1: em worktree órfã, só `node_modules` pode sair, mesmo com um alvo de build montado à mão.

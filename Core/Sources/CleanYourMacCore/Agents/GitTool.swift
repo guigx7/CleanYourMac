@@ -52,4 +52,34 @@ public struct GitTool: Sendable {
         guard result.status == 0 else { return true }
         return !result.output.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
     }
+
+    /// Caminhos que o `git status` dá como mudados, novos (pastas novas vêm com `/` no fim) ou apagados, relativos à
+    /// worktree; nas renomeações, o novo e o antigo. `--no-optional-locks` impede que o status regrave o índice (senão
+    /// qualquer consulta faria a worktree parecer "em uso"). `nil` quando o git falha ou a saída sai do formato
+    /// (o runner junta o stderr: um aviso no meio tornaria a lista incerta).
+    public func changedPaths(in worktree: URL) -> [String]? {
+        let result = runner.run(executable, ["--no-optional-locks", "-C", worktree.path, "status", "--porcelain=v1", "-z",
+                                             "--untracked-files=normal"])
+        guard result.status == 0 else { return nil }
+        var records = result.output.split(separator: "\u{0}", omittingEmptySubsequences: false).map(String.init)
+        // A saída termina em NUL: o último pedaço é vazio.
+        if records.last == "" { records.removeLast() }
+        var paths: [String] = []
+        var i = 0
+        while i < records.count {
+            let r = Array(records[i])
+            // "XY caminho": dois códigos de estado e um espaço.
+            let codes = "MTADRCU?! "
+            guard r.count > 3, codes.contains(r[0]), codes.contains(r[1]), r[2] == " " else { return nil }
+            paths.append(String(r[3...]))
+            if r[0] == "R" || r[0] == "C" {
+                // Renomeação ou cópia: o caminho de origem vem no registro seguinte.
+                i += 1
+                guard i < records.count, !records[i].isEmpty else { return nil }
+                paths.append(records[i])
+            }
+            i += 1
+        }
+        return paths
+    }
 }

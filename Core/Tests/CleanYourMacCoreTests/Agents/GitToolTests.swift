@@ -90,4 +90,27 @@ private final class RecordingRunner: CommandRunner, @unchecked Sendable {
         _ = GitTool(executable: clt, runner: runner).hasTracked("apps/[x]/build", in: URL(fileURLWithPath: "/tmp/wt"))
         #expect(runner.calls.first?.arguments == ["-C", "/tmp/wt", "ls-files", "--", ":(icase,literal)apps/[x]/build"])
     }
+    // MARK: - C2: status sem regravar o índice
+
+    @Test func changedPathsParsesPorcelainZ() {
+        let wt = "/tmp/wt"
+        let args = ["--no-optional-locks", "-C", wt, "status", "--porcelain=v1", "-z", "--untracked-files=normal"]
+        let out = " M apps/web/src/app/page.tsx\u{0}R  novo nome.ts\u{0}velho.ts\u{0}?? São Paulo/\u{0} D apagado.ts\u{0}"
+        let runner = RecordingRunner(responses: [args.joined(separator: " "): (0, out)])
+        let git = GitTool(executable: clt, runner: runner)
+        #expect(git.changedPaths(in: URL(fileURLWithPath: wt)) == ["apps/web/src/app/page.tsx", "novo nome.ts", "velho.ts", "São Paulo/", "apagado.ts"])
+        #expect(runner.calls == [.init(executable: clt, arguments: args)])
+        // Limpo: lista vazia.
+        #expect(GitTool(executable: clt, runner: RecordingRunner(fallback: (0, ""))).changedPaths(in: URL(fileURLWithPath: wt)) == [])
+    }
+
+    @Test func changedPathsFailsAsNil() {
+        let wt = URL(fileURLWithPath: "/tmp/wt")
+        #expect(GitTool(executable: clt, runner: RecordingRunner(fallback: (128, "fatal: not a git repository"))).changedPaths(in: wt) == nil)
+        // Aviso do git misturado na saída (o runner junta stderr): registro fora do formato → nil.
+        let noisy = "warning: could not open directory 'x/': Permission denied\n M a.ts\u{0}"
+        #expect(GitTool(executable: clt, runner: RecordingRunner(fallback: (0, noisy))).changedPaths(in: wt) == nil)
+        // Renomeação sem o caminho de origem: nil.
+        #expect(GitTool(executable: clt, runner: RecordingRunner(fallback: (0, "R  a.ts\u{0}"))).changedPaths(in: wt) == nil)
+    }
 }

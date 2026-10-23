@@ -158,7 +158,7 @@ public final class AgentsScan: Sendable {
                     let worktrees = try WorktreeFinder(home: home).worktrees(isCancelled: cancelled)
                     continuation.yield(.progress("folders"))
                     let git = GitTool.locate(runner: SystemCommandRunner(), fileExists: { FileManager.default.fileExists(atPath: $0) })
-                    let finder = RebuildableFinder(git: git, now: date)
+                    let finder = RebuildableFinder(git: git, now: date, home: home)
                     var entries: [WorktreeEntry] = []
                     for wt in worktrees {
                         if cancelled() { throw CancellationError() }

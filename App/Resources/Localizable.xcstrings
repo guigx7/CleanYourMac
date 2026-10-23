@@ -262,13 +262,13 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Includes worktrees changed in the last 24 hours — an agent may be using them."
+            "value": "Includes worktrees in use (changed in the last 24 hours or with an agent open). Their folders stay if an agent is still there."
           }
         },
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "Inclui worktrees mudadas nas últimas 24 horas — algum agente pode estar usando."
+            "value": "Inclui worktrees em uso (mudadas nas últimas 24 horas ou com um agente aberto). As pastas delas ficam se ainda houver um agente lá."
           }
         }
       }
@@ -1095,13 +1095,13 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Changed in the last 24 hours: an agent may still be working here."
+            "value": "Changed in the last 24 hours, or an agent session is open in it: an agent may still be working here."
           }
         },
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "Mudou nas últimas 24 horas: um agente pode estar trabalhando aqui."
+            "value": "Mudou nas últimas 24 horas, ou há uma sessão de agente aberta nela: um agente pode estar trabalhando aqui."
           }
         }
       }
