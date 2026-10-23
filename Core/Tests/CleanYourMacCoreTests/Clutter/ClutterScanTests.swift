@@ -57,4 +57,13 @@ import Testing
             .deletingLastPathComponent().appendingPathComponent("docs/re/parity/clutter-baseline-2026-10-23.json"))) as! [String: Any]
         #expect(Set(json.keys) == Set(baseline.keys))
     }
+
+    @Test func exactDuplicatesLeaveSimilarImages() {
+        func f(_ name: String) -> ClutterFile {
+            ClutterFile(url: URL(fileURLWithPath: "/u/Pictures/\(name)"), size: 200_000, contentType: "public.png")
+        }
+        let a = f("a.png"), b = f("b.png"), c = f("c.png")
+        let dup = DuplicateGroup(files: [a, b], hash: "h")
+        #expect(ClutterScan.similarFiles([a, b, c], duplicates: [dup]).map(\.url.lastPathComponent) == ["c.png"])
+    }
 }

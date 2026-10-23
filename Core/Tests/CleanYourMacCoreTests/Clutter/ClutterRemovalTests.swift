@@ -102,4 +102,14 @@ import Testing
         #expect(after.total == 2)
         #expect(after.tiles.map(\.kind) == [.duplicatesDocuments])
     }
+
+    @Test func totalCountsEachFileOnce() {
+        let home = URL(fileURLWithPath: "/u")
+        let big = ClutterFile(url: home.appendingPathComponent("Downloads/big.zip"), size: 60_000_000)
+        let copy = ClutterFile(url: home.appendingPathComponent("Documents/big.zip"), size: 60_000_000)
+        let dl = DownloadsFinder.Group(app: .chrome, files: [DownloadsFinder.Item(file: big, downloaded: nil)], autoselected: [])
+        let r = ClutterReport(home: home, largeOld: [big, copy], duplicates: [DuplicateGroup(files: [big, copy], hash: "h")], similar: [],
+                              downloads: [dl], tiles: [])
+        #expect(r.total == 2)
+    }
 }

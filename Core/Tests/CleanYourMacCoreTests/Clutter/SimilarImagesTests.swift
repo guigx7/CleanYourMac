@@ -60,10 +60,34 @@ func candidate(_ id: String, _ image: CGImage, size: Int64 = 200_000, date: Date
         #expect(g.images.first { $0.id == "blurry" }?.flaws.contains(.blur) == true)
     }
 
-    @Test func hashStableAndHammingSmallForSame() {
-        let a = makeImage(pattern: 2)
-        #expect(ImageHasher.pHash(a) == ImageHasher.pHash(a))
-        #expect((ImageHasher.pHash(a) ^ ImageHasher.pHash(makeImage(pattern: 5))).nonzeroBitCount > 12)
+    @Test func hashHasFourOrientationsAndIsStable() throws {
+        let a = makeImage(pattern: 2, size: 256)
+        let h = try #require(ImageHasher.hash(a))
+        #expect(h.count == 4 && h == ImageHasher.hash(a))
+        let other = try #require(ImageHasher.hash(makeImage(pattern: 5, size: 256)))
+        #expect(ImageHasher.distance(h, other) > SimilarImageFinder.defaultThreshold)
+    }
+
+    @Test func tooSmallThumbnailsAreSkipped() {
+        #expect(ImageHasher.hash(makeImage(pattern: 2, size: 100)) == nil)
+    }
+
+    @Test func distanceSumsWordByWord() {
+        #expect(ImageHasher.distance([0b1, 0, 0, 0b11], [0, 0, 0, 0]) == 3)
+        #expect(SimilarImageFinder.defaultThreshold == 15)
+    }
+
+    /// Guloso: cada imagem entra no primeiro grupo com um membro parecido; grupos já abertos não se juntam.
+    @Test func greedyGroupingNeverMerges() {
+        let a: [UInt64] = [0, 0, 0, 0]
+        let c: [UInt64] = [0xFFFF_FFFF, 0, 0, 0]        // 32 bits de a
+        let b: [UInt64] = [0xFFFF, 0, 0, 0]             // 16 bits de a e de c: só com limiar 16
+        #expect(SimilarImageFinder.greedyGroups([a, c, b], threshold: 16) == [[0, 2]])  // c abre o próprio grupo e fica só
+        #expect(SimilarImageFinder.greedyGroups([a, nil, a], threshold: 15) == [[0, 2]])
+    }
+
+    @Test func bestCountGrowsWithGroupSize() {
+        #expect([2, 3, 4, 6, 7, 12].map(SimilarImageFinder.bestCount) == [1, 1, 2, 2, 3, 3])
     }
 
     @Test func groupMetadata() throws {

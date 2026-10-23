@@ -89,10 +89,13 @@ public struct ClutterReport: Sendable {
         self.isPartial = isPartial
     }
 
-    /// "Você tem N arquivos para revisar": tudo o que as quatro seções listam.
+    /// "Você tem N arquivos para revisar": cada arquivo uma vez, mesmo se aparece em mais de uma seção (paridade: 883 × 885).
     public var total: Int {
-        largeOld.count + duplicates.reduce(0) { $0 + $1.files.count } + similar.reduce(0) { $0 + $1.images.count }
-            + downloads.reduce(0) { $0 + $1.files.count }
+        var ids = Set(largeOld.map(\.url.path))
+        ids.formUnion(duplicates.flatMap(\.files).map(\.url.path))
+        ids.formUnion(similar.flatMap(\.images).map(\.id))
+        ids.formUnion(downloads.flatMap(\.files).map(\.url.path))
+        return ids.count
     }
 
     public var isEmpty: Bool { total == 0 }
@@ -147,6 +150,13 @@ public final class ClutterScan: Sendable {
         self.now = now
     }
 
+    /// Imagens que entram em Similares: as aceitas, menos as que já são cópias exatas (ficam só em Duplicatas; paridade:
+    /// 65 grupos / 261 imagens contra 65 / 264 do CleanMyMac nesta máquina).
+    static func similarFiles(_ files: [ClutterFile], duplicates: [DuplicateGroup]) -> [ClutterFile] {
+        let copies = Set(duplicates.flatMap(\.files).map(\.url.path))
+        return files.filter { SimilarImageFinder.accepts($0) && !copies.contains($0.url.path) }
+    }
+
     public func run(_ target: ClutterTarget) -> AsyncThrowingStream<ClutterScanEvent, Error> {
         AsyncThrowingStream { continuation in
             let flag = Flag()
@@ -165,7 +175,7 @@ public final class ClutterScan: Sendable {
                     continuation.yield(.progress("duplicates"))
                     let duplicates = try DuplicateFinder(home: home).groups(from: files, isCancelled: cancelled)
                     continuation.yield(.progress("similar"))
-                    var candidates = files.filter(SimilarImageFinder.accepts).map(SimilarCandidate.file)
+                    var candidates = Self.similarFiles(files, duplicates: duplicates).map(SimilarCandidate.file)
                     if target == .home, let photoCandidates { candidates += photoCandidates() }
                     let similar = try SimilarImageFinder(threshold: similarThreshold).groups(from: candidates, isCancelled: cancelled)
                     continuation.yield(.progress("downloads"))

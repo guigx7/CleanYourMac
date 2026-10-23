@@ -175,6 +175,12 @@ Legenda: **[E*n*]** = evidência (lista no fim). **(inferência)** = conclusão 
 - Sem janela de tempo para a fototeca (o CleanMyMac não tem; a regra de ±10 min proposta antes
   foi abandonada).
 - Nossa "base de conhecimento" não existe: o passo `skipGrouping` fica vazio.
+- **Cópias exatas ficam fora** (observado pela paridade, 2026-10-23): toda imagem que está num
+  grupo de Duplicatas sai das Similares antes do agrupamento. Com isso, 65 grupos / 261 imagens
+  nesta máquina contra 65 / 264 do CleanMyMac (sem a regra: 140 / 499). Inferência: é o efeito da
+  base de conhecimento ou do `skipGrouping`.
+- **Implementado** em `Core/Sources/CleanYourMacCore/Clutter/SimilarImages.swift` com a vImage;
+  autovalores do ruído por Jacobi (mesmo resultado do `dsyev_`, sem depender da interface LAPACK).
 
 ## 3. "Melhor para manter" e falhas visuais
 
@@ -388,7 +394,8 @@ Regras (tela em `results-and-manager.md`) [E14]:
   sair diferentes.
 - Fototeca só por PhotoKit público (miniaturas de 256 px pelo `PHImageManager`), sem ler o
   pacote `.photoslibrary`; a miniatura pode diferir da que o ImageIO gera do arquivo.
-- Favorita do Fotos como desempate da "melhor" no nosso app.
+- Favorita do Fotos não pesa (igual ao CleanMyMac); o tamanho das fotos da fototeca fica
+  desconhecido ("—"), porque não há API pública barata para ele.
 - Sem base de conhecimento (`skipGrouping`).
 - Falhas visuais com regra nossa.
 
