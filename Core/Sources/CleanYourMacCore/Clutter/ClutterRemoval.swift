@@ -107,3 +107,26 @@ public struct ClutterRemover: Sendable {
         return type == S_IFREG && Int64(st.st_size) == file.size
     }
 }
+
+extension ClutterReport {
+    /// O relatório sem os itens removidos (ids = caminhos ou ids de foto): grupos com menos de 2 itens saem, Downloads sem
+    /// arquivos sai, cartões recalculados.
+    public func removing(_ ids: Set<String>, now: Date = Date()) -> ClutterReport {
+        let largeOld = largeOld.filter { !ids.contains($0.url.path) }
+        let duplicates = duplicates.compactMap { g -> DuplicateGroup? in
+            let files = g.files.filter { !ids.contains($0.url.path) }
+            return files.count > 1 ? DuplicateGroup(files: files, hash: g.hash) : nil
+        }
+        let similar = similar.compactMap { g -> SimilarGroup? in
+            let images = g.images.filter { !ids.contains($0.id) }
+            return images.count > 1 ? SimilarGroup(images: images) : nil
+        }
+        let downloads = downloads.compactMap { g -> DownloadsFinder.Group? in
+            let files = g.files.filter { !ids.contains($0.url.path) }
+            return files.isEmpty ? nil : DownloadsFinder.Group(app: g.app, files: files, autoselected: g.autoselected.filter { files.contains($0) })
+        }
+        let tiles = ClutterTiles.make(home: home, now: now, largeOld: largeOld, duplicates: duplicates, similar: similar, downloads: downloads)
+        return ClutterReport(home: home, largeOld: largeOld, duplicates: duplicates, similar: similar, downloads: downloads, tiles: tiles,
+                             isPartial: isPartial)
+    }
+}

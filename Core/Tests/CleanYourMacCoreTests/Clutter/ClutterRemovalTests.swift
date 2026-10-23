@@ -78,3 +78,28 @@ import Testing
         #expect(report.fullySelectedGroups(in: Set(g.files.map(\.url.path))) == [g.id])
     }
 }
+
+@Suite struct ClutterReportRemovingTests {
+    @Test func removedItemsLeaveGroupsAndTilesUpdate() {
+        let home = URL(fileURLWithPath: "/u")
+        let now = Date(timeIntervalSince1970: 1_792_000_000)
+        func f(_ rel: String, _ size: Int64) -> ClutterFile {
+            ClutterFile(url: home.appendingPathComponent(rel), size: size, created: now.addingTimeInterval(-400 * 86_400),
+                        accessed: now.addingTimeInterval(-400 * 86_400))
+        }
+        let big = f("Movies/big.mov", 60_000_000)
+        let d1 = f("Documents/a.png", 200_000), d2 = f("Documents/b/a.png", 200_000), d3 = f("Pictures/a.png", 200_000)
+        let e1 = f("Documents/x.zip", 300_000), e2 = f("Desktop2/x.zip", 300_000)
+        let dl = DownloadsFinder.Group(app: .chrome, files: [DownloadsFinder.Item(file: f("Downloads/z.dmg", 9_000), downloaded: nil)],
+                                       autoselected: [])
+        let dups = [DuplicateGroup(files: [d1, d2, d3], hash: "1"), DuplicateGroup(files: [e1, e2], hash: "2")]
+        let report = ClutterReport(home: home, largeOld: [big], duplicates: dups, similar: [], downloads: [dl],
+                                   tiles: ClutterTiles.make(home: home, now: now, largeOld: [big], duplicates: dups, similar: [], downloads: [dl]))
+        let after = report.removing([big.url.path, d1.url.path, e1.url.path, "/u/Downloads/z.dmg"], now: now)
+        #expect(after.largeOld.isEmpty && after.downloads.isEmpty)
+        #expect(after.duplicates.map(\.id) == ["1"])
+        #expect(after.duplicates[0].files.map(\.url.lastPathComponent) == ["a.png", "a.png"])
+        #expect(after.total == 2)
+        #expect(after.tiles.map(\.kind) == [.duplicatesDocuments])
+    }
+}
