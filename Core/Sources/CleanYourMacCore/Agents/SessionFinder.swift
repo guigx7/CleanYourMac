@@ -38,7 +38,8 @@ public struct AgentSession: Hashable, Sendable, Identifiable {
 /// - a data da sessão é a mais nova entre todas as urls, descendo nas pastas; a descida é limitada a
 ///   `maxWalkEntries` entradas por url e, ao estourar, a sessão conta como recém-modificada (fica de fora);
 /// - job do Claude Code só quando o estado é conhecido e terminal (`done`, `completed`, `failed`, `cancelled`),
-///   sem `backup/` e sem worktree dentro.
+///   sem `backup/` e sem worktree dentro;
+/// - conversa de agente vivo (`activeClaudeSessionIDs`: job não terminal ou sessão com o pid vivo) nunca entra, nem os restos.
 public struct SessionFinder: Sendable {
     public let home: URL
     public let now: Date
@@ -116,7 +117,8 @@ public struct SessionFinder: Sendable {
             }
         }
 
-        for (id, paths) in urlsOf {
+        let active = Self.activeClaudeSessionIDs(home: home)
+        for (id, paths) in urlsOf where !active.contains(id.lowercased()) {
             let isOrphan = !withTranscript.contains(id)
             let transcript = paths.first { $0.hasSuffix("/" + id + ".jsonl") }
             if let s = session(id: "\(agent):\(id)", agent: agent, project: projectOf[id], paths: paths.sorted(), orphan: isOrphan,
@@ -170,6 +172,22 @@ public struct SessionFinder: Sendable {
             if n > Self.maxWalkEntries || u.lastPathComponent == ".git" { return false }
         }
         return true
+    }
+
+    /// Conversas de agentes que ainda estão de pé: o `sessionId` e o `resumeSessionId` de todo job cujo estado não é
+    /// terminal (sem estado conhecido também conta) e o `sessionId` de cada `~/.claude/sessions/<pid>.json` com o
+    /// processo vivo. Essas conversas e os restos delas nunca entram, seja qual for a idade.
+    public static func activeClaudeSessionIDs(home: URL) -> Set<String> {
+        var ids = Set<String>()
+        let jobs = home.path + "/.claude/jobs"
+        for name in (try? FileManager.default.contentsOfDirectory(atPath: jobs)) ?? [] {
+            guard let data = FileManager.default.contents(atPath: jobs + "/" + name + "/state.json"), data.count < 1_048_576,
+                  let obj = try? JSONSerialization.jsonObject(with: data) as? [String: Any] else { continue }
+            if let state = (obj["state"] as? String)?.lowercased(), releasingJobStates.contains(state) { continue }
+            for key in ["sessionId", "resumeSessionId"] { if let id = obj[key] as? String, !id.isEmpty { ids.insert(id.lowercased()) } }
+        }
+        for s in LiveAgentSessions.current(home: home) { if let id = s.sessionID, !id.isEmpty { ids.insert(id.lowercased()) } }
+        return ids
     }
 
     // MARK: - Codex

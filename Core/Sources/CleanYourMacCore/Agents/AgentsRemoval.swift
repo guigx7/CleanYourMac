@@ -13,7 +13,8 @@ import Foundation
 /// Sessão (uma unidade: todas as urls são revalidadas antes de mover qualquer uma; se uma falha, nenhuma vai):
 /// - cada url fica dentro de `~/.claude`, `~/.codex` ou `~/.gemini` (o `root`) e nada nela casa com
 ///   `AgentsCatalog.neverTouch` → senão `kept: protected`;
-/// - nada virou link, não há link no caminho e nenhuma data ficou mais nova que a da análise → senão `item changed`.
+/// - nada virou link, não há link no caminho, nenhuma data ficou mais nova que a da análise e a conversa não virou de um
+///   agente vivo (`SessionFinder.activeClaudeSessionIDs`) → senão `item changed`.
 public struct AgentsRemover: Sendable {
     private let trasher: any Trasher
     private let home: URL
@@ -87,6 +88,11 @@ public struct AgentsRemover: Sendable {
             // Primeiro as recusas por proteção de todas as urls, depois as mudanças: nada sai se uma falhar.
             for url in target.urls { if let f = sessionProtection(url, root: target.root) { return f } }
             for url in target.urls { if let f = sessionChange(url, modified: target.modified) { return f } }
+            // A conversa virou de um agente vivo (sessão aberta ou job não terminal) depois da análise.
+            if target.id.hasPrefix("claude-code:") {
+                let id = String(target.id.dropFirst("claude-code:".count)).lowercased()
+                if SessionFinder.isUUID(id), SessionFinder.activeClaudeSessionIDs(home: home).contains(id) { return Self.changed }
+            }
             return nil
         }
     }

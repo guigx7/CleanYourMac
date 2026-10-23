@@ -395,6 +395,31 @@ import Testing
         #expect(trasher.trashed.count == 2)
     }
 
+    /// C3: a sessão virou de um agente vivo (sessão aberta ou job não terminal) depois da análise → não sai.
+    @Test func refusesSessionThatBecameActive() async throws {
+        for marker in ["live", "job"] {
+            let fx = FixtureTree()
+            let home = fx.dir("home")
+            let a = "11111111-1111-4111-8111-111111111111"
+            claudeSession(fx, a)
+            let report = AgentsReport(home: home, worktrees: [], sessions: SessionFinder(home: home, now: now, worktrees: []).sessions(),
+                                      buildFoldersSkipped: false)
+            let targets = report.targets(for: ["claude-code:\(a)"])
+            #expect(targets.count == 1)
+            if marker == "live" {
+                try Data("{\"pid\":\(getpid()),\"sessionId\":\"\(a)\",\"cwd\":\"/x\"}".utf8)
+                    .write(to: fx.dir("home/.claude/sessions").appendingPathComponent("\(getpid()).json"))
+            } else {
+                try Data("{\"state\":\"running\",\"resumeSessionId\":\"\(a)\"}".utf8)
+                    .write(to: fx.dir("home/.claude/jobs/j9").appendingPathComponent("state.json"))
+            }
+            let trasher = FixtureTrasher(fx.url("trash"))
+            let r = await remover(fx, trasher).remove(targets)
+            #expect(reason(r, "claude-code:\(a)") == "item changed", "\(marker)")
+            #expect(trasher.trashed.isEmpty)
+        }
+    }
+
     /// M1: em worktree órfã, só `node_modules` pode sair, mesmo com um alvo de build montado à mão.
     @Test func orphanOnlyNodeModulesOnRemoval() async throws {
         let fx = FixtureTree()

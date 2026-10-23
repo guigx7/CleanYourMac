@@ -175,4 +175,34 @@ import Testing
         touch(fx, "home/.claude/jobs/j5/tmp/a/b/wt/.git", days: 20)
         #expect(finder(fx).sessions().isEmpty)
     }
+    // MARK: - C3: conversas de agentes vivos
+
+    private func writeJSON(_ fx: FixtureTree, _ rel: String, _ json: String, days: Double) {
+        fx.dir((rel as NSString).deletingLastPathComponent)
+        try! json.write(to: fx.url(rel), atomically: true, encoding: .utf8)
+        touch(fx, rel, days: days)
+    }
+
+    /// Job não terminal (`sessionId`/`resumeSessionId`) e sessão com o pid vivo: a conversa e os restos ficam de fora,
+    /// seja qual for a idade.
+    @Test func liveAgentsKeepTheirSessionsOut() {
+        let fx = FixtureTree()
+        let blocked = "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa", resumed = "bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb"
+        let live = "cccccccc-cccc-4ccc-8ccc-cccccccccccc", dead = "dddddddd-dddd-4ddd-8ddd-dddddddddddd"
+        let finished = "eeeeeeee-eeee-4eee-8eee-eeeeeeeeeeee", liveRemains = "ffffffff-ffff-4fff-8fff-ffffffffffff"
+        for id in [blocked, resumed, live, dead, finished] { claudeSession(fx, id: id, days: 30) }
+        make(fx, "home/.claude/file-history/\(liveRemains)/f@v1", days: 30)
+        touch(fx, "home/.claude/file-history/\(liveRemains)", days: 30)
+        writeJSON(fx, "home/.claude/jobs/j1/state.json", "{\"state\":\"blocked\",\"sessionId\":\"\(blocked)\",\"resumeSessionId\":\"\(blocked)\"}", days: 20)
+        writeJSON(fx, "home/.claude/jobs/j2/state.json", "{\"resumeSessionId\":\"\(resumed)\"}", days: 20)
+        writeJSON(fx, "home/.claude/jobs/j3/state.json", "{\"state\":\"done\",\"sessionId\":\"\(finished)\"}", days: 20)
+        for j in ["j1", "j2", "j3"] { touch(fx, "home/.claude/jobs/\(j)", days: 20) }
+        writeJSON(fx, "home/.claude/sessions/\(getpid()).json",
+                  "{\"pid\":\(getpid()),\"sessionId\":\"\(live)\",\"cwd\":\"/x\",\"status\":\"idle\"}", days: 20)
+        writeJSON(fx, "home/.claude/sessions/2.json", "{\"pid\":\(Int32.max),\"sessionId\":\"\(dead)\",\"cwd\":\"/x\"}", days: 20)
+        writeJSON(fx, "home/.claude/sessions/3.json", "{\"pid\":\(getpid()),\"sessionId\":\"\(liveRemains)\"}", days: 20)
+        let ids = Set(finder(fx).sessions().map(\.id))
+        #expect(ids == ["claude-code:\(dead)", "claude-code:\(finished)", "claude-code:job-j3"])
+        #expect(SessionFinder.activeClaudeSessionIDs(home: fx.url("home")) == [blocked, resumed, live, liveRemains])
+    }
 }
