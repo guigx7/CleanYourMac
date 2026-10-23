@@ -297,6 +297,14 @@ struct ArtPalette {
                        core: [Color(hex: 0xF8F5FF), Color(hex: 0xE0D6F8), Color(hex: 0xC8B8EE)],
                        glyph: AnyShape(Bubbles()),
                        glyphColors: [Color(hex: 0x8C6AF0), Color(hex: 0x5230B8)])
+        case .clutter:
+            // Verde-azulado, com folhas empilhadas (arquivos acumulados) no lugar das estrelas.
+            ArtPalette(accent: Theme.accent(for: module),
+                       side: [Color(hex: 0x0B5058), Color(hex: 0x06343A)],
+                       face: [Color(hex: 0x8FEDE4, opacity: 0.8), Color(hex: 0x2FB3B0, opacity: 0.75), Color(hex: 0x0E6A72, opacity: 0.88)],
+                       core: [Color(hex: 0xF2FCFB), Color(hex: 0xD2EEEB), Color(hex: 0xB4DEDA)],
+                       glyph: AnyShape(Sheets()),
+                       glyphColors: [Color(hex: 0x2FB3B0), Color(hex: 0x0E6A72)])
         case .performance:
             // Laranja, com um raio no lugar das estrelas.
             ArtPalette(accent: Theme.accent(for: module),
@@ -313,6 +321,19 @@ struct ArtPalette {
                        glyph: AnyShape(Sparkle()),
                        glyphColors: [Color(hex: 0x4A9A44), Color(hex: 0x2A6B2E)])
         }
+    }
+}
+
+/// Três folhas encostadas, uma atrás da outra.
+private struct Sheets: Shape {
+    func path(in r: CGRect) -> Path {
+        var p = Path()
+        let s = min(r.width, r.height)
+        for (x, y) in [(0.0, 0.0), (0.16, 0.12), (0.32, 0.24)] as [(CGFloat, CGFloat)] {
+            p.addRoundedRect(in: CGRect(x: r.minX + x * s, y: r.minY + y * s, width: 0.6 * s, height: 0.76 * s),
+                             cornerSize: CGSize(width: 0.08 * s, height: 0.08 * s))
+        }
+        return p
     }
 }
 

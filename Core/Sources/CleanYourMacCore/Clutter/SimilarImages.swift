@@ -43,10 +43,24 @@ public struct SimilarImage: Hashable, Sendable, Identifiable {
     /// "Uma das melhores para manter".
     public let isBest: Bool
     public let flaws: Set<Flaw>
+
+    public init(id: String, url: URL?, date: Date?, size: Int64, pixels: Int, sharpness: Double, isBest: Bool, flaws: Set<Flaw>) {
+        self.id = id
+        self.url = url
+        self.date = date
+        self.size = size
+        self.pixels = pixels
+        self.sharpness = sharpness
+        self.isBest = isBest
+        self.flaws = flaws
+    }
 }
 
 public struct SimilarGroup: Hashable, Sendable, Identifiable {
     public let images: [SimilarImage]
+
+    public init(images: [SimilarImage]) { self.images = images }
+
     public var id: String { images.map(\.id).joined(separator: "|") }
     /// Título do grupo: a data mais antiga.
     public var date: Date? { images.compactMap(\.date).min() }

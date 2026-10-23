@@ -1,0 +1,18 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "NSPhotoLibraryUsageDescription" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "CleanYourMac looks for similar photos in your Photos library. Photos you choose to remove go to Recently Deleted." } },
+        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "O CleanYourMac procura fotos similares na sua fototeca do Fotos. As fotos que você escolher remover vão para Apagados Recentemente." } }
+      }
+    },
+    "CFBundleDisplayName" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "CleanYourMac" } },
+        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "CleanYourMac" } }
+      }
+    }
+  },
+  "version" : "1.0"
+}

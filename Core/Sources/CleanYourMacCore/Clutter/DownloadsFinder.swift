@@ -22,6 +22,11 @@ public struct DownloadsFinder: Sendable {
         /// Quando foi baixado.
         public let downloaded: Date?
         public var url: URL { file.url }
+
+        public init(file: ClutterFile, downloaded: Date?) {
+            self.file = file
+            self.downloaded = downloaded
+        }
         public var size: Int64 { file.size }
     }
 
@@ -33,6 +38,12 @@ public struct DownloadsFinder: Sendable {
         public var totalSize: Int64 { files.reduce(0) { $0 + $1.size } }
         /// Marcação automática: baixados há mais de 30 dias.
         public let autoselected: [Item]
+
+        public init(app: App, files: [Item], autoselected: [Item]) {
+            self.app = app
+            self.files = files
+            self.autoselected = autoselected
+        }
     }
 
     private let home: URL

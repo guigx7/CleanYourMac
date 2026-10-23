@@ -45,9 +45,12 @@ targets:
         CFBundleVersion: "$(CURRENT_PROJECT_VERSION)"
         LSApplicationCategoryType: public.app-category.utilities
         NSHumanReadableCopyright: "MIT License"
+        NSPhotoLibraryUsageDescription: "CleanYourMac looks for similar photos in your Photos library. Photos you choose to remove go to Recently Deleted."
     entitlements:
       path: App/CleanYourMac.entitlements
-      properties: {}
+      properties:
+        # Hardened runtime: sem isto o PhotoKit nega o acesso à fototeca (Imagens Similares do Acúmulos).
+        com.apple.security.personal-information.photos-library: true
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: io.github.guigx7.CleanYourMac

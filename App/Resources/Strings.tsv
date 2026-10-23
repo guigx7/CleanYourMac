@@ -3,6 +3,7 @@ module.cleanup	Cleanup	Limpeza
 module.performance	Performance	Desempenho
 module.applications	Applications	Aplicativos
 module.spaceLens	Space Lens	Lupa de Espaço
+module.clutter	My Clutter	Acúmulos
 module.soon	Soon	Em breve
 # Categorias
 category.systemJunk	System junk	Detritos do sistema
@@ -550,3 +551,126 @@ about.github	Source Code	Código-fonte
 about.releases	Releases	Versões
 about.license	MIT License	Licença MIT
 about.disclaimer	Independent study project. Not affiliated with, endorsed by or connected to MacPaw or CleanMyMac. Provided "as is", without warranty.	Projeto independente de estudo. Sem relação, apoio ou vínculo com a MacPaw ou o CleanMyMac. Fornecido "como está", sem garantias.
+clutter.intro.title	My Clutter	Acúmulos
+clutter.intro.subtitle	Find forgotten big files, copies, near-identical pictures and old downloads, and decide what goes.	Encontre arquivos grandes esquecidos, cópias, imagens quase iguais e downloads antigos, e decida o que sai.
+clutter.category.largeOld	Large and old files	Arquivos grandes e antigos
+clutter.category.duplicates	Duplicates	Duplicatas
+clutter.category.similar	Similar images	Imagens similares
+clutter.category.downloads	Downloads	Downloads
+clutter.target.home	Home folder	Pasta pessoal
+clutter.target.choose	Choose Folder…	Escolher Pasta…
+clutter.scan.title	Looking for clutter…	Procurando acúmulos…
+clutter.scan.step.files	Listing your files	Listando seus arquivos
+clutter.scan.step.largeOld	Picking out big files you haven’t opened in a while	Separando arquivos grandes que você não abre há tempo
+clutter.scan.step.duplicates	Comparing files to find exact copies	Comparando arquivos para achar cópias exatas
+clutter.scan.step.similar	Comparing pictures and photos	Comparando imagens e fotos
+clutter.scan.step.downloads	Reading your browsers’ download history	Lendo o histórico de downloads dos navegadores
+clutter.nothing.title	Nothing piling up	Nada acumulado
+clutter.nothing.message	No big forgotten files, copies or old downloads were found.	Não achamos arquivos grandes esquecidos, cópias nem downloads antigos.
+clutter.removing.title	Moving items to the Trash…	Movendo itens para o Lixo…
+clutter.done.title	Done	Pronto
+clutter.done.partial.title	Some items stayed	Alguns itens ficaram
+clutter.done.summary.one	%d item went to the Trash (%@).	%d item foi para o Lixo (%@).
+clutter.done.summary.other	%d items went to the Trash (%@).	%d itens foram para o Lixo (%@).
+clutter.done.dryRun	Simulation: %d items (%@) would go to the Trash. Nothing was changed.	Simulação: %d itens (%@) iriam para o Lixo. Nada foi alterado.
+clutter.done.reviewMore	Review More Items	Revisar Mais Itens
+clutter.tile.similarRecent.title.one	%d recent similar picture	%d imagem similar recente
+clutter.tile.similarRecent.title.other	%d recent similar pictures	%d imagens similares recentes
+clutter.tile.similarRecent.detail	%@ of near-identical pictures arrived in the last 30 days.	%@ de imagens quase iguais chegaram nos últimos 30 dias.
+clutter.tile.similarPhotos.title.one	%d similar photo in Photos	%d foto similar no Fotos
+clutter.tile.similarPhotos.title.other	%d similar photos in Photos	%d fotos similares no Fotos
+clutter.tile.similarPhotos.detail	Up to %@ of extra shots could leave your library.	Até %@ em fotos de sobra podem sair da fototeca.
+clutter.tile.similarGeneric.title.one	%d similar picture	%d imagem similar
+clutter.tile.similarGeneric.title.other	%d similar pictures	%d imagens similares
+clutter.tile.similarGeneric.detail	%@ of near-identical pictures to look through.	%@ de imagens quase iguais para revisar.
+clutter.tile.duplicatesDesktop.title.one	%d duplicate file on the Desktop	%d arquivo duplicado na Mesa
+clutter.tile.duplicatesDesktop.title.other	%d duplicate files on the Desktop	%d arquivos duplicados na Mesa
+clutter.tile.duplicatesDesktop.detail	Copies adding up to %@ — keep one of each.	Cópias que somam %@ — fique com uma de cada.
+clutter.tile.duplicatesDocuments.title.one	%d duplicate file in Documents	%d arquivo duplicado em Documentos
+clutter.tile.duplicatesDocuments.title.other	%d duplicate files in Documents	%d arquivos duplicados em Documentos
+clutter.tile.duplicatesDocuments.detail	Copies adding up to %@ — keep one of each.	Cópias que somam %@ — fique com uma de cada.
+clutter.tile.duplicatesFresh.title.one	%d new duplicate	%d duplicata nova
+clutter.tile.duplicatesFresh.title.other	%d new duplicates	%d duplicatas novas
+clutter.tile.duplicatesFresh.detail	%@ of copies made in the last 3 months.	%@ em cópias feitas nos últimos 3 meses.
+clutter.tile.duplicatesGeneric.title.one	%d duplicate file	%d arquivo duplicado
+clutter.tile.duplicatesGeneric.title.other	%d duplicate files	%d arquivos duplicados
+clutter.tile.duplicatesGeneric.detail	Copies adding up to %@ — keep one of each.	Cópias que somam %@ — fique com uma de cada.
+clutter.tile.largeOld.title	%@ in big, old files	%@ em arquivos grandes e antigos
+clutter.tile.largeOld.detail	Big files untouched for over a year (%@). Do you still need them?	Arquivos grandes parados há mais de um ano (%@). Ainda precisa deles?
+clutter.tile.downloads.title	%@ downloaded with %@	%@ baixados pelo %@
+clutter.tile.downloads.detail	Installers and files you already used can go (%@).	Instaladores e arquivos já usados podem sair (%@).
+clutter.results.header.one	%d file to review.	%d arquivo para revisar.
+clutter.results.header.other	%d files to review.	%d arquivos para revisar.
+clutter.results.subtitle	Start with a suggestion below or go through everything.	Comece por uma sugestão abaixo ou revise tudo.
+clutter.results.reviewAll	Review All Files	Revisar Todos os Arquivos
+clutter.results.rescan	Scan Again	Analisar de Novo
+clutter.results.partial	Some items couldn’t be read. Another scan may include them.	Alguns itens não puderam ser lidos. Outra análise pode incluí-los.
+clutter.manager.title	Clutter Manager	Gerenciador de Acúmulos
+clutter.action.remove	Remove	Remover
+clutter.section.largeOld	Large & Old	Grandes e Antigos
+clutter.section.largeOld.description	Files of 50 MB or more, by the last time they were opened.	Arquivos de 50 MB ou mais, pela última vez em que foram abertos.
+clutter.section.duplicates	Duplicates	Duplicatas
+clutter.section.duplicates.description	Exact copies of the same file in different places.	Cópias exatas do mesmo arquivo em lugares diferentes.
+clutter.section.similar	Similar Images	Imagens Similares
+clutter.section.similar.description	Pictures that look almost the same. The star marks the one worth keeping.	Imagens quase iguais. A estrela marca a que vale manter.
+clutter.section.downloads	Downloads	Downloads
+clutter.section.downloads.description	Files your browsers downloaded and that are still on this Mac.	Arquivos que os navegadores baixaram e que ainda estão neste Mac.
+clutter.group.selectedHelp	Items marked for removal	Itens marcados para remover
+clutter.group.countHelp	Items in this group	Itens neste grupo
+clutter.pick.label	Select	Selecionar
+clutter.pick.none	None	Nenhum
+clutter.pick.all	All…	Todos…
+clutter.pick.keepLargest	All but the largest	Todos menos o maior
+clutter.pick.keepSmallest	All but the smallest	Todos menos o menor
+clutter.pick.keepNewest	All but the newest	Todos menos o mais recente
+clutter.pick.keepOldest	All but the oldest	Todos menos o mais antigo
+clutter.pick.best	All but the best	Todos menos as melhores
+clutter.pick.older30	Older than 30 days	Com mais de 30 dias
+clutter.pick.allFiles	All	Todos
+clutter.empty	Nothing here.	Nada aqui.
+clutter.empty.downloads	No browser downloads found. Safari’s history needs Full Disk Access.	Nenhum download de navegador encontrado. O histórico do Safari precisa do Acesso Total ao Disco.
+clutter.filter.all	All Files	Todos os Arquivos
+clutter.filter.selected	Selected	Selecionados
+clutter.filter.byKind	By Kind	Por Tipo
+clutter.filter.bySize	By Size	Por Tamanho
+clutter.filter.byAccess	By Last Opened	Pela Última Abertura
+clutter.filter.show	Show:	Mostrar:
+clutter.kind.archives	Archives	Arquivos Compactados
+clutter.kind.documents	Documents	Documentos
+clutter.kind.pictures	Pictures	Imagens
+clutter.kind.videos	Videos	Vídeos
+clutter.kind.other	Other	Outros
+clutter.size.small	Under 500 MB	Menos de 500 MB
+clutter.size.average	500 MB to 1 GB	500 MB a 1 GB
+clutter.size.huge	1 GB or more	1 GB ou mais
+clutter.age.lastWeek	Last 7 days	Últimos 7 dias
+clutter.age.oneWeekAgo	Over a week ago	Há mais de uma semana
+clutter.age.oneMonthAgo	Over a month ago	Há mais de um mês
+clutter.age.sixMonthsAgo	Over six months ago	Há mais de seis meses
+clutter.age.oneYearAgo	Over a year ago	Há mais de um ano
+clutter.dupKind.applications	Applications	Aplicativos
+clutter.dupKind.archives	Archives	Arquivos Compactados
+clutter.dupKind.audio	Audio	Áudio
+clutter.dupKind.documents	Documents	Documentos
+clutter.dupKind.pictures	Pictures	Imagens
+clutter.dupKind.videos	Videos	Vídeos
+clutter.dupKind.other	Other	Outros
+clutter.sort.size	Size	Tamanho
+clutter.sort.name	Name	Nome
+clutter.sort.date	Date	Data
+clutter.selectAll	Select all shown	Marcar todos os exibidos
+clutter.date.accessed	Last opened	Última abertura
+clutter.date.created	Created	Criação
+clutter.date.downloaded	Downloaded	Baixado em
+clutter.similar.best	Worth keeping: best resolution and sharpness in the group	Vale manter: melhor resolução e nitidez do grupo
+clutter.similar.blur	Looks blurry	Parece desfocada
+clutter.similar.photo	Photo	Foto
+clutter.downloads.groupHint	Files you downloaded with %@.	Arquivos que você baixou pelo %@.
+clutter.selectAll.title	Mark every copy in this group?	Marcar todas as cópias deste grupo?
+clutter.selectAll.message	No copy of this file would be left on the Mac after removal.	Nenhuma cópia deste arquivo ficaria no Mac depois da remoção.
+clutter.selectAll.confirm	Mark All	Marcar Todas
+clutter.confirm.title.one	Remove %d item (%@)?	Remover %d item (%@)?
+clutter.confirm.title.other	Remove %d items (%@)?	Remover %d itens (%@)?
+clutter.confirm.trash	Files go to the Trash; you can put them back from there.	Os arquivos vão para o Lixo; dá para devolvê-los de lá.
+clutter.confirm.photos	Photos go to Recently Deleted in Photos, after the system asks you to confirm.	As fotos vão para Apagados Recentemente no Fotos, depois da confirmação do sistema.
+clutter.confirm.dryRun	Simulation mode: nothing will be changed.	Modo de simulação: nada será alterado.

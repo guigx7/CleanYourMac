@@ -8,6 +8,11 @@ public struct DuplicateGroup: Hashable, Sendable, Identifiable {
     public let files: [ClutterFile]
     public let hash: String
 
+    public init(files: [ClutterFile], hash: String) {
+        self.files = files
+        self.hash = hash
+    }
+
     public var id: String { hash }
     public var keeper: ClutterFile { files[files.count - 1] }
     /// Marcação automática: todas menos a que fica.

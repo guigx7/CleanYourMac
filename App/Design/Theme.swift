@@ -7,6 +7,7 @@ enum Theme {
         case .cleanup: [Color(hex: 0x0E3A1F), Color(hex: 0x2F6B2A), Color(hex: 0x8FB339)]
         case .performance: [Color(hex: 0x5A1A0C), Color(hex: 0xA2401A), Color(hex: 0xE08A3C)]
         case .applications: [Color(hex: 0x15175E), Color(hex: 0x2A3FB0), Color(hex: 0x4F86E6)]
+        case .clutter: [Color(hex: 0x06343A), Color(hex: 0x0E6A72), Color(hex: 0x2FB3B0)]
         case .spaceLens: [Color(hex: 0x1E0B4A), Color(hex: 0x4A1FA0), Color(hex: 0x7B55E0)]
         }
         return LinearGradient(colors: colors, startPoint: .bottomLeading, endPoint: .topTrailing)
@@ -18,6 +19,7 @@ enum Theme {
         case .cleanup: Color(hex: 0x9BD15A)
         case .performance: Color(hex: 0xF2A65A)
         case .applications: Color(hex: 0x7FB2FF)
+        case .clutter: Color(hex: 0x6FE3D8)
         case .spaceLens: Color(hex: 0xA98BFF)
         }
     }
@@ -28,6 +30,7 @@ enum Theme {
         case .cleanup: Color(hex: 0x2F6B2A)
         case .performance: Color(hex: 0xA2401A)
         case .applications: Color(hex: 0x2A3FB0)
+        case .clutter: Color(hex: 0x0E6A72)
         case .spaceLens: Color(hex: 0x4A1FA0)
         }
     }
@@ -36,6 +39,7 @@ enum Theme {
     static let appsTint = Color(hex: 0x2F62D8)
     static let perfTint = Color(hex: 0xC4521F)
     static let lensTint = Color(hex: 0x6A44D8)
+    static let clutterTint = Color(hex: 0x0E8A8F)
 
     /// Tinta das telas claras (Gerenciador de Limpeza).
     static let reviewTint = Color(hex: 0x2E8B47)

@@ -24,5 +24,7 @@
 	<string>public.app-category.utilities</string>
 	<key>NSHumanReadableCopyright</key>
 	<string>MIT License</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>CleanYourMac looks for similar photos in your Photos library. Photos you choose to remove go to Recently Deleted.</string>
 </dict>
 </plist>

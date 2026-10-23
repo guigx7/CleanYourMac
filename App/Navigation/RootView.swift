@@ -14,6 +14,7 @@ struct RootView: View {
     @State private var apps = AppsEnvironment.makeModel()
     @State private var performance = PerformanceEnvironment.makeModel()
     @State private var lens = SpaceLensEnvironment.makeModel()
+    @State private var clutter = ClutterEnvironment.makeModel()
     @State private var page: SidebarPage? = RootView.initialPage
 
     /// Debug: `CYM_PAGE=settings|about` abre a aba direto (capturas).
@@ -24,10 +25,10 @@ struct RootView: View {
         return nil
     }
 
-    /// Telas claras em tela cheia: os Gerenciadores de Limpeza, Aplicativos e Desempenho.
+    /// Telas claras em tela cheia: os Gerenciadores de Limpeza, Aplicativos, Desempenho e Acúmulos.
     private var fullScreen: Bool {
         (module == .cleanup && cleanup.phase == .review) || (module == .applications && apps.managerOpen)
-            || (module == .performance && performance.managerOpen)
+            || (module == .performance && performance.managerOpen) || (module == .clutter && clutter.managerOpen)
     }
 
     var body: some View {
@@ -40,6 +41,9 @@ struct RootView: View {
                     .transition(.move(edge: .trailing).combined(with: .opacity))
             } else if module == .performance && performance.managerOpen {
                 PerformanceManagerView(model: performance)
+                    .transition(.move(edge: .trailing).combined(with: .opacity))
+            } else if module == .clutter && clutter.managerOpen {
+                ClutterManagerView(model: clutter)
                     .transition(.move(edge: .trailing).combined(with: .opacity))
             } else {
                 main.transition(.opacity)
@@ -77,6 +81,7 @@ struct RootView: View {
         switch module {
         case .applications: apps.phase == .intro
         case .performance: performance.phase == .intro
+        case .clutter: clutter.phase == .intro
         case .spaceLens: lens.phase == .intro
         default: cleanup.phase == .intro
         }
@@ -101,6 +106,8 @@ struct RootView: View {
             AppsModuleView(model: apps)
         case .performance:
             PerformanceModuleView(model: performance)
+        case .clutter:
+            ClutterModuleView(model: clutter)
         case .spaceLens:
             SpaceLensModuleView(model: lens)
         default:
