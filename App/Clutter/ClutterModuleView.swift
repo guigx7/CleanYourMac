@@ -195,13 +195,16 @@ struct ClutterDoneView: View {
                     if !(model.report?.isEmpty ?? true) {
                         Button("clutter.done.reviewMore") { model.reviewMore() }
                             .buttonStyle(GlassButtonStyle(prominent: true, size: .large))
+                            .fixedSize()
                     }
                     Button("apps.done.openTrash") {
                         NSWorkspace.shared.open(FileManager.default.homeDirectoryForCurrentUser.appendingPathComponent(".Trash"))
                     }
                     .buttonStyle(GlassButtonStyle(size: .large))
+                    .fixedSize()
                     Button("apps.done.log") { NSWorkspace.shared.open(CleanupLog.standard.directory) }
                         .buttonStyle(GlassButtonStyle(size: .large))
+                        .fixedSize()
                 }
                 .padding(.top, 6)
             }
@@ -212,7 +215,8 @@ struct ClutterDoneView: View {
 
     private var summary: String {
         let size = SizeFormatter.string(outcome.freed, locale: locale)
-        let key = model.dryRun ? "clutter.done.dryRun" : (outcome.removed == 1 ? "clutter.done.summary.one" : "clutter.done.summary.other")
+        let base = model.dryRun ? "clutter.done.dryRun" : "clutter.done.summary"
+        let key = base + (outcome.removed == 1 ? ".one" : ".other")
         return String(format: NSLocalizedString(key, comment: ""), outcome.removed, size)
     }
 }

@@ -572,7 +572,8 @@ clutter.done.title	Done	Pronto
 clutter.done.partial.title	Some items stayed	Alguns itens ficaram
 clutter.done.summary.one	%d item went to the Trash (%@).	%d item foi para o Lixo (%@).
 clutter.done.summary.other	%d items went to the Trash (%@).	%d itens foram para o Lixo (%@).
-clutter.done.dryRun	Simulation: %d items (%@) would go to the Trash. Nothing was changed.	Simulação: %d itens (%@) iriam para o Lixo. Nada foi alterado.
+clutter.done.dryRun.one	Simulation: %d item (%@) would go to the Trash. Nothing was changed.	Simulação: %d item (%@) iria para o Lixo. Nada foi alterado.
+clutter.done.dryRun.other	Simulation: %d items (%@) would go to the Trash. Nothing was changed.	Simulação: %d itens (%@) iriam para o Lixo. Nada foi alterado.
 clutter.done.reviewMore	Review More Items	Revisar Mais Itens
 clutter.tile.similarRecent.title.one	%d recent similar picture	%d imagem similar recente
 clutter.tile.similarRecent.title.other	%d recent similar pictures	%d imagens similares recentes

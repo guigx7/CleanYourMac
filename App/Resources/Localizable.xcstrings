@@ -3622,7 +3622,24 @@
         }
       }
     },
-    "clutter.done.dryRun": {
+    "clutter.done.dryRun.one": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Simulation: %d item (%@) would go to the Trash. Nothing was changed."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Simulação: %d item (%@) iria para o Lixo. Nada foi alterado."
+          }
+        }
+      }
+    },
+    "clutter.done.dryRun.other": {
       "extractionState": "manual",
       "localizations": {
         "en": {
