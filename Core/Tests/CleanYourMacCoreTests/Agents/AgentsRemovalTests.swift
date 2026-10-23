@@ -40,6 +40,7 @@ import Testing
     /// Worktree ligada (com git), com `node_modules` e as pastas de build pedidas, analisada pelo `RebuildableFinder`.
     private func linkedReport(_ fx: FixtureTree, build: [String], runner: GitRunnerStub) -> AgentsReport {
         fx.file("home/wt/src/a.js", bytes: 100, modified: ago(3))
+        fx.file("home/wt/package.json", bytes: 10, modified: ago(3))
         for rel in ["node_modules"] + build { fx.file("home/wt/\(rel)/pkg/index.js", bytes: 500, modified: ago(3)) }
         let wt = Worktree(url: fx.url("home/wt"), repo: fx.url("home/repo"), branch: "b", isOrphan: false)
         let entry = RebuildableFinder(git: git(runner), now: now).entry(for: wt)
@@ -323,6 +324,50 @@ import Testing
         let trasher = FixtureTrasher(fx.url("trash"))
         let r = await remover(fx, trasher).remove(targets)
         #expect(reason(r, "claude-code:\(a)") == "kept: protected")
+        #expect(trasher.trashed.isEmpty)
+    }
+
+    // MARK: - Revisão final
+
+    /// C1: o produtor (`package.json` ao lado) some depois da análise → a pasta de build não sai.
+    @Test func producerRecheckedBeforeTrash() async throws {
+        let fx = FixtureTree()
+        let stub = GitRunnerStub(ignored: ["dist"])
+        let report = linkedReport(fx, build: ["dist"], runner: stub)
+        let dist = fx.url("home/wt/dist").path
+        let targets = report.targets(for: [dist])
+        #expect(targets.count == 1)
+        try FileManager.default.removeItem(at: fx.url("home/wt/package.json"))
+        let trasher = FixtureTrasher(fx.url("trash"))
+        let r = await remover(fx, trasher, git: git(stub)).remove(targets)
+        #expect(reason(r, dist) == "item changed")
+        #expect(trasher.trashed.isEmpty)
+
+        // Alvo montado à mão para uma pasta de código sem produtor: também recusado.
+        let fx2 = FixtureTree()
+        fx2.file("home/wt/src/services/coverage/load-coverage.ts", bytes: 10, modified: ago(3))
+        fx2.file("home/wt/package.json", bytes: 10, modified: ago(3))
+        let cov = fx2.url("home/wt/src/services/coverage")
+        let st = try FileManager.default.attributesOfItem(atPath: cov.path)[.modificationDate] as? Date
+        let manual = AgentsTarget(id: cov.path, urls: [cov], modified: st, root: fx2.url("home/wt"), size: 1,
+                                  kind: .rebuildable(name: "coverage", isOrphanWorktree: false))
+        let r2 = await remover(fx2, FixtureTrasher(fx2.url("trash")), git: git(GitRunnerStub(ignored: ["src/services/coverage"]))).remove([manual])
+        #expect(reason(r2, manual.id) == "item changed")
+    }
+
+    /// M1: em worktree órfã, só `node_modules` pode sair, mesmo com um alvo de build montado à mão.
+    @Test func orphanOnlyNodeModulesOnRemoval() async throws {
+        let fx = FixtureTree()
+        fx.file("home/wt/dist/a.js", bytes: 10, modified: ago(3))
+        fx.file("home/wt/package.json", bytes: 10, modified: ago(3))
+        let dist = fx.url("home/wt/dist")
+        let date = try FileManager.default.attributesOfItem(atPath: dist.path)[.modificationDate] as? Date
+        let manual = AgentsTarget(id: dist.path, urls: [dist], modified: date, root: fx.url("home/wt"), size: 1,
+                                  kind: .rebuildable(name: "dist", isOrphanWorktree: true))
+        let stub = GitRunnerStub(ignored: ["dist"])
+        let trasher = FixtureTrasher(fx.url("trash"))
+        let r = await remover(fx, trasher, git: git(stub)).remove([manual])
+        #expect(reason(r, manual.id) == "kept: protected")
         #expect(trasher.trashed.isEmpty)
     }
 

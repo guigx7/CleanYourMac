@@ -64,6 +64,7 @@ struct AgentsIntroView: View {
                 Label("agents.intro.safety", systemImage: "lock.shield.fill")
                     .font(.system(size: 14, weight: .medium))
                     .foregroundStyle(Theme.secondaryText)
+                    .fixedSize(horizontal: false, vertical: true)
                     .padding(.top, 8)
             }
         } action: {

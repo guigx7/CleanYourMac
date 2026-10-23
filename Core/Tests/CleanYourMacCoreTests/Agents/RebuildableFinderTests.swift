@@ -67,6 +67,7 @@ private final class FakeGitRunner: CommandRunner, @unchecked Sendable {
         fx.file("wt/dist/a.js", bytes: 10)
         fx.file("wt/build/a.js", bytes: 10)
         fx.file("wt/.angular/cache/a.json", bytes: 10)
+        fx.file("wt/package.json", bytes: 10)
         let f = finder(FakeGitRunner(ignored: ["dist", ".angular/cache"]))
         #expect(!f.buildFoldersSkipped)
         let entry = f.entry(for: wt)
@@ -236,6 +237,8 @@ private final class FakeGitRunner: CommandRunner, @unchecked Sendable {
         try "dist/\nnode_modules/\n".write(to: fx.url("wt/.gitignore"), atomically: true, encoding: .utf8)
         fx.file("wt/build/committed.txt", bytes: 10)
         fx.file("wt/src/x.ts", bytes: 10)
+        fx.file("wt/package.json", bytes: 10)
+        fx.file("wt/São Paulo/package.json", bytes: 10)
         #expect(g(["add", "-A"]) == 0)
         #expect(g(["commit", "-q", "-m", "init"]) == 0)
         fx.file("wt/dist/a.js", bytes: 10)
@@ -249,6 +252,129 @@ private final class FakeGitRunner: CommandRunner, @unchecked Sendable {
 
         let entry = RebuildableFinder(git: git, now: Date()).entry(for: wt)
         #expect(relPaths(entry, wt) == ["node_modules", "dist", "São Paulo/dist"])
+    }
+
+    // MARK: - C1: produtor da pasta
+
+    /// Um caso: arquivos a criar (caminho relativo à worktree → bytes; `/` no fim cria pasta), a recriável e se ela entra.
+    private func producerCase(_ files: [String], _ rel: String, _ expected: Bool, sourceLocation: SourceLocation = #_sourceLocation) {
+        let fx = FixtureTree()
+        let wt = worktree(fx)
+        fx.file("wt/\(rel)/payload.bin", bytes: 10)
+        for f in files {
+            if f.hasSuffix("/") { fx.dir("wt/" + f) } else { fx.file("wt/" + f, bytes: 10) }
+        }
+        // O git ignora tudo o que for perguntado: só o produtor decide.
+        let names = AgentsCatalog.rebuildable
+        var ignored = Set<String>()
+        for prefix in ["", "a/", "a/b/", "src/services/", "src/features/"] { for n in names { ignored.insert(prefix + n) } }
+        let got = relPaths(finder(FakeGitRunner(ignored: ignored)).entry(for: wt), wt).contains(rel)
+        #expect(got == expected, "\(rel) com \(files)", sourceLocation: sourceLocation)
+    }
+
+    @Test func packageJsonProducer() {
+        for name in [".next", ".nuxt", ".svelte-kit", ".turbo", ".parcel-cache", ".vite", ".angular/cache", ".expo",
+                     "dist", "build", "out", "coverage", ".output"] {
+            producerCase(["package.json"], name, true)
+            producerCase(["a/package.json"], "a/" + name, true)
+            producerCase([], name, false)
+            // Produtor de outra pasta (o avô) não vale.
+            producerCase(["package.json"], "a/" + name, false)
+            // Grafia diferente ou pasta no lugar do arquivo não valem.
+            producerCase(["Package.json"], name, false)
+            producerCase(["package.json/"], name, false)
+        }
+    }
+
+    @Test func codeFolderWithGenericNameIsNotBuild() {
+        // A prova real: `src/services/coverage/load-coverage.ts` com `coverage/` no `.gitignore`.
+        producerCase(["package.json", "src/services/coverage/load-coverage.ts"], "src/services/coverage", false)
+        producerCase(["package.json", "src/features/build/BuildCard.tsx"], "src/features/build", false)
+    }
+
+    @Test func gradleProducer() {
+        for f in ["build.gradle", "build.gradle.kts", "settings.gradle", "settings.gradle.kts"] {
+            producerCase([f], "build", true)
+            producerCase([f], ".gradle", true)
+        }
+        producerCase([], ".gradle", false)
+        producerCase(["package.json"], ".gradle", false)
+        producerCase(["Cargo.toml"], "build", false)
+    }
+
+    @Test func targetProducer() {
+        producerCase(["Cargo.toml"], "target", true)
+        producerCase(["pom.xml"], "target", true)
+        producerCase(["package.json"], "target", false)
+        producerCase([], "target", false)
+    }
+
+    @Test func venvProducer() {
+        for name in [".venv", "venv"] {
+            producerCase([name + "/pyvenv.cfg"], name, true)
+            producerCase([], name, false)
+            producerCase(["pyvenv.cfg"], name, false)
+            producerCase([name + "/pyvenv.cfg/"], name, false)
+        }
+    }
+
+    @Test func pycacheOnlyBytecode() {
+        producerCase([], "__pycache__", false) // `payload.bin` não é bytecode
+        let fx = FixtureTree()
+        let wt = worktree(fx)
+        fx.file("wt/__pycache__/a.cpython-312.pyc", bytes: 10)
+        fx.file("wt/__pycache__/b.cpython-312.pyo", bytes: 10)
+        fx.file("wt/pkg/__pycache__/c.pyc", bytes: 10)
+        fx.file("wt/pkg/__pycache__/helper.py", bytes: 10)
+        fx.file("wt/lib/__pycache__/d.pyc", bytes: 10)
+        fx.file("wt/lib/__pycache__/sub/e.pyc", bytes: 10)
+        let got = relPaths(finder(FakeGitRunner(ignored: ["__pycache__", "pkg/__pycache__", "lib/__pycache__"])).entry(for: wt), wt)
+        #expect(got == ["__pycache__"])
+    }
+
+    @Test func toolCacheProducer() {
+        for name in [".pytest_cache", ".mypy_cache"] {
+            producerCase([name + "/CACHEDIR.TAG"], name, true)
+            producerCase([name + "/README.md"], name, true)
+            producerCase([], name, false)
+            producerCase(["CACHEDIR.TAG"], name, false)
+        }
+    }
+
+    @Test func derivedDataProducer() {
+        producerCase(["DerivedData/info.plist"], "DerivedData", true)
+        producerCase(["DerivedData/Build/"], "DerivedData", true)
+        producerCase(["DerivedData/Index/"], "DerivedData", true)
+        producerCase([], "DerivedData", false)
+        producerCase(["DerivedData/build/"], "DerivedData", false)
+        producerCase(["DerivedData/Build"], "DerivedData", false) // arquivo, não pasta
+    }
+
+    @Test func nodeModulesNeedsNoProducer() {
+        producerCase([], "node_modules", true)
+        producerCase([], "a/b/node_modules", true)
+    }
+
+    /// Com o git de verdade: pastas de código nunca commitadas e ignoradas por um padrão de qualquer nível ficam de fora.
+    @Test func integrationUncommittedCodeFoldersStayOut() throws {
+        let runner = SystemCommandRunner()
+        guard let git = GitTool.locate(runner: runner, fileExists: { FileManager.default.fileExists(atPath: $0) }) else { return }
+        let fx = FixtureTree()
+        let wt = Worktree(url: fx.dir("wt"), repo: nil, branch: nil, isOrphan: false)
+        func g(_ args: [String]) -> Int32 {
+            runner.run(git.executable, ["-C", wt.url.path, "-c", "user.name=t", "-c", "user.email=t@t", "-c", "commit.gpgsign=false"] + args).status
+        }
+        #expect(g(["init", "-q"]) == 0)
+        try "coverage/\nbuild/\ndist/\n".write(to: fx.url("wt/.gitignore"), atomically: true, encoding: .utf8)
+        fx.file("wt/package.json", bytes: 10)
+        #expect(g(["add", "-A"]) == 0)
+        #expect(g(["commit", "-q", "-m", "init"]) == 0)
+        fx.file("wt/src/services/coverage/load-coverage.ts", bytes: 10)
+        fx.file("wt/src/features/build/BuildCard.tsx", bytes: 10)
+        fx.file("wt/coverage/lcov.info", bytes: 10)
+        fx.file("wt/dist/a.js", bytes: 10)
+        let entry = RebuildableFinder(git: git, now: Date()).entry(for: wt)
+        #expect(relPaths(entry, wt) == ["coverage", "dist"])
     }
 
     @Test func integrationCaseInsensitiveBuildWithTrackedFiles() throws {

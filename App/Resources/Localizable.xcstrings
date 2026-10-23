@@ -517,13 +517,13 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Code, commits and uncommitted changes are never touched."
+            "value": "Only node_modules and build folders that git ignores and that sit next to the tool that makes them (package.json, Cargo.toml…) leave. Tracked files, commits and uncommitted changes stay."
           }
         },
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "Código, commits e alterações sem commit nunca são tocados."
+            "value": "Só saem node_modules e pastas de build que o git ignora e que estão ao lado da ferramenta que as cria (package.json, Cargo.toml…). Arquivos versionados, commits e alterações sem commit ficam."
           }
         }
       }
@@ -721,13 +721,13 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Folders that rebuild themselves and old conversations. Code and commits stay."
+            "value": "Folders that rebuild themselves and old conversations. Tracked files and commits stay."
           }
         },
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "Pastas que se recriam sozinhas e conversas antigas. O código e os commits ficam."
+            "value": "Pastas que se recriam sozinhas e conversas antigas. Os arquivos versionados e os commits ficam."
           }
         }
       }

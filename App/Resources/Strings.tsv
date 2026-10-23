@@ -680,7 +680,7 @@ agents.intro.title	AI Agents	Agentes de IA
 agents.intro.subtitle	Get back the space your coding agents leave behind: folders that rebuild themselves in idle worktrees and conversations older than 7 days.	Recupere o espaço que os agentes de programação deixam para trás: pastas que se recriam sozinhas em worktrees paradas e conversas com mais de 7 dias.
 agents.category.worktrees	node_modules and builds in worktrees	node_modules e builds nas worktrees
 agents.category.sessions	Sessions older than 7 days	Sessões com mais de 7 dias
-agents.intro.safety	Code, commits and uncommitted changes are never touched.	Código, commits e alterações sem commit nunca são tocados.
+agents.intro.safety	Only node_modules and build folders that git ignores and that sit next to the tool that makes them (package.json, Cargo.toml…) leave. Tracked files, commits and uncommitted changes stay.	Só saem node_modules e pastas de build que o git ignora e que estão ao lado da ferramenta que as cria (package.json, Cargo.toml…). Arquivos versionados, commits e alterações sem commit ficam.
 agents.scan.title	Looking at your agents…	Olhando os agentes…
 agents.scan.step.worktrees	Finding your repositories’ worktrees	Procurando as worktrees dos repositórios
 agents.scan.step.folders	Measuring node_modules and build folders	Medindo node_modules e pastas de build
@@ -697,7 +697,7 @@ agents.done.dryRun.other	Simulation: %d items (%@) would go to the Trash. Nothin
 agents.done.trash	The space comes back when you empty the Trash.	O espaço volta ao esvaziar o Lixo.
 agents.done.reviewMore	Review More Items	Revisar Mais Itens
 agents.results.header	Found %@ you can free up.	Encontramos %@ para liberar.
-agents.results.subtitle	Folders that rebuild themselves and old conversations. Code and commits stay.	Pastas que se recriam sozinhas e conversas antigas. O código e os commits ficam.
+agents.results.subtitle	Folders that rebuild themselves and old conversations. Tracked files and commits stay.	Pastas que se recriam sozinhas e conversas antigas. Os arquivos versionados e os commits ficam.
 agents.results.reviewAll	Review All Items	Revisar Todos os Itens
 agents.noGit	Only node_modules: install the Xcode Command Line Tools to include build folders.	Só node_modules: instale as ferramentas de linha de comando do Xcode para incluir as pastas de build.
 agents.tile.worktrees.title.one	node_modules and builds in %d idle worktree	node_modules e builds em %d worktree parada

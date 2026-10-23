@@ -26,7 +26,8 @@ public struct WorktreeEntry: Hashable, Sendable {
 /// - só diretórios reais: nada que seja link nem esteja sob um link;
 /// - `node_modules` até o nível 4 (pasta-mãe com no máximo 4 componentes abaixo da worktree);
 /// - cada parte do nome com a grafia exata do catálogo na listagem da pasta (o APFS não diferencia caixa);
-/// - pastas de build só quando o git as ignora (`check-ignore`);
+/// - pastas de build só quando o git as ignora (`check-ignore`) e o "produtor" delas está lá (`hasProducer`): um padrão
+///   como `coverage/` no `.gitignore` vale em qualquer nível e pegaria `src/services/coverage`, que é código;
 /// - com git, nada que contenha arquivo rastreado (`ls-files`, que falha fechado);
 /// - sem git utilizável, ou com worktree órfã, só `node_modules`, sem chamar o git;
 /// - não desce em `.git`, em recriáveis nem em repositórios aninhados (submódulos), cujo git é outro.
@@ -60,6 +61,7 @@ public struct RebuildableFinder: Sendable {
         let useGit = git != nil && !worktree.isOrphan
         var candidates = findCandidates(root: root)
         if !useGit { candidates = candidates.filter { $0.name == Self.nodeModules } }
+        candidates = candidates.filter { Self.hasProducer(name: $0.name, path: root + "/" + $0.rel) }
         if let git, useGit {
             let build = candidates.filter { $0.name != Self.nodeModules }.map(\.rel)
             let ignored = build.isEmpty ? [] : git.ignored(build, in: worktree.url)
@@ -132,6 +134,62 @@ public struct RebuildableFinder: Sendable {
     /// exata: os componentes vêm de `contentsOfDirectory`.
     private func isRebuildablePath(_ rel: String) -> Bool {
         AgentsCatalog.rebuildable.contains { rel == $0 || rel.hasSuffix("/" + $0) }
+    }
+
+    // MARK: - Produtor
+
+    /// Recriáveis que um `package.json` na pasta-mãe produz (a mãe de `.angular`, no caso de `.angular/cache`).
+    static let packageJsonProduced: Set<String> = [
+        ".next", ".nuxt", ".svelte-kit", ".turbo", ".parcel-cache", ".vite", ".angular/cache", ".expo",
+        "dist", "build", "out", "coverage", ".output",
+    ]
+    static let gradleFiles = ["build.gradle", "build.gradle.kts", "settings.gradle", "settings.gradle.kts"]
+
+    /// Verdadeiro quando a pasta tem o sinal da ferramenta que a cria. O nome e o `check-ignore` não bastam: pasta de
+    /// código com nome genérico (`src/features/build`) também é ignorada por um `build/` do `.gitignore`. Na dúvida, falso.
+    /// - `node_modules`: sempre;
+    /// - `package.json` na mãe: as de `packageJsonProduced`; `build` também com um arquivo do Gradle na mãe;
+    /// - `target`: `Cargo.toml` ou `pom.xml` na mãe; `.gradle`: um arquivo do Gradle na mãe;
+    /// - `.venv`/`venv`: `pyvenv.cfg` dentro; `__pycache__`: só arquivos `*.pyc`/`*.pyo` dentro (nenhuma pasta);
+    /// - `.pytest_cache`/`.mypy_cache`: `CACHEDIR.TAG` ou `README.md` dentro;
+    /// - `DerivedData`: `info.plist` ou a pasta `Build` ou `Index` dentro.
+    /// Os arquivos e pastas são conferidos com a grafia exata na listagem e pelo tipo (`lstat`, sem seguir link).
+    static func hasProducer(name: String, path: String) -> Bool {
+        guard path.hasSuffix("/" + name) else { return false }
+        let parent = String(path.dropLast(name.count + 1))
+        func file(_ dir: String, _ n: String) -> Bool { entryType(dir, n) == S_IFREG }
+        func folder(_ dir: String, _ n: String) -> Bool { entryType(dir, n) == S_IFDIR }
+        switch name {
+        case nodeModules:
+            return true
+        case "build":
+            return file(parent, "package.json") || gradleFiles.contains { file(parent, $0) }
+        case _ where packageJsonProduced.contains(name):
+            return file(parent, "package.json")
+        case "target":
+            return file(parent, "Cargo.toml") || file(parent, "pom.xml")
+        case ".gradle":
+            return gradleFiles.contains { file(parent, $0) }
+        case ".venv", "venv":
+            return file(path, "pyvenv.cfg")
+        case "__pycache__":
+            guard let children = try? FileManager.default.contentsOfDirectory(atPath: path), !children.isEmpty else { return false }
+            return children.allSatisfy { ($0.hasSuffix(".pyc") || $0.hasSuffix(".pyo")) && file(path, $0) }
+        case ".pytest_cache", ".mypy_cache":
+            return file(path, "CACHEDIR.TAG") || file(path, "README.md")
+        case "DerivedData":
+            return file(path, "info.plist") || folder(path, "Build") || folder(path, "Index")
+        default:
+            return false
+        }
+    }
+
+    /// Tipo (`S_IFREG`, `S_IFDIR`...) de `dir/name` quando o nome aparece com a grafia exata na listagem; senão `nil`.
+    private static func entryType(_ dir: String, _ name: String) -> mode_t? {
+        guard ((try? FileManager.default.contentsOfDirectory(atPath: dir)) ?? []).contains(name) else { return nil }
+        var st = stat()
+        guard lstat(dir + "/" + name, &st) == 0 else { return nil }
+        return st.st_mode & S_IFMT
     }
 
     // MARK: - Atividade

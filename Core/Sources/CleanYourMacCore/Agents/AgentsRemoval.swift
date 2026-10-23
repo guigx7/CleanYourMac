@@ -3,10 +3,11 @@ import Foundation
 /// Manda para o Lixo as pastas recriáveis e as sessões marcadas, revalidando cada alvo contra a análise. Na dúvida, fica.
 ///
 /// Recriável (proteção estrutural, sem o `neverTouch`, para que `projeto/plugins/node_modules` possa sair):
-/// - o caminho fica dentro da worktree (`root`) e termina num nome de `AgentsCatalog.rebuildable` → senão `kept: protected`;
+/// - o caminho fica dentro da worktree (`root`) e termina num nome de `AgentsCatalog.rebuildable`; em worktree órfã, só
+///   `node_modules` → senão `kept: protected`;
 /// - cada parte do nome aparece com a grafia exata na listagem da pasta-mãe, a pasta é diretório de verdade (não link) e
 ///   não há link no caminho até ela; a data da pasta é a da análise; a atividade da worktree não ficou mais nova que a da
-///   análise (o agente voltou a mexer); com git e worktree ligada, nada rastreado dentro e a pasta de build ainda
+///   análise (o agente voltou a mexer); o produtor da pasta continua lá (`RebuildableFinder.hasProducer`); com git e worktree ligada, nada rastreado dentro e a pasta de build ainda
 ///   ignorada → senão `item changed`.
 ///
 /// Sessão (uma unidade: todas as urls são revalidadas antes de mover qualquer uma; se uma falha, nenhuma vai):
@@ -95,6 +96,8 @@ public struct AgentsRemover: Sendable {
               path.hasPrefix(root + "/"), AgentsCatalog.rebuildable.contains(name) else { return Self.protected }
         let rel = String(path.dropFirst(root.count + 1))
         guard rel == name || rel.hasSuffix("/" + name) else { return Self.protected }
+        // Worktree órfã: a análise só lista `node_modules` (sem o git, nada prova que uma pasta de build é recriável).
+        guard !isOrphanWorktree || name == RebuildableFinder.nodeModules else { return Self.protected }
 
         // Grafia exata de cada parte do nome na listagem (o APFS não diferencia caixa no `lstat`).
         let parts = name.split(separator: "/").map(String.init)
@@ -108,6 +111,8 @@ public struct AgentsRemover: Sendable {
         let parent = (path as NSString).deletingLastPathComponent
         guard PathPolicy.realPath(parent) == parent else { return Self.changed }
         guard let modified = target.modified, Self.same(Self.mtime(st), modified) else { return Self.changed }
+        // O produtor (o `package.json` ao lado, o `pyvenv.cfg` dentro...) ainda está lá: a mesma regra da análise.
+        guard RebuildableFinder.hasProducer(name: name, path: path) else { return Self.changed }
         // O agente voltou a mexer na worktree depois da análise.
         if let now = RebuildableFinder(git: nil, now: Date()).lastActivity(root: root) {
             guard let before = target.activity, now.timeIntervalSince(before) <= Self.dateTolerance else { return Self.changed }
