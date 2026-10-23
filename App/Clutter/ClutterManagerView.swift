@@ -99,106 +99,7 @@ struct ClutterManagerView: View {
     }
 }
 
-// MARK: - Peças comuns
-
-/// Cabeçalho de uma categoria: nome e frase de descrição.
-struct ClutterSectionHeader<Trailing: View>: View {
-    var section: ClutterFlowModel.Section
-    @ViewBuilder var trailing: Trailing
-
-    var body: some View {
-        HStack(alignment: .top) {
-            VStack(alignment: .leading, spacing: 4) {
-                Text(LocalizedStringKey.dynamic("clutter.section.\(section.rawValue)")).font(.title2.weight(.semibold))
-                Text(LocalizedStringKey.dynamic("clutter.section.\(section.rawValue).description"))
-                    .font(.callout)
-                    .foregroundStyle(.secondary)
-                    .fixedSize(horizontal: false, vertical: true)
-            }
-            Spacer()
-            trailing
-        }
-        .padding(.horizontal, 20)
-        .padding(.vertical, 14)
-    }
-}
-
-/// Uma linha de arquivo: caixa, ícone, nome, pasta, data e tamanho; lupa para mostrar no Finder.
-struct ClutterFileRow: View {
-    var url: URL
-    var size: Int64
-    var date: Date?
-    var dateHelp: LocalizedStringKey
-    var selected: Bool
-    var onToggle: () -> Void
-    @Environment(\.locale) private var locale
-
-    var body: some View {
-        HStack(spacing: 10) {
-            TriStateCheckbox(state: selected ? .on : .off, tint: Theme.clutterTint, label: url.lastPathComponent, action: onToggle)
-            Image(nsImage: NSWorkspace.shared.icon(forFile: url.path)).resizable().interpolation(.high).frame(width: 26, height: 26)
-            VStack(alignment: .leading, spacing: 1) {
-                Text(verbatim: url.lastPathComponent).lineLimit(1).truncationMode(.middle)
-                Text(verbatim: (url.deletingLastPathComponent().path as NSString).abbreviatingWithTildeInPath)
-                    .font(.caption).foregroundStyle(.secondary).lineLimit(1).truncationMode(.head)
-            }
-            .help(Text(verbatim: url.path))
-            Spacer()
-            if let date {
-                Text(verbatim: date.formatted(.dateTime.day().month(.abbreviated).year().locale(locale)))
-                    .font(.callout).foregroundStyle(.secondary).help(Text(dateHelp))
-            }
-            Text(verbatim: SizeFormatter.string(size, locale: locale)).foregroundStyle(.secondary).monospacedDigit()
-                .frame(minWidth: 70, alignment: .trailing)
-            Button { NSWorkspace.shared.activateFileViewerSelecting([url]) } label: { Image(systemName: "magnifyingglass") }
-                .buttonStyle(.borderless)
-                .help(Text("apps.reveal"))
-        }
-        .padding(.vertical, 3)
-        .contentShape(Rectangle())
-    }
-}
-
-/// Linha de um grupo (duplicatas, similares, downloads): ícone, título, total, número de itens e a seta.
-struct ClutterGroupRow<Icon: View>: View {
-    var title: String
-    var size: Int64
-    var count: Int
-    var selectedCount: Int
-    var expanded: Bool
-    var onExpand: () -> Void
-    @ViewBuilder var icon: Icon
-    @Environment(\.locale) private var locale
-
-    var body: some View {
-        Button(action: onExpand) {
-            HStack(spacing: 10) {
-                Image(systemName: expanded ? "chevron.down" : "chevron.right").frame(width: 14).foregroundStyle(.secondary)
-                icon.frame(width: 30, height: 30)
-                Text(verbatim: title).lineLimit(1).truncationMode(.middle)
-                Spacer()
-                if selectedCount > 0 {
-                    Text(verbatim: "\(selectedCount)")
-                        .font(.caption.weight(.semibold)).foregroundStyle(.white)
-                        .padding(.horizontal, 7).padding(.vertical, 2)
-                        .background(Capsule().fill(Theme.clutterTint))
-                        .help(Text("clutter.group.selectedHelp"))
-                }
-                Text(verbatim: "\(count)")
-                    .font(.caption.weight(.semibold))
-                    .padding(.horizontal, 7).padding(.vertical, 2)
-                    .background(Capsule().fill(Color.secondary.opacity(0.15)))
-                    .help(Text("clutter.group.countHelp"))
-                Text(verbatim: SizeFormatter.string(size, locale: locale)).foregroundStyle(.secondary).monospacedDigit()
-                    .frame(minWidth: 70, alignment: .trailing)
-            }
-            .padding(.vertical, 4)
-            .contentShape(Rectangle())
-        }
-        .buttonStyle(.plain)
-        .accessibilityLabel(Text(String(format: NSLocalizedString(expanded ? "apps.hide" : "apps.show", comment: ""), title)))
-    }
-}
+// MARK: - Peças comuns (as linhas estão em App/Design/ManagerRows.swift)
 
 /// Menu "Selecionar:" de um grupo.
 struct ClutterPickMenu: View {
@@ -302,8 +203,8 @@ struct LargeOldSectionView: View {
                     Spacer()
                 }
                 ForEach(rows, id: \.url) { f in
-                    ClutterFileRow(url: f.url, size: f.size, date: f.accessed, dateHelp: "clutter.date.accessed",
-                                   selected: model.isSelected(f.url.path)) { model.toggle(f.url.path) }
+                    ModuleFileRow(url: f.url, size: f.size, date: f.accessed, dateHelp: "clutter.date.accessed",
+                                  selected: model.isSelected(f.url.path), tint: Theme.clutterTint) { model.toggle(f.url.path) }
                 }
             }
             .listStyle(.inset)
@@ -322,7 +223,7 @@ struct DuplicatesSectionView: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            ClutterSectionHeader(section: .duplicates) {
+            ModuleSectionHeader(title: "clutter.section.duplicates", description: "clutter.section.duplicates.description") {
                 Menu {
                     ForEach(DuplicateFilter.menu, id: \.self) { f in
                         Button { filter = f } label: {
@@ -350,9 +251,10 @@ struct DuplicatesSectionView: View {
             List {
                 ForEach(groups) { g in
                     let ids = g.files.map(\.url.path)
-                    ClutterGroupRow(title: g.name, size: g.totalSize, count: g.files.count,
-                                    selectedCount: ids.filter(model.selection.contains).count, expanded: expanded.contains(g.id),
-                                    onExpand: { toggle(g.id) }) {
+                    ModuleGroupRow(title: g.name, size: g.totalSize, count: g.files.count,
+                                   selectedCount: ids.filter(model.selection.contains).count, expanded: expanded.contains(g.id),
+                                   tint: Theme.clutterTint,
+                                   onExpand: { toggle(g.id) }) {
                         Image(nsImage: NSWorkspace.shared.icon(forFile: g.keeper.url.path)).resizable().interpolation(.high)
                     }
                     if expanded.contains(g.id) {
@@ -364,8 +266,8 @@ struct DuplicatesSectionView: View {
                         }
                         .padding(.leading, 34)
                         ForEach(g.files, id: \.url) { f in
-                            ClutterFileRow(url: f.url, size: f.size, date: f.created, dateHelp: "clutter.date.created",
-                                           selected: model.isSelected(f.url.path)) {
+                            ModuleFileRow(url: f.url, size: f.size, date: f.created, dateHelp: "clutter.date.created",
+                                          selected: model.isSelected(f.url.path), tint: Theme.clutterTint) {
                                 model.toggle(f.url.path)
                             }
                             .padding(.leading, 34)
@@ -393,7 +295,7 @@ struct SimilarSectionView: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            ClutterSectionHeader(section: .similar) { EmptyView() }
+            ModuleSectionHeader(title: "clutter.section.similar", description: "clutter.section.similar.description") { EmptyView() }
             Divider()
             list
         }
@@ -414,9 +316,10 @@ struct SimilarSectionView: View {
             List {
                 ForEach(groups) { g in
                     let ids = g.images.map(\.id)
-                    ClutterGroupRow(title: title(g), size: g.totalSize, count: g.images.count,
-                                    selectedCount: ids.filter(model.selection.contains).count, expanded: expanded.contains(g.id),
-                                    onExpand: { toggle(g.id) }) {
+                    ModuleGroupRow(title: title(g), size: g.totalSize, count: g.images.count,
+                                   selectedCount: ids.filter(model.selection.contains).count, expanded: expanded.contains(g.id),
+                                   tint: Theme.clutterTint,
+                                   onExpand: { toggle(g.id) }) {
                         ClutterThumbnail(image: g.images[0], side: 30)
                     }
                     if expanded.contains(g.id) {
@@ -551,7 +454,7 @@ struct DownloadsSectionView: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            ClutterSectionHeader(section: .downloads) { EmptyView() }
+            ModuleSectionHeader(title: "clutter.section.downloads", description: "clutter.section.downloads.description") { EmptyView() }
             Divider()
             list
         }
@@ -568,9 +471,10 @@ struct DownloadsSectionView: View {
                     let files = sort.sorted(g.files.filter { ClutterSearch.matches($0.url.lastPathComponent, search) },
                                             name: { $0.url.lastPathComponent }, size: \.size, date: \.downloaded)
                     let ids = g.files.map(\.url.path)
-                    ClutterGroupRow(title: g.app.title, size: g.totalSize, count: g.files.count,
-                                    selectedCount: ids.filter(model.selection.contains).count, expanded: expanded.contains(g.id),
-                                    onExpand: { toggle(g.id) }) {
+                    ModuleGroupRow(title: g.app.title, size: g.totalSize, count: g.files.count,
+                                   selectedCount: ids.filter(model.selection.contains).count, expanded: expanded.contains(g.id),
+                                   tint: Theme.clutterTint,
+                                   onExpand: { toggle(g.id) }) {
                         AppIconView(app: g.app)
                     }
                     if expanded.contains(g.id) {
@@ -593,8 +497,8 @@ struct DownloadsSectionView: View {
                         }
                         .padding(.leading, 34)
                         ForEach(files, id: \.url) { item in
-                            ClutterFileRow(url: item.url, size: item.size, date: item.downloaded, dateHelp: "clutter.date.downloaded",
-                                           selected: model.isSelected(item.url.path)) { model.toggle(item.url.path) }
+                            ModuleFileRow(url: item.url, size: item.size, date: item.downloaded, dateHelp: "clutter.date.downloaded",
+                                          selected: model.isSelected(item.url.path), tint: Theme.clutterTint) { model.toggle(item.url.path) }
                                 .padding(.leading, 34)
                         }
                     }
