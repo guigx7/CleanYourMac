@@ -1,0 +1,257 @@
+import Foundation
+
+/// Sessão antiga de um agente: uma conversa, um job ou um arquivo de sessão, com os restos ligados a ela.
+public struct AgentSession: Hashable, Sendable, Identifiable {
+    /// `"<agente>:<sessão>"`.
+    public let id: String
+    /// Id do agente no `AgentsCatalog`.
+    public let agent: String
+    /// Claude Code: nome cru da pasta do projeto (por exemplo `-Users-x-Projetos-Y`); Gemini: o hash. Senão `nil`.
+    public let project: String?
+    public let urls: [URL]
+    /// Tamanho alocado somado de todas as urls.
+    public let size: Int64
+    /// Data mais nova entre todas as urls, descendo nas pastas.
+    public let lastModified: Date
+    /// Só restos (`file-history`, `session-env`, `todos`) sem o `.jsonl` da conversa.
+    public let isOrphanRemains: Bool
+}
+
+/// Acha sessões com mais de 7 dias. Regras (o que sai daqui vai para o Lixo; na dúvida, fica de fora):
+/// - nunca segue links: um link nunca vira url nem é percorrido;
+/// - nunca inclui nada que case com `AgentsCatalog.neverTouch` (memória, histórico, ajustes, `*.sqlite`...);
+/// - uma sessão do Claude Code é um item só: o `.jsonl`, a pasta ao lado e os restos de mesmo id;
+/// - a data da sessão é a mais nova entre todas as urls, descendo nas pastas; a descida é limitada a
+///   `maxWalkEntries` entradas por url e, ao estourar, a sessão conta como recém-modificada (fica de fora);
+/// - job do Claude Code só quando o estado é conhecido e terminal (`done`, `completed`, `failed`, `cancelled`),
+///   sem `backup/` e sem worktree dentro.
+public struct SessionFinder: Sendable {
+    public let home: URL
+    public let now: Date
+    public let worktrees: Set<URL>
+
+    /// Idade mínima: 7 dias.
+    static let minAge: TimeInterval = 604_800
+    static let maxWalkEntries = 20_000
+    static let releasingJobStates: Set<String> = ["done", "completed", "failed", "cancelled"]
+
+    private let homePath: String
+    private let sizer = FileSizer(mode: .allocated)
+
+    public init(home: URL, now: Date, worktrees: Set<URL>) {
+        self.home = home
+        self.now = now
+        self.worktrees = worktrees
+        homePath = home.path
+    }
+
+    public func sessions() -> [AgentSession] {
+        var out: [AgentSession] = []
+        for agent in AgentsCatalog.agents {
+            switch agent.sessions {
+            case .claudeCode: out += claude(agent.id)
+            case .codex: out += codex(agent.id)
+            case .gemini: out += gemini(agent.id)
+            }
+        }
+        let order = AgentsCatalog.agents.map(\.id)
+        return out.sorted {
+            let a = order.firstIndex(of: $0.agent) ?? .max, b = order.firstIndex(of: $1.agent) ?? .max
+            if a != b { return a < b }
+            if $0.lastModified != $1.lastModified { return $0.lastModified < $1.lastModified }
+            return $0.id < $1.id
+        }
+    }
+
+    // MARK: - Claude Code
+
+    private func claude(_ agent: String) -> [AgentSession] {
+        let base = homePath + "/.claude"
+        var out: [AgentSession] = []
+
+        // Conversas: `projects/<projeto>/<id>.jsonl` + pasta `<id>/` ao lado.
+        var projectOf: [String: String] = [:]
+        var urlsOf: [String: [String]] = [:]
+        for proj in entries(base + "/projects") {
+            let pdir = base + "/projects/" + proj
+            guard isRealDirectory(pdir), !isNeverTouch(pdir) else { continue }
+            for name in entries(pdir) {
+                let p = pdir + "/" + name
+                if isNeverTouch(p) || isSymlink(p) { continue }
+                if name.hasSuffix(".jsonl"), !isDirectory(p) {
+                    let id = String(name.dropLast(".jsonl".count))
+                    guard !id.isEmpty else { continue }
+                    projectOf[id] = proj
+                    urlsOf[id, default: []].append(p)
+                } else if isRealDirectory(p) {
+                    urlsOf[name, default: []].append(p)
+                }
+            }
+        }
+        let withTranscript = Set(projectOf.keys)
+
+        // Restos de mesmo id.
+        for (dirName, isPrefixed) in [("file-history", false), ("session-env", false), ("todos", true)] {
+            for name in entries(base + "/" + dirName) {
+                let p = base + "/" + dirName + "/" + name
+                if isNeverTouch(p) || isSymlink(p) { continue }
+                let id = isPrefixed ? ownerID(of: name, known: withTranscript) : ownerID(of: name, known: withTranscript, plainName: true)
+                urlsOf[id, default: []].append(p)
+            }
+        }
+
+        for (id, paths) in urlsOf {
+            let isOrphan = !withTranscript.contains(id)
+            if let s = session(id: "\(agent):\(id)", agent: agent, project: projectOf[id], paths: paths.sorted(), orphan: isOrphan) {
+                out.append(s)
+            }
+        }
+
+        // Jobs.
+        for name in entries(base + "/jobs") {
+            let job = base + "/jobs/" + name
+            guard isRealDirectory(job), !isNeverTouch(job), isJobReleasable(job),
+                  let s = session(id: "\(agent):job-\(name)", agent: agent, project: nil, paths: [job], orphan: false) else { continue }
+            out.append(s)
+        }
+        return out
+    }
+
+    /// Id da sessão dona de um resto: o id conhecido que é prefixo do nome (seguido de fim, `-` ou `.`),
+    /// senão o nome sem extensão e sem o sufixo `-agent-...`.
+    private func ownerID(of name: String, known: Set<String>, plainName: Bool = false) -> String {
+        if let hit = known.filter({ name == $0 || name.hasPrefix($0 + "-") || name.hasPrefix($0 + ".") }).max(by: { $0.count < $1.count }) {
+            return hit
+        }
+        if plainName { return name }
+        let stem = (name as NSString).deletingPathExtension
+        if let r = stem.range(of: "-agent-") { return String(stem[..<r.lowerBound]) }
+        return stem
+    }
+
+    private func isJobReleasable(_ job: String) -> Bool {
+        guard let data = FileManager.default.contents(atPath: job + "/state.json"), data.count < 1_048_576,
+              let obj = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
+              let state = (obj["state"] as? String)?.lowercased(), Self.releasingJobStates.contains(state) else { return false }
+        if exists(job + "/backup") { return false }
+        // Worktree dentro: conjunto recebido ou `.git` no job, em `tmp` ou em `tmp/*`.
+        let realJob = PathPolicy.realPath(job)
+        if worktrees.contains(where: { let w = PathPolicy.realPath($0.path); return w == realJob || w.hasPrefix(realJob + "/") }) { return false }
+        var spots = [job, job + "/tmp"]
+        for child in entries(job + "/tmp") { spots.append(job + "/tmp/" + child) }
+        return !spots.contains { exists($0 + "/.git") }
+    }
+
+    // MARK: - Codex
+
+    private func codex(_ agent: String) -> [AgentSession] {
+        let root = homePath + "/.codex/sessions"
+        var out: [AgentSession] = []
+        guard isRealDirectory(root) else { return out }
+        var stack = [root]
+        var visited = 0
+        while let dir = stack.popLast() {
+            visited += 1
+            if visited > Self.maxWalkEntries { break }
+            for name in entries(dir) {
+                let p = dir + "/" + name
+                if isNeverTouch(p) || isSymlink(p) { continue }
+                if isDirectory(p) { stack.append(p); continue }
+                guard name.hasPrefix("rollout-"), name.hasSuffix(".jsonl") else { continue }
+                let id = String(name.dropLast(".jsonl".count))
+                if let s = session(id: "\(agent):\(id)", agent: agent, project: nil, paths: [p], orphan: false) { out.append(s) }
+            }
+        }
+        return out
+    }
+
+    // MARK: - Gemini
+
+    private func gemini(_ agent: String) -> [AgentSession] {
+        let root = homePath + "/.gemini/tmp"
+        var out: [AgentSession] = []
+        for hash in entries(root) {
+            let chats = root + "/" + hash + "/chats"
+            guard isRealDirectory(root + "/" + hash), isRealDirectory(chats) else { continue }
+            for name in entries(chats) where name.hasSuffix(".json") {
+                let p = chats + "/" + name
+                if isNeverTouch(p) || isSymlink(p) || isDirectory(p) { continue }
+                let id = "\(hash)/" + String(name.dropLast(".json".count))
+                if let s = session(id: "\(agent):\(id)", agent: agent, project: hash, paths: [p], orphan: false) { out.append(s) }
+            }
+        }
+        return out
+    }
+
+    // MARK: - Montagem
+
+    /// `nil` quando a sessão é recente demais (ou a descida estourou o limite).
+    private func session(id: String, agent: String, project: String?, paths: [String], orphan: Bool) -> AgentSession? {
+        var newest = Date.distantPast
+        for p in paths {
+            guard let d = newestDate(p) else { return nil }
+            newest = max(newest, d)
+        }
+        guard now.timeIntervalSince(newest) > Self.minAge else { return nil }
+        let urls = paths.map { URL(fileURLWithPath: $0, isDirectory: isDirectory($0)) }
+        return AgentSession(id: id, agent: agent, project: project, urls: urls,
+                            size: urls.reduce(0) { $0 + sizer.allocatedSize(of: $1) },
+                            lastModified: newest, isOrphanRemains: orphan)
+    }
+
+    /// Data mais nova de um caminho, descendo nas pastas sem seguir links; `nil` ao passar do limite de entradas.
+    private func newestDate(_ path: String) -> Date? {
+        var newest = modDate(path) ?? .distantPast
+        guard isRealDirectory(path) else { return newest }
+        var n = 0
+        let e = FileManager.default.enumerator(at: URL(fileURLWithPath: path, isDirectory: true),
+                                               includingPropertiesForKeys: [.contentModificationDateKey], options: [],
+                                               errorHandler: { _, _ in true })
+        while let u = e?.nextObject() as? URL {
+            n += 1
+            if n > Self.maxWalkEntries { return nil }
+            if let d = modDate(u.path) { newest = max(newest, d) }
+        }
+        return newest
+    }
+
+    // MARK: - Utilitários
+
+    /// Casa o caminho com `AgentsCatalog.neverTouch`: padrões com `/` valem para o caminho e seus filhos
+    /// (`~` é a pasta pessoal); padrões simples valem para qualquer componente.
+    func isNeverTouch(_ path: String) -> Bool {
+        for pattern in AgentsCatalog.neverTouch {
+            if pattern.contains("/") {
+                let full = pattern.hasPrefix("~/") ? homePath + String(pattern.dropFirst(1)) : pattern
+                var prefix = ""
+                for comp in path.split(separator: "/", omittingEmptySubsequences: true) {
+                    prefix += "/" + comp
+                    if fnmatch(full, prefix, FNM_PATHNAME) == 0 { return true }
+                }
+            } else {
+                for comp in path.split(separator: "/") where fnmatch(pattern, String(comp), 0) == 0 { return true }
+            }
+        }
+        return false
+    }
+
+    private func entries(_ dir: String) -> [String] {
+        ((try? FileManager.default.contentsOfDirectory(atPath: dir)) ?? []).sorted()
+    }
+
+    private func modDate(_ path: String) -> Date? {
+        (try? FileManager.default.attributesOfItem(atPath: path))?[.modificationDate] as? Date
+    }
+
+    private func isSymlink(_ path: String) -> Bool {
+        (try? FileManager.default.attributesOfItem(atPath: path))?[.type] as? FileAttributeType == .typeSymbolicLink
+    }
+
+    private func exists(_ path: String) -> Bool { (try? FileManager.default.attributesOfItem(atPath: path)) != nil }
+
+    private func isDirectory(_ path: String) -> Bool {
+        (try? FileManager.default.attributesOfItem(atPath: path))?[.type] as? FileAttributeType == .typeDirectory
+    }
+
+    private func isRealDirectory(_ path: String) -> Bool { isDirectory(path) && !isSymlink(path) }
+}
