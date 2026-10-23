@@ -45,8 +45,10 @@ public struct GitTool: Sendable {
 
     /// Verdadeiro quando há arquivo versionado sob o caminho. Falha fechado: se o git não conseguir
     /// responder (safe.directory, repositório corrompido, lock), devolve `true` para não liberar remoção.
+    /// O pathspec `:(icase,literal)` não diferencia caixa (o APFS também não; `build` acha `Build/` versionada)
+    /// e não interpreta `*`, `?` ou `[` no nome.
     public func hasTracked(_ relPath: String, in worktree: URL) -> Bool {
-        let result = runner.run(executable, ["-C", worktree.path, "ls-files", "--", relPath])
+        let result = runner.run(executable, ["-C", worktree.path, "ls-files", "--", ":(icase,literal)" + relPath])
         guard result.status == 0 else { return true }
         return !result.output.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
     }

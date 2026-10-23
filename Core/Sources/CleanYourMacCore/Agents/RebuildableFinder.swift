@@ -25,6 +25,7 @@ public struct WorktreeEntry: Hashable, Sendable {
 /// Acha as pastas recriáveis de uma worktree. Regras (o que sai daqui vai para o Lixo; na dúvida, fica de fora):
 /// - só diretórios reais: nada que seja link nem esteja sob um link;
 /// - `node_modules` até o nível 4 (pasta-mãe com no máximo 4 componentes abaixo da worktree);
+/// - cada parte do nome com a grafia exata do catálogo na listagem da pasta (o APFS não diferencia caixa);
 /// - pastas de build só quando o git as ignora (`check-ignore`);
 /// - com git, nada que contenha arquivo rastreado (`ls-files`, que falha fechado);
 /// - sem git utilizável, ou com worktree órfã, só `node_modules`, sem chamar o git;
@@ -78,7 +79,7 @@ public struct RebuildableFinder: Sendable {
                                    modified: lstatInfo(path).map(Self.mtime))
         }
 
-        var last = latestActivity(root: root, excluding: Set(candidates.map(\.rel)))
+        var last = latestActivity(root: root)
         if !worktree.isOrphan, let index = registryIndexDate(root: root) {
             last = max(last ?? index, index)
         }
@@ -97,20 +98,25 @@ public struct RebuildableFinder: Sendable {
         while let (rel, depth) = stack.popLast() {
             autoreleasepool {
                 let dir = rel.isEmpty ? root : root + "/" + rel
+                let children = listDir(dir)
+                let childSet = Set(children)
                 for name in names {
                     let candRel = rel.isEmpty ? name : rel + "/" + name
-                    // Cada parte do nome (`.angular`, `.angular/cache`) tem de ser diretório real.
+                    // Cada parte do nome (`.angular`, `.angular/cache`) tem de ser diretório real e aparecer com a
+                    // grafia EXATA na listagem da pasta-mãe: o APFS não diferencia caixa, e `lstat(".../build")`
+                    // acharia `Build/`, que o git (com `core.ignorecase`) dá como ignorada sem achar o que é rastreado.
                     var ok = true
                     var partial = dir
-                    for part in name.split(separator: "/") {
+                    for (i, part) in name.split(separator: "/").map(String.init).enumerated() {
+                        let listed = i == 0 ? childSet.contains(part) : listDir(partial).contains(part)
                         partial += "/" + part
-                        if !isRealDirectory(partial) { ok = false; break }
+                        if !listed || !isRealDirectory(partial) { ok = false; break }
                     }
                     // Uma recriável que é repositório próprio não é do git desta worktree.
                     if ok, lstatInfo(partial + "/.git") == nil { found.append(Candidate(rel: candRel, name: name)) }
                 }
                 guard depth < Self.maxSearchDepth else { return }
-                for child in listDir(dir) {
+                for child in children {
                     let childRel = rel.isEmpty ? child : rel + "/" + child
                     let childPath = root + "/" + childRel
                     guard child != ".git", !isRebuildablePath(childRel), isRealDirectory(childPath),
@@ -122,15 +128,17 @@ public struct RebuildableFinder: Sendable {
         return found
     }
 
-    /// Verdadeiro quando o caminho termina num nome do catálogo (inclusive os de mais de uma parte).
+    /// Verdadeiro quando o caminho termina num nome do catálogo (inclusive os de mais de uma parte), com a grafia
+    /// exata: os componentes vêm de `contentsOfDirectory`.
     private func isRebuildablePath(_ rel: String) -> Bool {
         AgentsCatalog.rebuildable.contains { rel == $0 || rel.hasSuffix("/" + $0) }
     }
 
     // MARK: - Atividade
 
-    /// Data mais nova dos arquivos até o nível 3, fora das recriáveis listadas e de `.git`. Não segue links.
-    private func latestActivity(root: String, excluding listed: Set<String>) -> Date? {
+    /// Data mais nova dos arquivos até o nível 3. Não desce em `.git` nem em pastas com nome do catálogo
+    /// (grafia exata), listadas ou não. Não segue links.
+    private func latestActivity(root: String) -> Date? {
         var latest: Date?
         var stack: [(rel: String, depth: Int)] = [("", 0)]
         while let (rel, depth) = stack.popLast() {
@@ -144,7 +152,7 @@ public struct RebuildableFinder: Sendable {
                         let d = Self.mtime(st)
                         latest = max(latest ?? d, d)
                     case S_IFDIR:
-                        if depth < Self.maxActivityDepth, !listed.contains(childRel) { stack.append((childRel, depth + 1)) }
+                        if depth < Self.maxActivityDepth, !isRebuildablePath(childRel) { stack.append((childRel, depth + 1)) }
                     default:
                         continue
                     }

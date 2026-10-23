@@ -18,7 +18,7 @@ private final class FakeGitRunner: CommandRunner, @unchecked Sendable {
     func run(_ executable: String, _ arguments: [String]) -> (status: Int32, output: String) {
         lock.lock(); _calls.append(arguments); lock.unlock()
         guard let sep = arguments.firstIndex(of: "--") else { return (128, "fatal") }
-        let paths = Array(arguments[(sep + 1)...])
+        let paths = arguments[(sep + 1)...].map { $0.hasPrefix(":(icase,literal)") ? String($0.dropFirst(":(icase,literal)".count)) : $0 }
         if arguments.contains("check-ignore") {
             let hits = paths.filter { ignored.contains($0) }
             return hits.isEmpty ? (1, "") : (0, hits.map { $0 + "\n" }.joined())
@@ -130,6 +130,32 @@ private final class FakeGitRunner: CommandRunner, @unchecked Sendable {
         #expect(finder(FakeGitRunner(ignored: [".angular/cache"])).entry(for: wt) == nil)
     }
 
+    @Test func caseVariantNotMatched() {
+        // O APFS acha `Node_Modules` por `node_modules`; só a grafia exata do catálogo vale.
+        let fx = FixtureTree()
+        let wt = worktree(fx)
+        fx.file("wt/Node_Modules/a.js", bytes: 10)
+        fx.file("wt/Build/a.js", bytes: 10)
+        fx.file("wt/.Angular/cache/a.json", bytes: 10)
+        fx.file("wt/.angular/Cache/a.json", bytes: 10)
+        #expect(finder(FakeGitRunner(ignored: ["build", "Build", ".angular/cache"])).entry(for: wt) == nil)
+        #expect(finder(nil).entry(for: wt) == nil)
+        #expect(finder(FakeGitRunner(), now: Date()).entry(for: worktree(fx, orphan: true)) == nil)
+    }
+
+    @Test func activityIgnoresUnlistedRebuildableFolders() {
+        // `build` não ignorada (não listada) também não conta como atividade: o brief diz "sem descer em recriáveis".
+        let now = Date()
+        let fx = FixtureTree()
+        let wt = worktree(fx)
+        fx.file("wt/src/x.ts", bytes: 10, modified: now.addingTimeInterval(-48 * 3600))
+        fx.file("wt/build/out.js", bytes: 10, modified: now)
+        fx.file("wt/node_modules/a.js", bytes: 10, modified: now)
+        let entry = finder(FakeGitRunner(), now: now).entry(for: wt)
+        #expect(relPaths(entry, wt) == ["node_modules"])
+        #expect(entry?.isRecent == false)
+    }
+
     @Test func nestedRepoSkipped() {
         // Submódulo ou repositório aninhado: o git da worktree não responde por ele.
         let fx = FixtureTree()
@@ -206,5 +232,23 @@ private final class FakeGitRunner: CommandRunner, @unchecked Sendable {
 
         let entry = RebuildableFinder(git: git, now: Date()).entry(for: wt)
         #expect(relPaths(entry, wt) == ["node_modules", "dist", "São Paulo/dist"])
+    }
+
+    @Test func integrationCaseInsensitiveBuildWithTrackedFiles() throws {
+        // `Build/` versionada e `.gitignore` com `build/`: no APFS o git diz que `build` é ignorada, mas nada pode sair.
+        let runner = SystemCommandRunner()
+        guard let git = GitTool.locate(runner: runner, fileExists: { FileManager.default.fileExists(atPath: $0) }) else { return }
+        let fx = FixtureTree()
+        let wt = Worktree(url: fx.dir("wt"), repo: nil, branch: nil, isOrphan: false)
+        func g(_ args: [String]) -> Int32 {
+            runner.run(git.executable, ["-C", wt.url.path, "-c", "user.name=t", "-c", "user.email=t@t", "-c", "commit.gpgsign=false"] + args).status
+        }
+        #expect(g(["init", "-q"]) == 0)
+        fx.file("wt/Build/script.sh", bytes: 10)
+        #expect(g(["add", "-A"]) == 0)
+        #expect(g(["commit", "-q", "-m", "init"]) == 0)
+        try "build/\n".write(to: fx.url("wt/.gitignore"), atomically: true, encoding: .utf8)
+        #expect(git.hasTracked("build", in: wt.url))
+        #expect(RebuildableFinder(git: git, now: Date()).entry(for: wt) == nil)
     }
 }

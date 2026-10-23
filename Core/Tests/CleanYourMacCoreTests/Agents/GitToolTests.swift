@@ -84,4 +84,10 @@ private final class RecordingRunner: CommandRunner, @unchecked Sendable {
         #expect(yes.hasTracked("dist", in: wt))
         #expect(!no.hasTracked("dist", in: wt))
     }
+
+    @Test func hasTrackedUsesCaseInsensitiveLiteralPathspec() {
+        let runner = RecordingRunner(fallback: (0, ""))
+        _ = GitTool(executable: clt, runner: runner).hasTracked("apps/[x]/build", in: URL(fileURLWithPath: "/tmp/wt"))
+        #expect(runner.calls.first?.arguments == ["-C", "/tmp/wt", "ls-files", "--", ":(icase,literal)apps/[x]/build"])
+    }
 }
