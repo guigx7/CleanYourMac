@@ -218,23 +218,7 @@ public struct SessionFinder: Sendable {
 
     // MARK: - Utilitários
 
-    /// Casa o caminho com `AgentsCatalog.neverTouch`: padrões com `/` valem para o caminho e seus filhos
-    /// (`~` é a pasta pessoal); padrões simples valem para qualquer componente.
-    func isNeverTouch(_ path: String) -> Bool {
-        for pattern in AgentsCatalog.neverTouch {
-            if pattern.contains("/") {
-                let full = pattern.hasPrefix("~/") ? homePath + String(pattern.dropFirst(1)) : pattern
-                var prefix = ""
-                for comp in path.split(separator: "/", omittingEmptySubsequences: true) {
-                    prefix += "/" + comp
-                    if fnmatch(full, prefix, FNM_PATHNAME) == 0 { return true }
-                }
-            } else {
-                for comp in path.split(separator: "/") where fnmatch(pattern, String(comp), 0) == 0 { return true }
-            }
-        }
-        return false
-    }
+    private func isNeverTouch(_ path: String) -> Bool { AgentsCatalog.isNeverTouch(path, home: home) }
 
     private func entries(_ dir: String) -> [String] {
         ((try? FileManager.default.contentsOfDirectory(atPath: dir)) ?? []).sorted()

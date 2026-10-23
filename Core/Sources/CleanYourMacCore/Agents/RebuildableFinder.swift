@@ -79,10 +79,7 @@ public struct RebuildableFinder: Sendable {
                                    modified: lstatInfo(path).map(Self.mtime))
         }
 
-        var last = latestActivity(root: root)
-        if !worktree.isOrphan, let index = registryIndexDate(root: root) {
-            last = max(last ?? index, index)
-        }
+        let last = lastActivity(root: root, isOrphan: worktree.isOrphan)
         let isRecent = last.map { now.timeIntervalSince($0) <= Self.recentWindow } ?? false
         return WorktreeEntry(worktree: worktree, items: items, lastActivity: last, isRecent: isRecent)
     }
@@ -135,6 +132,16 @@ public struct RebuildableFinder: Sendable {
     }
 
     // MARK: - Atividade
+
+    /// Atividade da worktree: a data mais nova entre os arquivos de fora das recriáveis e, se não for órfã, o índice do
+    /// registro. O removedor recalcula com esta mesma função para saber se o agente voltou a mexer.
+    func lastActivity(root: String, isOrphan: Bool) -> Date? {
+        var last = latestActivity(root: root)
+        if !isOrphan, let index = registryIndexDate(root: root) {
+            last = max(last ?? index, index)
+        }
+        return last
+    }
 
     /// Data mais nova dos arquivos até o nível 3. Não desce em `.git` nem em pastas com nome do catálogo
     /// (grafia exata), listadas ou não. Não segue links.

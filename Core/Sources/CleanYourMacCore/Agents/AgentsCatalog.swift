@@ -40,4 +40,23 @@ public enum AgentsCatalog {
         "opencode.db",
         "*.sqlite",
     ]
+
+    /// Casa o caminho com `neverTouch`: padrões com `/` valem para o caminho e seus filhos (`~` é a pasta pessoal);
+    /// padrões simples valem para qualquer componente.
+    public static func isNeverTouch(_ path: String, home: URL) -> Bool {
+        let homePath = home.path
+        for pattern in neverTouch {
+            if pattern.contains("/") {
+                let full = pattern.hasPrefix("~/") ? homePath + String(pattern.dropFirst(1)) : pattern
+                var prefix = ""
+                for comp in path.split(separator: "/", omittingEmptySubsequences: true) {
+                    prefix += "/" + comp
+                    if fnmatch(full, prefix, FNM_PATHNAME) == 0 { return true }
+                }
+            } else {
+                for comp in path.split(separator: "/") where fnmatch(pattern, String(comp), 0) == 0 { return true }
+            }
+        }
+        return false
+    }
 }

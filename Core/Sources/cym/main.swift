@@ -9,6 +9,7 @@ import CleanYourMacCore
 //   cym performance [--json]           (módulo Desempenho; só leitura)
 //   cym spacelens [caminho] [--json]   (Lupa de Espaço; só leitura: tempo, total e os maiores filhos)
 //   cym clutter [pasta] [--json]       (Acúmulos; só leitura, sem a fototeca)
+//   cym agents [--json]                (Agentes de IA; só leitura: worktrees, pastas recriáveis e sessões antigas)
 //
 // Não existe limpeza de verdade pelo CLI: `clean` exige --dry-run.
 
@@ -98,6 +99,73 @@ case "clutter":
     print("similares:", clutterReport.similar.count, "grupos")
     print("downloads:", clutterReport.downloads.map { "\($0.app.title) \(SizeFormatter.string($0.totalSize, locale: br))" })
     print("cartões:", clutterReport.tiles.map { "\($0.kind.rawValue) \($0.count) \(SizeFormatter.string($0.size, locale: br))" })
+case "agents":
+    let started = Date()
+    var agentsReport: AgentsReport?
+    for try await event in AgentsScan().run() { if case .finished(let r) = event { agentsReport = r } }
+    guard let agentsReport else { fail("análise não terminou") }
+    let iso = ISO8601DateFormatter()
+    let date: (Date?) -> Any = { $0.map { iso.string(from: $0) } ?? NSNull() }
+    let agentIDs = AgentsCatalog.agents.map(\.id)
+    if has("--json") {
+        let json: [String: Any] = [
+            "total": agentsReport.total,
+            "totalSize": agentsReport.totalSize,
+            "buildFoldersSkipped": agentsReport.buildFoldersSkipped,
+            "worktrees": agentsReport.worktrees.map { e -> [String: Any] in
+                ["path": e.worktree.url.path, "repo": e.worktree.repo?.path ?? NSNull(), "branch": e.worktree.branch ?? NSNull(),
+                 "orphan": e.worktree.isOrphan, "recent": e.isRecent, "lastActivity": date(e.lastActivity),
+                 "size": e.items.reduce(Int64(0)) { $0 + $1.size },
+                 "items": e.items.map { ["path": $0.url.path, "name": $0.name, "size": $0.size] as [String: Any] }]
+            },
+            "sessions": Dictionary(uniqueKeysWithValues: agentIDs.map { agent -> (String, Any) in
+                let mine = agentsReport.sessions.filter { $0.agent == agent }
+                return (agent, ["count": mine.count, "size": mine.reduce(Int64(0)) { $0 + $1.size },
+                                "items": mine.map { s -> [String: Any] in
+                                    ["id": s.id, "project": s.project ?? NSNull(), "size": s.size, "lastModified": date(s.lastModified),
+                                     "orphanRemains": s.isOrphanRemains, "paths": s.urls.map(\.path)]
+                                }] as [String: Any])
+            }),
+            "tiles": agentsReport.tiles.map { t -> [String: Any] in
+                let kind: String
+                switch t.kind {
+                case .worktrees: kind = "worktrees"
+                case .sessions(let agent): kind = "sessions:" + agent
+                }
+                return ["kind": kind, "count": t.count, "size": t.size]
+            },
+        ]
+        let data = try JSONSerialization.data(withJSONObject: json, options: [.prettyPrinted, .sortedKeys])
+        print(String(decoding: data, as: UTF8.self))
+        exit(0)
+    }
+    let br = Locale(identifier: "pt-BR")
+    print(String(format: "%.1f s · %d itens · %@", Date().timeIntervalSince(started), agentsReport.total,
+                 SizeFormatter.string(agentsReport.totalSize, locale: br)))
+    if agentsReport.buildFoldersSkipped { print("sem git: pastas de build ficaram de fora (só node_modules)") }
+    print("worktrees com pastas recriáveis:", agentsReport.worktrees.count)
+    for e in agentsReport.worktrees {
+        let size = e.items.reduce(Int64(0)) { $0 + $1.size }
+        let tags = [e.isRecent ? "em uso" : nil, e.worktree.isOrphan ? "órfã" : nil].compactMap { $0 }
+        print(String(format: "%10@  %@%@", SizeFormatter.string(size, locale: br), e.worktree.url.path,
+                     tags.isEmpty ? "" : "  [" + tags.joined(separator: ", ") + "]"))
+        for i in e.items {
+            print(String(format: "%10@    %@", SizeFormatter.string(i.size, locale: br), String(i.url.path.dropFirst(e.worktree.url.path.count + 1))))
+        }
+    }
+    for agent in AgentsCatalog.agents {
+        let mine = agentsReport.sessions.filter { $0.agent == agent.id }
+        print("sessões \(agent.name) com mais de 7 dias: \(mine.count) · \(SizeFormatter.string(mine.reduce(0) { $0 + $1.size }, locale: br))",
+              mine.contains { $0.isOrphanRemains } ? "(\(mine.filter(\.isOrphanRemains).count) só restos)" : "")
+    }
+    print("cartões:", agentsReport.tiles.map { t -> String in
+        let kind: String
+        switch t.kind {
+        case .worktrees: kind = "worktrees"
+        case .sessions(let agent): kind = "sessões " + agent
+        }
+        return "\(kind) \(t.count) \(SizeFormatter.string(t.size, locale: br))"
+    })
 case "spacelens":
     let path = args.first { !$0.hasPrefix("--") }
     let start = Date()

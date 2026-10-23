@@ -41,6 +41,12 @@ public struct CleanupLog: Sendable {
         try write(report, prefix: "clutter", date: report.date)
     }
 
+    /// Remoção do módulo Agentes de IA.
+    @discardableResult
+    public func write(agents report: CleanReport) throws -> URL {
+        try write(report, prefix: "agents", date: report.date)
+    }
+
     @discardableResult
     public func write(_ report: MaintenanceReport) throws -> URL {
         try write(report, prefix: "maintenance", date: report.date)
