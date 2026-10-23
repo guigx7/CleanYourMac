@@ -129,6 +129,29 @@ import Testing
         #expect(try find(fx).isEmpty)
     }
 
+    /// I1: a varredura não desce em pastas de build/dependências (grafia exata), `Pods`, `go/pkg` nem em outro volume.
+    @Test func walkPrunesBuildFoldersAndOtherVolumes() throws {
+        let fx = FixtureTree()
+        let pruned = ["target", "venv", "dist", "build", "DerivedData", "__pycache__", "Pods", "go/pkg/mod"]
+        for (i, dir) in pruned.enumerated() {
+            link(fx, repo: "Projetos/x/\(dir)/r", name: "w", worktree: "Projetos/pruned-\(i)")
+        }
+        // Grafia diferente e `pkg` fora de `go` continuam sendo olhados.
+        link(fx, repo: "Projetos/z/Target/r", name: "w", worktree: "Projetos/ok-target")
+        link(fx, repo: "Projetos/y/pkg/r", name: "w", worktree: "Projetos/ok-pkg")
+        link(fx, repo: "Projetos/ok", name: "w", worktree: "Projetos/ok-w")
+        // Volume montado dentro da pasta pessoal: outro `st_dev`.
+        link(fx, repo: "Montado/r", name: "w", worktree: "Projetos/mounted-w")
+        let mounted = fx.url("Montado").path
+        let finder = WorktreeFinder(home: fx.root, device: { path in
+            var st = stat()
+            guard lstat(path, &st) == 0 else { return nil }
+            return path == mounted || path.hasPrefix(mounted + "/") ? st.st_dev &+ 1 : st.st_dev
+        })
+        let names = Set(try finder.worktrees(isCancelled: { false }).map(\.url.lastPathComponent))
+        #expect(names == ["ok-target", "ok-pkg", "ok-w"])
+    }
+
     @Test func cancellationThrows() throws {
         let fx = FixtureTree()
         for i in 0..<1100 { fx.dir("Projetos/d\(i)") }

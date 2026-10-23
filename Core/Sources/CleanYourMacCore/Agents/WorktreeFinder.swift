@@ -22,10 +22,23 @@ public struct Worktree: Hashable, Sendable {
 public struct WorktreeFinder: Sendable {
     private let home: URL
     private let realHome: String
+    /// `st_dev` de um caminho (sem seguir link); trocável nos testes para simular um volume montado.
+    private let device: @Sendable (String) -> dev_t?
+
+    /// Pastas em que a varredura não desce (grafia exata): as recriáveis do catálogo, `Pods` e `.build`.
+    static let prunedNames: Set<String> = Set(AgentsCatalog.rebuildable.filter { !$0.contains("/") }).union(["Pods", ".build"])
 
     public init(home: URL) {
+        self.init(home: home, device: { path in
+            var st = stat()
+            return lstat(path, &st) == 0 ? st.st_dev : nil
+        })
+    }
+
+    init(home: URL, device: @escaping @Sendable (String) -> dev_t?) {
         self.home = home
         realHome = PathPolicy.realPath(home.path)
+        self.device = device
     }
 
     public func worktrees(isCancelled: @Sendable () -> Bool) throws -> [Worktree] {
@@ -90,10 +103,12 @@ public struct WorktreeFinder: Sendable {
 
     // MARK: - Varredura dos repositórios
 
-    /// Repositórios (pasta com `.git` diretório) sob a pasta pessoal. Não desce em `Library`, `node_modules`, `.Trash`,
-    /// pacotes, ocultos nem links.
+    /// Repositórios (pasta com `.git` diretório) sob a pasta pessoal. Não desce em `Library`, `.Trash`, pacotes, ocultos,
+    /// links, pastas de build e dependências (`prunedNames`, com a grafia exata), `go/pkg`, nem em outro volume
+    /// (`st_dev` diferente do da pasta pessoal).
     private func findRepos(isCancelled: @Sendable () -> Bool) throws -> [String] {
         var repos: [String] = []
+        guard let homeDevice = device(realHome) else { return repos }
         var stack = [realHome]
         var n = 0
         let keys: Set<URLResourceKey> = [.isDirectoryKey, .isPackageKey, .isSymbolicLinkKey]
@@ -109,9 +124,10 @@ public struct WorktreeFinder: Sendable {
                         if isDirectory(item.path) { repos.append(dir) }
                         continue
                     }
-                    if name.hasPrefix(".") || name == "Library" || name == "node_modules" { continue }
+                    if name.hasPrefix(".") || name == "Library" || Self.prunedNames.contains(name) { continue }
+                    if name == "pkg", (dir as NSString).lastPathComponent == "go" { continue }
                     guard let v = try? item.resourceValues(forKeys: keys), v.isDirectory == true,
-                          v.isSymbolicLink != true, v.isPackage != true else { continue }
+                          v.isSymbolicLink != true, v.isPackage != true, device(item.path) == homeDevice else { continue }
                     stack.append(item.path)
                 }
             }
