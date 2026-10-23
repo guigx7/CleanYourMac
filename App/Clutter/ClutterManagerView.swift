@@ -119,19 +119,6 @@ struct ClutterPickMenu: View {
     }
 }
 
-struct ClutterEmptyView: View {
-    var symbol: String
-    var text: LocalizedStringKey
-
-    var body: some View {
-        VStack(spacing: 10) {
-            Image(systemName: symbol).font(.system(size: 36)).foregroundStyle(.secondary)
-            Text(text).foregroundStyle(.secondary)
-        }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-    }
-}
-
 // MARK: - Fundo do Baú
 
 struct LargeOldSectionView: View {
@@ -189,7 +176,7 @@ struct LargeOldSectionView: View {
         let rows = sort.sorted(items.filter { filter.matches($0, selected: model.selection, now: now) && ClutterSearch.matches($0.url.lastPathComponent, search) },
                                name: { $0.url.lastPathComponent }, size: \.size, date: \.accessed)
         if rows.isEmpty {
-            ClutterEmptyView(symbol: "archivebox", text: "clutter.empty")
+            ModuleEmptyView(symbol: "archivebox", text: "clutter.empty")
         } else {
             List {
                 HStack {
@@ -246,7 +233,7 @@ struct DuplicatesSectionView: View {
             filter.matches($0, selected: model.selection) && $0.files.contains { ClutterSearch.matches($0.url.lastPathComponent, search) }
         }, name: \.name, size: \.totalSize, date: { $0.files.compactMap(\.created).max() })
         if groups.isEmpty {
-            ClutterEmptyView(symbol: "doc.on.doc", text: "clutter.empty")
+            ModuleEmptyView(symbol: "doc.on.doc", text: "clutter.empty")
         } else {
             List {
                 ForEach(groups) { g in
@@ -311,7 +298,7 @@ struct SimilarSectionView: View {
             g.images.contains { ClutterSearch.matches($0.url?.lastPathComponent ?? "", search) } || search.isEmpty
         }, name: title, size: \.totalSize, date: \.date)
         if groups.isEmpty {
-            ClutterEmptyView(symbol: "photo.on.rectangle", text: "clutter.empty")
+            ModuleEmptyView(symbol: "photo.on.rectangle", text: "clutter.empty")
         } else {
             List {
                 ForEach(groups) { g in
@@ -464,7 +451,7 @@ struct DownloadsSectionView: View {
     @ViewBuilder private var list: some View {
         let groups = model.report?.downloads ?? []
         if groups.isEmpty {
-            ClutterEmptyView(symbol: "arrow.down.circle", text: "clutter.empty.downloads")
+            ModuleEmptyView(symbol: "arrow.down.circle", text: "clutter.empty.downloads")
         } else {
             List {
                 ForEach(groups) { g in

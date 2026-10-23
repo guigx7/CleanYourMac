@@ -55,6 +55,7 @@ struct CategoryBadge: View {
         case .applications: [Color(hex: 0x8DB6FF), Color(hex: 0x3D63D6)]
         case .performance: [Color(hex: 0xFFB877), Color(hex: 0xC4521F)]
         case .clutter: [Color(hex: 0x8FEDE4), Color(hex: 0x0E8A8F)]
+        case .agents: [Color(hex: 0xB9C6F4), Color(hex: 0x4A5C9E)]
         case .spaceLens: [Color(hex: 0xC9B6FF), Color(hex: 0x6A44D8)]
         default: [Color(hex: 0xA6D96A), Color(hex: 0x3E8E3A)]
         }

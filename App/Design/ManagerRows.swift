@@ -116,6 +116,20 @@ struct ModuleGroupRow<Icon: View>: View {
     }
 }
 
+/// Lista vazia: símbolo e frase no meio.
+struct ModuleEmptyView: View {
+    var symbol: String
+    var text: LocalizedStringKey
+
+    var body: some View {
+        VStack(spacing: 10) {
+            Image(systemName: symbol).font(.system(size: 36)).foregroundStyle(.secondary)
+            Text(text).foregroundStyle(.secondary)
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+    }
+}
+
 extension SelectionModel.State {
     /// Estado da caixa de um grupo com `ids`, dada a função que diz se um id está marcado.
     static func of(_ ids: [String], selected: (String) -> Bool) -> Self {

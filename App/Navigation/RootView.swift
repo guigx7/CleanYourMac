@@ -15,6 +15,7 @@ struct RootView: View {
     @State private var performance = PerformanceEnvironment.makeModel()
     @State private var lens = SpaceLensEnvironment.makeModel()
     @State private var clutter = ClutterEnvironment.makeModel()
+    @State private var agents = AgentsEnvironment.makeModel()
     @State private var page: SidebarPage? = RootView.initialPage
 
     /// Debug: `CYM_PAGE=settings|about` abre a aba direto (capturas).
@@ -25,10 +26,11 @@ struct RootView: View {
         return nil
     }
 
-    /// Telas claras em tela cheia: os Gerenciadores de Limpeza, Aplicativos, Desempenho e Acúmulos.
+    /// Telas claras em tela cheia: os Gerenciadores de Limpeza, Aplicativos, Desempenho, Acúmulos e Agentes de IA.
     private var fullScreen: Bool {
         (module == .cleanup && cleanup.phase == .review) || (module == .applications && apps.managerOpen)
             || (module == .performance && performance.managerOpen) || (module == .clutter && clutter.managerOpen)
+            || (module == .agents && agents.managerOpen)
     }
 
     var body: some View {
@@ -44,6 +46,9 @@ struct RootView: View {
                     .transition(.move(edge: .trailing).combined(with: .opacity))
             } else if module == .clutter && clutter.managerOpen {
                 ClutterManagerView(model: clutter)
+                    .transition(.move(edge: .trailing).combined(with: .opacity))
+            } else if module == .agents && agents.managerOpen {
+                AgentsManagerView(model: agents)
                     .transition(.move(edge: .trailing).combined(with: .opacity))
             } else {
                 main.transition(.opacity)
@@ -82,6 +87,7 @@ struct RootView: View {
         case .applications: apps.phase == .intro
         case .performance: performance.phase == .intro
         case .clutter: clutter.phase == .intro
+        case .agents: agents.phase == .intro
         case .spaceLens: lens.phase == .intro
         default: cleanup.phase == .intro
         }
@@ -108,10 +114,10 @@ struct RootView: View {
             PerformanceModuleView(model: performance)
         case .clutter:
             ClutterModuleView(model: clutter)
+        case .agents:
+            AgentsModuleView(model: agents)
         case .spaceLens:
             SpaceLensModuleView(model: lens)
-        default:
-            EmptyView()
         }
     }
 }

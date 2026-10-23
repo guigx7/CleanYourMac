@@ -1,7 +1,7 @@
 import SwiftUI
 
 enum AppModule: String, CaseIterable, Identifiable {
-    case cleanup, performance, applications, clutter, spaceLens
+    case cleanup, performance, applications, clutter, agents, spaceLens
 
     var id: String { rawValue }
 
@@ -14,6 +14,7 @@ enum AppModule: String, CaseIterable, Identifiable {
         case .performance: "module.performance"
         case .applications: "module.applications"
         case .clutter: "module.clutter"
+        case .agents: "module.agents"
         case .spaceLens: "module.spaceLens"
         }
     }
@@ -24,6 +25,7 @@ enum AppModule: String, CaseIterable, Identifiable {
         case .performance: "bolt.fill"
         case .applications: "square.grid.2x2.fill"
         case .clutter: "doc.on.doc.fill"
+        case .agents: "cpu"
         case .spaceLens: "circle.hexagongrid.fill"
         }
     }

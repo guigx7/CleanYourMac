@@ -171,6 +171,958 @@
         }
       }
     },
+    "agents.action.remove": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Remove"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Remover"
+          }
+        }
+      }
+    },
+    "agents.category.sessions": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sessions older than 7 days"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sessões com mais de 7 dias"
+          }
+        }
+      }
+    },
+    "agents.category.worktrees": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "node_modules and builds in worktrees"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "node_modules e builds nas worktrees"
+          }
+        }
+      }
+    },
+    "agents.confirm.codex": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Codex may keep listing these conversations."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "O Codex pode continuar listando essas conversas."
+          }
+        }
+      }
+    },
+    "agents.confirm.dryRun": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Simulation mode: nothing will be changed."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Modo de simulação: nada será alterado."
+          }
+        }
+      }
+    },
+    "agents.confirm.sessions": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "These conversations can no longer be resumed."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Não dá mais para retomar essas conversas."
+          }
+        }
+      }
+    },
+    "agents.confirm.title.one": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Remove %d item (%@)?"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Remover %d item (%@)?"
+          }
+        }
+      }
+    },
+    "agents.confirm.title.other": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Remove %d items (%@)?"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Remover %d itens (%@)?"
+          }
+        }
+      }
+    },
+    "agents.confirm.trash": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Everything goes to the Trash. The space comes back when you empty it."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tudo vai para o Lixo. O espaço volta ao esvaziar o Lixo."
+          }
+        }
+      }
+    },
+    "agents.date.modified": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Last modified"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Última modificação"
+          }
+        }
+      }
+    },
+    "agents.done.dryRun.one": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Simulation: %d item (%@) would go to the Trash. Nothing was changed."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Simulação: %d item (%@) iria para o Lixo. Nada foi alterado."
+          }
+        }
+      }
+    },
+    "agents.done.dryRun.other": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Simulation: %d items (%@) would go to the Trash. Nothing was changed."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Simulação: %d itens (%@) iriam para o Lixo. Nada foi alterado."
+          }
+        }
+      }
+    },
+    "agents.done.partial.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Some items stayed"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Alguns itens ficaram"
+          }
+        }
+      }
+    },
+    "agents.done.reviewMore": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Review More Items"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Revisar Mais Itens"
+          }
+        }
+      }
+    },
+    "agents.done.summary.one": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%d item went to the Trash (%@)."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%d item foi para o Lixo (%@)."
+          }
+        }
+      }
+    },
+    "agents.done.summary.other": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%d items went to the Trash (%@)."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%d itens foram para o Lixo (%@)."
+          }
+        }
+      }
+    },
+    "agents.done.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Done"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pronto"
+          }
+        }
+      }
+    },
+    "agents.done.trash": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The space comes back when you empty the Trash."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "O espaço volta ao esvaziar o Lixo."
+          }
+        }
+      }
+    },
+    "agents.empty": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nothing here."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nada aqui."
+          }
+        }
+      }
+    },
+    "agents.intro.safety": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Code, commits and uncommitted changes are never touched."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Código, commits e alterações sem commit nunca são tocados."
+          }
+        }
+      }
+    },
+    "agents.intro.subtitle": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Get back the space your coding agents leave behind: folders that rebuild themselves in idle worktrees and conversations older than 7 days."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Recupere o espaço que os agentes de programação deixam para trás: pastas que se recriam sozinhas em worktrees paradas e conversas com mais de 7 dias."
+          }
+        }
+      }
+    },
+    "agents.intro.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "AI Agents"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Agentes de IA"
+          }
+        }
+      }
+    },
+    "agents.manager.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "AI Agents Manager"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gerenciador de Agentes de IA"
+          }
+        }
+      }
+    },
+    "agents.noGit": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Only node_modules: install the Xcode Command Line Tools to include build folders."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Só node_modules: instale as ferramentas de linha de comando do Xcode para incluir as pastas de build."
+          }
+        }
+      }
+    },
+    "agents.nothing.message": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No folders in idle worktrees and no sessions older than 7 days were found."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Não achamos pastas em worktrees paradas nem sessões com mais de 7 dias."
+          }
+        }
+      }
+    },
+    "agents.nothing.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nothing left behind"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nada esquecido"
+          }
+        }
+      }
+    },
+    "agents.project.hash": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Project %@"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Projeto %@"
+          }
+        }
+      }
+    },
+    "agents.removing.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Moving items to the Trash…"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Movendo itens para o Lixo…"
+          }
+        }
+      }
+    },
+    "agents.repo.unknown": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Main repository not found"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Repositório principal não encontrado"
+          }
+        }
+      }
+    },
+    "agents.results.header": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Found %@ you can free up."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Encontramos %@ para liberar."
+          }
+        }
+      }
+    },
+    "agents.results.reviewAll": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Review All Items"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Revisar Todos os Itens"
+          }
+        }
+      }
+    },
+    "agents.results.subtitle": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Folders that rebuild themselves and old conversations. Code and commits stay."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pastas que se recriam sozinhas e conversas antigas. O código e os commits ficam."
+          }
+        }
+      }
+    },
+    "agents.scan.step.folders": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Measuring node_modules and build folders"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Medindo node_modules e pastas de build"
+          }
+        }
+      }
+    },
+    "agents.scan.step.sessions": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Looking for old agent sessions"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Procurando sessões antigas dos agentes"
+          }
+        }
+      }
+    },
+    "agents.scan.step.worktrees": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Finding your repositories’ worktrees"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Procurando as worktrees dos repositórios"
+          }
+        }
+      }
+    },
+    "agents.scan.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Looking at your agents…"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Olhando os agentes…"
+          }
+        }
+      }
+    },
+    "agents.section.sessions": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sessions"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sessões"
+          }
+        }
+      }
+    },
+    "agents.section.sessions.description": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Agent conversations untouched for over 7 days. Memory, history and settings stay."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Conversas dos agentes paradas há mais de 7 dias. Memória, histórico e ajustes ficam."
+          }
+        }
+      }
+    },
+    "agents.section.worktrees": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Worktrees"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Worktrees"
+          }
+        }
+      }
+    },
+    "agents.section.worktrees.description": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rebuildable folders in linked worktrees. The worktrees, branches and changes stay."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pastas recriáveis das worktrees ligadas. As worktrees, as branches e as alterações ficam."
+          }
+        }
+      }
+    },
+    "agents.session.other": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sessions"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sessões"
+          }
+        }
+      }
+    },
+    "agents.session.remains": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Remains of deleted sessions"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Restos de sessões apagadas"
+          }
+        }
+      }
+    },
+    "agents.tile.sessions.detail": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ in old conversations. Once removed, they can’t be resumed."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ em conversas antigas. Depois de removidas, não dá mais para retomá-las."
+          }
+        }
+      }
+    },
+    "agents.tile.sessions.title.one": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%d %@ session older than 7 days"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%d sessão do %@ com mais de 7 dias"
+          }
+        }
+      }
+    },
+    "agents.tile.sessions.title.other": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%d %@ sessions older than 7 days"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%d sessões do %@ com mais de 7 dias"
+          }
+        }
+      }
+    },
+    "agents.tile.worktrees.detail": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ that an install or a build brings back. Worktrees in use stay out."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ que uma instalação ou um build trazem de volta. Worktrees em uso ficam de fora."
+          }
+        }
+      }
+    },
+    "agents.tile.worktrees.title.one": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "node_modules and builds in %d idle worktree"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "node_modules e builds em %d worktree parada"
+          }
+        }
+      }
+    },
+    "agents.tile.worktrees.title.other": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "node_modules and builds in %d idle worktrees"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "node_modules e builds em %d worktrees paradas"
+          }
+        }
+      }
+    },
+    "agents.unsupported": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@: not supported yet"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@: não suportado ainda"
+          }
+        }
+      }
+    },
+    "agents.unsupported.help": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "This agent keeps its conversations in a format CleanYourMac can’t clean safely yet."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Este agente guarda as conversas num formato que o CleanYourMac ainda não limpa com segurança."
+          }
+        }
+      }
+    },
+    "agents.worktree.changed": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "changed %@"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "mudou %@"
+          }
+        }
+      }
+    },
+    "agents.worktree.detached": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "no branch"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "sem branch"
+          }
+        }
+      }
+    },
+    "agents.worktree.inUse": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "in use"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "em uso"
+          }
+        }
+      }
+    },
+    "agents.worktree.inUseHelp": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Changed in the last 24 hours: an agent may still be working here."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mudou nas últimas 24 horas: um agente pode estar trabalhando aqui."
+          }
+        }
+      }
+    },
+    "agents.worktree.orphan": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "main repository not found"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "repositório principal não encontrado"
+          }
+        }
+      }
+    },
+    "agents.worktree.orphanHelp": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Without the main repository, only node_modules is listed."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sem o repositório principal, só o node_modules é listado."
+          }
+        }
+      }
+    },
     "aiKind.caches": {
       "extractionState": "manual",
       "localizations": {
@@ -7154,6 +8106,23 @@
           "stringUnit": {
             "state": "translated",
             "value": "Downloads do Mail"
+          }
+        }
+      }
+    },
+    "module.agents": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "AI Agents"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Agentes de IA"
           }
         }
       }

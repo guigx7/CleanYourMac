@@ -4,6 +4,7 @@ module.performance	Performance	Desempenho
 module.applications	Applications	Aplicativos
 module.spaceLens	Space Lens	Lupa de Espaço
 module.clutter	My Clutter	Acúmulos
+module.agents	AI Agents	Agentes de IA
 module.soon	Soon	Em breve
 # Categorias
 category.systemJunk	System junk	Detritos do sistema
@@ -675,3 +676,59 @@ clutter.confirm.title.other	Remove %d items (%@)?	Remover %d itens (%@)?
 clutter.confirm.trash	Files go to the Trash; you can put them back from there.	Os arquivos vão para o Lixo; dá para devolvê-los de lá.
 clutter.confirm.photos	Photos go to Recently Deleted in Photos, after the system asks you to confirm.	As fotos vão para Apagados Recentemente no Fotos, depois da confirmação do sistema.
 clutter.confirm.dryRun	Simulation mode: nothing will be changed.	Modo de simulação: nada será alterado.
+agents.intro.title	AI Agents	Agentes de IA
+agents.intro.subtitle	Get back the space your coding agents leave behind: folders that rebuild themselves in idle worktrees and conversations older than 7 days.	Recupere o espaço que os agentes de programação deixam para trás: pastas que se recriam sozinhas em worktrees paradas e conversas com mais de 7 dias.
+agents.category.worktrees	node_modules and builds in worktrees	node_modules e builds nas worktrees
+agents.category.sessions	Sessions older than 7 days	Sessões com mais de 7 dias
+agents.intro.safety	Code, commits and uncommitted changes are never touched.	Código, commits e alterações sem commit nunca são tocados.
+agents.scan.title	Looking at your agents…	Olhando os agentes…
+agents.scan.step.worktrees	Finding your repositories’ worktrees	Procurando as worktrees dos repositórios
+agents.scan.step.folders	Measuring node_modules and build folders	Medindo node_modules e pastas de build
+agents.scan.step.sessions	Looking for old agent sessions	Procurando sessões antigas dos agentes
+agents.nothing.title	Nothing left behind	Nada esquecido
+agents.nothing.message	No folders in idle worktrees and no sessions older than 7 days were found.	Não achamos pastas em worktrees paradas nem sessões com mais de 7 dias.
+agents.removing.title	Moving items to the Trash…	Movendo itens para o Lixo…
+agents.done.title	Done	Pronto
+agents.done.partial.title	Some items stayed	Alguns itens ficaram
+agents.done.summary.one	%d item went to the Trash (%@).	%d item foi para o Lixo (%@).
+agents.done.summary.other	%d items went to the Trash (%@).	%d itens foram para o Lixo (%@).
+agents.done.dryRun.one	Simulation: %d item (%@) would go to the Trash. Nothing was changed.	Simulação: %d item (%@) iria para o Lixo. Nada foi alterado.
+agents.done.dryRun.other	Simulation: %d items (%@) would go to the Trash. Nothing was changed.	Simulação: %d itens (%@) iriam para o Lixo. Nada foi alterado.
+agents.done.trash	The space comes back when you empty the Trash.	O espaço volta ao esvaziar o Lixo.
+agents.done.reviewMore	Review More Items	Revisar Mais Itens
+agents.results.header	Found %@ you can free up.	Encontramos %@ para liberar.
+agents.results.subtitle	Folders that rebuild themselves and old conversations. Code and commits stay.	Pastas que se recriam sozinhas e conversas antigas. O código e os commits ficam.
+agents.results.reviewAll	Review All Items	Revisar Todos os Itens
+agents.noGit	Only node_modules: install the Xcode Command Line Tools to include build folders.	Só node_modules: instale as ferramentas de linha de comando do Xcode para incluir as pastas de build.
+agents.tile.worktrees.title.one	node_modules and builds in %d idle worktree	node_modules e builds em %d worktree parada
+agents.tile.worktrees.title.other	node_modules and builds in %d idle worktrees	node_modules e builds em %d worktrees paradas
+agents.tile.worktrees.detail	%@ that an install or a build brings back. Worktrees in use stay out.	%@ que uma instalação ou um build trazem de volta. Worktrees em uso ficam de fora.
+agents.tile.sessions.title.one	%d %@ session older than 7 days	%d sessão do %@ com mais de 7 dias
+agents.tile.sessions.title.other	%d %@ sessions older than 7 days	%d sessões do %@ com mais de 7 dias
+agents.tile.sessions.detail	%@ in old conversations. Once removed, they can’t be resumed.	%@ em conversas antigas. Depois de removidas, não dá mais para retomá-las.
+agents.manager.title	AI Agents Manager	Gerenciador de Agentes de IA
+agents.action.remove	Remove	Remover
+agents.section.worktrees	Worktrees	Worktrees
+agents.section.worktrees.description	Rebuildable folders in linked worktrees. The worktrees, branches and changes stay.	Pastas recriáveis das worktrees ligadas. As worktrees, as branches e as alterações ficam.
+agents.section.sessions	Sessions	Sessões
+agents.section.sessions.description	Agent conversations untouched for over 7 days. Memory, history and settings stay.	Conversas dos agentes paradas há mais de 7 dias. Memória, histórico e ajustes ficam.
+agents.worktree.inUse	in use	em uso
+agents.worktree.inUseHelp	Changed in the last 24 hours: an agent may still be working here.	Mudou nas últimas 24 horas: um agente pode estar trabalhando aqui.
+agents.worktree.orphan	main repository not found	repositório principal não encontrado
+agents.worktree.orphanHelp	Without the main repository, only node_modules is listed.	Sem o repositório principal, só o node_modules é listado.
+agents.worktree.changed	changed %@	mudou %@
+agents.worktree.detached	no branch	sem branch
+agents.repo.unknown	Main repository not found	Repositório principal não encontrado
+agents.date.modified	Last modified	Última modificação
+agents.session.remains	Remains of deleted sessions	Restos de sessões apagadas
+agents.session.other	Sessions	Sessões
+agents.project.hash	Project %@	Projeto %@
+agents.unsupported	%@: not supported yet	%@: não suportado ainda
+agents.unsupported.help	This agent keeps its conversations in a format CleanYourMac can’t clean safely yet.	Este agente guarda as conversas num formato que o CleanYourMac ainda não limpa com segurança.
+agents.empty	Nothing here.	Nada aqui.
+agents.confirm.title.one	Remove %d item (%@)?	Remover %d item (%@)?
+agents.confirm.title.other	Remove %d items (%@)?	Remover %d itens (%@)?
+agents.confirm.trash	Everything goes to the Trash. The space comes back when you empty it.	Tudo vai para o Lixo. O espaço volta ao esvaziar o Lixo.
+agents.confirm.sessions	These conversations can no longer be resumed.	Não dá mais para retomar essas conversas.
+agents.confirm.codex	Codex may keep listing these conversations.	O Codex pode continuar listando essas conversas.
+agents.confirm.dryRun	Simulation mode: nothing will be changed.	Modo de simulação: nada será alterado.

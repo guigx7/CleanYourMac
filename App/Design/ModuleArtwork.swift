@@ -305,6 +305,14 @@ struct ArtPalette {
                        core: [Color(hex: 0xF2FCFB), Color(hex: 0xD2EEEB), Color(hex: 0xB4DEDA)],
                        glyph: AnyShape(Sheets()),
                        glyphColors: [Color(hex: 0x2FB3B0), Color(hex: 0x0E6A72)])
+        case .agents:
+            // Índigo-ardósia, com um chip (os agentes) no lugar das estrelas.
+            ArtPalette(accent: Theme.accent(for: module),
+                       side: [Color(hex: 0x2B3A67), Color(hex: 0x111A33)],
+                       face: [Color(hex: 0xB9C6F4, opacity: 0.8), Color(hex: 0x5C6FB1, opacity: 0.75), Color(hex: 0x2B3A67, opacity: 0.88)],
+                       core: [Color(hex: 0xF5F7FD), Color(hex: 0xDCE1F2), Color(hex: 0xC2CAE6)],
+                       glyph: AnyShape(Chip()),
+                       glyphColors: [Color(hex: 0x6A7FC8), Color(hex: 0x34467F)])
         case .performance:
             // Laranja, com um raio no lugar das estrelas.
             ArtPalette(accent: Theme.accent(for: module),
@@ -332,6 +340,26 @@ private struct Sheets: Shape {
         for (x, y) in [(0.0, 0.0), (0.16, 0.12), (0.32, 0.24)] as [(CGFloat, CGFloat)] {
             p.addRoundedRect(in: CGRect(x: r.minX + x * s, y: r.minY + y * s, width: 0.6 * s, height: 0.76 * s),
                              cornerSize: CGSize(width: 0.08 * s, height: 0.08 * s))
+        }
+        return p
+    }
+}
+
+/// Chip quadrado com três pinos em cada lado.
+private struct Chip: Shape {
+    func path(in r: CGRect) -> Path {
+        var p = Path()
+        let s = min(r.width, r.height)
+        let x0 = r.midX - s / 2, y0 = r.midY - s / 2
+        p.addRoundedRect(in: CGRect(x: x0 + 0.2 * s, y: y0 + 0.2 * s, width: 0.6 * s, height: 0.6 * s),
+                         cornerSize: CGSize(width: 0.1 * s, height: 0.1 * s))
+        let w = 0.08 * s, l = 0.15 * s, corner = CGSize(width: w / 2, height: w / 2)
+        for t in [0.33, 0.5, 0.67] as [CGFloat] {
+            let c = t * s - w / 2
+            p.addRoundedRect(in: CGRect(x: x0 + c, y: y0 + 0.02 * s, width: w, height: l), cornerSize: corner)
+            p.addRoundedRect(in: CGRect(x: x0 + c, y: y0 + 0.83 * s, width: w, height: l), cornerSize: corner)
+            p.addRoundedRect(in: CGRect(x: x0 + 0.02 * s, y: y0 + c, width: l, height: w), cornerSize: corner)
+            p.addRoundedRect(in: CGRect(x: x0 + 0.83 * s, y: y0 + c, width: l, height: w), cornerSize: corner)
         }
         return p
     }
