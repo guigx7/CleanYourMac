@@ -8,6 +8,7 @@ import CleanYourMacCore
 //   cym apps [--json] [--no-network]   (módulo Aplicativos; só leitura)
 //   cym performance [--json]           (módulo Desempenho; só leitura)
 //   cym spacelens [caminho] [--json]   (Lupa de Espaço; só leitura: tempo, total e os maiores filhos)
+//   cym clutter [pasta] [--json]       (Acúmulos; só leitura, sem a fototeca)
 //
 // Não existe limpeza de verdade pelo CLI: `clean` exige --dry-run.
 
@@ -76,6 +77,27 @@ case "apps":
         print("sobras:", appsReport.leftovers.map { "\($0.name) \(SizeFormatter.string($0.totalSize, locale: Locale(identifier: "pt-BR")))" })
         print("instaladores:", appsReport.installers.map { "\($0.name) \(SizeFormatter.string($0.totalSize, locale: Locale(identifier: "pt-BR")))" })
     }
+case "clutter":
+    let folder = args.first { !$0.hasPrefix("--") }
+    let started = Date()
+    var clutterReport: ClutterReport?
+    let threshold = ProcessInfo.processInfo.environment["CYM_SIMILAR_THRESHOLD"].flatMap(Int.init) ?? SimilarImageFinder.defaultThreshold
+    for try await event in ClutterScan(similarThreshold: threshold).run(folder.map { .folder(URL(fileURLWithPath: $0)) } ?? .home) {
+        if case .finished(let r) = event { clutterReport = r }
+    }
+    guard let clutterReport else { fail("análise não terminou") }
+    if has("--json") {
+        let data = try JSONSerialization.data(withJSONObject: clutterReport.parityJSON(), options: [.prettyPrinted, .sortedKeys])
+        print(String(decoding: data, as: UTF8.self))
+        exit(0)
+    }
+    let br = Locale(identifier: "pt-BR")
+    print(String(format: "%.1f s · %d arquivos para revisar", Date().timeIntervalSince(started), clutterReport.total))
+    print("fundo do baú:", clutterReport.largeOld.map { "\($0.url.lastPathComponent) \(SizeFormatter.string($0.size, locale: br))" })
+    print("duplicatas:", clutterReport.duplicates.count, "grupos ·", clutterReport.duplicates.prefix(5).map { "\($0.name) ×\($0.files.count)" })
+    print("similares:", clutterReport.similar.count, "grupos")
+    print("downloads:", clutterReport.downloads.map { "\($0.app.title) \(SizeFormatter.string($0.totalSize, locale: br))" })
+    print("cartões:", clutterReport.tiles.map { "\($0.kind.rawValue) \($0.count) \(SizeFormatter.string($0.size, locale: br))" })
 case "spacelens":
     let path = args.first { !$0.hasPrefix("--") }
     let start = Date()

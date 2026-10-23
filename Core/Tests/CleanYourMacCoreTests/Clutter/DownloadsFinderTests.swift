@@ -1,47 +1,79 @@
 import Foundation
+import SQLite3
 import Testing
 @testable import CleanYourMacCore
 
 @Suite struct DownloadsFinderTests {
     let now = Date(timeIntervalSince1970: 1_792_000_000)
 
-    func quarantine(_ url: URL, agent: String, daysAgo: Double) {
-        let ts = String(Int(now.timeIntervalSince1970 - daysAgo * 86_400), radix: 16)
-        let value = "0083;\(ts);\(agent);ABCD-1234"
-        _ = value.withCString { setxattr(url.path, "com.apple.quarantine", $0, strlen($0), 0, 0) }
+    /// Microssegundos desde 1601 (relógio do Chrome).
+    func webkit(_ d: Date) -> Int64 { Int64((d.timeIntervalSince1970 + 11_644_473_600) * 1_000_000) }
+
+    func chromeHistory(_ t: FixtureTree, profile: String, rows: [(String, Int64, Int64, Date)]) {
+        let dir = t.dir("Users/me/Library/Application Support/Google/Chrome/\(profile)")
+        var db: OpaquePointer?
+        sqlite3_open(dir.appendingPathComponent("History").path, &db)
+        sqlite3_exec(db, "CREATE TABLE downloads (id INTEGER PRIMARY KEY, current_path TEXT, target_path TEXT, start_time INTEGER, end_time INTEGER, received_bytes INTEGER, total_bytes INTEGER, state INTEGER)", nil, nil, nil)
+        for (path, received, total, date) in rows {
+            sqlite3_exec(db, "INSERT INTO downloads (current_path, target_path, start_time, end_time, received_bytes, total_bytes, state) VALUES ('\(path)', '\(path)', \(webkit(date)), \(webkit(date)), \(received), \(total), 1)", nil, nil, nil)
+        }
+        sqlite3_close(db)
     }
 
-    @Test func groupedByAppFromQuarantine() throws {
+    func localState(_ t: FixtureTree, profiles: [String]) {
+        let url = t.url("Users/me/Library/Application Support/Google/Chrome/Local State")
+        let cache = Dictionary(uniqueKeysWithValues: profiles.map { ($0, ["name": $0]) })
+        try! JSONSerialization.data(withJSONObject: ["profile": ["info_cache": cache]]).write(to: url)
+    }
+
+    @Test func chromeFromHistoryOnlyExistingAndComplete() throws {
         let t = FixtureTree()
-        let a = t.file("Users/me/Downloads/a.zip", bytes: 500_000); quarantine(a, agent: "Google Chrome", daysAgo: 40)
-        let b = t.file("Users/me/Downloads/b.dmg", bytes: 300_000); quarantine(b, agent: "Chrome", daysAgo: 2)
-        let c = t.file("Users/me/Downloads/c.pdf", bytes: 100_000); quarantine(c, agent: "Safari", daysAgo: 1)
-        let d = t.file("Users/me/Downloads/d.png", bytes: 100_000); quarantine(d, agent: "Preview", daysAgo: 1)
-        t.file("Users/me/Downloads/semmarca.txt", bytes: 10)
-        let e = t.file("Users/me/Downloads/sub/inner.zip", bytes: 10); quarantine(e, agent: "Google Chrome", daysAgo: 1)
+        let a = t.file("Users/me/Downloads/a.zip", bytes: 500_000)
+        let b = t.file("Users/me/Desktop/b.dmg", bytes: 300_000)
+        let c = t.file("Users/me/Downloads/c.part", bytes: 10)
+        chromeHistory(t, profile: "Default", rows: [
+            (a.path, 500_000, 500_000, now.addingTimeInterval(-40 * 86_400)),
+            (b.path, 300_000, 300_000, now.addingTimeInterval(-2 * 86_400)),
+            (c.path, 10, 999, now),                                   // incompleto
+            ("/Users/me/Downloads/sumiu.zip", 1, 1, now),              // não existe mais
+            (a.path, 500_000, 500_000, now.addingTimeInterval(-40 * 86_400)), // repetido
+        ])
+        chromeHistory(t, profile: "Profile 2", rows: [])
+        localState(t, profiles: ["Default", "Profile 2"])
         let groups = DownloadsFinder(home: t.url("Users/me")).groups(now: now)
-        #expect(groups.map(\.app) == [.chrome, .safari])
+        #expect(groups.map(\.app) == [.chrome])
         #expect(groups[0].files.map(\.url.lastPathComponent) == ["a.zip", "b.dmg"])
-        #expect(groups[0].totalSize == 800_000)
-        // Marcação automática: baixados há mais de 30 dias.
         #expect(groups[0].autoselected.map(\.url.lastPathComponent) == ["a.zip"])
     }
 
-    @Test func folderDownloadsCountAsOneItem() throws {
+    @Test func safariFromDownloadsPlist() throws {
         let t = FixtureTree()
-        let dir = t.dir("Users/me/Downloads/Pasta")
-        t.file("Users/me/Downloads/Pasta/x.bin", bytes: 200_000)
-        quarantine(dir, agent: "Slack", daysAgo: 5)
+        let f = t.file("Users/me/Downloads/s.pdf", bytes: 200_000)
+        let plist: [String: Any] = ["DownloadHistory": [
+            ["DownloadEntryPath": f.path, "DownloadEntryProgressBytesSoFar": 200_000, "DownloadEntryProgressTotalToLoad": 200_000,
+             "DownloadEntryDateAddedKey": now.addingTimeInterval(-3 * 86_400)],
+            ["DownloadEntryPath": "/Users/me/Downloads/half.pdf", "DownloadEntryProgressBytesSoFar": 1, "DownloadEntryProgressTotalToLoad": 9],
+        ]]
+        t.dir("Users/me/Library/Safari")
+        try PropertyListSerialization.data(fromPropertyList: plist, format: .binary, options: 0)
+            .write(to: t.url("Users/me/Library/Safari/Downloads.plist"))
         let groups = DownloadsFinder(home: t.url("Users/me")).groups(now: now)
-        #expect(groups.map(\.app) == [.slack])
-        #expect(groups[0].files.first?.size ?? 0 >= 200_000)
+        #expect(groups.map(\.app) == [.safari])
+        #expect(groups[0].files.map(\.url.lastPathComponent) == ["s.pdf"])
     }
 
-    @Test func parsesAgentAndDate() {
-        let q = DownloadsFinder.parseQuarantine("0081;65f1a2b3;Google Chrome;UUID")
-        #expect(q?.agent == "Google Chrome")
+    /// Sem leitor do histórico do Slack (formato não confirmado), a marca de quarentena não vira grupo do Slack.
+    @Test func quarantineAloneIsNotADownloadGroup() throws {
+        let t = FixtureTree()
+        let f = t.file("Users/me/Downloads/sl.png", bytes: 100_000)
+        _ = "0083;65f1a2b3;Slack;ABCD".withCString { setxattr(f.path, "com.apple.quarantine", $0, strlen($0), 0, 0) }
+        #expect(DownloadsFinder(home: t.url("Users/me")).groups(now: now).isEmpty)
+    }
+
+    @Test func parsers() {
+        let q = DownloadsFinder.parseQuarantine("0081;65f1a2b3;Slack;UUID")
+        #expect(q?.agent == "Slack")
         #expect(q?.date == Date(timeIntervalSince1970: TimeInterval(0x65f1a2b3)))
-        #expect(DownloadsFinder.App(agent: "Chrome") == .chrome)
-        #expect(DownloadsFinder.App(agent: "Preview") == nil)
+        #expect(DownloadsFinder.chromeDate(webkit(now)) == now)
     }
 }

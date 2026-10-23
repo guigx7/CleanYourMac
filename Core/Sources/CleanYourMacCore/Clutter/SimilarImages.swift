@@ -60,7 +60,9 @@ public struct SimilarImageFinder: Sendable {
     /// Bits diferentes aceitos entre duas imagens "praticamente idênticas".
     public let threshold: Int
 
-    public init(threshold: Int = 10) { self.threshold = threshold }
+    public static let defaultThreshold = 10
+
+    public init(threshold: Int = SimilarImageFinder.defaultThreshold) { self.threshold = threshold }
 
     /// Arquivos que entram (regras próprias de Similares): imagem, ≥ 100 KiB, sem psd/psb/xcassets.
     public static func accepts(_ file: ClutterFile) -> Bool {
