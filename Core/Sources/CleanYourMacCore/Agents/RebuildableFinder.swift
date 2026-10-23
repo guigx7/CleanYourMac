@@ -206,7 +206,7 @@ public struct RebuildableFinder: Sendable {
 
     /// O que diz se a worktree está em uso.
     struct Activity: Sendable {
-        /// Data mais nova vista (arquivos, pastas, `logs/HEAD`).
+        /// Data mais nova vista (arquivos, pastas, último commit ou checkout).
         var latest: Date?
         /// Em uso sem depender da data: sessão viva do agente na worktree ou teto de entradas estourado.
         var forced = false
@@ -227,7 +227,7 @@ public struct RebuildableFinder: Sendable {
     /// Regras (na dúvida, "em uso"):
     /// - sessão do Claude Code viva com o `cwd` dentro da worktree → em uso;
     /// - com git e worktree ligada: os caminhos do `git status --no-optional-locks` (que não regrava o índice), a data
-    ///   de `<registro>/logs/HEAD` (commits e checkouts) e, nas pastas novas, tudo o que há dentro; caminho apagado conta
+    ///   do último commit ou checkout (`lastReflogDate` de `<registro>/logs/HEAD`) e, nas pastas novas, tudo o que há dentro; caminho apagado conta
     ///   pela data da pasta que sobrou;
     /// - sem git, em órfã ou se o status falhar: tudo, sem limite de nível;
     /// - em todos os casos, as datas das pastas visitadas contam (um arquivo apagado só muda a pasta);
@@ -263,7 +263,7 @@ public struct RebuildableFinder: Sendable {
                     }
                 }
             }
-            if let registry = registry(of: root), let st = lstatInfo(registry + "/logs/HEAD") { a.see(Self.mtime(st)) }
+            if let registry = registry(of: root), let d = Self.lastReflogDate(registry + "/logs/HEAD") { a.see(d) }
             return a
         }
 
@@ -301,6 +301,29 @@ public struct RebuildableFinder: Sendable {
             if skipping.contains(prefix) { return true }
         }
         return false
+    }
+
+    /// Data do último commit ou checkout da worktree: o carimbo da última linha do reflog
+    /// (`<antigo> <novo> <nome> <email> <segundos> <fuso>\t<mensagem>`). A data do arquivo não serve sozinha: o `git gc`
+    /// do repositório principal expira o reflog e regrava o `logs/HEAD` de todas as worktrees sem que ninguém tenha feito
+    /// commit. Arquivo vazio: `nil`; linha fora do formato: a data do arquivo (lado seguro).
+    static func lastReflogDate(_ path: String) -> Date? {
+        var st = stat()
+        guard lstat(path, &st) == 0, st.st_mode & S_IFMT == S_IFREG, let handle = FileHandle(forReadingAtPath: path) else { return nil }
+        defer { try? handle.close() }
+        let tail: Int64 = 65_536
+        if Int64(st.st_size) > tail { try? handle.seek(toOffset: UInt64(Int64(st.st_size) - tail)) }
+        // `readToEnd()` devolve `nil` no arquivo vazio; só um erro de leitura cai na data do arquivo.
+        let data: Data
+        do { data = try handle.readToEnd() ?? Data() } catch { return mtime(st) }
+        let lines = data.split(separator: UInt8(ascii: "\n"))
+        guard let last = lines.last else { return nil }
+        let head = last.split(separator: UInt8(ascii: "\t"), maxSplits: 1, omittingEmptySubsequences: false).first ?? last
+        let fields = String(decoding: head, as: UTF8.self).split(separator: " ")
+        // Do fim: fuso (`-0300`) e segundos.
+        guard fields.count >= 4, let zone = fields.last, zone.count == 5, zone.first == "+" || zone.first == "-",
+              let seconds = TimeInterval(fields[fields.count - 2]), seconds > 0 else { return mtime(st) }
+        return Date(timeIntervalSince1970: seconds)
     }
 
     /// Registro da worktree (`<repo>/.git/worktrees/<n>`), lido do arquivo `.git` dela (`gitdir: …`).

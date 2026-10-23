@@ -378,13 +378,30 @@ private final class FakeGitRunner: CommandRunner, @unchecked Sendable {
         fx.file("wt/node_modules/a.js", bytes: 10)
         let registry = fx.url("repo/.git/worktrees/wt")
         let wt = Worktree(url: fx.url("wt"), repo: fx.url("repo"), branch: "feat", isOrphan: false)
-        func ageAll() {
+        let logsHEAD = registry.appendingPathComponent("logs/HEAD")
+        /// Reflog com os carimbos antigos (como se os commits fossem de 2 dias atrás).
+        func ageReflog() throws {
+            let reflog = try String(contentsOf: logsHEAD, encoding: .utf8)
+            let rewritten = reflog.split(separator: "\n").map { line -> String in
+                var parts = line.components(separatedBy: "\t")
+                var head = parts[0].split(separator: " ").map(String.init)
+                head[head.count - 2] = "\(Int(old.timeIntervalSince1970))"
+                parts[0] = head.joined(separator: " ")
+                return parts.joined(separator: "\t")
+            }.joined(separator: "\n") + "\n"
+            try rewritten.write(to: logsHEAD, atomically: false, encoding: .utf8)
+        }
+        func ageFiles() {
             fx.age("wt", old)
             fx.age("repo/.git/worktrees/wt", old)
         }
+        func ageAll() throws {
+            try ageReflog()
+            ageFiles()
+        }
         let f = RebuildableFinder(git: git, now: now, home: home(fx))
         let indexBefore = try FileManager.default.attributesOfItem(atPath: registry.appendingPathComponent("index").path)[.modificationDate] as? Date
-        ageAll()
+        try ageAll()
         let indexAged = try FileManager.default.attributesOfItem(atPath: registry.appendingPathComponent("index").path)[.modificationDate] as? Date
         #expect(indexBefore != nil)
         #expect(f.entry(for: wt)?.isRecent == false)
@@ -403,17 +420,46 @@ private final class FakeGitRunner: CommandRunner, @unchecked Sendable {
 
         // Volta ao conteúdo commitado: limpo de novo.
         #expect(g("wt", ["checkout", "-q", "--", "apps/web/src/app/page.tsx"]) == 0)
-        ageAll()
+        try ageAll()
         #expect(f.entry(for: wt)?.isRecent == false)
 
-        // Commit ou checkout novo: `logs/HEAD` do registro.
-        try FileManager.default.setAttributes([.modificationDate: now.addingTimeInterval(-60)], ofItemAtPath: registry.appendingPathComponent("logs/HEAD").path)
+        // `logs/HEAD` regravado sem commit novo (o `git gc` expira o reflog de todas as worktrees): só a data do arquivo
+        // mudou, a última entrada é antiga → não conta.
+        try FileManager.default.setAttributes([.modificationDate: now.addingTimeInterval(-60)], ofItemAtPath: logsHEAD.path)
+        #expect(f.entry(for: wt)?.isRecent == false)
+
+        // Commit novo na worktree: a última entrada do `logs/HEAD` é de agora, mesmo com os arquivos antigos.
+        #expect(g("wt", ["commit", "-q", "--allow-empty", "-m", "vazio"]) == 0)
+        ageFiles()
         #expect(f.entry(for: wt)?.isRecent == true)
-        ageAll()
+        try ageAll()
+        #expect(f.entry(for: wt)?.isRecent == false)
+
+        // Reflog fora do formato: vale a data do arquivo (lado seguro).
+        let saved = try Data(contentsOf: logsHEAD)
+        try "lixo\n".write(to: logsHEAD, atomically: false, encoding: .utf8)
+        #expect(f.entry(for: wt)?.isRecent == true)
+        try saved.write(to: logsHEAD)
+        ageFiles()
+        #expect(f.entry(for: wt)?.isRecent == false)
 
         // Arquivo rastreado apagado: a data da pasta-mãe.
         try FileManager.default.removeItem(at: fx.url("wt/apps/web/src/app/gone.tsx"))
         #expect(f.entry(for: wt)?.isRecent == true)
+    }
+
+    /// Último carimbo do reflog: arquivo vazio (reflog expirado pelo `git gc`) não tem data, mesmo com o arquivo novo.
+    @Test func lastReflogDateParsing() throws {
+        let fx = FixtureTree()
+        let log = fx.file("logs/HEAD", bytes: 0)
+        #expect(RebuildableFinder.lastReflogDate(log.path) == nil)
+        try "a b Nome <e@x> 1700000000 -0300\tcommit: x\nb c Nome <e@x> 1790000000 +0000\tcheckout: y\n".write(to: log, atomically: false, encoding: .utf8)
+        #expect(RebuildableFinder.lastReflogDate(log.path) == Date(timeIntervalSince1970: 1_790_000_000))
+        let old = Date(timeIntervalSince1970: 1_600_000_000)
+        try "sem formato\n".write(to: log, atomically: false, encoding: .utf8)
+        try FileManager.default.setAttributes([.modificationDate: old], ofItemAtPath: log.path)
+        #expect(RebuildableFinder.lastReflogDate(log.path) == old)
+        #expect(RebuildableFinder.lastReflogDate(fx.url("logs/nada").path) == nil)
     }
 
     // MARK: - C1: produtor da pasta
