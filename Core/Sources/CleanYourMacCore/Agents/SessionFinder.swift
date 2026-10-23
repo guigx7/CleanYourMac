@@ -174,6 +174,20 @@ public struct SessionFinder: Sendable {
         return true
     }
 
+    /// `state.json` de um job, se legível.
+    static func jobState(_ job: String) -> [String: Any]? {
+        guard let data = FileManager.default.contents(atPath: job + "/state.json"), data.count < 1_048_576 else { return nil }
+        return try? JSONSerialization.jsonObject(with: data) as? [String: Any]
+    }
+
+    private static func isActive(_ state: [String: Any]?) -> Bool {
+        guard let s = (state?["state"] as? String)?.lowercased() else { return true }
+        return !releasingJobStates.contains(s)
+    }
+
+    /// O job ainda não terminou (estado não terminal, desconhecido ou `state.json` ilegível): na dúvida, ativo.
+    public static func isJobActive(_ job: String) -> Bool { isActive(jobState(job)) }
+
     /// Conversas de agentes que ainda estão de pé: o `sessionId` e o `resumeSessionId` de todo job cujo estado não é
     /// terminal (sem estado conhecido também conta) e o `sessionId` de cada `~/.claude/sessions/<pid>.json` com o
     /// processo vivo. Essas conversas e os restos delas nunca entram, seja qual for a idade.
@@ -181,9 +195,7 @@ public struct SessionFinder: Sendable {
         var ids = Set<String>()
         let jobs = home.path + "/.claude/jobs"
         for name in (try? FileManager.default.contentsOfDirectory(atPath: jobs)) ?? [] {
-            guard let data = FileManager.default.contents(atPath: jobs + "/" + name + "/state.json"), data.count < 1_048_576,
-                  let obj = try? JSONSerialization.jsonObject(with: data) as? [String: Any] else { continue }
-            if let state = (obj["state"] as? String)?.lowercased(), releasingJobStates.contains(state) { continue }
+            guard let obj = jobState(jobs + "/" + name), isActive(obj) else { continue }
             for key in ["sessionId", "resumeSessionId"] { if let id = obj[key] as? String, !id.isEmpty { ids.insert(id.lowercased()) } }
         }
         for s in LiveAgentSessions.current(home: home) { if let id = s.sessionID, !id.isEmpty { ids.insert(id.lowercased()) } }

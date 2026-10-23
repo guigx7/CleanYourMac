@@ -226,6 +226,7 @@ public struct RebuildableFinder: Sendable {
 
     /// Regras (na dúvida, "em uso"):
     /// - sessão do Claude Code viva com o `cwd` dentro da worktree → em uso;
+    /// - worktree dentro de um job do Claude Code que não terminou (`~/.claude/jobs/<id>`, ex.: `blocked`) → em uso;
     /// - com git e worktree ligada: os caminhos do `git status --no-optional-locks` (que não regrava o índice), a data
     ///   do último commit ou checkout (`lastReflogDate` de `<registro>/logs/HEAD`) e, nas pastas novas, tudo o que há dentro; caminho apagado conta
     ///   pela data da pasta que sobrou;
@@ -238,6 +239,7 @@ public struct RebuildableFinder: Sendable {
         let root = worktree.url.path
         var a = Activity()
         if LiveAgentSessions.anyInside(root, sessions: LiveAgentSessions.current(home: home)) { a.forced = true }
+        if let job = enclosingJob(root), SessionFinder.isJobActive(job) { a.forced = true }
         var budget = activityEntryLimit
 
         if let git, !worktree.isOrphan, let changed = git.changedPaths(in: worktree.url) {
@@ -270,6 +272,16 @@ public struct RebuildableFinder: Sendable {
         if let st = lstatInfo(root) { a.see(Self.mtime(st)) }
         if !walk(root: root, from: "", skipping: skipping, into: &a, budget: &budget) { a.forced = true }
         return a
+    }
+
+    /// `~/.claude/jobs/<id>` que contém a worktree, se for o caso (pelo caminho como está e pelo real).
+    private func enclosingJob(_ root: String) -> String? {
+        let jobs = PathPolicy.lexicalPath(home.path) + "/.claude/jobs/"
+        for path in [PathPolicy.lexicalPath(root), PathPolicy.realPath(root)] where path.hasPrefix(jobs) {
+            guard let id = path.dropFirst(jobs.count).split(separator: "/").first else { continue }
+            return jobs + id
+        }
+        return nil
     }
 
     /// Desce a partir de `from` (relativo à worktree), somando as datas de arquivos e pastas. Não desce em `.git` nem nas

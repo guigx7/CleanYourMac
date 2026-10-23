@@ -211,6 +211,26 @@ private final class FakeGitRunner: CommandRunner, @unchecked Sendable {
         #expect(abs((old?.lastActivity?.timeIntervalSince1970 ?? 0) - now.addingTimeInterval(-25 * 3600).timeIntervalSince1970) < 1)
     }
 
+    /// Worktree dentro de um job do Claude Code que ainda não terminou (ex.: `blocked`, esperando aprovação) está em uso:
+    /// o job volta a rodar nela. Com o job terminado, vale a data dos arquivos.
+    @Test func worktreeInsideActiveJobIsInUse() {
+        let now = Date()
+        let fx = FixtureTree()
+        let home = fx.dir("home")
+        let wt = Worktree(url: fx.dir("home/.claude/jobs/j1/tmp/wt"), repo: fx.url("repo"), branch: nil, isOrphan: true)
+        fx.file("home/.claude/jobs/j1/tmp/wt/package.json", bytes: 10, modified: now.addingTimeInterval(-72 * 3600))
+        fx.file("home/.claude/jobs/j1/tmp/wt/node_modules/a.js", bytes: 10)
+        fx.age("home/.claude/jobs/j1/tmp/wt", now.addingTimeInterval(-72 * 3600))
+        let f = RebuildableFinder(git: nil, now: now, home: home)
+        for (state, recent) in [("blocked", true), ("running", true), ("estranho", true), ("done", false)] {
+            try! #"{"state":"\#(state)"}"#.write(to: fx.url("home/.claude/jobs/j1/state.json"), atomically: true, encoding: .utf8)
+            #expect(f.entry(for: wt)?.isRecent == recent, "\(state)")
+        }
+        // Sem state.json legível: na dúvida, em uso.
+        try! FileManager.default.removeItem(at: fx.url("home/.claude/jobs/j1/state.json"))
+        #expect(f.entry(for: wt)?.isRecent == true)
+    }
+
     /// O índice do registro não conta como atividade: qualquer `git status` o regrava.
     @Test func registryIndexIgnored() {
         let now = Date()
