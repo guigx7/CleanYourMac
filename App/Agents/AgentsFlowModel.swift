@@ -38,6 +38,8 @@ final class AgentsFlowModel {
     var managerOpen = false
     var section: Section = .worktrees
     private(set) var selection: Set<String> = []
+    /// Ids que o usuário desmarcou à mão: o "Limpar" do cartão não os marca de novo. Marcar outra vez tira daqui.
+    private(set) var deselectedByUser: Set<String> = []
     /// Tamanho de cada id marcável (caminho da recriável ou id da sessão): o rodapé não percorre o relatório a cada desenho.
     @ObservationIgnored private var sizeByID: [String: Int64] = [:]
     var confirmingRemoval = false
@@ -61,6 +63,7 @@ final class AgentsFlowModel {
         report = nil
         scanStep = nil
         selection = []
+        deselectedByUser = []
         let stream = scan.run()
         task = Task {
             do {
@@ -93,6 +96,7 @@ final class AgentsFlowModel {
         managerOpen = false
         confirmingRemoval = false
         selection = []
+        deselectedByUser = []
         phase = .intro
     }
 
@@ -134,19 +138,37 @@ final class AgentsFlowModel {
     func isSelected(_ id: String) -> Bool { selection.contains(id) }
 
     func toggle(_ id: String) {
-        if selection.contains(id) { selection.remove(id) } else { selection.insert(id) }
+        if selection.contains(id) {
+            selection.remove(id)
+            deselectedByUser.insert(id)
+        } else {
+            selection.insert(id)
+            deselectedByUser.remove(id)
+        }
     }
 
     func setAll(_ ids: [String], selected: Bool) {
-        if selected { selection.formUnion(ids) } else { selection.subtract(ids) }
+        if selected {
+            selection.formUnion(ids)
+            deselectedByUser.subtract(ids)
+        } else {
+            selection.subtract(ids)
+            deselectedByUser.formUnion(ids)
+        }
     }
 
-    func clearSelection() { selection = [] }
+    func clearSelection() {
+        deselectedByUser.formUnion(selection)
+        selection = []
+    }
 
-    /// "Limpar" de um cartão: marca exatamente os ids dele (já só os seguros) e pede a confirmação; quem remove é `confirmRemoval`.
+    /// "Limpar" de um cartão: marca os ids dele (já só os seguros) menos os que o usuário desmarcou à mão, e pede a
+    /// confirmação; quem remove é `confirmRemoval`. Sem nada a marcar, a seleção fica como está.
     func cleanTile(_ tile: AgentsTile) {
-        selection = tile.ids
-        confirmingRemoval = !tile.ids.isEmpty
+        let ids = tile.ids.subtracting(deselectedByUser)
+        guard !ids.isEmpty else { return }
+        selection = ids
+        confirmingRemoval = true
     }
 
     var selectedCount: Int { selection.filter { sizeByID[$0] != nil }.count }
@@ -154,6 +176,25 @@ final class AgentsFlowModel {
     var selectedSize: Int64 { selection.reduce(0) { $0 + (sizeByID[$1] ?? 0) } }
 
     var canRemove: Bool { selectedCount > 0 }
+
+    /// Quantas pastas de build a confirmação nomeia.
+    static let confirmListLimit = 8
+
+    /// Pastas marcadas que não são `node_modules`, como `<worktree>/<caminho relativo>`, na ordem do relatório: as
+    /// primeiras `confirmListLimit` e quantas sobram ("e mais N"). A confirmação mostra o que sai além das dependências.
+    var selectedBuildFolders: (names: [String], more: Int) {
+        guard let report else { return ([], 0) }
+        var names: [String] = []
+        for e in report.worktrees {
+            let root = e.worktree.url.path
+            for item in e.items where item.name != "node_modules" && selection.contains(item.url.path) {
+                let path = item.url.path
+                let rel = path.hasPrefix(root + "/") ? String(path.dropFirst(root.count + 1)) : path
+                names.append(e.worktree.url.lastPathComponent + "/" + rel)
+            }
+        }
+        return (Array(names.prefix(Self.confirmListLimit)), max(0, names.count - Self.confirmListLimit))
+    }
 
     // MARK: - Remoção
 

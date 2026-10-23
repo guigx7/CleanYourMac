@@ -222,6 +222,40 @@
         }
       }
     },
+    "agents.confirm.buildFolders": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Besides node_modules, these folders go too:"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Além de node_modules, saem também estas pastas:"
+          }
+        }
+      }
+    },
+    "agents.confirm.buildFolders.more": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "and %d more"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "e mais %d"
+          }
+        }
+      }
+    },
     "agents.confirm.codex": {
       "extractionState": "manual",
       "localizations": {

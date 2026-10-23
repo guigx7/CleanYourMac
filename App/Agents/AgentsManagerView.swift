@@ -429,6 +429,12 @@ struct AgentsPrompts: ViewModifier {
         var parts = [NSLocalizedString("agents.confirm.trash", comment: "")]
         if !sessions.isEmpty { parts.append(NSLocalizedString("agents.confirm.sessions", comment: "")) }
         if sessions.contains(where: { $0.agent == "codex" }) { parts.append(NSLocalizedString("agents.confirm.codex", comment: "")) }
+        let builds = model.selectedBuildFolders
+        if !builds.names.isEmpty {
+            var list = builds.names.map { "• " + $0 }
+            if builds.more > 0 { list.append(String(format: NSLocalizedString("agents.confirm.buildFolders.more", comment: ""), builds.more)) }
+            parts.append(NSLocalizedString("agents.confirm.buildFolders", comment: "") + "\n" + list.joined(separator: "\n"))
+        }
         let inUse = (model.report?.worktrees ?? []).filter(\.isRecent).flatMap(\.items)
         if inUse.contains(where: { model.isSelected($0.url.path) }) { parts.append(NSLocalizedString("agents.confirm.inUse", comment: "")) }
         if model.dryRun { parts.append(NSLocalizedString("agents.confirm.dryRun", comment: "")) }

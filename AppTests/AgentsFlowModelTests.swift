@@ -143,4 +143,60 @@ struct AgentsSetup {
         m.back()
         #expect(m.phase == .intro && m.selection.isEmpty)
     }
+    // MARK: - I2
+
+    /// "Limpar" do cartão respeita o que o usuário desmarcou à mão; marcar de novo devolve o item ao cartão.
+    @Test func tileCleanKeepsManualDeselections() async throws {
+        let m = await AgentsSetup().scanned()
+        let tile = try #require(m.report?.tiles.first { $0.kind == .worktrees })
+        let p1 = "/u/.codex/worktrees/idle/p1/node_modules"
+        m.openManager(.worktrees, autoselect: true)
+        #expect(m.selection == [AgentsSetup.idle, p1])
+        m.toggle(AgentsSetup.idle)
+        m.closeManager()
+        m.cleanTile(tile)
+        #expect(m.selection == [p1] && m.confirmingRemoval)
+        m.confirmingRemoval = false
+
+        m.toggle(AgentsSetup.idle)
+        m.cleanTile(tile)
+        #expect(m.selection == [AgentsSetup.idle, p1])
+        m.confirmingRemoval = false
+
+        // Desmarcar em grupo também conta; com tudo desmarcado, o cartão não pede confirmação.
+        m.setAll([AgentsSetup.idle, p1], selected: false)
+        m.cleanTile(tile)
+        #expect(m.selection.isEmpty && !m.confirmingRemoval)
+
+        // Uma análise nova esquece as desmarcações.
+        m.restart()
+        while m.phase == .scanning { await Task.yield() }
+        let fresh = try #require(m.report?.tiles.first { $0.kind == .worktrees })
+        m.cleanTile(fresh)
+        #expect(m.selection == [AgentsSetup.idle, p1])
+    }
+
+    /// A confirmação nomeia as pastas que não são `node_modules` (até 8, depois "e mais N").
+    @Test func confirmationListsBuildFolders() async {
+        let wt = AgentsSetup.home.appendingPathComponent(".codex/worktrees/mvp")
+        var items = [RebuildableItem(url: wt.appendingPathComponent("node_modules"), worktree: wt, name: "node_modules", size: 5,
+                                     modified: AgentsSetup.now)]
+        for i in 0..<10 {
+            items.append(RebuildableItem(url: wt.appendingPathComponent("apps/a\(i)/dist"), worktree: wt, name: "dist", size: 1,
+                                         modified: AgentsSetup.now))
+        }
+        let entry = WorktreeEntry(worktree: Worktree(url: wt, repo: nil, branch: nil, isOrphan: false), items: items,
+                                  lastActivity: AgentsSetup.now, isRecent: false)
+        let report = AgentsReport(home: AgentsSetup.home, worktrees: [entry], sessions: [], buildFoldersSkipped: false)
+        let m = await AgentsSetup(report: report).scanned()
+        #expect(m.selectedBuildFolders.names.isEmpty && m.selectedBuildFolders.more == 0)
+        m.toggle(items[0].url.path)
+        #expect(m.selectedBuildFolders.names.isEmpty)
+        m.setAll(items.map(\.url.path), selected: true)
+        let list = m.selectedBuildFolders
+        #expect(list.names == (0..<8).map { "mvp/apps/a\($0)/dist" })
+        #expect(list.more == 2)
+        m.toggle(items[1].url.path)
+        #expect(m.selectedBuildFolders.names.count == 8 && m.selectedBuildFolders.more == 1)
+    }
 }

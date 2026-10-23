@@ -731,5 +731,7 @@ agents.confirm.title.other	Remove %d items (%@)?	Remover %d itens (%@)?
 agents.confirm.trash	Everything goes to the Trash. The space comes back when you empty it.	Tudo vai para o Lixo. O espaço volta ao esvaziar o Lixo.
 agents.confirm.sessions	These conversations can no longer be resumed.	Não dá mais para retomar essas conversas.
 agents.confirm.codex	Codex may keep listing these conversations.	O Codex pode continuar listando essas conversas.
+agents.confirm.buildFolders	Besides node_modules, these folders go too:	Além de node_modules, saem também estas pastas:
+agents.confirm.buildFolders.more	and %d more	e mais %d
 agents.confirm.dryRun	Simulation mode: nothing will be changed.	Modo de simulação: nada será alterado.
 agents.confirm.inUse	Includes worktrees in use (changed in the last 24 hours or with an agent open). Their folders stay if an agent is still there.	Inclui worktrees em uso (mudadas nas últimas 24 horas ou com um agente aberto). As pastas delas ficam se ainda houver um agente lá.
