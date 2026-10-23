@@ -183,7 +183,8 @@ private final class FakeGitRunner: CommandRunner, @unchecked Sendable {
         #expect(abs((old?.lastActivity?.timeIntervalSince1970 ?? 0) - now.addingTimeInterval(-25 * 3600).timeIntervalSince1970) < 1)
     }
 
-    @Test func registryIndexCountsUnlessOrphan() {
+    /// O índice do registro não conta como atividade: qualquer `git status` o regrava.
+    @Test func registryIndexIgnored() {
         let now = Date()
         let fx = FixtureTree()
         fx.file("repo/.git/worktrees/w1/index", bytes: 10, modified: now.addingTimeInterval(-3600))
@@ -193,11 +194,27 @@ private final class FakeGitRunner: CommandRunner, @unchecked Sendable {
         fx.file("wt/src/x.ts", bytes: 10, modified: now.addingTimeInterval(-48 * 3600))
         fx.file("wt/node_modules/a.js", bytes: 10, modified: now)
 
-        let linked = finder(FakeGitRunner(), now: now).entry(for: worktree(fx))
-        #expect(linked?.isRecent == true)
-        let orphan = finder(FakeGitRunner(), now: now).entry(for: worktree(fx, orphan: true))
-        #expect(orphan?.isRecent == false)
-        #expect(abs((orphan?.lastActivity?.timeIntervalSince1970 ?? 0) - now.addingTimeInterval(-48 * 3600).timeIntervalSince1970) < 1)
+        for wt in [worktree(fx), worktree(fx, orphan: true)] {
+            let entry = finder(FakeGitRunner(), now: now).entry(for: wt)
+            #expect(entry?.isRecent == false)
+            #expect(abs((entry?.lastActivity?.timeIntervalSince1970 ?? 0) - now.addingTimeInterval(-48 * 3600).timeIntervalSince1970) < 1)
+        }
+    }
+
+    /// `node_modules` vazia (ou só com links do workspace) não libera nada: não entra.
+    @Test func zeroByteItemsSkipped() {
+        let fx = FixtureTree()
+        let wt = worktree(fx)
+        fx.dir("wt/node_modules")
+        fx.dir("wt/packages/core/node_modules")
+        _ = fx.symlink("wt/packages/core/node_modules/dep", to: fx.url("wt/packages/core"))
+        fx.file("wt/apps/web/node_modules/a.js", bytes: 10)
+        #expect(relPaths(finder(FakeGitRunner()).entry(for: wt), wt) == ["apps/web/node_modules"])
+
+        let fx2 = FixtureTree()
+        let wt2 = worktree(fx2)
+        fx2.dir("wt/node_modules")
+        #expect(finder(FakeGitRunner()).entry(for: wt2) == nil)
     }
 
     @Test func emptyWorktreeIsNil() {

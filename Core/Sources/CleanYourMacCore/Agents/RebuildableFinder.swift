@@ -16,7 +16,7 @@ public struct WorktreeEntry: Hashable, Sendable {
     public let worktree: Worktree
     /// `node_modules` primeiro, na ordem do catálogo; depois pelo caminho.
     public let items: [RebuildableItem]
-    /// Data mais nova entre os arquivos de fora das recriáveis e o índice do registro da worktree.
+    /// Data mais nova entre os arquivos de fora das recriáveis (o índice do git não conta).
     public let lastActivity: Date?
     /// Modificação nas últimas 24 h: a worktree está em uso.
     public let isRecent: Bool
@@ -72,14 +72,17 @@ public struct RebuildableFinder: Sendable {
         candidates.sort { (order[$0.name] ?? .max, $0.rel) < (order[$1.name] ?? .max, $1.rel) }
 
         let sizer = FileSizer(mode: .allocated)
-        let items = candidates.map { c -> RebuildableItem in
+        // Pastas com 0 byte alocado (por exemplo `node_modules` só com links do workspace) não liberam nada: ficam de fora.
+        let items = candidates.compactMap { c -> RebuildableItem? in
             let path = root + "/" + c.rel
+            let size = sizer.allocatedSize(of: URL(fileURLWithPath: path, isDirectory: true))
+            guard size > 0 else { return nil }
             return RebuildableItem(url: URL(fileURLWithPath: path, isDirectory: true), worktree: worktree.url, name: c.name,
-                                   size: sizer.allocatedSize(of: URL(fileURLWithPath: path, isDirectory: true)),
-                                   modified: lstatInfo(path).map(Self.mtime))
+                                   size: size, modified: lstatInfo(path).map(Self.mtime))
         }
+        guard !items.isEmpty else { return nil }
 
-        let last = lastActivity(root: root, isOrphan: worktree.isOrphan)
+        let last = lastActivity(root: root)
         let isRecent = last.map { now.timeIntervalSince($0) <= Self.recentWindow } ?? false
         return WorktreeEntry(worktree: worktree, items: items, lastActivity: last, isRecent: isRecent)
     }
@@ -133,15 +136,10 @@ public struct RebuildableFinder: Sendable {
 
     // MARK: - Atividade
 
-    /// Atividade da worktree: a data mais nova entre os arquivos de fora das recriáveis e, se não for órfã, o índice do
-    /// registro. O removedor recalcula com esta mesma função para saber se o agente voltou a mexer.
-    func lastActivity(root: String, isOrphan: Bool) -> Date? {
-        var last = latestActivity(root: root)
-        if !isOrphan, let index = registryIndexDate(root: root) {
-            last = max(last ?? index, index)
-        }
-        return last
-    }
+    /// Atividade da worktree: a data mais nova entre os arquivos de fora das recriáveis. O índice do registro
+    /// (`.git/worktrees/<n>/index`) não conta: qualquer `git status` (IDE, prompt do terminal) o regrava sem que ninguém
+    /// tenha mexido na worktree. O removedor recalcula com esta mesma função para saber se o agente voltou a mexer.
+    func lastActivity(root: String) -> Date? { latestActivity(root: root) }
 
     /// Data mais nova dos arquivos até o nível 3. Não desce em `.git` nem em pastas com nome do catálogo
     /// (grafia exata), listadas ou não. Não segue links.
@@ -167,21 +165,6 @@ public struct RebuildableFinder: Sendable {
             }
         }
         return latest
-    }
-
-    /// Data do índice no registro da worktree (`<repo>/.git/worktrees/<n>/index`), lido do arquivo `.git` dela.
-    private func registryIndexDate(root: String) -> Date? {
-        let gitFile = root + "/.git"
-        guard let st = lstatInfo(gitFile), st.st_mode & S_IFMT == S_IFREG, st.st_size < 64 * 1024,
-              let data = FileManager.default.contents(atPath: gitFile),
-              let text = String(data: data, encoding: .utf8) else { return nil }
-        for line in text.split(whereSeparator: \.isNewline) where line.hasPrefix("gitdir:") {
-            let p = line.dropFirst("gitdir:".count).trimmingCharacters(in: .whitespaces)
-            guard !p.isEmpty else { return nil }
-            let dir = PathPolicy.lexicalPath(p.hasPrefix("/") ? p : root + "/" + p)
-            return lstatInfo(dir + "/index").map(Self.mtime)
-        }
-        return nil
     }
 
     // MARK: - Utilitários

@@ -6,7 +6,8 @@ import Foundation
 /// - o caminho fica dentro da worktree (`root`) e termina num nome de `AgentsCatalog.rebuildable` → senão `kept: protected`;
 /// - cada parte do nome aparece com a grafia exata na listagem da pasta-mãe, a pasta é diretório de verdade (não link) e
 ///   não há link no caminho até ela; a data da pasta é a da análise; a atividade da worktree não ficou mais nova que a da
-///   análise (o agente voltou a mexer) → senão `item changed`.
+///   análise (o agente voltou a mexer); com git e worktree ligada, nada rastreado dentro e a pasta de build ainda
+///   ignorada → senão `item changed`.
 ///
 /// Sessão (uma unidade: todas as urls são revalidadas antes de mover qualquer uma; se uma falha, nenhuma vai):
 /// - cada url fica dentro de `~/.claude`, `~/.codex` ou `~/.gemini` (o `root`) e nada nela casa com
@@ -17,6 +18,7 @@ public struct AgentsRemover: Sendable {
     private let home: URL
     private let dryRun: Bool
     private let log: CleanupLog
+    private let git: GitTool?
 
     static let protected = CleanFailure(reason: "kept: protected")
     static let changed = CleanFailure(reason: "item changed")
@@ -24,7 +26,9 @@ public struct AgentsRemover: Sendable {
     static let dateTolerance: TimeInterval = 0.001
 
     public init(trasher: any Trasher = FileTrasher(), home: URL = FileManager.default.homeDirectoryForCurrentUser, dryRun: Bool,
-                log: CleanupLog) {
+                log: CleanupLog,
+                git: GitTool? = GitTool.locate(runner: SystemCommandRunner(), fileExists: { FileManager.default.fileExists(atPath: $0) })) {
+        self.git = git
         self.trasher = trasher
         self.home = home
         self.dryRun = dryRun
@@ -55,12 +59,15 @@ public struct AgentsRemover: Sendable {
     }
 
     private func trash(_ target: AgentsTarget) -> Result<Void, CleanFailure> {
-        for (i, url) in target.urls.enumerated() {
+        var moved: [String] = []
+        for url in target.urls {
             do {
                 try trasher.trash(url)
+                moved.append(url.path)
             } catch {
-                let partial = i > 0 ? " (\(i) de \(target.urls.count) já no Lixo)" : ""
-                return .failure(CleanFailure(reason: error.localizedDescription + partial))
+                // Sessão que saiu pela metade: a razão (e o registro) dizem quais urls já estão no Lixo.
+                let partial = moved.isEmpty ? "" : "partial: \(moved.count) moved (\(moved.joined(separator: ", "))); "
+                return .failure(CleanFailure(reason: partial + error.localizedDescription))
             }
         }
         return .success(())
@@ -102,9 +109,19 @@ public struct AgentsRemover: Sendable {
         guard PathPolicy.realPath(parent) == parent else { return Self.changed }
         guard let modified = target.modified, Self.same(Self.mtime(st), modified) else { return Self.changed }
         // O agente voltou a mexer na worktree depois da análise.
-        let now = RebuildableFinder(git: nil, now: Date()).lastActivity(root: root, isOrphan: isOrphanWorktree)
-        if let now {
+        if let now = RebuildableFinder(git: nil, now: Date()).lastActivity(root: root) {
             guard let before = target.activity, now.timeIntervalSince(before) <= Self.dateTolerance else { return Self.changed }
+        }
+        // Com git (e worktree ligada), o git confirma de novo: nada rastreado dentro e, nas pastas de build, ainda ignorada.
+        // Sem git, a análise também só listou `node_modules` sem perguntar ao git; pasta de build sem git não sai.
+        if !isOrphanWorktree {
+            let wt = URL(fileURLWithPath: root, isDirectory: true)
+            if let git {
+                if git.hasTracked(rel, in: wt) { return Self.changed }
+                if name != RebuildableFinder.nodeModules, !git.ignored([rel], in: wt).contains(rel) { return Self.changed }
+            } else if name != RebuildableFinder.nodeModules {
+                return Self.changed
+            }
         }
         return nil
     }
