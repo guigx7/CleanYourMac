@@ -69,13 +69,18 @@ public struct WorktreeFinder: Sendable {
                 let parent = (entry as NSString).deletingLastPathComponent
                 guard (parent as NSString).lastPathComponent == "worktrees", (repoGit as NSString).lastPathComponent == ".git" else { return }
                 let repo = (repoGit as NSString).deletingLastPathComponent
-                if isDirectory(repoGit) {
-                    // Repositório existe mas sem registro da worktree: o git já a esqueceu; não é ligada, fica de fora.
-                    guard isDirectory(entry) else { return }
-                    found[wt] = Worktree(url: URL(fileURLWithPath: wt, isDirectory: true), repo: URL(fileURLWithPath: PathPolicy.realPath(repo), isDirectory: true),
-                                         branch: branch(entry), isOrphan: false)
+                let url = URL(fileURLWithPath: wt, isDirectory: true)
+                guard isDirectory(repoGit) else {
+                    found[wt] = Worktree(url: url, repo: nil, branch: nil, isOrphan: true)
+                    return
+                }
+                let repoURL = URL(fileURLWithPath: PathPolicy.realPath(repo), isDirectory: true)
+                // Ligada só se o registro aponta de volta para esta pasta; cópia da pasta ou registro podado é órfã.
+                if let raw = readText(entry + "/gitdir"),
+                   PathPolicy.realPath(resolve(raw.trimmingCharacters(in: .whitespacesAndNewlines), base: entry)) == PathPolicy.realPath(wt + "/.git") {
+                    found[wt] = Worktree(url: url, repo: repoURL, branch: branch(entry), isOrphan: false)
                 } else {
-                    found[wt] = Worktree(url: URL(fileURLWithPath: wt, isDirectory: true), repo: nil, branch: nil, isOrphan: true)
+                    found[wt] = Worktree(url: url, repo: repoURL, branch: nil, isOrphan: true)
                 }
             }
         }
