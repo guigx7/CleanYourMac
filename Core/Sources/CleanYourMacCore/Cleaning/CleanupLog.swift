@@ -35,6 +35,12 @@ public struct CleanupLog: Sendable {
         try write(report, prefix: "cleanup", date: report.date)
     }
 
+    /// Remoção do Acúmulos.
+    @discardableResult
+    public func write(clutter report: CleanReport) throws -> URL {
+        try write(report, prefix: "clutter", date: report.date)
+    }
+
     @discardableResult
     public func write(_ report: MaintenanceReport) throws -> URL {
         try write(report, prefix: "maintenance", date: report.date)
