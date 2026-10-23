@@ -69,7 +69,7 @@ public struct ClutterWalker: Sendable {
 
     static let keys: [URLResourceKey] = [.isDirectoryKey, .isPackageKey, .isHiddenKey, .isSymbolicLinkKey, .isRegularFileKey,
                                           .fileSizeKey, .contentModificationDateKey, .creationDateKey, .contentAccessDateKey,
-                                          .contentTypeKey, .isUbiquitousItemKey, .ubiquitousItemDownloadingStatusKey]
+                                          .isUbiquitousItemKey, .ubiquitousItemDownloadingStatusKey]
 
     public func files(in root: URL, isCancelled: @Sendable () -> Bool = { Task.isCancelled }) throws -> [ClutterFile] {
         guard let e = FileManager.default.enumerator(at: root, includingPropertiesForKeys: Self.keys, options: [],
@@ -90,13 +90,16 @@ public struct ClutterWalker: Sendable {
             if v.isDirectory == true {
                 guard v.isPackage == true else { continue }
                 e.skipDescendants()
+                // Tipo do pacote pela extensão: pedir o tipo ao sistema registraria o app no LaunchServices.
                 out.append(ClutterFile(url: url, size: Self.packageSize(url), modified: v.contentModificationDate, created: v.creationDate,
-                                       accessed: v.contentAccessDate, contentType: v.contentType?.identifier, isPackage: true))
+                                       accessed: v.contentAccessDate, contentType: UTType(filenameExtension: url.pathExtension)?.identifier,
+                                       isPackage: true))
                 continue
             }
             guard v.isRegularFile == true else { continue }
+            let type = (try? url.resourceValues(forKeys: [.contentTypeKey]))?.contentType
             out.append(ClutterFile(url: url, size: Int64(v.fileSize ?? 0), modified: v.contentModificationDate, created: v.creationDate,
-                                   accessed: v.contentAccessDate, contentType: v.contentType?.identifier))
+                                   accessed: v.contentAccessDate, contentType: type?.identifier))
         }
         if isCancelled() { throw CancellationError() }
         return out
