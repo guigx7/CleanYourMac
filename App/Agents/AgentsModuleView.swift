@@ -196,8 +196,8 @@ enum AgentsText {
         AgentsCatalog.agents.first { $0.id == id }?.name ?? id
     }
 
-    /// Pasta crua do projeto do Claude Code (`-Users-x-Projetos-Y`) → `~/Projetos/Y`; `--` vira `/.` (pasta oculta, como
-    /// `.claude`). Só exibição: nomes com hífen saem errados. Gemini (hash): "Projeto 1a2b3c4d".
+    /// Reserva quando não há `cwd`. Pasta crua do projeto do Claude Code (`-Users-x-Projetos-Y`) → `~/Projetos/Y`; `--` vira
+    /// `/.` (pasta oculta, como `.claude`). Só exibição: nomes com hífen saem errados. Gemini (hash): "Projeto 1a2b3c4d".
     static func projectName(_ raw: String, agent: String) -> String {
         if raw.hasPrefix("-") {
             let path = raw.replacingOccurrences(of: "--", with: "/.").replacingOccurrences(of: "-", with: "/")
@@ -207,6 +207,12 @@ enum AgentsText {
             return String(format: NSLocalizedString("agents.project.hash", comment: ""), String(raw.prefix(8)))
         }
         return raw
+    }
+
+    /// Rótulo do projeto da sessão: o `cwd` do `.jsonl` abreviado com `~`; sem ele, o nome da pasta decodificado.
+    static func projectLabel(_ s: AgentSession) -> String? {
+        if let cwd = s.workingDirectory { return (cwd as NSString).abbreviatingWithTildeInPath }
+        return s.project.map { projectName($0, agent: s.agent) }
     }
 
     /// Caminho abreviado com `~`, ou "Agente · id curto" para uma sessão (`<agente>:<sessão>`).

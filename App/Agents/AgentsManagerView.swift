@@ -155,14 +155,19 @@ struct AgentsWorktreesSection: View {
             List {
                 ForEach(groups) { g in
                     let all = g.entries.flatMap(\.items).map(\.url.path)
-                    // A caixa do repositório marca só as worktrees paradas; a em uso se marca na linha dela.
+                    // A caixa do repositório marca só as worktrees paradas (a em uso se marca na linha dela); com algo
+                    // marcado fora delas fica mista, e desmarcar tira todas as pastas do repositório.
                     let idle = g.entries.filter { !$0.isRecent }.flatMap(\.items).map(\.url.path)
-                    let state = SelectionModel.State.of(idle, selected: model.isSelected)
+                    let idleState = SelectionModel.State.of(idle, selected: model.isSelected)
+                    let otherMarked = all.contains { model.isSelected($0) && !idle.contains($0) }
+                    let state: SelectionModel.State = otherMarked && idleState != .mixed ? .mixed : idleState
                     ModuleGroupRow(title: g.repo?.lastPathComponent ?? NSLocalizedString("agents.repo.unknown", comment: ""),
                                    size: g.size, count: all.count, selectedCount: all.filter(model.isSelected).count,
                                    expanded: !collapsedRepos.contains(g.id), tint: Theme.agentsTint,
                                    checkState: idle.isEmpty ? nil : state,
-                                   onCheck: { model.setAll(idle, selected: state != .on) },
+                                   onCheck: {
+                                       if idleState == .on { model.setAll(all, selected: false) } else { model.setAll(idle, selected: true) }
+                                   },
                                    onExpand: { collapsedRepos.formSymmetricDifference([g.id]) }) {
                         Image(nsImage: NSWorkspace.shared.icon(forFile: g.repo?.path ?? "/")).resizable().interpolation(.high)
                     }
@@ -301,7 +306,7 @@ struct AgentsSessionsSection: View {
     }
 
     private func matches(_ s: AgentSession) -> Bool {
-        let project = s.project.map { AgentsText.projectName($0, agent: s.agent) } ?? ""
+        let project = AgentsText.projectLabel(s) ?? ""
         return [s.urls.first?.lastPathComponent ?? "", project, AgentsText.agentName(s.agent)].contains { ClutterSearch.matches($0, search) }
     }
 
@@ -312,10 +317,9 @@ struct AgentsSessionsSection: View {
             guard !mine.isEmpty else { return nil }
             let newest: (AgentSession, AgentSession) -> Bool = { $0.lastModified > $1.lastModified }
             let live = mine.filter { !$0.isOrphanRemains }
-            var subgroups = Dictionary(grouping: live.filter { $0.project != nil }) { $0.project! }
-                .map { project, list in
-                    SubGroup(id: agent.id + "/" + project, title: AgentsText.projectName(project, agent: agent.id),
-                             symbol: "folder.fill", sessions: list.sorted(by: newest))
+            var subgroups = Dictionary(grouping: live.filter { AgentsText.projectLabel($0) != nil }) { AgentsText.projectLabel($0)! }
+                .map { label, list in
+                    SubGroup(id: agent.id + "/" + label, title: label, symbol: "folder.fill", sessions: list.sorted(by: newest))
                 }
                 .sorted { $0.size > $1.size }
             let remains = mine.filter(\.isOrphanRemains)
@@ -324,7 +328,7 @@ struct AgentsSessionsSection: View {
                                           symbol: "archivebox.fill", sessions: remains.sorted(by: newest)))
             }
             return AgentGroup(id: agent.id, sessions: mine, subgroups: subgroups,
-                              loose: live.filter { $0.project == nil }.sorted(by: newest))
+                              loose: live.filter { AgentsText.projectLabel($0) == nil }.sorted(by: newest))
         }
     }
 
@@ -425,6 +429,8 @@ struct AgentsPrompts: ViewModifier {
         var parts = [NSLocalizedString("agents.confirm.trash", comment: "")]
         if !sessions.isEmpty { parts.append(NSLocalizedString("agents.confirm.sessions", comment: "")) }
         if sessions.contains(where: { $0.agent == "codex" }) { parts.append(NSLocalizedString("agents.confirm.codex", comment: "")) }
+        let inUse = (model.report?.worktrees ?? []).filter(\.isRecent).flatMap(\.items)
+        if inUse.contains(where: { model.isSelected($0.url.path) }) { parts.append(NSLocalizedString("agents.confirm.inUse", comment: "")) }
         if model.dryRun { parts.append(NSLocalizedString("agents.confirm.dryRun", comment: "")) }
         return parts.joined(separator: "\n\n")
     }

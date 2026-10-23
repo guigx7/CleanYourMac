@@ -45,6 +45,24 @@ import Testing
         #expect(s.first!.size > 0)
     }
 
+    /// O projeto vem do primeiro `cwd` do `.jsonl` (2ª linha aqui), não do nome da pasta, que perde hífens e pontos.
+    @Test func claudeSessionReadsWorkingDirectory() throws {
+        let fx = FixtureTree()
+        let id = "22222222-2222-4222-8222-222222222222"
+        claudeSession(fx, id: id, days: 10)
+        let jsonl = fx.url("home/.claude/projects/-p/\(id).jsonl")
+        try Data("{\"type\":\"summary\"}\n{\"cwd\":\"/Users/me/Projetos/a-b\",\"type\":\"user\"}\n{\"cwd\":\"/outro\"}\n".utf8).write(to: jsonl)
+        touch(fx, "home/.claude/projects/-p/\(id).jsonl", days: 10)
+        touch(fx, "home/.claude/projects/-p", days: 10)
+        let s = finder(fx).sessions()
+        #expect(s.count == 1)
+        #expect(s.first?.workingDirectory == "/Users/me/Projetos/a-b")
+        // Sem `cwd` (sessão do teste anterior, arquivo sem JSON): `nil`.
+        let other = FixtureTree()
+        claudeSession(other, id: id, days: 10)
+        #expect(finder(other).sessions().first?.workingDirectory == nil)
+    }
+
     @Test func touchedRemainKeepsSessionOut() {
         let fx = FixtureTree()
         claudeSession(fx, id: "11111111-1111-4111-8111-111111111111", days: 10)

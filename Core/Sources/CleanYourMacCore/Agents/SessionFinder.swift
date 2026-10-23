@@ -15,6 +15,20 @@ public struct AgentSession: Hashable, Sendable, Identifiable {
     public let lastModified: Date
     /// Só restos (`file-history`, `session-env`, `todos`) sem o `.jsonl` da conversa.
     public let isOrphanRemains: Bool
+    /// Claude Code: o primeiro `cwd` do `.jsonl` (a pasta onde a conversa rodou). Senão `nil`.
+    public let workingDirectory: String?
+
+    init(id: String, agent: String, project: String?, urls: [URL], size: Int64, lastModified: Date, isOrphanRemains: Bool,
+         workingDirectory: String? = nil) {
+        self.id = id
+        self.agent = agent
+        self.project = project
+        self.urls = urls
+        self.size = size
+        self.lastModified = lastModified
+        self.isOrphanRemains = isOrphanRemains
+        self.workingDirectory = workingDirectory
+    }
 }
 
 /// Acha sessões com mais de 7 dias. Regras (o que sai daqui vai para o Lixo; na dúvida, fica de fora):
@@ -104,7 +118,9 @@ public struct SessionFinder: Sendable {
 
         for (id, paths) in urlsOf {
             let isOrphan = !withTranscript.contains(id)
-            if let s = session(id: "\(agent):\(id)", agent: agent, project: projectOf[id], paths: paths.sorted(), orphan: isOrphan) {
+            let transcript = paths.first { $0.hasSuffix("/" + id + ".jsonl") }
+            if let s = session(id: "\(agent):\(id)", agent: agent, project: projectOf[id], paths: paths.sorted(), orphan: isOrphan,
+                               workingDirectory: transcript.flatMap(Self.workingDirectory(ofTranscript:))) {
                 out.append(s)
             }
         }
@@ -117,6 +133,19 @@ public struct SessionFinder: Sendable {
             out.append(s)
         }
         return out
+    }
+
+    /// Primeiro `"cwd"` de uma linha JSON nos primeiros 64 KB do `.jsonl` (a linha cortada no fim é ignorada).
+    static func workingDirectory(ofTranscript path: String) -> String? {
+        guard let handle = FileHandle(forReadingAtPath: path) else { return nil }
+        defer { try? handle.close() }
+        guard let data = try? handle.read(upToCount: 65_536) else { return nil }
+        for line in data.split(separator: UInt8(ascii: "\n")) {
+            guard let obj = try? JSONSerialization.jsonObject(with: Data(line)) as? [String: Any],
+                  let cwd = obj["cwd"] as? String, cwd.hasPrefix("/") else { continue }
+            return cwd
+        }
+        return nil
     }
 
     /// Nome de sessão do Claude Code: UUID.
@@ -187,7 +216,8 @@ public struct SessionFinder: Sendable {
     // MARK: - Montagem
 
     /// `nil` quando a sessão é recente demais (ou a descida estourou o limite).
-    private func session(id: String, agent: String, project: String?, paths: [String], orphan: Bool) -> AgentSession? {
+    private func session(id: String, agent: String, project: String?, paths: [String], orphan: Bool,
+                         workingDirectory: String? = nil) -> AgentSession? {
         var newest = Date.distantPast
         for p in paths {
             guard let d = newestDate(p) else { return nil }
@@ -197,7 +227,7 @@ public struct SessionFinder: Sendable {
         let urls = paths.map { URL(fileURLWithPath: $0, isDirectory: isDirectory($0)) }
         return AgentSession(id: id, agent: agent, project: project, urls: urls,
                             size: urls.reduce(0) { $0 + sizer.allocatedSize(of: $1) },
-                            lastModified: newest, isOrphanRemains: orphan)
+                            lastModified: newest, isOrphanRemains: orphan, workingDirectory: workingDirectory)
     }
 
     /// Data mais nova de um caminho, descendo nas pastas sem seguir links; `nil` ao passar do limite de entradas.

@@ -256,6 +256,23 @@
         }
       }
     },
+    "agents.confirm.inUse": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Includes worktrees changed in the last 24 hours — an agent may be using them."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Inclui worktrees mudadas nas últimas 24 horas — algum agente pode estar usando."
+          }
+        }
+      }
+    },
     "agents.confirm.sessions": {
       "extractionState": "manual",
       "localizations": {

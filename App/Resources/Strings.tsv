@@ -732,3 +732,4 @@ agents.confirm.trash	Everything goes to the Trash. The space comes back when you
 agents.confirm.sessions	These conversations can no longer be resumed.	Não dá mais para retomar essas conversas.
 agents.confirm.codex	Codex may keep listing these conversations.	O Codex pode continuar listando essas conversas.
 agents.confirm.dryRun	Simulation mode: nothing will be changed.	Modo de simulação: nada será alterado.
+agents.confirm.inUse	Includes worktrees changed in the last 24 hours — an agent may be using them.	Inclui worktrees mudadas nas últimas 24 horas — algum agente pode estar usando.
