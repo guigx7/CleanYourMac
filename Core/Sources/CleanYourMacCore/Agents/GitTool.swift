@@ -28,20 +28,23 @@ public struct GitTool: Sendable {
         while start < relPaths.count {
             let batch = Array(relPaths[start..<min(start + Self.batchSize, relPaths.count)])
             start += Self.batchSize
-            let result = runner.run(executable, ["-C", worktree.path, "check-ignore", "--"] + batch)
+            let batchSet = Set(batch)
+            // `-z`: saída separada por NUL, sem aspas nem escapes em nomes com acento ou caracteres especiais.
+            let result = runner.run(executable, ["-C", worktree.path, "check-ignore", "-z", "--"] + batch)
             guard result.status == 0 else { continue }
-            for line in result.output.split(whereSeparator: \.isNewline) {
-                let path = String(line)
-                if batch.contains(path) { found.insert(path) }
+            for path in result.output.split(separator: "\0", omittingEmptySubsequences: true).map(String.init)
+            where batchSet.contains(path) {
+                found.insert(path)
             }
         }
         return found
     }
 
-    /// Verdadeiro quando há arquivo versionado sob o caminho.
+    /// Verdadeiro quando há arquivo versionado sob o caminho. Falha fechado: se o git não conseguir
+    /// responder (safe.directory, repositório corrompido, lock), devolve `true` para não liberar remoção.
     public func hasTracked(_ relPath: String, in worktree: URL) -> Bool {
         let result = runner.run(executable, ["-C", worktree.path, "ls-files", "--", relPath])
-        return result.status == 0
-            && !result.output.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+        guard result.status == 0 else { return true }
+        return !result.output.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
     }
 }
