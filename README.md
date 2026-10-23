@@ -11,7 +11,7 @@
 
 > Projeto independente, sem vínculo com a MacPaw. "CleanMyMac" é marca da MacPaw Inc. Nenhum código, texto, ícone ou dado do CleanMyMac foi copiado — o comportamento foi estudado (processo *clean room*, ver [`docs/re/`](docs/re/README.md)) e reescrito do zero.
 
-*English summary: CleanYourMac is an open-source macOS cleaner (study project). It scans system junk, AI-tool leftovers, Mail attachments and trash bins; it uninstalls or resets apps with all their files, lists outdated apps and cleans leftovers of removed apps; it runs maintenance tasks, maps disk usage, and finds large old files, duplicates, similar images and old downloads. You review every item, and it removes only what you select.*
+*English summary: CleanYourMac is an open-source macOS cleaner (study project). It scans system junk, AI-tool leftovers, Mail attachments and trash bins; it uninstalls or resets apps with all their files, lists outdated apps and cleans leftovers of removed apps; it runs maintenance tasks, maps disk usage, and finds large old files, duplicates, similar images and old downloads. It also frees rebuildable folders in git worktrees and old conversations left by AI coding agents. You review every item, and it removes only what you select.*
 
 ---
 
@@ -58,6 +58,14 @@ As capturas locais do Time Machine, quando existem, ganham uma seção própria 
 
 Você marca o que sai. Marcar todas as cópias de um grupo pede confirmação. Os arquivos vão para o **Lixo** e as fotos para *Apagados Recentemente*. Os números batem com os do CleanMyMac; veja o [relatório de paridade](docs/re/parity/clutter-report-2026-10-23.md).
 
+**Agentes de IA** (v0.6) — recupera o espaço que os agentes de programação deixam para trás:
+- nas **worktrees ligadas do git** (`git worktree add`), manda para o Lixo só o `node_modules` e as pastas de build;
+- as pastas de build só entram se o git as ignora, se não têm nada versionado e se há um "produtor" ao lado (`package.json`, `Cargo.toml` etc.);
+- as worktrees mexidas nas últimas 24 h ficam de fora do um clique;
+- as **conversas** do Claude Code, do Codex e do Gemini com mais de 7 dias saem, menos as de agentes ainda ativos.
+
+Memória, ajustes e histórico nunca são tocados. Worktrees, branches e código nunca são apagados. Tudo vai para o **Lixo**.
+
 ## Instalar
 
 Requisitos: macOS 14 ou mais novo, Apple Silicon ou Intel.
@@ -94,7 +102,7 @@ No Xcode, em **Signing & Capabilities**, troque o time pelo seu (o `project.yml`
 
 ## Use com cuidado
 
-- Na **Limpeza**, a remoção é **definitiva** (não vai para o Lixo), como no CleanMyMac. Nos **Aplicativos**, no **Desempenho**, na **Lupa de Espaço** e nos **Acúmulos**, os itens vão para o Lixo (fotos: Apagados Recentemente). Revise antes de confirmar.
+- Na **Limpeza**, a remoção é **definitiva** (não vai para o Lixo), como no CleanMyMac. Nos **Aplicativos**, no **Desempenho**, na **Lupa de Espaço** e nos **Acúmulos** e nos **Agentes de IA**, os itens vão para o Lixo (fotos: Apagados Recentemente). Revise antes de confirmar.
 - Ao alterar apps (binários universais e idiomas), a assinatura é verificada antes e depois; se quebrasse, o app é restaurado.
 - Cada limpeza gera um registro em `~/Library/Logs/CleanYourMac/`.
 - Software fornecido "como está", sem garantias (licença MIT).
@@ -105,7 +113,7 @@ No Xcode, em **Signing & Capabilities**, troque o time pelo seu (o `project.yml`
 |---|---|
 | Testes do Core | `swift test --package-path Core` |
 | Testes do app | `scripts/test-app.sh` |
-| CLI de diagnóstico (só leitura/simulação) | `swift run --package-path Core cym scan` · `cym clean --dry-run` · `cym apps [--json] [--no-network]` · `cym performance [--json]` · `cym spacelens [pasta] [--json]` · `cym clutter [pasta] [--json]` |
+| CLI de diagnóstico (só leitura/simulação) | `swift run --package-path Core cym scan` · `cym clean --dry-run` · `cym apps [--json] [--no-network]` · `cym performance [--json]` · `cym spacelens [pasta] [--json]` · `cym clutter [pasta] [--json]` · `cym agents [--json]` |
 | Comparar com uma baseline | `python3 -I scripts/parity/compare.py <baseline.json> <cym.json>` · Aplicativos: `compare_apps.py` · Desempenho: `compare_perf.py` · Lupa de Espaço: `compare_spacelens.py` · Acúmulos: `compare_clutter.py` |
 
 Estrutura: `Core/` (pacote Swift: scanners, motor de análise e de limpeza, helper), `App/` (SwiftUI), `Helper/` (daemon privilegiado), `docs/re/specs/` (especificação de cada grupo), `docs/superpowers/` (design e plano).
@@ -120,6 +128,7 @@ Para contribuir com uma regra nova: comece pela especificação em `docs/re/spec
 - [x] **v0.3 — Desempenho**: tarefas de manutenção, itens de início e em segundo plano (desativar, reativar, remover), capturas do Time Machine
 - [x] **v0.4 — Lupa de Espaço**: mapa de bolhas do disco ou de uma pasta, navegação, revisão e remoção para o Lixo
 - [x] **v0.5 — Acúmulos**: arquivos grandes e antigos, duplicatas, imagens similares (com a fototeca) e downloads, com remoção para o Lixo
+- [x] **v0.6 — Agentes de IA**: `node_modules` e pastas de build das worktrees do git e conversas antigas dos agentes, com remoção para o Lixo
 - [ ] Assinatura Developer ID e notarização
 
 ## Licença
