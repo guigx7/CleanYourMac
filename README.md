@@ -11,7 +11,7 @@
 
 > Projeto independente, sem vínculo com a MacPaw. "CleanMyMac" é marca da MacPaw Inc. Nenhum código, texto, ícone ou dado do CleanMyMac foi copiado — o comportamento foi estudado (processo *clean room*, ver [`docs/re/`](docs/re/README.md)) e reescrito do zero.
 
-*English summary: CleanYourMac is an open-source macOS cleaner (study project). It scans system junk, AI-tool leftovers, Mail attachments and trash bins; it uninstalls or resets apps with all their files, lists outdated apps and cleans leftovers of removed apps. You review every item, and it removes only what you select.*
+*English summary: CleanYourMac is an open-source macOS cleaner (study project). It scans system junk, AI-tool leftovers, Mail attachments and trash bins; it uninstalls or resets apps with all their files, lists outdated apps and cleans leftovers of removed apps; it runs maintenance tasks, maps disk usage, and finds large old files, duplicates, similar images and old downloads. You review every item, and it removes only what you select.*
 
 ---
 
@@ -50,6 +50,14 @@ As capturas locais do Time Machine, quando existem, ganham uma seção própria 
 
 **Lupa de Espaço** (v0.4) — analisa o disco inteiro (cerca de 3,6 milhões de itens em ~20 s nesta máquina) ou uma pasta escolhida e mostra o que ocupa espaço: a lista dos maiores itens de cada pasta (arquivos ocultos incluídos, os pequenos agrupados em "Outros itens") ao lado de um mapa de bolhas proporcional ao tamanho. Clique numa pasta para entrar; caminho, voltar e avançar para navegar. Marque o que não precisa, revise e mova para o **Lixo** — itens do macOS e pastas-padrão (Biblioteca, Downloads…) não podem ser marcados, e itens do iCloud têm aviso. Os números batem com os do CleanMyMac — veja o [relatório de paridade](docs/re/parity/spacelens-report-2026-10-22.md).
 
+**Acúmulos** (v0.5) — procura na pasta pessoal (ou numa pasta escolhida):
+- **arquivos grandes e antigos**, a partir de 50 MB, com filtros por tipo, tamanho e última abertura;
+- **duplicatas exatas**, com uma cópia sugerida para ficar;
+- **imagens similares**, entre arquivos e na fototeca do Fotos, com as melhores marcadas com estrela;
+- **downloads do Chrome e do Safari**, pelo histórico.
+
+Você marca o que sai. Marcar todas as cópias de um grupo pede confirmação. Os arquivos vão para o **Lixo** e as fotos para *Apagados Recentemente*. Os números batem com os do CleanMyMac; veja o [relatório de paridade](docs/re/parity/clutter-report-2026-10-23.md).
+
 ## Instalar
 
 Requisitos: macOS 14 ou mais novo, Apple Silicon ou Intel.
@@ -79,13 +87,14 @@ No Xcode, em **Signing & Capabilities**, troque o time pelo seu (o `project.yml`
 |---|---|---|
 | **Acesso Total ao Disco** | sem ele, o macOS esconde dados do Mail, do Safari e de outros apps | Ajustes › Privacidade e Segurança › Acesso Total ao Disco › **+** › CleanYourMac |
 | **Ajudante (opcional)** | mede os caches do sistema em toda análise e limpa itens do sistema sem pedir senha; desinstala apps de outros donos e descarrega serviços do sistema dos apps; roda as tarefas de manutenção de administrador e desativa daemons (só para contas administradoras) | botão **Instalar ajudante** nos Resultados → Ajustes › Geral › Itens de Início e Extensões › permitir em segundo plano |
+| **Fotos (opcional)** | procurar fotos similares na fototeca (Acúmulos) | o macOS pergunta na primeira análise da pasta pessoal; depois, Ajustes › Privacidade e Segurança › Fotos |
 | **Gerenciamento de Apps** | remover código extra e idiomas de outros apps; desinstalar apps de /Applications | Ajustes › Privacidade e Segurança › Gerenciamento de Apps |
 
 **Sobre o ajudante:** é um serviço do sistema (SMAppService) embutido no app. Ele só aceita conexões do CleanYourMac assinado pelo mesmo desenvolvedor, não executa scripts — apenas apagar, esvaziar pasta, afinar binário, medir, mover para o Lixo de quem pediu, descarregar, desativar ou reativar um serviço do launchd, rodar uma das tarefas de manutenção (comandos fixos) e esquecer o recibo de um pacote — e revalida cada pedido como root (nunca locais vitais, nunca através de links, nunca itens `com.apple.*`, sempre ligado ao app escolhido). Depois de atualizar o app, use **Atualizar ajudante** se o botão aparecer. Para remover: desative-o em Itens de Início e Extensões.
 
 ## Use com cuidado
 
-- Na **Limpeza**, a remoção é **definitiva** (não vai para o Lixo), como no CleanMyMac. Nos **Aplicativos**, no **Desempenho** e na **Lupa de Espaço**, os itens vão para o Lixo. Revise antes de confirmar.
+- Na **Limpeza**, a remoção é **definitiva** (não vai para o Lixo), como no CleanMyMac. Nos **Aplicativos**, no **Desempenho**, na **Lupa de Espaço** e nos **Acúmulos**, os itens vão para o Lixo (fotos: Apagados Recentemente). Revise antes de confirmar.
 - Ao alterar apps (binários universais e idiomas), a assinatura é verificada antes e depois; se quebrasse, o app é restaurado.
 - Cada limpeza gera um registro em `~/Library/Logs/CleanYourMac/`.
 - Software fornecido "como está", sem garantias (licença MIT).
@@ -96,8 +105,8 @@ No Xcode, em **Signing & Capabilities**, troque o time pelo seu (o `project.yml`
 |---|---|
 | Testes do Core | `swift test --package-path Core` |
 | Testes do app | `scripts/test-app.sh` |
-| CLI de diagnóstico (só leitura/simulação) | `swift run --package-path Core cym scan` · `cym clean --dry-run` · `cym apps [--json] [--no-network]` · `cym performance [--json]` · `cym spacelens [pasta] [--json]` |
-| Comparar com uma baseline | `python3 -I scripts/parity/compare.py <baseline.json> <cym.json>` · Aplicativos: `compare_apps.py` · Desempenho: `compare_perf.py` · Lupa de Espaço: `compare_spacelens.py` |
+| CLI de diagnóstico (só leitura/simulação) | `swift run --package-path Core cym scan` · `cym clean --dry-run` · `cym apps [--json] [--no-network]` · `cym performance [--json]` · `cym spacelens [pasta] [--json]` · `cym clutter [pasta] [--json]` |
+| Comparar com uma baseline | `python3 -I scripts/parity/compare.py <baseline.json> <cym.json>` · Aplicativos: `compare_apps.py` · Desempenho: `compare_perf.py` · Lupa de Espaço: `compare_spacelens.py` · Acúmulos: `compare_clutter.py` |
 
 Estrutura: `Core/` (pacote Swift: scanners, motor de análise e de limpeza, helper), `App/` (SwiftUI), `Helper/` (daemon privilegiado), `docs/re/specs/` (especificação de cada grupo), `docs/superpowers/` (design e plano).
 
@@ -110,6 +119,7 @@ Para contribuir com uma regra nova: comece pela especificação em `docs/re/spec
 - [ ] Atualizador, etapa 2: instalar sozinho apps de site próprio e do Homebrew, conferindo a assinatura
 - [x] **v0.3 — Desempenho**: tarefas de manutenção, itens de início e em segundo plano (desativar, reativar, remover), capturas do Time Machine
 - [x] **v0.4 — Lupa de Espaço**: mapa de bolhas do disco ou de uma pasta, navegação, revisão e remoção para o Lixo
+- [x] **v0.5 — Acúmulos**: arquivos grandes e antigos, duplicatas, imagens similares (com a fototeca) e downloads, com remoção para o Lixo
 - [ ] Assinatura Developer ID e notarização
 
 ## Licença
