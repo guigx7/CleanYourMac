@@ -125,6 +125,12 @@ Valem as regras de sempre do projeto: TDD, teste real só com itens criados por 
    retomar essas conversas". Para o Codex vale o mesmo critério. Se o `thread_history_*.sqlite` só ficar com uma entrada que
    não abre, é aceitável. O Codex só fica de fora se o app dele quebrar ao abrir, e isso tem que ser conferido antes de
    implementar a parte dele.
+   - **Conferência do Codex (2026-10-23, só leitura, numa cópia):** `~/.codex/state_5.sqlite` tem a tabela `threads`, com 171
+     conversas. Cada uma guarda o `rollout_path` do seu `.jsonl` em `~/.codex/sessions`, e hoje todos os arquivos existem.
+     Também há um `session_index.jsonl`. Apagar o `.jsonl`, portanto, deixa a conversa listada no Codex sem o conteúdo.
+     Ainda não sabemos se o Codex mostra um erro, esconde a conversa ou quebra a lista. Isso exige um teste com uma sessão
+     falsa nossa, com o ok do usuário. Até lá o Codex fica, e a confirmação avisa que "o Codex pode continuar listando
+     essas conversas".
 5. **Catálogo em Swift**, no padrão do `AICatalog` que já existe (`Core/Sources/CleanYourMacCore/Scanners/AIToolsScanner.swift`),
    e não em JSON: o mesmo tipo de regra fica no mesmo tipo de lugar. Ele guarda os caminhos de sessões, os marcadores de
    estado e as raízes de worktrees de cada agente.
