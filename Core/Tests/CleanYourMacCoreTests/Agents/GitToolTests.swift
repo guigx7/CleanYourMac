@@ -47,8 +47,8 @@ private final class RecordingRunner: CommandRunner, @unchecked Sendable {
 
     @Test func ignoredParsesOutput() {
         let wt = "/tmp/wt"
-        let args = ["-C", wt, "check-ignore", "-z", "--", "dist", "build", "out"]
-        let ok = RecordingRunner(responses: [args.joined(separator: " "): (0, "dist\0build\0")])
+        let args = ["-C", wt, "-c", "core.quotePath=false", "check-ignore", "--", "dist", "build", "out"]
+        let ok = RecordingRunner(responses: [args.joined(separator: " "): (0, "dist\nbuild\n")])
         let git = GitTool(executable: clt, runner: ok)
         #expect(git.ignored(["dist", "build", "out"], in: URL(fileURLWithPath: wt)) == ["dist", "build"])
         #expect(ok.calls == [.init(executable: clt, arguments: args)])
@@ -64,10 +64,11 @@ private final class RecordingRunner: CommandRunner, @unchecked Sendable {
         #expect(runner.calls.count == 3)
     }
 
-    @Test func ignoredHandlesAccentedPathsWithNUL() {
+    @Test func ignoredHandlesAccentedAndQuotedPaths() {
         let wt = URL(fileURLWithPath: "/tmp/wt")
-        let git = GitTool(executable: clt, runner: RecordingRunner(fallback: (0, "São Paulo/dist\0build\0")))
-        #expect(git.ignored(["São Paulo/dist", "build", "out"], in: wt) == ["São Paulo/dist", "build"])
+        // Nome com quebra de linha volta entre aspas: não casa e fica como não ignorado.
+        let git = GitTool(executable: clt, runner: RecordingRunner(fallback: (0, "São Paulo/dist\nbuild\n\"a\\nb\"\n")))
+        #expect(git.ignored(["São Paulo/dist", "build", "out", "a\nb"], in: wt) == ["São Paulo/dist", "build"])
     }
 
     @Test func hasTrackedFailsClosed() {

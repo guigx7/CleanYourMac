@@ -21,7 +21,8 @@ public struct GitTool: Sendable {
         return fileExists(git) ? GitTool(executable: git, runner: runner) : nil
     }
 
-    /// Dos caminhos relativos dados, os que o git ignora (`check-ignore`), em lotes de 200.
+    /// Dos caminhos relativos dados, os que o git ignora (`check-ignore`), em lotes de 200. Os caminhos precisam existir:
+    /// padrões como `dist/` só casam com diretórios presentes no disco.
     public func ignored(_ relPaths: [String], in worktree: URL) -> Set<String> {
         var found = Set<String>()
         var start = 0
@@ -29,10 +30,12 @@ public struct GitTool: Sendable {
             let batch = Array(relPaths[start..<min(start + Self.batchSize, relPaths.count)])
             start += Self.batchSize
             let batchSet = Set(batch)
-            // `-z`: saída separada por NUL, sem aspas nem escapes em nomes com acento ou caracteres especiais.
-            let result = runner.run(executable, ["-C", worktree.path, "check-ignore", "-z", "--"] + batch)
+            // `-z` só vale com `--stdin` (sem ele o git sai com "fatal"), e o runner não tem entrada padrão.
+            // `core.quotePath=false` mantém acentos como estão; nomes que o git ainda põe entre aspas
+            // (com quebra de linha, aspas ou controle) não casam com o lote e ficam como não ignorados.
+            let result = runner.run(executable, ["-C", worktree.path, "-c", "core.quotePath=false", "check-ignore", "--"] + batch)
             guard result.status == 0 else { continue }
-            for path in result.output.split(separator: "\0", omittingEmptySubsequences: true).map(String.init)
+            for path in result.output.split(separator: "\n", omittingEmptySubsequences: true).map(String.init)
             where batchSet.contains(path) {
                 found.insert(path)
             }
