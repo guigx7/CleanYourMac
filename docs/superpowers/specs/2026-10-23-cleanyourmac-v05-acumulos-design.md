@@ -36,7 +36,6 @@ Specs em `docs/re/specs/clutter/` (evidência: textos e símbolos de `OrganizeMo
 
 ## Não-objetivos
 
-- Ler o histórico do Chrome/Safari/Slack (o CleanMyMac lê; nós usamos a marca de quarentena do macOS).
 - Duplicatas dentro da fototeca (só imagens soltas e fototeca em Similares).
 - Smart Care / Cuidados Inteligentes.
 
@@ -52,12 +51,14 @@ Specs em `docs/re/specs/clutter/` (evidência: textos e símbolos de `OrganizeMo
 - **Duplicatas:** tamanho → SHA-256 (CryptoKit, blocos de 1 MiB) do arquivo inteiro; pacotes `.app` como um item (hash do
   conteúdo). Hard links contam como no CleanMyMac (paridade); clones idem. Cadeia de desempate da spec; exatamente uma
   cópia fica de fora na marcação automática.
-- **Similares:** imagens soltas (≥ 100 KiB, `UTType.image`, sem psd/psb/xcassets) + fototeca por PhotoKit (miniaturas
-  locais, sem rede). Semelhança por **Vision** (`VNGenerateImageFeaturePrintRequest`, API pública) com limiar calibrado;
-  agrupamento por componentes conexas. "Melhor para manter": resolução, nitidez (Laplaciano) e ruído. Sem permissão do
-  Fotos, analisa só as imagens soltas e avisa.
+- **Similares:** imagens soltas (≥ 100 KiB, `UTType.image`, sem psd/psb/xcassets, sem as cópias exatas de Duplicatas) +
+  fototeca por PhotoKit (miniaturas locais, sem rede). Mesmo algoritmo do CleanMyMac reproduzido com a vImage (hash de
+  gradientes em 4 orientações, soma ≤ 15, agrupamento guloso sem fusão); "melhor para manter" pela mesma pontuação
+  (ruído, nitidez por Haar, faixa dinâmica, tamanho). Sem permissão do Fotos, analisa só as imagens soltas.
+  *(Revisado: a ideia inicial de usar Vision foi trocada depois da RE do hash.)*
 - **Fundo do Baú:** pasta pessoal, ≥ 50 MiB, data = último acesso (`contentAccessDate`), faixas da spec.
-- **Downloads:** arquivos com `com.apple.quarantine` cujo agente é Chrome, Safari ou Slack (e outros navegadores
-  conhecidos), agrupados por app; marcação automática = mais de 30 dias.
+- **Downloads:** como o CleanMyMac, pelo histórico de downloads (Chrome: banco `History` de cada perfil, lido de uma
+  cópia; Safari: `Downloads.plist`, com Acesso Total ao Disco); só concluídos cujo arquivo existe; marcação automática =
+  mais de 30 dias. Slack sem leitor. *(Revisado: a ideia inicial da marca de quarentena dava resultado diferente.)*
 - **Tamanhos:** os da tela do CleanMyMac (a spec define lógico × alocado por parte).
 - **Simulação:** `CYM_DRY_RUN` como sempre; teste real só com pastas de teste `io.github.guigx7.cymtest`.
