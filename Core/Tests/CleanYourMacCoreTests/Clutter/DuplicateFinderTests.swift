@@ -36,7 +36,7 @@ import Testing
         let keep1 = write(t, "Documents/x.zip", 3)
         // 2) número de cópia maior sai
         let keep2 = write(t, "Documents/y.mov", 4)
-        _ = write(t, "Documents/y (2).mov", 4)
+        _ = write(t, "Documents/y copy 2.mov", 4)
         // 4) modificação mais antiga sai
         _ = write(t, "Pictures/z.png", 5, modified: old)
         let keep4 = write(t, "Movies/z.png", 5, modified: new)
@@ -77,5 +77,30 @@ import Testing
         _ = write(t, "Documents/s1.bin", 8, 150_000); _ = write(t, "Pictures/s2.bin", 8, 150_000)
         _ = write(t, "Documents/b1.bin", 9, 900_000); _ = write(t, "Pictures/b2.bin", 9, 900_000)
         #expect(try groups(t).map(\.totalSize) == [1_800_000, 300_000])
+    }
+
+    @Test func filesInsideXcassetsIgnored() throws {
+        let t = FixtureTree()
+        _ = write(t, "Projects/web/icon.png", 10)
+        _ = write(t, "Projects/App/Assets.xcassets/AppIcon.appiconset/icon_1024.png", 10)
+        _ = write(t, "Projects/a.png", 11); _ = write(t, "Projects/b.png", 11)
+        let g = try groups(t)
+        try #require(g.count == 1)
+        #expect(g[0].files.allSatisfy { !$0.url.path.contains(".xcassets/") })
+    }
+
+    @Test func titleIsTheKeeperAndParenthesisIsNotACopyNumber() throws {
+        let t = FixtureTree()
+        let old = Date(timeIntervalSince1970: 1_600_000_000), new = Date(timeIntervalSince1970: 1_700_000_000)
+        _ = write(t, "Downloads/FISIOLOGIA.png", 12, modified: old)
+        _ = write(t, "Downloads/FISIOLOGIA (2).png", 12, modified: new)
+        // Mesma data, mesma profundidade, mesmo tamanho de nome: o caminho menor na ordem alfabética sai.
+        _ = write(t, "Documents/111.png", 13, modified: old)
+        _ = write(t, "Documents/222.png", 13, modified: old)
+        let g = try groups(t)
+        try #require(g.count == 2)
+        #expect(Set(g.map(\.name)) == ["FISIOLOGIA (2).png", "222.png"])
+        #expect(DuplicateFinder.copyNumber(URL(fileURLWithPath: "/a/x (2).png")) == 0)
+        #expect(DuplicateFinder.copyNumber(URL(fileURLWithPath: "/a/x copy 3.png")) == 3)
     }
 }

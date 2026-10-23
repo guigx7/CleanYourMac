@@ -46,7 +46,7 @@ import Testing
         let g = DuplicateGroup(files: [f("Downloads/a.png", 100), f("Documents/a.png", 100)], hash: "h")
         let tiles = ClutterTiles.make(home: home, now: now, largeOld: [], duplicates: [g], similar: [], downloads: [])
         #expect(tiles.first?.kind == .duplicatesDocuments)
-        #expect(tiles.first?.size == 100)
+        #expect(tiles.first?.size == 200) // total dos grupos, como o CleanMyMac (35,6 MB para 45 arquivos)
     }
 
     @Test func parityJSONMatchesBaselineKeys() throws {

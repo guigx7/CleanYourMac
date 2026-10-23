@@ -50,7 +50,7 @@ public enum ClutterTiles {
             }
             func tile(_ kind: ClutterTile.Kind, _ groups: [DuplicateGroup]) -> ClutterTile {
                 ClutterTile(kind: kind, count: groups.reduce(0) { $0 + $1.files.count },
-                            size: groups.reduce(0) { $0 + $1.removableSize }, app: nil)
+                            size: groups.reduce(0) { $0 + $1.totalSize }, app: nil)
             }
             let threeMonths = now.addingTimeInterval(-90 * 86_400)
             let fresh = duplicates.filter { $0.files.contains { ($0.created ?? .distantPast) > threeMonths } }
@@ -115,7 +115,8 @@ public struct ClutterReport: Sendable {
                 let rel = folder.hasPrefix(homePath) ? home.lastPathComponent + folder.dropFirst(homePath.count) : folder
                 return ["name": f.url.lastPathComponent, "folder": rel, "lastOpened": day(f.accessed), "size": f.size]
             },
-            "duplicates": duplicates.map { ["name": $0.name, "size": $0.totalSize, "count": $0.files.count] as [String: Any] },
+            "duplicates": duplicates.map { ["name": $0.name, "size": $0.totalSize, "count": $0.files.count,
+                                             "paths": $0.files.map(\.url.path)] as [String: Any] },
             "similar": similar.map { ["date": day($0.date), "size": $0.totalSize, "count": $0.images.count] as [String: Any] },
             "downloads": ["groups": Dictionary(uniqueKeysWithValues: downloads.map { ($0.app.title, $0.totalSize) }),
                           "files": downloads.flatMap(\.files).map { ["name": $0.url.lastPathComponent, "size": $0.size] as [String: Any] }],

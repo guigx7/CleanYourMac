@@ -52,6 +52,11 @@ public struct ClutterRules: Sendable {
         prefixes = ["/System/", "/Library/", h + "/Library/", h + "/Music/Music/", h + "/Music/iTunes/"]
     }
 
+    /// Dentro de um catálogo de assets do Xcode (regra própria de Duplicatas e Similares: a pasta `.xcassets` sai inteira).
+    public static func isInsideXcassets(_ url: URL) -> Bool {
+        url.pathComponents.contains { ($0 as NSString).pathExtension.lowercased() == "xcassets" }
+    }
+
     /// O item (arquivo ou pasta) fica fora da análise.
     public func isIgnored(path: String, name: String, isHidden: Bool) -> Bool {
         if isHidden || name.hasPrefix(".") { return true }

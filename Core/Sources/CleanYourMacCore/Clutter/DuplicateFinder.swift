@@ -33,7 +33,7 @@ public struct DuplicateFinder: Sendable {
     }
 
     public func groups(from files: [ClutterFile], isCancelled: @Sendable () -> Bool = { Task.isCancelled }) throws -> [DuplicateGroup] {
-        let candidates = files.filter { $0.size >= Self.minimum && $0.url.pathExtension.lowercased() != "xcassets" }
+        let candidates = files.filter { $0.size >= Self.minimum && !ClutterRules.isInsideXcassets($0.url) }
         let bySize = Dictionary(grouping: candidates, by: \.size).values.filter { $0.count > 1 }
         let toHash = bySize.flatMap { $0 }
         // SHA-256 em paralelo (só o que tem outro arquivo do mesmo tamanho).
@@ -60,7 +60,7 @@ public struct DuplicateFinder: Sendable {
     // MARK: - Qual cópia sai
 
     /// Cadeia de desempate da spec (§3): Downloads → número de cópia maior → modificação mais antiga → caminho mais fundo →
-    /// nome mais curto → ordem alfabética. `true` = `a` sai antes de `b`.
+    /// nome mais curto → caminho menor na ordem alfabética. `true` = `a` sai antes de `b`.
     func removeBefore(_ a: ClutterFile, _ b: ClutterFile) -> Bool {
         let da = a.url.path.hasPrefix(downloads), db = b.url.path.hasPrefix(downloads)
         if da != db { return da }
@@ -72,17 +72,17 @@ public struct DuplicateFinder: Sendable {
         if pa != pb { return pa > pb }
         let na = a.url.lastPathComponent.count, nb = b.url.lastPathComponent.count
         if na != nb { return na < nb }
-        return a.url.path > b.url.path
+        return a.url.path < b.url.path
     }
 
-    /// "x (2).png" → 2, "x copy 3.png" → 3, "x copy.png" / "x cópia.png" → 1, "x.png" → 0.
+    /// "x copy 3.png" → 3, "x copy.png" / "x cópia.png" → 1, "x.png" → 0. "x (2).png" e "x 2.png" não contam (paridade: o
+    /// CleanMyMac deixa a cópia "(N)" mais nova).
     static func copyNumber(_ url: URL) -> Int {
         let base = url.deletingPathExtension().lastPathComponent
         func match(_ pattern: String) -> String? {
             guard let r = base.range(of: pattern, options: [.regularExpression, .caseInsensitive]) else { return nil }
             return String(base[r])
         }
-        if let m = match(#"\((\d+)\)$"#) { return Int(m.filter(\.isNumber)) ?? 1 }
         if let m = match(#" (copy|cópia) (\d+)$"#) { return Int(m.filter(\.isNumber)) ?? 1 }
         if match(#" (copy|cópia)$"#) != nil { return 1 }
         return 0

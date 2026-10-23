@@ -66,7 +66,8 @@ public struct SimilarImageFinder: Sendable {
 
     /// Arquivos que entram (regras próprias de Similares): imagem, ≥ 100 KiB, sem psd/psb/xcassets.
     public static func accepts(_ file: ClutterFile) -> Bool {
-        guard file.size >= 102_400, !["psd", "psb", "xcassets"].contains(file.url.pathExtension.lowercased()) else { return false }
+        guard file.size >= 102_400, !["psd", "psb"].contains(file.url.pathExtension.lowercased()),
+              !ClutterRules.isInsideXcassets(file.url) else { return false }
         return file.type?.conforms(to: .image) == true
     }
 

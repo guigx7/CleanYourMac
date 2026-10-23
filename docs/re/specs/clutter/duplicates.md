@@ -138,6 +138,12 @@ confirmada no binário nem por observação.
   `OldestSelectionControlOption`), que dividem o grupo em "fica"/"sai" pelo critério escolhido
   (`splitNodes`) [E2].
 
+- **Ajustes pela paridade (2026-10-23, 149/149 títulos iguais):** o título do grupo é o nome da
+  cópia que **fica**; `nome (N).ext` e `nome N.ext` **não** contam como número de cópia (a cópia
+  "(2)" mais nova fica); no desempate alfabético final sai o caminho **menor**; arquivos dentro de
+  uma pasta `.xcassets` ficam de fora (a regra pula a pasta inteira); o cartão "… em Documentos"
+  mostra o **total** dos grupos (35,6 MB para 45 arquivos), não só o removível.
+
 ### Para o CleanYourMac (forma proposta)
 - Mesma cadeia de desempate (é regra de negócio razoável, não código), mas **sempre** deixando
   exatamente uma cópia desmarcada; a "melhor para manter" ganha um selo.
